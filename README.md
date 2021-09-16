@@ -1,6 +1,6 @@
-# Deck9 Survey
+# Enquete - Survey via Chat
 
-Survey lets you create chat-like surveys.
+Enquete lets you create chat-like surveys.
 
 ## Requirements
 
