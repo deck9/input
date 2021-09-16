@@ -1,9 +1,11 @@
 {
-    "name": "laravel/laravel",
+    "name": "deck9/survey",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "description": "A survey platform",
+    "keywords": [
+        "survey"
+    ],
+    "license": "Business Source License 1.1",
     "require": {
         "php": "^7.3|^8.0",
         "fruitcake/laravel-cors": "^2.0",

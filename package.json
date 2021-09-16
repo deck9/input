@@ -1,5 +1,11 @@
 {
+    "name": "@deck9/survey",
+    "version": "1.0.0",
     "private": true,
+    "license": "Business Source License 1.1",
+    "engines": {
+        "node": ">= 14 <=16"
+    },
     "scripts": {
         "dev": "npm run development",
         "development": "mix",
