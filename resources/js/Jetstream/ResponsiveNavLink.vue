@@ -11,21 +11,21 @@
 </template>
 
 <script>
-    import { defineComponent } from 'vue';
-    import { Link } from '@inertiajs/inertia-vue3';
+import { defineComponent } from "vue";
+import { Link } from "@inertiajs/inertia-vue3";
 
-    export default defineComponent({
-        components: {
-            Link,
-        },
-        props: ['active', 'href', 'as'],
+export default defineComponent({
+  components: {
+    Link,
+  },
+  props: ["active", "href", "as"],
 
-        computed: {
-            classes() {
-                return this.active
-                    ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-400 text-base font-medium text-indigo-700 bg-indigo-50 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition'
-                    : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition'
-            }
-        }
-    })
+  computed: {
+    classes() {
+      return this.active
+        ? "block pl-3 pr-4 py-2 border-l-4 border-blue-400 text-base font-medium text-blue-700 bg-blue-50 focus:outline-none focus:text-blue-800 focus:bg-blue-100 focus:border-blue-700 transition"
+        : "block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition";
+    },
+  },
+});
 </script>

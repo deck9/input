@@ -1,0 +1,22 @@
+{
+    "root": true,
+    "extends": [
+        "plugin:prettier/recommended",
+        "plugin:vue/base"
+    ],
+    "plugins": ["prettier", "vue"],
+    "rules": {
+        "prettier/prettier": "error",
+        "quotes": [
+            "error",
+            "double",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": false
+            }
+        ]
+    },
+    "globals": {
+        "require": true
+    }
+}

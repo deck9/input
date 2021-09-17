@@ -1,19 +1,37 @@
 <template>
-    <input class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" ref="input">
+  <input
+    class="
+      block
+      w-full
+      px-3
+      py-2
+      border border-grey-300
+      focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-200
+      rounded-md
+      placeholder-grey-400
+      transition
+      duration-150
+      ease-in-out
+      sm:text-sm sm:leading-5
+    "
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
+    ref="input"
+  />
 </template>
 
 <script>
-    import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 
-    export default defineComponent({
-        props: ['modelValue'],
+export default defineComponent({
+  props: ["modelValue"],
 
-        emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
 
-        methods: {
-            focus() {
-                this.$refs.input.focus()
-            }
-        }
-    })
+  methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
+  },
+});
 </script>
