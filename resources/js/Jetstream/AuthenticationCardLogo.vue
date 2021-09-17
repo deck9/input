@@ -1,19 +1,16 @@
 <template>
     <Link :href="'/'">
-        <svg class="w-16 h-16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11.395 44.428C4.557 40.198 0 32.632 0 24 0 10.745 10.745 0 24 0a23.891 23.891 0 0113.997 4.502c-.2 17.907-11.097 33.245-26.602 39.926z" fill="#6875F5"/>
-            <path d="M14.134 45.885A23.914 23.914 0 0024 48c13.255 0 24-10.745 24-24 0-3.516-.756-6.856-2.115-9.866-4.659 15.143-16.608 27.092-31.75 31.751z" fill="#6875F5"/>
-        </svg>
+        <svg class="w-16 h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 144"><path d="M68 0c37.555 0 68 30.478 68 68.075s-30.445 68.076-68 68.076c-10.668 0-20.763-2.46-29.749-6.843-11.95 0-20.455 3.182-30.324 14.692-.543-5.524-.26-10.769.234-15.724l.146-1.408.076-.698.158-1.384.559-4.72.075-.658.143-1.305c.688-6.482.91-12.361-1.126-17.61C2.967 90.857 0 79.814 0 68.076 0 30.478 30.445 0 68 0ZM29.5 58C23.701 58 19 62.701 19 68.5S23.701 79 29.5 79 40 74.299 40 68.5 35.299 58 29.5 58Zm39 0C62.701 58 58 62.701 58 68.5S62.701 79 68.5 79 79 74.299 79 68.5 74.299 58 68.5 58Zm37 0C99.701 58 95 62.701 95 68.5S99.701 79 105.5 79 116 74.299 116 68.5 111.299 58 105.5 58Z" fill="#236FCD" fill-rule="evenodd"/></svg>
     </Link>
 </template>
 
 <script>
-    import { defineComponent } from 'vue'
-    import { Link } from '@inertiajs/inertia-vue3';
+import { defineComponent } from "vue";
+import { Link } from "@inertiajs/inertia-vue3";
 
-    export default defineComponent({
-        components: {
-            Link,
-        },
-    })
+export default defineComponent({
+  components: {
+    Link,
+  },
+});
 </script>
