@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Enquete') }}</title>
+        <title inertia>{{ config('app.name', 'Survy') }}</title>
 
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
@@ -18,20 +18,20 @@
         <meta name="theme-color" content="#202020">
 
         <!-- Google / Search Engine Tags -->
-        <meta itemprop="name" content="{{ $ogProperties['title'] ?? config('app.name', 'Enquete')}}">
+        <meta itemprop="name" content="{{ $ogProperties['title'] ?? config('app.name', 'Survy')}}">
         <meta itemprop="description"
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
         <meta itemprop="image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
 
         <!-- Facebook Meta Tags -->
-        <meta property="og:title" content="{{ $ogProperties['title'] ?? config('app.name', 'Enquete')}}">
+        <meta property="og:title" content="{{ $ogProperties['title'] ?? config('app.name', 'Survy')}}">
         <meta property="og:type" content="website">
         <meta property="og:description"
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
         <meta property="og:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
 
         <!-- Twitter Meta Tags -->
-        <meta name="twitter:title" content="{{ $ogProperties['title'] ?? config('app.name', 'Enquete')}}">
+        <meta name="twitter:title" content="{{ $ogProperties['title'] ?? config('app.name', 'Survy')}}">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:description"
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">

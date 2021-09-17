@@ -1,6 +1,6 @@
-# Enquete - Survey via Chat
+# Survy - Survey via Chat
 
-Enquete lets you create chat-like surveys.
+Survy lets you create chat-like surveys.
 
 ## Requirements
 
