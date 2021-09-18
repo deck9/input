@@ -9,7 +9,7 @@ use App\Models\FormSession;
 use App\Models\FormBlockInteraction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ResponseFactory extends Factory
+class FormSessionResponseFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
@@ -27,8 +27,8 @@ class ResponseFactory extends Factory
     {
         return [
             'value' => $this->faker->word(),
-            'block_id' => FormBlock::factory(),
-            'interaction_id' => FormBlockInteraction::factory(),
+            'form_block_id' => FormBlock::factory(),
+            'form_block_interaction_id' => FormBlockInteraction::factory(),
             'form_session_id' => FormSession::factory(),
         ];
     }

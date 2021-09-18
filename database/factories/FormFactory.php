@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Form;
 use App\Models\User;
-use App\Models\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

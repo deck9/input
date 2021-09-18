@@ -19,7 +19,7 @@ class FormBlockInteraction extends Model
     const TYPE_CONSENT = 'consent';
 
     protected $casts = [
-        'block_id' => 'integer',
+        'form_block_id' => 'integer',
     ];
 
     protected $hidden = [

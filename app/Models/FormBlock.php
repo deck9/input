@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Form;
 use Hashids\Hashids;
 use App\Scopes\Sequence;
 use Webpatser\Uuid\Uuid;
+use App\Models\FormSessionResponse;
+use App\Models\FormBlockInteraction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -73,17 +76,17 @@ class FormBlock extends Model
 
     public function interactions()
     {
-        return $this->hasMany(Interaction::class);
+        return $this->hasMany(FormBlockInteraction::class);
     }
 
     public function responses()
     {
-        return $this->hasMany(Response::class);
+        return $this->hasMany(FormSessionResponse::class);
     }
 
-    public function chatbot()
+    public function form()
     {
-        return $this->belongsTo(Chatbot::class);
+        return $this->belongsTo(Form::class);
     }
 
     public function getTypingDelayAttribute()

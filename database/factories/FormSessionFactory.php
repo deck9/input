@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Form;
 use App\Models\Model;
+use App\Models\FormSession;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

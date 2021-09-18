@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FormBlock;
 use App\Models\FormSession;
 use App\Scopes\WithoutChildren;
 use Illuminate\Database\Eloquent\Model;
@@ -27,12 +28,13 @@ class FormSessionResponse extends Model
 
     public function block()
     {
-        return $this->belongsTo(Block::class)->withoutGlobalScope(WithoutChildren::class);
+        return $this->belongsTo(FormBlock::class, 'form_block_id')
+            ->withoutGlobalScope(WithoutChildren::class);
     }
 
     public function session()
     {
-        return $this->belongsTo(FormSession::class);
+        return $this->belongsTo(FormSession::class, 'form_session_id');
     }
 
 

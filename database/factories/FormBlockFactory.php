@@ -6,7 +6,7 @@ use App\Models\Form;
 use App\Models\FormBlock;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BlockFactory extends Factory
+class FormBlockFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

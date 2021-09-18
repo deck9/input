@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Snippet;
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
+use App\Models\FormBlock;
+use App\Models\FormSession;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -75,19 +76,19 @@ class Form extends Model
         return $query->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());
     }
 
-    public function snippets()
+    public function blocks()
     {
-        return $this->hasMany(Snippet::class);
+        return $this->hasMany(FormBlock::class);
     }
 
-    public function conversations()
+    public function sessions()
     {
-        return $this->hasMany(Conversation::class);
+        return $this->hasMany(FormSession::class);
     }
 
-    public function results()
+    public function responses()
     {
-        return $this->hasManyThrough(FormSessionResponse::class, Snippet::class);
+        return $this->hasManyThrough(FormSessionResponse::class, FormBlock::class);
     }
 
     public function user()
@@ -97,31 +98,31 @@ class Form extends Model
 
     public function route()
     {
-        return route('chatbot.show', $this->uuid);
+        return route('forms.show', $this->uuid);
     }
 
     public function isEmpty()
     {
-        return $this->snippetsCount() <= 0;
+        return $this->blocksCount() <= 0;
     }
 
-    public function snippetsCount()
+    public function blocksCount()
     {
-        return $this->snippets->count();
+        return $this->blocks->count();
     }
 
-    public function actionSnippetsCount()
+    public function actionBlocksCount()
     {
-        return $this->snippets->filter(function ($item) {
+        return $this->blocks->filter(function ($item) {
             return $item->hasResponseAction();
         })->count();
     }
 
-    public function resultsCount()
+    public function responsesCount()
     {
-        $result = $this->results()
+        $result = $this->responses()
             ->select(DB::raw('count(*) as response_count'))
-            ->groupBy('responses.snippet_id')
+            ->groupBy('form_block_id')
             ->orderBy('response_count', 'DESC')
             ->limit(1)
             ->first();
@@ -207,23 +208,23 @@ class Form extends Model
 
     public function countSessions()
     {
-        $snippets = $this->snippets->pluck('id')->toArray();
+        $blocks = $this->blocks->pluck('id')->toArray();
 
         return FormSessionResponse::select('session')
-            ->whereIn('snippet_id', $snippets)
+            ->whereIn('form_block_id', $blocks)
             ->groupBy('session')
             ->get()
             ->count();
     }
 
-    public function totalConversations()
+    public function totalSessions()
     {
-        return $this->conversations()->whereHas('responses')->count();
+        return $this->sessions()->whereHas('responses')->count();
     }
 
-    public function completedConversations()
+    public function completedSessions()
     {
-        return $this->conversations()
+        return $this->sessions()
             ->whereHas('responses')
             ->get()
             ->where('is_completed', true)
@@ -233,7 +234,7 @@ class Form extends Model
     public function completionRate()
     {
         try {
-            return round(($this->completedConversations() / $this->totalConversations()) * 100, 2);
+            return round(($this->completedSessions() / $this->totalSessions()) * 100, 2);
         } catch (\Throwable $th) {
             return 0;
         }
@@ -246,12 +247,12 @@ class Form extends Model
 
     public function countSessionsForCurrentMonth()
     {
-        $snippets = $this->snippets->pluck('id')->toArray();
+        $blocks = $this->blocks->pluck('id')->toArray();
 
         return FormSessionResponse::select('*')
             ->whereYear('created_at', '=', Carbon::now())
             ->whereMonth('created_at', '=', Carbon::now())
-            ->whereIn('snippet_id', $snippets)
+            ->whereIn('form_block_id', $blocks)
             ->groupBy('session')
             ->get()
             ->count();
@@ -261,7 +262,7 @@ class Form extends Model
     {
         FormBlock::create([
             'type' => FormBlock::CONSENT,
-            'chatbot_id' => $this->id,
+            'form_id' => $this->id,
         ]);
     }
 }

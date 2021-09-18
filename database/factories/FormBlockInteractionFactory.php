@@ -7,7 +7,7 @@ use App\Models\Model;
 use App\Models\FormBlockInteraction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class InteractionFactory extends Factory
+class FormBlockInteractionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
@@ -26,7 +26,7 @@ class InteractionFactory extends Factory
         return [
             'uuid' => $this->faker->uuid(),
             'type' => FormBlockInteraction::TYPE_CLICK,
-            'block_id' => FormBlock::factory(),
+            'form_block_id' => FormBlock::factory(),
         ];
     }
 }
