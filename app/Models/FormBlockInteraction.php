@@ -43,7 +43,7 @@ class FormBlockInteraction extends Model
 
     public function block()
     {
-        return $this->belongsTo(FormBlock::class);
+        return $this->belongsTo(FormBlock::class, 'form_block_id');
     }
 
     public function responses()

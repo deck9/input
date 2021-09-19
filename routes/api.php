@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\FormAvatarController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
+use App\Http\Controllers\Api\FormAvatarController;
+use App\Http\Controllers\Api\FormResultsController;
+use App\Http\Controllers\Api\InteractionResultsController;
 use App\Http\Controllers\Api\PublishFormController;
 
 /*
@@ -40,7 +42,10 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->delete('chatbots/{uuid}/avatar', [FormAvatarController::class, 'delete'])->name('api.forms.avatars.delete');
 
     // Chatbot Results API Routes
-    $router->get('results/{uuid}', 'ResultsController@show')->name('chatbots.results.show');
+    $router->get('results/{uuid}', [FormResultsController::class, 'show'])->name('api.forms.results.show');
+
+    // Interaction Responses
+    $router->get('interactions/{interaction}/responses', [InteractionResultsController::class, 'show'])->name('api.interactions.results.show');
 
     // Snippet API Routes
     $router->get('chatbots/{chatbot}/snippets', 'SnippetController@index')->name('snippets.index');
@@ -55,7 +60,4 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->post('{snippet}/interactions', 'InteractionController@create')->name('interactions.create');
     $router->post('interactions/{interaction}', 'InteractionController@update')->name('interactions.update');
     $router->delete('interactions/{interaction}', 'InteractionController@delete')->name('interactions.delete');
-
-    // Interaction Responses
-    $router->get('interactions/{interaction}/responses', 'InteractionResponseController@show')->name('interactions.responses.show');
 });
