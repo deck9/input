@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\FormAvatarController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -35,8 +36,8 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->delete('chatbots/{uuid}/publish', [PublishFormController::class, 'delete'])->name('api.forms.publish.delete');
 
     // Chatbot Avatar API Routes
-    $router->post('chatbots/{uuid}/avatar', 'ChatbotAvatarController@store')->name('chatbots.avatars.store');
-    $router->delete('chatbots/{uuid}/avatar', 'ChatbotAvatarController@delete')->name('chatbots.avatars.delete');
+    $router->post('chatbots/{uuid}/avatar', [FormAvatarController::class, 'store'])->name('api.forms.avatars.store');
+    $router->delete('chatbots/{uuid}/avatar', [FormAvatarController::class, 'delete'])->name('api.forms.avatars.delete');
 
     // Chatbot Results API Routes
     $router->get('results/{uuid}', 'ResultsController@show')->name('chatbots.results.show');
