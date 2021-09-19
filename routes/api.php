@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\FormController;
+use App\Http\Controllers\Api\PublishFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +19,42 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+$router->middleware(['auth:sanctum'])->group(function (Router $router) {
+
+    // Chatbot API Routes
+    $router->post('chatbots', [FormController::class, 'create'])->name('api.forms.create');
+    $router->get('forms/{uuid}', [FormController::class, 'show'])->name('api.forms.show');
+    $router->post('forms/{uuid}', [FormController::class, 'update'])->name('api.forms.update');
+    $router->delete('forms/{uuid}', [FormController::class, 'delete'])->name('api.forms.delete');
+
+    // Chatbot Publishing Routes
+    $router->post('chatbots/{uuid}/publish', [PublishFormController::class, 'create'])->name('api.forms.publish.create');
+    $router->delete('chatbots/{uuid}/publish', [PublishFormController::class, 'delete'])->name('api.forms.publish.delete');
+
+    // Chatbot Avatar API Routes
+    $router->post('chatbots/{uuid}/avatar', 'ChatbotAvatarController@store')->name('chatbots.avatars.store');
+    $router->delete('chatbots/{uuid}/avatar', 'ChatbotAvatarController@delete')->name('chatbots.avatars.delete');
+
+    // Chatbot Results API Routes
+    $router->get('results/{uuid}', 'ResultsController@show')->name('chatbots.results.show');
+
+    // Snippet API Routes
+    $router->get('chatbots/{chatbot}/snippets', 'SnippetController@index')->name('snippets.index');
+    $router->post('chatbots/{chatbot}/snippets', 'SnippetController@create')->name('snippets.create');
+    $router->post('snippets/{snippet}', 'SnippetController@update')->name('snippets.update');
+    $router->delete('snippet/{snippet}', 'SnippetController@delete')->name('snippets.delete');
+
+    // Snippet Sequence API Routes
+    $router->post('chatbots/{chatbot}/snippets/sequence', 'SnippetSequenceController@update')->name('snippets.sequence.update');
+
+    // Interaction API Routes
+    $router->post('{snippet}/interactions', 'InteractionController@create')->name('interactions.create');
+    $router->post('interactions/{interaction}', 'InteractionController@update')->name('interactions.update');
+    $router->delete('interactions/{interaction}', 'InteractionController@delete')->name('interactions.delete');
+
+    // Interaction Responses
+    $router->get('interactions/{interaction}/responses', 'InteractionResponseController@show')->name('interactions.responses.show');
 });

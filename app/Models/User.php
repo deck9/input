@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Form;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
@@ -69,5 +70,11 @@ class User extends Authenticatable
                 'salt' => Str::random(32),
             ]);
         });
+    }
+
+
+    public function forms()
+    {
+        return $this->hasMany(Form::class);
     }
 }
