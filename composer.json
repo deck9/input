@@ -17,6 +17,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "league/glide-laravel": "^1.0",
+        "spatie/browsershot": "^3.50",
         "tightenco/ziggy": "^1.0",
         "webpatser/laravel-uuid": "^4.0"
     },

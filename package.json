@@ -38,6 +38,7 @@
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^4.0.0",
         "eslint-plugin-vue": "^7.18.0",
-        "eslint-webpack-plugin": "^3.0.1"
+        "eslint-webpack-plugin": "^3.0.1",
+        "puppeteer": "^10.2.0"
     }
 }
