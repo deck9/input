@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\FormAvatarController;
 use App\Http\Controllers\Api\FormBlockController;
+use App\Http\Controllers\Api\FormBlockInteractionController;
 use App\Http\Controllers\Api\FormResultsController;
 use App\Http\Controllers\Api\InteractionResultsController;
 use App\Http\Controllers\Api\PublishFormController;
@@ -59,7 +60,7 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->post('forms/{form}/blocks/sequence', [FormBlockSequenceController::class, 'update'])->name('api.blocks.sequence.update');
 
     // Interaction API Routes
-    $router->post('{snippet}/interactions', 'InteractionController@create')->name('interactions.create');
-    $router->post('interactions/{interaction}', 'InteractionController@update')->name('interactions.update');
-    $router->delete('interactions/{interaction}', 'InteractionController@delete')->name('interactions.delete');
+    $router->post('{block}/interactions', [FormBlockInteractionController::class, 'create'])->name('api.interactions.create');
+    $router->post('interactions/{interaction}', [FormBlockInteractionController::class, 'update'])->name('api.interactions.update');
+    $router->delete('interactions/{interaction}', [FormBlockInteractionController::class, 'delete'])->name('api.interactions.delete');
 });

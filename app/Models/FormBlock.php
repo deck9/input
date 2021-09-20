@@ -76,7 +76,7 @@ class FormBlock extends Model
 
     public function interactions()
     {
-        return $this->hasMany(FormBlockInteraction::class);
+        return $this->hasMany(FormBlockInteraction::class, 'form_block_id');
     }
 
     public function responses()
