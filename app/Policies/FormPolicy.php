@@ -10,17 +10,8 @@ class FormPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
-    public function show(User $user, Form $form)
+    public function view(User $user, Form $form)
     {
         return $user->id === $form->user_id;
     }

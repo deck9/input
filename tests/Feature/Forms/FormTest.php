@@ -76,7 +76,6 @@ class FormTest extends TestCase
     /** @test @api */
     public function can_get_the_form_data()
     {
-        $this->withoutExceptionHandling();
         $form = Form::factory()->create();
 
         $response = $this->actingAs($form->user)

@@ -7,6 +7,7 @@ use App\Policies\FormPolicy;
 use App\Policies\TeamPolicy;
 use App\Models\FormBlockInteraction;
 use App\Policies\FormBlockInteractionPolicy;
+use App\Policies\FormBlockPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -19,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Team::class => TeamPolicy::class,
         Form::class => FormPolicy::class,
+        FormBlock::class => FormBlockPolicy::class,
         FormBlockInteraction::class => FormBlockInteractionPolicy::class,
     ];
 

@@ -6,7 +6,6 @@ use App\Models\Form;
 use App\NameFactory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
 
 class FormController extends Controller
 {
@@ -32,7 +31,7 @@ class FormController extends Controller
             ->withUuid($uuid)
             ->firstOrFail();
 
-        if ($request->user()->cannot('show', $form)) {
+        if ($request->user()->cannot('view', $form)) {
             abort(403);
         }
 
