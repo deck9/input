@@ -29,7 +29,7 @@ class FormBlock extends Model
         'responses' => 'array',
         'is_skippable' => 'boolean',
         'is_child' => 'boolean',
-        'chatbot_id' => 'integer',
+        'form_id' => 'integer',
         'options' => 'array',
     ];
 

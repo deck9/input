@@ -12,7 +12,7 @@ class PublishFormTest extends TestCase
     use RefreshDatabase;
 
     /** @test @api */
-    public function can_publish_a_chatbot()
+    public function can_publish_a_form()
     {
         Event::fake();
 
@@ -26,7 +26,7 @@ class PublishFormTest extends TestCase
     }
 
     /** @test @api */
-    public function can_unpublish_a_chatbot()
+    public function can_unpublish_a_form()
     {
         $form = Form::factory()->create(['published_at' =>  now()]);
 

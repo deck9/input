@@ -13,7 +13,7 @@ class FormTest extends TestCase
     use RefreshDatabase;
 
     /** @test @web */
-    public function can_create_a_new_chatbot()
+    public function can_create_a_new_form()
     {
         $user = User::factory()->create();
 
@@ -28,7 +28,7 @@ class FormTest extends TestCase
     }
 
     /** @test @web */
-    public function when_creating_a_new_chatbot_the_data_privacy_mode_should_not_be_enabled()
+    public function when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled()
     {
         $user = User::factory()->create();
 
@@ -39,7 +39,7 @@ class FormTest extends TestCase
     }
 
     /** @test @web */
-    public function a_created_chatbot_should_have_a_default_consent_snippet()
+    public function a_created_form_should_have_a_default_consent_snippet()
     {
         $user = User::factory()->create();
 
@@ -52,7 +52,7 @@ class FormTest extends TestCase
     }
 
     /** @test @web */
-    public function authenticated_user_can_view_the_edit_page_of_his_chatbot()
+    public function authenticated_user_can_view_the_edit_page_of_his_form()
     {
         $form = Form::factory()->create();
 
@@ -86,7 +86,7 @@ class FormTest extends TestCase
     }
 
     /** @test @api */
-    public function can_update_the_chatbot_data_with_api_call()
+    public function can_update_the_form_data_with_api_call()
     {
         $form = Form::factory()->create();
 
@@ -168,7 +168,7 @@ class FormTest extends TestCase
     }
 
     /** @test @api */
-    public function can_not_update_chatbot_of_other_users()
+    public function can_not_update_form_of_other_users()
     {
         $form = Form::factory()->create();
 
@@ -185,7 +185,7 @@ class FormTest extends TestCase
     }
 
     /** @test @api */
-    public function can_delete_a_chatbot()
+    public function can_delete_a_form()
     {
         $form = Form::factory()->create();
 
@@ -197,7 +197,7 @@ class FormTest extends TestCase
     }
 
     /** @test @api */
-    public function can_enable_or_disable_email_notifications_for_a_chatbot()
+    public function can_enable_or_disable_email_notifications_for_a_form()
     {
         $form = Form::factory()->create();
 
@@ -208,7 +208,7 @@ class FormTest extends TestCase
         $this->actingAs($form->user)
             ->json('POST', route('api.forms.update', $form->uuid), $updateRequestA);
 
-        // refresh chatbot
+        // refresh form
         $form = $form->fresh();
         $this->assertTrue($form->is_notification_via_mail);
 
@@ -219,7 +219,7 @@ class FormTest extends TestCase
         $this->actingAs($form->user)
             ->json('POST', route('api.forms.update', $form->uuid), $updateRequestB);
 
-        // refresh chatbot
+        // refresh form
         $form = $form->fresh();
         $this->assertNotTrue($form->is_notification_via_mail);
     }

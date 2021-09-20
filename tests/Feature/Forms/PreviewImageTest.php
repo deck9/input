@@ -23,7 +23,7 @@ class PreviewImageTest extends TestCase
     }
 
     /** @test */
-    public function creates_a_preview_image_when_chatbot_is_published()
+    public function creates_a_preview_image_when_form_is_published()
     {
         $this->partialMock(Browsershot::class, function (MockInterface $mock) {
             $mock->shouldReceive('url')->once()->andReturn($mock);

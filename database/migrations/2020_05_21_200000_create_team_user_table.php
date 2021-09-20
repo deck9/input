@@ -23,14 +23,4 @@ class CreateTeamUserTable extends Migration
             $table->unique(['team_id', 'user_id']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('team_user');
-    }
 }

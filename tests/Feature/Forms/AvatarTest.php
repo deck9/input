@@ -13,7 +13,7 @@ class AvatarTest extends TestCase
     use RefreshDatabase;
 
     /** @test @api */
-    public function can_upload_one_avatar_image_for_a_chatbot()
+    public function can_upload_a_single_avatar_image_for_a_form()
     {
         $form = Form::factory()->create();
         Storage::fake('avatars');
@@ -57,7 +57,7 @@ class AvatarTest extends TestCase
 
 
     /** @test @api */
-    public function can_delete_an_uploaded_avatar_image_for_a_chatbot()
+    public function can_delete_an_uploaded_avatar_image_for_a_form()
     {
         Storage::fake('avatars');
         $form = Form::factory()->create();

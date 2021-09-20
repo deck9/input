@@ -155,7 +155,7 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
-    public function chatbot_can_return_legal_attributes()
+    public function form_can_return_legal_attributes()
     {
         $user = User::factory()->create([
             'company_name' => 'Test Corp',

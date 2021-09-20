@@ -23,14 +23,4 @@ class CreateTeamInvitationsTable extends Migration
             $table->unique(['team_id', 'email']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('team_invitations');
-    }
 }

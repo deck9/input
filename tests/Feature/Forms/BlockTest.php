@@ -33,7 +33,7 @@ class BlockTest extends TestCase
     }
 
     /** @test @api */
-    public function can_only_create_blocks_for_chatbots_that_a_user_owns()
+    public function can_only_create_blocks_for_forms_that_a_user_owns()
     {
         $otherUser = User::factory()->create();
         $form = Form::factory()->create();
@@ -44,7 +44,7 @@ class BlockTest extends TestCase
     }
 
     /** @test @api */
-    public function can_get_blocks_related_to_a_chatbot()
+    public function can_get_blocks_related_to_a_form()
     {
         $form = Form::factory()->create();
 
@@ -65,7 +65,7 @@ class BlockTest extends TestCase
     }
 
     /** @test @api */
-    public function can_get_blocks_related_to_a_chatbot_with_consent_block()
+    public function can_get_blocks_related_to_a_form_with_consent_block()
     {
         $form = Form::factory()->create(['has_data_privacy' => true]);
 
@@ -104,7 +104,7 @@ class BlockTest extends TestCase
     }
 
     /** @test @api */
-    public function cannot_create_or_update_blocks_of_not_owned_chatbot()
+    public function cannot_create_or_update_blocks_of_not_owned_form()
     {
         $otherUser = User::factory()->create();
 
