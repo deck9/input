@@ -11,7 +11,7 @@ trait InteractionsTestingContract
 {
     abstract protected function getInteractionType();
 
-    /** @test @api */
+    /** @test */
     public function can_create_an_interaction_of_this_type()
     {
         $block = FormBlock::factory()->create();
@@ -27,7 +27,7 @@ trait InteractionsTestingContract
         $this->assertEquals($this->getInteractionType(), $response->json('type'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_update_an_interaction_of_this_type()
     {
         $interaction = FormBlockInteraction::factory()->create([
@@ -44,7 +44,7 @@ trait InteractionsTestingContract
         $this->assertEquals('This is my reply', $response->json('reply'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_set_a_unique_id()
     {
         $interaction = FormBlockInteraction::factory()->create([
@@ -59,7 +59,7 @@ trait InteractionsTestingContract
         $this->assertEquals('i-10', $response->json('uuid'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_delete_an_interaction_of_this_type()
     {
         $interaction = FormBlockInteraction::factory()->create([

@@ -11,7 +11,7 @@ class BlockSequenceTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test @api */
+    /** @test */
     public function can_change_the_sequence_of_blocks()
     {
         $form = Form::factory()->create();

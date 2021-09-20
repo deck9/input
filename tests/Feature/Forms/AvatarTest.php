@@ -12,7 +12,7 @@ class AvatarTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test @api */
+    /** @test */
     public function can_upload_a_single_avatar_image_for_a_form()
     {
         $form = Form::factory()->create();
@@ -31,7 +31,7 @@ class AvatarTest extends TestCase
         Storage::disk('avatars')->assertExists($form->avatar_path);
     }
 
-    /** @test @api */
+    /** @test */
     public function cannot_upload_avatar_if_wrong_format_or_too_big()
     {
         Storage::fake('avatars');
@@ -56,7 +56,7 @@ class AvatarTest extends TestCase
 
 
 
-    /** @test @api */
+    /** @test */
     public function can_delete_an_uploaded_avatar_image_for_a_form()
     {
         Storage::fake('avatars');

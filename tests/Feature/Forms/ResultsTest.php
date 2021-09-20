@@ -61,7 +61,7 @@ class ResultsTest extends TestCase
         $this->assertEquals(1, $response->json('blocks')[0]['interactions'][1]['responses_count']);
     }
 
-    /** @test @api */
+    /** @test */
     public function can_get_single_responses_for_an_input_interaction()
     {
         $interaction = FormBlockInteraction::factory()->create();

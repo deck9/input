@@ -16,7 +16,7 @@ class BlockTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test @api */
+    /** @test */
     public function can_create_new_blocks()
     {
         $form = Form::factory()->create();
@@ -32,7 +32,7 @@ class BlockTest extends TestCase
         $this->assertEquals($form->id, $response->json('form_id'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_only_create_blocks_for_forms_that_a_user_owns()
     {
         $otherUser = User::factory()->create();
@@ -43,7 +43,7 @@ class BlockTest extends TestCase
             ->assertStatus(403);;
     }
 
-    /** @test @api */
+    /** @test */
     public function can_get_blocks_related_to_a_form()
     {
         $form = Form::factory()->create();
@@ -64,7 +64,7 @@ class BlockTest extends TestCase
         $this->assertCount(5, $response->json('blocks'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_get_blocks_related_to_a_form_with_consent_block()
     {
         $form = Form::factory()->create(['has_data_privacy' => true]);
@@ -85,7 +85,7 @@ class BlockTest extends TestCase
         $this->assertCount(6, $response->json('blocks'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_update_existing_blocks()
     {
         $block = FormBlock::factory()->create([
@@ -103,7 +103,7 @@ class BlockTest extends TestCase
         $this->assertEquals(FormBlock::CLICK, $response->json('type'));
     }
 
-    /** @test @api */
+    /** @test */
     public function cannot_create_or_update_blocks_of_not_owned_form()
     {
         $otherUser = User::factory()->create();
@@ -128,7 +128,7 @@ class BlockTest extends TestCase
         $this->assertEquals(FormBlock::MESSAGE, $block->fresh()->type);
     }
 
-    /** @test @api */
+    /** @test */
     public function when_blocks_are_updated_an_event_is_fired()
     {
         Event::fake();
@@ -149,7 +149,7 @@ class BlockTest extends TestCase
         });
     }
 
-    /** @test @api */
+    /** @test */
     public function can_delete_a_block()
     {
         $block = FormBlock::factory()->create();
@@ -161,7 +161,7 @@ class BlockTest extends TestCase
         $this->assertNull($block->fresh());
     }
 
-    /** @test @api */
+    /** @test */
     public function cannot_delete_blocks_of_other_users()
     {
         $otherUser = User::factory()->create();
@@ -174,7 +174,7 @@ class BlockTest extends TestCase
         $this->assertNotNull($block->fresh());
     }
 
-    /** @test @api */
+    /** @test */
     public function can_set_a_title_for_the_results_view()
     {
         $block = FormBlock::factory()->create();
@@ -187,7 +187,7 @@ class BlockTest extends TestCase
         $this->assertEquals('This is a block title', $block->fresh()->title);
     }
 
-    /** @test @api */
+    /** @test */
     public function can_remove_a_title_for_the_results_view()
     {
         $block = FormBlock::factory()->create([

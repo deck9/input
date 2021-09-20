@@ -12,7 +12,7 @@ class FormTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test @web */
+    /** @test */
     public function can_create_a_new_form()
     {
         $user = User::factory()->create();
@@ -27,7 +27,7 @@ class FormTest extends TestCase
         $this->assertNotNull($form->name);
     }
 
-    /** @test @web */
+    /** @test */
     public function when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled()
     {
         $user = User::factory()->create();
@@ -38,7 +38,7 @@ class FormTest extends TestCase
         $this->assertFalse($form->has_data_privacy);
     }
 
-    /** @test @web */
+    /** @test */
     public function a_created_form_should_have_a_default_consent_snippet()
     {
         $user = User::factory()->create();
@@ -51,7 +51,7 @@ class FormTest extends TestCase
         $this->assertEquals(FormBlock::CONSENT, $block->type);
     }
 
-    /** @test @web */
+    /** @test */
     public function authenticated_user_can_view_the_edit_page_of_his_form()
     {
         $form = Form::factory()->create();
@@ -73,8 +73,8 @@ class FormTest extends TestCase
             );
     }
 
-    /** @test @api */
-    public function can_get_the_form_data()
+    /** @test */
+    public function can_retrieve_the_form_data()
     {
         $form = Form::factory()->create();
 
@@ -85,7 +85,7 @@ class FormTest extends TestCase
         $this->assertEquals($form->uuid, $response->json('uuid'));
     }
 
-    /** @test @api */
+    /** @test */
     public function can_update_the_form_data_with_api_call()
     {
         $form = Form::factory()->create();
@@ -167,7 +167,7 @@ class FormTest extends TestCase
         $this->assertEquals('You can close this window now', $form->eoc_text);
     }
 
-    /** @test @api */
+    /** @test */
     public function can_not_update_form_of_other_users()
     {
         $form = Form::factory()->create();
@@ -184,7 +184,7 @@ class FormTest extends TestCase
             ->assertStatus(404);
     }
 
-    /** @test @api */
+    /** @test */
     public function can_delete_a_form()
     {
         $form = Form::factory()->create();
@@ -196,7 +196,7 @@ class FormTest extends TestCase
         $this->assertNotNull($form->fresh()->deleted_at);
     }
 
-    /** @test @api */
+    /** @test */
     public function can_enable_or_disable_email_notifications_for_a_form()
     {
         $form = Form::factory()->create();
