@@ -127,6 +127,17 @@ class FormModelTest extends TestCase
     }
 
     /** @test */
+    public function return_dark_color_if_no_brand_color_is_set()
+    {
+        $form = Form::factory()->create([
+            'brand_color' => null,
+        ]);
+
+        $this->assertEquals('#000000', $form->brandColor());
+        $this->assertEquals('white', $form->contrastColor);
+    }
+
+    /** @test */
     public function array_presentation_contains_brand_and_contrast_color()
     {
         $form = Form::factory()->make([
@@ -151,7 +162,7 @@ class FormModelTest extends TestCase
             ]);
         }
 
-        $this->assertEquals(4, $form->totalSessions());
+        $this->assertEquals(4, $form->totalSessions);
     }
 
     /** @test */

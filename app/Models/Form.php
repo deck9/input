@@ -49,6 +49,11 @@ class Form extends Model
         'active_legal_notice_link',
         'privacy_contact_person',
         'privacy_contact_email',
+        'total_sessions',
+        'completed_sessions',
+        'completion_rate',
+        'is_published',
+        'initials',
     ];
 
     protected static function boot()
@@ -186,12 +191,12 @@ class Form extends Model
 
     public function brandColor()
     {
-        return $this->brand_color;
+        return $this->brand_color ? $this->brand_color : '#000000';
     }
 
     public function getContrastColorAttribute()
     {
-        return getContrastYIQ($this->brand_color);
+        return getContrastYIQ($this->brandColor());
     }
 
     public function getInitialsAttribute()
@@ -217,12 +222,14 @@ class Form extends Model
             ->count();
     }
 
-    public function totalSessions()
+    public function getTotalSessionsAttribute()
     {
-        return $this->sessions()->whereHas('responses')->count();
+        return $this->sessions()
+            ->whereHas('responses')
+            ->count();
     }
 
-    public function completedSessions()
+    public function getCompletedSessionsAttribute()
     {
         return $this->sessions()
             ->whereHas('responses')
@@ -231,7 +238,7 @@ class Form extends Model
             ->count();
     }
 
-    public function completionRate()
+    public function getCompletionRateAttribute()
     {
         try {
             return round(($this->completedSessions() / $this->totalSessions()) * 100, 2);

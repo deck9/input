@@ -1,15 +1,13 @@
 <?php
 
-use App\Http\Controllers\FormController;
-use App\Http\Controllers\MetaPreviewController;
-use App\Http\Controllers\ViewFormController;
-use Inertia\Inertia;
 use Illuminate\Routing\Router;
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\ViewFormController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MetaPreviewController;
 
 $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $router) {
-    $router->get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    $router->get('/', [DashboardController::class, 'show'])->name('dashboard');
 
     $router->get('forms/{uuid}/edit', [FormController::class, 'edit'])->name('forms.edit');
 });
