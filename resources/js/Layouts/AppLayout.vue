@@ -242,7 +242,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 import JetBanner from "@/Jetstream/Banner.vue";
@@ -275,9 +275,9 @@ export default defineComponent({
   },
 
   methods: {
-    switchToTeam(team) {
+    switchToTeam(team :any) {
       this.$inertia.put(
-        route("current-team.update"),
+        this.route("current-team.update"),
         {
           team_id: team.id,
         },
@@ -288,7 +288,7 @@ export default defineComponent({
     },
 
     logout() {
-      this.$inertia.post(route("logout"));
+      this.$inertia.post(this.route("logout"));
     },
   },
 });

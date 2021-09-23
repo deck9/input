@@ -1,3 +1,4 @@
+// @ts-nocheck
 const ESLintPlugin = require("eslint-webpack-plugin");
 const path = require("path");
 
