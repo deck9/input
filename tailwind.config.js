@@ -4,7 +4,7 @@ const colors = require("tailwindcss/colors");
 module.exports = {
     mode: "jit",
     purge: [
-        "./node_modules/@deck9/ui/dist/index.es.js",
+        "./node_modules/@deck9/ui/dist/src/index.es.js",
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./vendor/laravel/jetstream/**/*.blade.php",
         "./storage/framework/views/*.php",

@@ -3,9 +3,8 @@
     class="
       bg-white
       rounded
-      border border-grey-300
       flex
-      px-6
+      px-8
       py-4
       mb-2
       hover:border-blue-300
@@ -84,11 +83,14 @@
         <div class="text-grey-500 text-xs mt-1">Total Sessions</div>
       </div>
     </div>
-    <div class="w-24 flex items-center justify-end">View</div>
+    <div class="w-24 flex items-center justify-end">
+      <D9Icon name="chevron-right" />
+    </div>
   </a>
 </template>
 
 <script setup lang="ts">
+import {D9Icon} from "@deck9/ui";
 import type { FormModel } from "@/types/index";
 
 interface FormListItemProps {
