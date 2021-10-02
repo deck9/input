@@ -5,6 +5,9 @@
     </div>
 
     <div class="space-y-4">
+      <div class="bg-grey-200 p-4 rounded-lg" v-if="posts.length === 0">
+        <D9Skeleton class="text-grey-300" footer />
+      </div>
       <UpdatePost v-for="post in posts" v-bind="{ post }" />
     </div>
   </div>
@@ -16,11 +19,14 @@ import { PostOrPage } from '@tryghost/content-api'
 import UpdatePost from "@/components/Dashboard/UpdatePost.vue"
 import { ref, onMounted } from "vue"
 import api from "@/utils/content-api"
+import { D9Skeleton } from "@deck9/ui"
 
 const posts = ref<PostOrPage[]>([])
 
 onMounted(async () => {
   const response = await api.posts.browse({ limit: 3, filter: 'tag:survy-dashboard' })
-  posts.value = response
+  setTimeout(() => {
+    posts.value = response
+  }, 300)
 })
 </script>
