@@ -11,12 +11,12 @@
 
           <div
             v-if="!forms.length || forms.length === 0"
-            class="bg-grey-100 px-16 py-10 rounded w-full text-center max-w-2xl mx-auto"
+            class="bg-white px-16 py-16 rounded w-full text-center"
           >
             <h2
-              class="text-center font-heading font-black text-3xl leading-none text-grey-900 pb-8"
-            >Create your first survey</h2>
-            <p class="leading-loose text-grey-900 text-base">
+              class="text-center font-heading font-black text-2xl leading-none text-grey-900 mb-4"
+            >Start by creating a form</h2>
+            <p class="text-grey-600 text-sm">
               You haven't created a survey yet. Click on "New survey" in the top
               right corner to begin with a new survey. To get you started really
               quickly you can watch the following introduction for the BotReach
