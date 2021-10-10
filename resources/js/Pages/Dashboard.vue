@@ -6,7 +6,7 @@
         <div class="col-span-8">
           <div class="flex justify-between items-center relative mb-6">
             <h2 class="text-xl leading-8 text-grey-900 font-bold">Your Forms</h2>
-            <D9Button label="Create form" icon="user" iconPosition="right" />
+            <CreateFormButton />
           </div>
 
           <div
@@ -37,8 +37,8 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import FormListItem from "@/components/Dashboard/FormListItem.vue";
 import UpdatesContainer from "@/components/Dashboard/UpdatesContainer.vue"
-import { D9Button } from "@deck9/ui";
-import { FormModel } from "@/types";
+import CreateFormButton from "@/components/Dashboard/CreateFormButton.vue"
+import { FormModel } from "@/types/app";
 import { withDefaults } from "vue";
 
 interface DashboardProps {

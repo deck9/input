@@ -21,7 +21,7 @@
         "@inertiajs/progress": "^0.2.6",
         "@tailwindcss/forms": "^0.3.4",
         "@tailwindcss/typography": "^0.4.1",
-        "@types/node": "^16.10.2",
+        "@types/node": "^16.10.3",
         "@types/webpack-env": "^1.16.2",
         "@vue/compiler-sfc": "^3.2.19",
         "axios": "^0.22.0",

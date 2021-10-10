@@ -1,24 +1,9 @@
 import { App, createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
-import { RouteParamsWithQueryOverload, Config, Router } from "ziggy-js";
-
-declare function route(
-    name?: undefined,
-    params?: RouteParamsWithQueryOverload,
-    absolute?: boolean,
-    config?: Config,
-): Router;
-
-declare function route(
-    name: string,
-    params?: RouteParamsWithQueryOverload,
-    absolute?: boolean,
-    config?: Config,
-): string;
 
 const appName =
-    window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
+    window.document.getElementsByTagName("title")[0]?.innerText || "Survy";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -27,7 +12,7 @@ createInertiaApp({
         const vueApp = createApp({ render: () => h(app, props) })
 
         vueApp.use(plugin)
-            .mixin({ methods: { route } })
+            .mixin({ methods: { route: window.route } })
             .mount(el);
 
         return vueApp as App

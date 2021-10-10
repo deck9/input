@@ -1,21 +1,27 @@
-import { InertiaApp } from "@inertiajs/inertia-vue3";
 import { RouteParamsWithQueryOverload, Config, Router } from "ziggy-js";
 
-declare function route(
+export declare function route(
     name?: undefined,
     params?: RouteParamsWithQueryOverload,
     absolute?: boolean,
     config?: Config,
 ): Router;
 
-declare function route(
+export declare function route(
     name: string,
     params?: RouteParamsWithQueryOverload,
     absolute?: boolean,
     config?: Config,
 ): string;
 
-interface FormModel {
+declare global {
+    interface Window {
+        route: typeof route
+    }
+}
+
+export interface FormModel {
+    id: number,
     name: string
     uuid: string
     total_sessions: number
