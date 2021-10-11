@@ -61,7 +61,7 @@ class BlockTest extends TestCase
             ->json('get', route('api.blocks.index', $form->id));
 
         $response->assertStatus(200);
-        $this->assertCount(5, $response->json('blocks'));
+        $this->assertCount(5, $response->json());
     }
 
     /** @test */
@@ -82,7 +82,7 @@ class BlockTest extends TestCase
             ->json('get', route('api.blocks.index', $form->id));
 
         $response->assertStatus(200);
-        $this->assertCount(6, $response->json('blocks'));
+        $this->assertCount(6, $response->json());
     }
 
     /** @test */
