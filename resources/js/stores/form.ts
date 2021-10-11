@@ -1,17 +1,22 @@
-import { BlockModel, FormModel } from "@/types/app";
 import { defineStore } from "pinia";
 
 declare interface FormStore {
-    form?: FormModel
-    blocks?: BlockModel[]
+    form: FormModel | null
+    blocks: FormBlockModel[] | null
 }
-
 
 export const useForm = defineStore('form', {
 
     state: (): FormStore => {
         return {
-            form: undefined
+            form: null,
+            blocks: null,
+        }
+    },
+
+    getters: {
+        hasBlocks: (state): boolean => {
+            return state.blocks && state.blocks.length ? true : false
         }
     }
 });

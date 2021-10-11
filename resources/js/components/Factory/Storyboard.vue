@@ -1,12 +1,23 @@
 <template>
-  <div>{{ hasNoBlocks }}</div>
+  <div>{{ store.hasBlocks }}</div>
 </template>
 
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { callGetFormBlocks } from '@/api/blocks';
+import { onMounted } from '@vue/runtime-core';
+import { useForm } from '@/stores';
 
-const hasNoBlocks = computed<boolean>(() => {
-  return false;
+const store = useForm()
+
+
+onMounted(async () => {
+  if (store.form) {
+    let response = await callGetFormBlocks(store.form.id)
+
+    store.$patch({
+      blocks: response.data
+    })
+  }
 })
 </script>

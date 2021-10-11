@@ -10,7 +10,6 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Storyboard from '@/components/Factory/Storyboard.vue';
 import { useForm } from '@/stores';
-import { FormModel } from '@/types/app';
 
 const props = defineProps<{
   form: FormModel

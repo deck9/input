@@ -38,14 +38,11 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import FormListItem from "@/components/Dashboard/FormListItem.vue";
 import UpdatesContainer from "@/components/Dashboard/UpdatesContainer.vue"
 import CreateFormButton from "@/components/Dashboard/CreateFormButton.vue"
-import { FormModel } from "@/types/app";
 import { withDefaults } from "vue";
 
-interface DashboardProps {
+const props = withDefaults(defineProps<{
   forms: Array<FormModel>;
-}
-
-const props = withDefaults(defineProps<DashboardProps>(), {
+}>(), {
   forms: () => [],
 });
 </script>

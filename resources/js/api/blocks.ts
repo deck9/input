@@ -1,10 +1,10 @@
 import { AxiosResponse } from "axios";
 import handler from "./handler"
 
-export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
+export function callGetFormBlocks(id: number): Promise<AxiosResponse<FormBlockModel[]>> {
     return new Promise(async (resolve, reject) => {
         try {
-            let response = await handler.post(window.route('api.forms.create'))
+            let response = await handler.get(window.route('api.blocks.index', { form: id }))
             resolve(response)
         } catch (error) {
             reject(error)

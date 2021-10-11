@@ -19,20 +19,3 @@ declare global {
         route: typeof route
     }
 }
-
-export interface FormModel {
-    id: number,
-    name: string
-    uuid: string
-    total_sessions: number
-    completion_rate: number
-    is_published: boolean
-    initials: string
-    contrast_color: string
-    avatar: string
-    brand_color: string
-}
-
-export interface BlockModel {
-    id: number,
-}

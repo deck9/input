@@ -18,6 +18,10 @@
         "resources/js/*"
       ]
     },
+    "typeRoots": [
+        "node_modules/@types",
+        "resources/js/types"
+    ],
     "lib": [
       "esnext",
       "dom",

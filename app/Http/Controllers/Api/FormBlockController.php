@@ -29,9 +29,7 @@ class FormBlockController extends Controller
             $block->interactions->each->setAppends(['responses_count']);
         });
 
-        return response()->json([
-            'blocks' => $blocks->values()->toArray()
-        ]);
+        return response()->json($blocks->values()->toArray());
     }
 
     public function create(Request $request, Form $form)

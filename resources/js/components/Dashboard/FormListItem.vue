@@ -51,11 +51,8 @@
 
 <script setup lang="ts">
 import { D9Icon } from "@deck9/ui";
-import type { FormModel } from "@/types/app";
 
-interface FormListItemProps {
+const props = defineProps<{
   form: FormModel;
-}
-
-const props = defineProps<FormListItemProps>();
+}>();
 </script>
