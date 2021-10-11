@@ -32,3 +32,7 @@ export interface FormModel {
     avatar: string
     brand_color: string
 }
+
+export interface BlockModel {
+    id: number,
+}

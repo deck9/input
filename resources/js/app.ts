@@ -1,6 +1,7 @@
-import { App, createApp, h } from "vue";
+import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
+import { createPinia } from 'pinia'
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Survy";
@@ -12,10 +13,9 @@ createInertiaApp({
         const vueApp = createApp({ render: () => h(app, props) })
 
         vueApp.use(plugin)
+            .use(createPinia())
             .mixin({ methods: { route: window.route } })
             .mount(el);
-
-        return vueApp as App
     },
 });
 
