@@ -1,6 +1,6 @@
 <template>
   <app-layout title="Dashboard">
-    <div class="py-12">
+    <div class="py-12 w-full">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-x-10">
         <UpdatesContainer class="col-span-4" />
         <div class="col-span-8">

@@ -5,7 +5,7 @@ export function callGetFormBlocks(id: number): Promise<AxiosResponse<FormBlockMo
     return new Promise(async (resolve, reject) => {
         try {
             let response = await handler.get(window.route('api.blocks.index', { form: id }))
-            resolve(response)
+            resolve(response as AxiosResponse<FormBlockModel[]>)
         } catch (error) {
             reject(error)
         }

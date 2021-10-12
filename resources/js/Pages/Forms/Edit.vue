@@ -1,7 +1,7 @@
 <template>
   <app-layout title="Edit Form">
-    <div class="py-12">
-      <Storyboard />
+    <div class="grid grid-cols-12 w-full">
+      <Storyboard class="col-span-4" />
     </div>
   </app-layout>
 </template>

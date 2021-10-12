@@ -1,4 +1,8 @@
 interface FormModel {
+    [key: string]: any
+}
+
+interface FormModel {
     id: number
     uuid: string
     name: string

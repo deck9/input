@@ -24,6 +24,15 @@ module.exports = {
             colors: {
                 grey: colors.blueGray,
             },
+            keyframes: {
+                spinner: {
+                    "0%, 70%, 100%": { transform: "scale3D(1,1,1);" },
+                    "35%": { transform: "scale3D(0,0,1);" },
+                },
+            },
+            animation: {
+                spinner: "spinner 1.3s ease-in-out infinite",
+            },
         },
     },
 
