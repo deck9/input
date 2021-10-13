@@ -168,7 +168,7 @@
       </nav>
 
       <!-- Page Content -->
-      <main class="flex flex-grow w-full">
+      <main class="flex flex-grow justify-center w-full">
         <slot></slot>
       </main>
     </div>

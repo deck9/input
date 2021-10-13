@@ -50,13 +50,13 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     // Single Interaction Responses
     $router->get('interactions/{interaction}/responses', [InteractionResultsController::class, 'show'])->name('api.interactions.results.show');
 
-    // Snippet API Routes
+    // Block API Routes
     $router->get('forms/{form}/blocks', [FormBlockController::class, 'index'])->name('api.blocks.index');
     $router->post('forms/{form}/blocks', [FormBlockController::class, 'create'])->name('api.blocks.create');
     $router->post('forms/blocks/{block}', [FormBlockController::class, 'update'])->name('api.blocks.update');
     $router->delete('forms/blocks/{block}', [FormBlockController::class, 'delete'])->name('api.blocks.delete');
 
-    // Snippet Sequence API Routes
+    // Block Sequence API Routes
     $router->post('forms/{form}/blocks/sequence', [FormBlockSequenceController::class, 'update'])->name('api.blocks.sequence.update');
 
     // Interaction API Routes

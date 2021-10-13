@@ -17,7 +17,15 @@
       </div>
     </div>
 
-    <div v-if="isLoaded" class="text-center"></div>
+    <div v-if="isLoaded" class="text-center py-3">
+      <D9Button
+        @click="store.createFormBlock()"
+        label="Add block"
+        type="dark"
+        icon="plus"
+        icon-position="right"
+      />
+    </div>
   </div>
 </template>
 
@@ -26,7 +34,7 @@
 import { callGetFormBlocks } from '@/api/blocks';
 import { onMounted, ref } from 'vue';
 import { useForm } from '@/stores';
-import { D9Spinner } from "@deck9/ui";
+import { D9Spinner, D9Button } from "@deck9/ui";
 import PrivacyToggle from './PrivacyToggle.vue';
 
 const isLoaded = ref(false)

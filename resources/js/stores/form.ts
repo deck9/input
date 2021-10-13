@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import {callUpdateForm} from "@/api/forms"
+import { callUpdateForm } from "@/api/forms"
+import { callCreateFormBlock } from "@/api/blocks"
 
 declare interface FormStore {
     form: FormModel | null
@@ -36,7 +37,23 @@ export const useForm = defineStore('form', {
                 }
             })
 
-            let response = await callUpdateForm(this.form)
+            await callUpdateForm(this.form)
+        },
+
+        async createFormBlock() {
+            if (!this.form) {
+                return
+            }
+
+            try {
+                let response = await callCreateFormBlock(this.form.id)
+
+                if (response.status === 201 && this.blocks) {
+                    this.blocks.push(response.data)
+                }
+            } catch (error) {
+                console.warn(error)
+            }
         }
     }
 });
