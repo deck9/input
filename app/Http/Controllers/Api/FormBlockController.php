@@ -45,7 +45,7 @@ class FormBlockController extends Controller
             'sequence' => $sequence
         ]);
 
-        return response()->json($block, 201);
+        return response()->json($block->fresh(), 201);
     }
 
     public function update(FormBlockUpdateRequest $request, FormBlock $block)
