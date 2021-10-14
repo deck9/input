@@ -1,0 +1,36 @@
+html {
+    --scrollbar-width: theme('spacing.3');
+    --scrollbar-bg: theme('colors.grey.50');
+    --thumb-bg: theme('colors.grey.300');
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    opacity: 0;
+}
+
+@variants hover {
+    .scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: var(--scrollbar-width);
+        opacity: 1;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background-color: var(--scrollbar-bg);
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        border: 3px solid var(--scrollbar-bg);
+        background-color: var(--thumb-bg);
+    }
+
+    .scrollbar::-webkit-scrollbar-corner {
+        @apply h-8;
+    }
+}

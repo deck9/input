@@ -6,3 +6,10 @@ declare module "*.vue" {
     const component: DefineComponent<{}, {}, any>;
     export default component;
 }
+
+declare module 'vue3-smooth-dnd' {
+    import { DefineComponent } from "vue";
+
+    export const Container: DefineComponent<{}, {}, any>;
+    export const Draggable: DefineComponent<{}, {}, any>;
+}

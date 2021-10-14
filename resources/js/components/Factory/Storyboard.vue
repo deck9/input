@@ -6,7 +6,13 @@
       <D9Spinner class="text-blue-300 opacity-50" />
     </div>
 
-    <div v-else-if="store.hasBlocks" class="overflow-y-auto pb-32 scrollbar-hidden hover:scrollbar"></div>
+    <div v-else-if="store.hasBlocks" class="relative flex-grow">
+      <div
+        class="absolute pr-1 -mr-4 inset-0 scrollbar-hidden hover:scrollbar overflow-y-auto space-y-3"
+      >
+        <BlockContainer />
+      </div>
+    </div>
 
     <div class="flex flex-grow items-center" v-else>
       <div
@@ -31,26 +37,17 @@
 
 
 <script setup lang="ts">
-import { callGetFormBlocks } from '@/api/blocks';
 import { onMounted, ref } from 'vue';
 import { useForm } from '@/stores';
 import { D9Spinner, D9Button } from "@deck9/ui";
 import PrivacyToggle from './PrivacyToggle.vue';
+import BlockContainer from './BlockContainer.vue';
 
 const isLoaded = ref(false)
 const store = useForm()
 
 onMounted(async () => {
-  if (store.form) {
-    let response = await callGetFormBlocks(store.form.id)
-
-    setTimeout(() => {
-      store.$patch({
-        blocks: response.data
-      })
-
-      isLoaded.value = true;
-    }, 1)
-  }
+  await store.getBlocks()
+  isLoaded.value = true
 })
 </script>

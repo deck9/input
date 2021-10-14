@@ -1,0 +1,7 @@
+.smooth-dnd-ghost>div {
+    background-color: theme("colors.blue.100") !important;
+}
+
+.smooth-dnd-container>.smooth-dnd-draggable-wrapper {
+    overflow: visible !important;
+}

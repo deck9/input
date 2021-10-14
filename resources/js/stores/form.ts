@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { callUpdateForm } from "@/api/forms"
-import { callCreateFormBlock } from "@/api/blocks"
+import { callGetFormBlocks, callCreateFormBlock, callUpdateBlockSequence } from "@/api/blocks"
 
 declare interface FormStore {
     form: FormModel | null
@@ -23,6 +23,14 @@ export const useForm = defineStore('form', {
     },
 
     actions: {
+        async getBlocks() {
+            if (!this.form) { return; }
+
+            let response = await callGetFormBlocks(this.form.id)
+
+            this.blocks = response.data
+        },
+
         async updateForm(newValues: Record<string, unknown>) {
             if (!this.form) {
                 return
@@ -54,6 +62,32 @@ export const useForm = defineStore('form', {
             } catch (error) {
                 console.warn(error)
             }
-        }
+        },
+
+        async changeBlockSequence(from: number, to: number) {
+            if (!this.blocks || !this.form) {
+                return;
+            }
+
+            // move item to target position
+            this.blocks.splice(to, 0, this.blocks.splice(from, 1)[0])
+
+            // set new sequence numbers to blocks
+            this.blocks = this.blocks.map((item, key) => {
+                return { ...item, sequence: key }
+            })
+
+            // generate an array of ids to update sequence on server
+            let saveSequenceRequestData: Array<number> = this.blocks.map((item) => {
+                return item.id;
+            })
+
+            try {
+                await callUpdateBlockSequence(this.form.id, saveSequenceRequestData)
+            } catch (error) {
+                console.warn(error)
+            }
+        },
+
     }
 });

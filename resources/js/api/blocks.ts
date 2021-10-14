@@ -24,3 +24,17 @@ export function callCreateFormBlock(id: number): Promise<AxiosResponse<FormBlock
         }
     });
 }
+
+export function callUpdateBlockSequence(id: number, sequence: number[]): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let response = await handler.post(window.route('api.blocks.sequence.update', { form: id }), {
+                sequence
+            })
+
+            resolve(response as AxiosResponse)
+        } catch (error) {
+            reject(error)
+        }
+    });
+}

@@ -3,4 +3,10 @@
 /* TAILWIND */
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
+
+/* CUSTOM */
+@import "./scrollbar.css";
+@import "./smooth-dnd.css";
+
+/* TAILWIND */
 @import 'tailwindcss/utilities';

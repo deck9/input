@@ -20,8 +20,8 @@ const store = useForm()
 
 const enabled = ref(store.form?.has_data_privacy ? true : false)
 
-watch(enabled, (change) => {
-  store.updateForm({ 'has_data_privacy': change })
+watch(enabled, async (change) => {
+  await store.updateForm({ 'has_data_privacy': change })
+  await store.getBlocks()
 })
-
 </script>
