@@ -38,16 +38,22 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useForm } from '@/stores';
+import { useForm, useWorkbench } from '@/stores';
 import { D9Spinner, D9Button } from "@deck9/ui";
 import PrivacyToggle from './PrivacyToggle.vue';
 import BlockContainer from './BlockContainer.vue';
 
 const isLoaded = ref(false)
 const store = useForm()
+const workbench = useWorkbench()
 
 onMounted(async () => {
   await store.getBlocks()
+
+  if (!workbench.block && store.hasBlocks && store.blocks) {
+    workbench.putOnWorkbench(store.blocks[0])
+  }
+
   isLoaded.value = true
 })
 </script>

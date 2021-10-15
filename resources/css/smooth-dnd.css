@@ -1,5 +1,9 @@
-.smooth-dnd-ghost>div {
-    background-color: theme("colors.blue.100") !important;
+.smooth-dnd-ghost>button {
+    background-color: theme("colors.blue.50") !important;
+}
+
+.smooth-dnd-ghost .treeline {
+    opacity: 0;
 }
 
 .smooth-dnd-container>.smooth-dnd-draggable-wrapper {

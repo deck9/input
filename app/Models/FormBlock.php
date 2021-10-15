@@ -15,7 +15,7 @@ class FormBlock extends Model
 {
     use HasFactory;
 
-    public const MESSAGE = 'none';
+    public const MESSAGE = 'message';
     public const CLICK = 'click';
     public const INPUT = 'input';
     public const MULTIPLE = 'multiple';

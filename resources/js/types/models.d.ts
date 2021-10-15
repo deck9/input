@@ -48,7 +48,7 @@ interface FormModel {
 interface FormBlockModel {
     id: number,
     uuid: string
-    type: string
+    type: 'message' | 'consent' | 'input' | 'multiple' | 'click'
     message: string | null
     title: string | null
     options: string | null
