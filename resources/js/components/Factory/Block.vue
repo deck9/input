@@ -1,9 +1,20 @@
 <template>
   <button
-    class="relative block w-full text-left cursor-pointer px-6 py-8 group"
+    class="relative block w-full text-left cursor-pointer px-6 py-8 group overflow-visible"
     @click="workbench.putOnWorkbench(block)"
   >
     <div class="treeline w-1 bg-grey-200 absolute top-12 left-[42px] -bottom-8"></div>
+
+    <div class="absolute right-3 top-8 z-10 opacity-0 group-hover:opacity-100">
+      <D9Menu class="text-grey-500" position="right" :use-portal="true">
+        <div class="flex w-full px-4 py-3 text-xs space-between">
+          <div class="w-full">ID</div>
+          <div class="font-bold">{{ block.uuid }}</div>
+        </div>
+        <D9MenuLink as="button" class="block w-full text-left" @click="copyId" label="Copy ID" />
+        <D9MenuLink as="button" class="block w-full text-left" @click="deleteBlock" label="Delete" />
+      </D9Menu>
+    </div>
 
     <div class="flex items-start relative">
       <div
@@ -25,6 +36,8 @@ import { computed } from "vue"
 import { romanize } from "@/utils"
 import ConsentBlockMessage from "./ConsentBlockMessage.vue"
 import { useWorkbench } from "@/stores"
+import { D9Menu, D9MenuLink } from "@deck9/ui"
+import copy from "copy-text-to-clipboard";
 
 const workbench = useWorkbench()
 
@@ -43,4 +56,12 @@ const romanSequence = computed(() => {
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id ? true : false
 })
+
+const deleteBlock = () => {
+  console.log('dleete')
+}
+
+const copyId = () => {
+  copy(props.block.uuid);
+}
 </script>
