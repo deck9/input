@@ -25,6 +25,18 @@ export function callCreateFormBlock(id: number): Promise<AxiosResponse<FormBlock
     });
 }
 
+export function callDeleteFormBlock(id: number): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let response = await handler.delete(window.route('api.blocks.delete', { block: id }))
+
+            resolve(response as AxiosResponse)
+        } catch (error) {
+            reject(error)
+        }
+    });
+}
+
 export function callUpdateBlockSequence(id: number, sequence: number[]): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {

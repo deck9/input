@@ -11,8 +11,18 @@
           <div class="w-full">ID</div>
           <div class="font-bold">{{ block.uuid }}</div>
         </div>
-        <D9MenuLink as="button" class="block w-full text-left" @click="copyId" label="Copy ID" />
-        <D9MenuLink as="button" class="block w-full text-left" @click="deleteBlock" label="Delete" />
+        <D9MenuLink
+          as="button"
+          class="block w-full text-left"
+          @click.stop="copyId"
+          label="Copy ID"
+        />
+        <D9MenuLink
+          as="button"
+          class="block w-full text-left"
+          @click.stop="deleteBlock"
+          label="Delete"
+        />
       </D9Menu>
     </div>
 
@@ -35,19 +45,16 @@
 import { computed } from "vue"
 import { romanize } from "@/utils"
 import ConsentBlockMessage from "./ConsentBlockMessage.vue"
-import { useWorkbench } from "@/stores"
+import { useWorkbench, useForm } from "@/stores"
 import { D9Menu, D9MenuLink } from "@deck9/ui"
 import copy from "copy-text-to-clipboard";
 
 const workbench = useWorkbench()
+const store = useForm()
 
 const props = defineProps<{
   block: FormBlockModel
 }>()
-
-const editBlock = (): void => {
-  console.info('please edit block', props.block.uuid)
-}
 
 const romanSequence = computed(() => {
   return romanize(props.block.sequence + 1)
@@ -57,8 +64,20 @@ const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id ? true : false
 })
 
+const editBlock = (): void => {
+  console.info('please edit block', props.block.uuid)
+}
+
 const deleteBlock = () => {
-  console.log('dleete')
+  let result = window.confirm("Do you really want to delete this snippet?");
+
+  if (result) {
+    store.deleteFormBlock(props.block)
+
+    if (workbench.block?.id === props.block.id) {
+      workbench.clearWorkbench()
+    }
+  }
 }
 
 const copyId = () => {

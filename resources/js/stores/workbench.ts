@@ -13,6 +13,10 @@ export const useWorkbench = defineStore('workbench', {
 
     actions: {
 
+        clearWorkbench() {
+            this.block = null
+        },
+
         putOnWorkbench(block: FormBlockModel) {
             this.block = block
         },
