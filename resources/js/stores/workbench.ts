@@ -1,6 +1,7 @@
 import { callUpdateFormBlock } from "@/api/blocks";
 import { defineStore } from "pinia";
 import pick from "lodash/pick"
+import { DebouncedFunc } from "lodash";
 
 interface WorkbenchStore {
     block: FormBlockModel | null
@@ -20,6 +21,10 @@ export const useWorkbench = defineStore('workbench', {
         },
 
         putOnWorkbench(block: FormBlockModel) {
+            // flush save function before changing page
+            (this.saveBlock as DebouncedFunc<any>).flush()
+
+            // change block content
             this.block = block
         },
 
@@ -33,7 +38,9 @@ export const useWorkbench = defineStore('workbench', {
                 }
             })
 
-            if (this.block) this.saveBlock(this.block)
+            if (this.block) {
+                this.saveBlock(this.block)
+            }
         },
 
         async saveBlock(block: FormBlockModel) {
