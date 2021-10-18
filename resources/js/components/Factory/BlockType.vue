@@ -1,16 +1,21 @@
 <template>
   <div>
-    <InteractionTypeButton
-      v-for="type in types"
-      :key="type.label"
-      class="mr-1 mb-1"
-      v-bind="{ label: type.label, value: type.value, current: workbench.block?.type }"
-      @onInput="updateInteractionType"
-    />
+    <D9Label class="mb-2" id="interactions" label="Type" />
+
+    <div>
+      <InteractionTypeButton
+        v-for="type in types"
+        :key="type.label"
+        class="mr-1 mb-1"
+        v-bind="{ label: type.label, value: type.value, current: workbench.block?.type }"
+        @onInput="updateInteractionType"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { D9Label } from '@deck9/ui';
 import { useWorkbench } from '@/stores';
 import { ref, Ref } from 'vue';
 import InteractionTypeButton from './InteractionTypeButton.vue';

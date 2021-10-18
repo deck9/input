@@ -2,14 +2,10 @@
   <div v-if="workbench.block" class="max-w-xl mx-auto px-4 py-4">
     <BlockMetaHeader :block="workbench.block" />
 
+    <BlockType class="my-16" />
     <BlockMessage class="my-16" />
 
-    <div class="my-16">
-      <D9Label class="mb-2" id="interactions" label="Type" />
-      <BlockType />
-    </div>
-
-    <div class="my-16">
+    <div v-if="workbench.needsInteractionSetup" class="my-16">
       <D9Label class="mb-2" id="interactions" label="Interactions" />
     </div>
   </div>

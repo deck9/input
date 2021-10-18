@@ -1,5 +1,5 @@
 <template>
-  <div class="my-16">
+  <div>
     <D9Label class="mb-2" label="Your Message" />
     <div>
       <textarea
