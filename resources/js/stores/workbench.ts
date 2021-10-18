@@ -17,7 +17,6 @@ export const useWorkbench = defineStore('workbench', {
     getters: {
         needsInteractionSetup: (state): boolean => {
             const typesWithSetup = ["click", "multiple", "input"];
-            console.log('test')
 
             return state.block ? typesWithSetup.includes(state.block.type) : false;
         }
