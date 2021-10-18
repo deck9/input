@@ -1,7 +1,7 @@
 <template>
   <div class="my-16">
     <D9Label class="mb-2" label="Your Message" />
-    <div class="-mx-4">
+    <div>
       <textarea
         ref="messageInput"
         rows="1"

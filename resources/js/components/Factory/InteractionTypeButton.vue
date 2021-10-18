@@ -1,6 +1,6 @@
 <template>
   <button
-    class="bg-grey-50 border-2 cursor-pointer flex-col inline-flex items-center justify-center mr-1 px-2 py-4 relative rounded transition-sm w-32"
+    class="bg-white border-2 cursor-pointer flex-col inline-flex items-center justify-center mr-1 px-2 py-4 relative rounded transition-sm w-32"
     :class="
       isActive
         ? 'border-blue-400 text-blue-500'
