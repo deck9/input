@@ -1,6 +1,6 @@
 <template>
   <button
-    class="bg-grey-50 border-2 cursor-pointer flex-col inline-flex items-center justify-center mr-1 px-2 py-4 relative rounded transition-sm w-24"
+    class="bg-grey-50 border-2 cursor-pointer flex-col inline-flex items-center justify-center mr-1 px-2 py-4 relative rounded transition-sm w-32"
     :class="
       isActive
         ? 'border-blue-400 text-blue-500'
@@ -10,6 +10,8 @@
     @click="emitInput"
   >
     <InteractionTypeIcon class="text-xl fill-current" :type="value" />
+
+    <span class="mt-2 text-xs truncate">{{ label }}</span>
 
     <div v-if="isActive" class="absolute top-0 right-0 px-2 py-1 leading-none">
       <D9Icon name="play-circle" class="icon text-blue-400" />
