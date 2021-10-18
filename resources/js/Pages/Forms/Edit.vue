@@ -3,7 +3,7 @@
     <div class="grid grid-cols-12 w-full">
       <Storyboard class="col-span-6 lg:col-span-5 xl:col-span-4" />
       <div class="col-span-6 lg:col-span-7 xl:col-span-8">
-        <pre>{{ workbench.block }}</pre>
+        <Workbench v-if="workbench.block" :key="workbench.block.id" />
       </div>
     </div>
   </app-layout>
@@ -12,6 +12,7 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Storyboard from '@/components/Factory/Storyboard.vue';
+import Workbench from '@/components/Factory/Workbench.vue';
 import { useForm, useWorkbench } from '@/stores';
 
 const props = defineProps<{

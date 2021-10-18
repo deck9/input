@@ -44,6 +44,9 @@ interface FormModel {
     updated_at: string | null
     deleted_at: string | null
 }
+interface FormBlockModel {
+    [key: string]: any
+}
 
 interface FormBlockModel {
     id: number,

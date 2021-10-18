@@ -33,8 +33,8 @@ class FormBlockUpdateRequest extends FormRequest
     {
         return [
             'message' => 'string',
-            'webhook_url' => 'url',
-            'options' => 'array',
+            'webhook_url' => 'url|nullable',
+            'options' => 'array|nullable',
             'title' => 'string|nullable',
             'type' => [function ($attribute, $value, $fail) {
                 if (!in_array($value, self::VALID_TYPES)) {

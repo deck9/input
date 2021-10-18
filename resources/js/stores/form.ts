@@ -31,7 +31,7 @@ export const useForm = defineStore('form', {
             this.blocks = response.data
         },
 
-        async updateForm(newValues: Record<string, unknown>) {
+        async updateForm(newValues: Partial<FormModel>) {
             if (!this.form) {
                 return
             }

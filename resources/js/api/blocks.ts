@@ -25,6 +25,20 @@ export function callCreateFormBlock(id: number): Promise<AxiosResponse<FormBlock
     });
 }
 
+export function callUpdateFormBlock(block: FormBlockModel): Promise<AxiosResponse<FormBlockModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let response = await handler.post(window.route('api.blocks.update', { block: block.id }),
+                block
+            )
+
+            resolve(response as AxiosResponse<FormBlockModel>)
+        } catch (error) {
+            reject(error)
+        }
+    });
+}
+
 export function callDeleteFormBlock(id: number): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
