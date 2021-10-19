@@ -11,8 +11,8 @@
 
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Storyboard from '@/components/Factory/Storyboard.vue';
-import Workbench from '@/components/Factory/Workbench.vue';
+import Storyboard from '@/components/Factory/Sidebar/Storyboard.vue';
+import Workbench from '@/components/Factory/Main/Workbench.vue';
 import { useForm, useWorkbench } from '@/stores';
 
 const props = defineProps<{

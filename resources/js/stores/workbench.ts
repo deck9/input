@@ -1,6 +1,5 @@
 import { callUpdateFormBlock } from "@/api/blocks";
 import { defineStore } from "pinia";
-import pick from "lodash/pick"
 import { DebouncedFunc } from "lodash";
 
 interface WorkbenchStore {

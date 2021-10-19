@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { D9Icon } from '@deck9/ui';
-import InteractionTypeIcon from "./InteractionTypeIcon.vue"
+import InteractionTypeIcon from "../Shared/InteractionTypeIcon.vue"
 
 const props = defineProps<{
   value: string,
@@ -32,7 +32,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (e: "onInput", value: string): void;
+  (e: "onInput", value: FormBlockModel["type"]): void;
 }>()
 
 const isActive = computed(() => {
@@ -40,6 +40,6 @@ const isActive = computed(() => {
 })
 
 const emitInput = () => {
-  emits('onInput', props.value)
+  emits('onInput', props.value as FormBlockModel["type"])
 }
 </script>
