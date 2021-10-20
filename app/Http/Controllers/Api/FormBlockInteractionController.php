@@ -34,11 +34,11 @@ class FormBlockInteractionController extends Controller
                 break;
             case FormBlockInteraction::TYPE_INPUT:
                 $request->validate([
-                    'validation' => 'nullable|in:email,numeric,url',
+                    'has_validation' => 'nullable|in:email,numeric,url',
                 ]);
 
-                if ($request->has('validation')) {
-                    $interaction->has_validation = $request->validation;
+                if ($request->has('has_validation')) {
+                    $interaction->has_validation = $request->has_validation;
                 }
                 break;
         }

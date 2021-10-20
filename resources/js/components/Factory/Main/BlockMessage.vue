@@ -1,6 +1,6 @@
 <template>
   <div>
-    <D9Label class="mb-2" label="Your Message" />
+    <h2 class="mb-2 text-base font-bold">Your Message</h2>
     <div>
       <textarea
         ref="messageInput"
@@ -14,7 +14,6 @@
 
 
 <script setup lang="ts">
-import { D9Label } from '@deck9/ui';
 import autosize from "autosize";
 import { Ref, onMounted, ref } from 'vue';
 import { useWorkbench } from "@/stores";

@@ -1,7 +1,6 @@
 <template>
   <div>
-    <D9Label class="mb-2" id="interactions" label="Type" />
-
+    <h2 class="mb-2 text-base font-bold">Type</h2>
     <div>
       <InteractionTypeButton
         v-for="type in types"
@@ -15,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { D9Label } from '@deck9/ui';
 import { useWorkbench } from '@/stores';
 import { ref, Ref } from 'vue';
 import InteractionTypeButton from './InteractionTypeButton.vue';

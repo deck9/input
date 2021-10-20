@@ -1,8 +1,12 @@
-interface FormModel {
+interface BaseModel {
     [key: string]: any
+    id: number
+    uuid: string
+    created_at: string | null
+    updated_at: string | null
 }
 
-interface FormModel {
+interface FormModel extends BaseModel {
     id: number
     uuid: string
     name: string
@@ -40,17 +44,10 @@ interface FormModel {
     is_published: boolean
     initials: string | null
     published_at: string | null
-    created_at: string | null
-    updated_at: string | null
     deleted_at: string | null
 }
-interface FormBlockModel {
-    [key: string]: any
-}
 
-interface FormBlockModel {
-    id: number,
-    uuid: string
+interface FormBlockModel extends BaseModel {
     type: 'message' | 'consent' | 'input' | 'multiple' | 'click'
     message: string | null
     title: string | null
@@ -60,6 +57,14 @@ interface FormBlockModel {
     webhook_url: string
     sequence: number
     form_id: number
-    created_at: string | null
-    updated_at: string | null
+    interactions: FormBlockInteractionModel[] | undefined
+}
+
+interface FormBlockInteractionModel extends BaseModel {
+    type: "consent" | "input" | "click"
+    label: string | null,
+    reply: string | null,
+    has_validation: "none" | "email" | "url" | "numeric" | null,
+    form_block_id: number
+    deleted_at: string | null
 }

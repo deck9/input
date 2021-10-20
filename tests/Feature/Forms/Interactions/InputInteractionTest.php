@@ -26,7 +26,7 @@ class InputInteractionTest extends TestCase
         // test for email
         $response = $this->actingAs($interaction->block->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
-                'validation' => 'email',
+                'has_validation' => 'email',
             ]);
 
         $this->assertEquals('email', $response->json('has_validation'));
@@ -34,7 +34,7 @@ class InputInteractionTest extends TestCase
         // test for number
         $response = $this->actingAs($interaction->block->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
-                'validation' => 'numeric',
+                'has_validation' => 'numeric',
             ]);
 
         $this->assertEquals('numeric', $response->json('has_validation'));
@@ -42,7 +42,7 @@ class InputInteractionTest extends TestCase
         // test for url
         $response = $this->actingAs($interaction->block->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
-                'validation' => 'url',
+                'has_validation' => 'url',
             ]);
 
         $this->assertEquals('url', $response->json('has_validation'));
@@ -50,7 +50,7 @@ class InputInteractionTest extends TestCase
         // test for something random
         $this->actingAs($interaction->block->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
-                'validation' => 'other',
+                'has_validation' => 'other',
             ])
             ->assertStatus(422);
     }
