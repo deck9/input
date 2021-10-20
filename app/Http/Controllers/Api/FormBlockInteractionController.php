@@ -34,7 +34,7 @@ class FormBlockInteractionController extends Controller
                 break;
             case FormBlockInteraction::TYPE_INPUT:
                 $request->validate([
-                    'has_validation' => 'nullable|in:email,numeric,url',
+                    'has_validation' => 'nullable|in:email,numeric,url,none',
                 ]);
 
                 if ($request->has('has_validation')) {
@@ -42,7 +42,6 @@ class FormBlockInteractionController extends Controller
                 }
                 break;
         }
-
 
         $interaction->fill($request->only(['label', 'reply', 'uuid']));
         $interaction->save();

@@ -4,4 +4,6 @@ export declare module "@vue/runtime-core" {
         $inertia: InertiaApp
         $page: any
     }
+
+    function withAsyncContext(getAwaitable: () => any): any
 }

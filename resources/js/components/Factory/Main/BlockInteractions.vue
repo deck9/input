@@ -1,14 +1,13 @@
 <template>
   <div>
-    <InputEditor v-if="workbench.block?.type === 'input'" />
+    <ConfigureInput v-if="workbench.block?.type === 'input'" />
   </div>
 </template>
 
 
 <script setup lang="ts">
 import { useWorkbench } from '@/stores';
-import InputEditor from './InputEditor.vue';
-
+import ConfigureInput from './ConfigureInput.vue';
 
 const workbench = useWorkbench()
 </script>
