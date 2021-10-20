@@ -21,6 +21,7 @@
           as="button"
           class="block w-full text-left"
           @click.stop="deleteBlock"
+          :disabled="block.type === 'consent'"
           label="Delete"
         />
       </D9Menu>
