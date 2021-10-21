@@ -17,3 +17,18 @@ export function romanize(num: number): false | string {
 
     return Array(+digits.join("") + 1).join("M") + roman;
 }
+
+export function replaceRouteQuery(query: Record<string, any>): void {
+    const historyState = window.history.state
+
+    const url = new URL(document.location.href)
+    const params = new URLSearchParams(url.search)
+
+    for (let key in query) {
+        params.set(key, query[key]);
+    }
+
+    url.search = params.toString()
+
+    window.history.replaceState(historyState, "", url.toString())
+}

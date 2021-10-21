@@ -49,7 +49,15 @@ onMounted(async () => {
   await store.getBlocks()
 
   if (!workbench.block && store.hasBlocks && store.blocks) {
-    workbench.putOnWorkbench(store.blocks[0])
+    const params = new URLSearchParams(window.location.search);
+    const values = Object.fromEntries(params.entries());
+    const found = store.blocks.find((i) => i.uuid === values["block"])
+
+    if (found) {
+      workbench.putOnWorkbench(found)
+    } else {
+      workbench.putOnWorkbench(store.blocks[0])
+    }
   }
 
   isLoaded.value = true

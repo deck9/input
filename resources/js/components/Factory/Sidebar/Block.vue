@@ -65,10 +65,6 @@ const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id ? true : false
 })
 
-const editBlock = (): void => {
-  console.info('please edit block', props.block.uuid)
-}
-
 const deleteBlock = () => {
   let result = window.confirm("Do you really want to delete this snippet?");
 

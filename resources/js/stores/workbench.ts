@@ -2,6 +2,7 @@ import { callUpdateFormBlock } from "@/api/blocks";
 import { defineStore } from "pinia";
 import { DebouncedFunc } from "lodash";
 import { callCreateFormBlockInteraction, callUpdateFormBlockInteraction } from "@/api/interactions";
+import { replaceRouteQuery } from "@/utils";
 
 interface WorkbenchStore {
     block: FormBlockModel | null
@@ -31,6 +32,9 @@ export const useWorkbench = defineStore('workbench', {
         putOnWorkbench(block: FormBlockModel) {
             // flush save function before changing page
             (this.saveBlock as DebouncedFunc<any>).flush()
+
+
+            replaceRouteQuery({ block: block.uuid })
 
             // change block content
             this.block = block
