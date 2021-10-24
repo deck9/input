@@ -4,9 +4,9 @@
       class="text-xs text-grey-900 font-bold relative leading-none flex items-center mr-4"
       :class="store.form?.has_data_privacy ? 'text-blue-500' : 'text-grey-900'"
     >
-      <D9Icon name="user-shield" class="mr-2 transition-lg" />Data Privacy Mode
+      <D9Icon name="user-shield" class="mr-2 transition-lg" />GDPR Consent
     </span>
-    <D9Switch label="Enable Data Privacy Mode" v-model="enabled" />
+    <D9Switch label="Enable GDPR Consent" v-model="enabled" />
   </div>
 </template>
 

@@ -26,3 +26,17 @@ export function callUpdateFormBlockInteraction(interaction: FormBlockInteraction
         }
     });
 }
+
+export function callDeleteFormBlockInteraction(interaction: FormBlockInteractionModel): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let response = await handler.delete(window.route('api.interactions.delete', { interaction: interaction.id }))
+
+            if (response.status === 200) {
+                resolve(response)
+            }
+        } catch (error) {
+            reject(error)
+        }
+    });
+}

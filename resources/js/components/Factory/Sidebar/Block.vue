@@ -11,12 +11,7 @@
           <div class="w-full">ID</div>
           <div class="font-bold">{{ block.uuid }}</div>
         </div>
-        <D9MenuLink
-          as="button"
-          class="block w-full text-left"
-          @click.stop="copyId"
-          label="Copy ID"
-        />
+        <D9MenuLink as="button" class="block w-full text-left" @click="copyId" label="Copy ID" />
         <D9MenuLink
           as="button"
           class="block w-full text-left"
@@ -40,7 +35,10 @@
       </div>
     </div>
 
-    <BlockInteraction v-bind="{ interaction }" v-for="interaction in activeInteractions" />
+    <BlockInteraction
+      v-bind="{ interaction, index }"
+      v-for="(interaction, index) in activeInteractions"
+    />
   </button>
 </template>
 
@@ -52,6 +50,7 @@ import BlockInteraction from "./BlockInteraction.vue"
 import { useWorkbench, useForm } from "@/stores"
 import { D9Menu, D9MenuLink } from "@deck9/ui"
 import copy from "copy-text-to-clipboard";
+import useActiveInteractions from "../Shared/useActiveInteractions"
 
 const workbench = useWorkbench()
 const store = useForm()
@@ -60,16 +59,14 @@ const props = defineProps<{
   block: FormBlockModel
 }>()
 
+const { activeInteractions } = useActiveInteractions(props.block)
+
 const romanSequence = computed(() => {
   return romanize(props.block.sequence + 1)
 })
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id ? true : false
-})
-
-const activeInteractions = computed((): FormBlockInteractionModel[] | undefined => {
-  return props.block.interactions;
 })
 
 const deleteBlock = () => {

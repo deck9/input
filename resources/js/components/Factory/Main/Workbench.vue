@@ -4,6 +4,8 @@
 
     <BlockType class="my-16" />
     <BlockMessage class="my-16" />
+
+    <!-- Configurations -->
     <BlockInteractions v-if="workbench.needsInteractionSetup" class="my-16" />
   </div>
 </template>

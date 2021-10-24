@@ -21,7 +21,7 @@ class FormBlockInteractionController extends Controller
 
         $block->interactions()->save($interaction);
 
-        return response()->json($interaction, 201);
+        return response()->json($interaction->fresh(), 201);
     }
 
     public function update(Request $request, FormBlockInteraction $interaction)
