@@ -39,6 +39,8 @@
         <div v-else class="mb-2 text-grey-400 font-light">--Empty--</div>
       </div>
     </div>
+
+    <BlockInteraction v-bind="{ interaction }" v-for="interaction in activeInteractions" />
   </button>
 </template>
 
@@ -46,6 +48,7 @@
 import { computed } from "vue"
 import { romanize } from "@/utils"
 import ConsentBlockMessage from "./ConsentBlockMessage.vue"
+import BlockInteraction from "./BlockInteraction.vue"
 import { useWorkbench, useForm } from "@/stores"
 import { D9Menu, D9MenuLink } from "@deck9/ui"
 import copy from "copy-text-to-clipboard";
@@ -63,6 +66,10 @@ const romanSequence = computed(() => {
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id ? true : false
+})
+
+const activeInteractions = computed((): FormBlockInteractionModel[] | undefined => {
+  return props.block.interactions;
 })
 
 const deleteBlock = () => {
