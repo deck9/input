@@ -3,8 +3,7 @@
     <div class="flex items-center">
       <IndexItem class="mr-3" type="click" v-bind="{ index }" />
 
-      <form class="grid grid-cols-2 gap-x-2 w-full" @submit.prevent="updateInteraction">
-        <button class="hidden" type="submit">Save</button>
+      <section class="grid grid-cols-2 gap-x-2 w-full">
         <div>
           <D9Label
             class="block text-xs font-bold leading-0 text-grey-700 cursor-pointer"
@@ -35,7 +34,7 @@
             placeholder="Reply"
           />
         </div>
-      </form>
+      </section>
     </div>
 
     <div
