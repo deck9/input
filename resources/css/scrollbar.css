@@ -4,6 +4,18 @@ html {
     --thumb-bg: theme('colors.grey.300');
 }
 
+.scrollbar-gradient-white {
+    background:
+      linear-gradient(#ffffff 33%, rgba(255,255,255, 0)),
+      linear-gradient(rgba(255,255,255, 0), #ffffff 66%) 0 100%,
+      radial-gradient(farthest-side at 50% 0, rgba(0,0,0, 0.2), rgba(0,0,0,0)),
+      radial-gradient(farthest-side at 50% 100%, rgba(0,0,0, 0.2), rgba(0,0,0,0)) 0 100%;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-attachment: local, local, scroll, scroll;
+    background-size: 100% 72px, 100% 72px, 100% 12px, 100% 12px;
+  }
+
 .scrollbar-hidden::-webkit-scrollbar {
     width: var(--scrollbar-width);
     opacity: 0;
