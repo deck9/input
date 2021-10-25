@@ -7,13 +7,15 @@ import { replaceRouteQuery } from "@/utils";
 interface WorkbenchStore {
     block: FormBlockModel | null
     isSavingInteraction: number | null
+    isEditingFinalBlock: boolean
 }
 
 export const useWorkbench = defineStore('workbench', {
     state: (): WorkbenchStore => {
         return {
             block: null,
-            isSavingInteraction: null
+            isSavingInteraction: null,
+            isEditingFinalBlock: false,
         }
     },
 
@@ -31,16 +33,22 @@ export const useWorkbench = defineStore('workbench', {
 
         clearWorkbench() {
             this.block = null
+            this.isEditingFinalBlock = false
+        },
+
+        editFinalBlock() {
+            this.clearWorkbench()
+            this.isEditingFinalBlock = true
         },
 
         putOnWorkbench(block: FormBlockModel) {
             // flush save function before changing page
             (this.saveBlock as DebouncedFunc<any>).flush()
 
-
             replaceRouteQuery({ block: block.uuid })
 
             // change block content
+            this.isEditingFinalBlock = false
             this.block = block
         },
 

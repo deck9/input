@@ -4,11 +4,13 @@
     <Draggable v-for="block in store.blocks" :key="block.uuid">
       <Block :block="block" />
     </Draggable>
+    <FinalBlock />
   </Container>
 </template>
 
 <script setup lang="ts">
 import Block from "./Block.vue";
+import FinalBlock from "./FinalBlock.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import { useForm } from "@/stores";
 
