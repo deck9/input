@@ -15,7 +15,6 @@ class FormBlockInteraction extends Model
 
     const TYPE_CLICK = 'click';
     const TYPE_INPUT = 'input';
-    const TYPE_MULTIPLE = 'multiple';
     const TYPE_CONSENT = 'consent';
 
     protected $casts = [

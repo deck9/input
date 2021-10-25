@@ -3,8 +3,8 @@
     <div class="flex items-center">
       <IndexItem class="mr-3" type="click" v-bind="{ index }" />
 
-      <section class="grid grid-cols-2 gap-x-2 w-full">
-        <div>
+      <section class="grid grid-cols-2 gap-x-2 w-full pr-2">
+        <div :class="{ 'col-span-2': multiple }">
           <D9Label
             class="block text-xs font-bold leading-0 text-grey-700 cursor-pointer"
             :id="`${item.id}_label`"
@@ -16,10 +16,11 @@
             type="text"
             size="small"
             v-model="label"
+            block
             placeholder="Label"
           />
         </div>
-        <div>
+        <div v-if="!multiple">
           <D9Label
             class="block text-xs font-bold leading-0 text-grey-700 cursor-pointer"
             :id="item.id + '_reply'"
@@ -31,6 +32,7 @@
             type="text"
             size="small"
             v-model="reply"
+            block
             placeholder="Reply"
           />
         </div>
@@ -55,14 +57,17 @@
 import { D9Label, D9Input, D9Icon } from "@deck9/ui"
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue"
 import { useWorkbench } from "@/stores"
-import { Ref, ref, watch } from "vue"
+import { Ref, ref, watch, withDefaults } from "vue"
 
 const workbench = useWorkbench()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   index?: number
+  multiple?: boolean
   item: FormBlockInteractionModel
-}>()
+}>(), {
+  multiple: false,
+})
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label)
 const reply: Ref<FormBlockInteractionModel["label"]> = ref(props.item.reply)

@@ -16,7 +16,7 @@
       <ClickInteraction
         v-for="(item, index) in activeInteractions"
         :key="item.id"
-        v-bind="{ item, index }"
+        v-bind="{ item, index, multiple: workbench.isMultipleChoice }"
       />
 
       <div class="mt-4">
@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Button } from "@deck9/ui";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 

@@ -22,7 +22,9 @@ export const useWorkbench = defineStore('workbench', {
             const typesWithSetup = ["click", "multiple", "input"];
 
             return state.block ? typesWithSetup.includes(state.block.type) : false;
-        }
+        },
+
+        isMultipleChoice: (state): boolean => state.block?.type === 'multiple'
     },
 
     actions: {

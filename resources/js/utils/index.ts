@@ -18,6 +18,12 @@ export function romanize(num: number): false | string {
     return Array(+digits.join("") + 1).join("M") + roman;
 }
 
+export function alphabetize(num: number): string {
+    const alphabet = [...'abcdefghijklmnopqrstuvwxyz'];
+
+    return alphabet[num % alphabet.length].toUpperCase()
+}
+
 export function replaceRouteQuery(query: Record<string, any>): void {
     const historyState = window.history.state
 

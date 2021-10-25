@@ -1,8 +1,9 @@
 <template>
   <div>
     <ConfigureInput v-if="workbench.block?.type === 'input'" />
-    <ConfigureClick v-if="workbench.block?.type === 'click'" />
-    <ConfigureMultiple v-if="workbench.block?.type === 'multiple'" />
+    <ConfigureClick
+      v-if="workbench.block?.type === 'click' || workbench.block?.type === 'multiple'"
+    />
   </div>
 </template>
 
