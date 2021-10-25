@@ -23,6 +23,12 @@ export const useForm = defineStore('form', {
     },
 
     actions: {
+
+        clearForm() {
+            this.form = null;
+            this.blocks = null;
+        },
+
         async getBlocks() {
             if (!this.form) { return; }
 

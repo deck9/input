@@ -14,6 +14,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Storyboard from '@/components/Factory/Sidebar/Storyboard.vue';
 import Workbench from '@/components/Factory/Main/Workbench.vue';
 import { useForm, useWorkbench } from '@/stores';
+import { onUnmounted } from '@vue/runtime-core';
 
 const props = defineProps<{
   form: FormModel
@@ -21,6 +22,10 @@ const props = defineProps<{
 
 const store = useForm()
 const workbench = useWorkbench()
+
+onUnmounted(() => {
+  store.clearForm()
+})
 
 store.$patch({
   form: props.form
