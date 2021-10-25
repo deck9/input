@@ -45,7 +45,7 @@
         class="bg-red-600 text-white w-4 h-4 rounded-full flex items-center justify-center"
         @click="workbench.deleteInteraction(item)"
       >
-        <D9Icon size="xs" icon="times" />
+        <D9Icon size="xs" name="times" />
       </button>
     </div>
   </div>

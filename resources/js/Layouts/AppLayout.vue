@@ -168,7 +168,7 @@
       </nav>
 
       <!-- Page Content -->
-      <main class="flex flex-grow justify-center w-full">
+      <main class="flex flex-grow justify-center w-full" :class="limitHeight ? 'h-1' : ''">
         <slot></slot>
       </main>
     </div>
@@ -188,6 +188,7 @@ import { Head, Link } from "@inertiajs/inertia-vue3";
 export default defineComponent({
   props: {
     title: String,
+    limitHeight: Boolean,
   },
 
   components: {

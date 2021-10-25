@@ -1,7 +1,5 @@
 <template>
   <div class="bg-white flex flex-col flex-grow min-h-full px-4">
-    <PrivacyToggle />
-
     <div v-if="!isLoaded" class="w-full py-12 flex items-center justify-center">
       <D9Spinner class="text-blue-300 opacity-50" />
     </div>
@@ -21,7 +19,7 @@
       </div>
     </div>
 
-    <div v-if="isLoaded" class="text-center py-3">
+    <div v-if="isLoaded" class="flex items-center justify-between py-3">
       <D9Button
         @click="store.createFormBlock()"
         label="Add block"
@@ -29,6 +27,8 @@
         icon="plus"
         icon-position="right"
       />
+
+      <PrivacyToggle />
     </div>
   </div>
 </template>
