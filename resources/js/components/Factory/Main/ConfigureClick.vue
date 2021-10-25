@@ -24,6 +24,7 @@
           label="Add new option"
           icon="plus"
           icon-position="left"
+          type="dark"
           @click="createClickInteraction"
         />
       </div>

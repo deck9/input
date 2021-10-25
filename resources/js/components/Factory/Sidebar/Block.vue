@@ -1,11 +1,11 @@
 <template>
   <button
-    class="relative block w-full text-left cursor-pointer px-6 py-8 group overflow-visible"
+    class="relative block w-full text-left cursor-pointer px-6 py-4 group overflow-visible"
     @click="workbench.putOnWorkbench(block)"
   >
-    <div class="treeline w-1 bg-grey-200 absolute top-12 left-[42px] -bottom-8"></div>
+    <div class="treeline w-1 bg-grey-200 absolute top-6 left-[42px] -bottom-4"></div>
 
-    <div class="absolute right-3 top-8 z-10 opacity-0 group-hover:opacity-100">
+    <div class="absolute right-3 top-4 z-10 opacity-0 group-hover:opacity-100">
       <D9Menu class="text-grey-500" position="right" :use-portal="true">
         <div class="flex w-full px-4 py-3 text-xs space-between">
           <div class="w-full">ID</div>

@@ -2,7 +2,6 @@
   <app-layout title="Dashboard">
     <div class="py-12 w-full">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-x-10">
-        <UpdatesContainer class="col-span-4" />
         <div class="col-span-8">
           <div class="flex justify-between items-center relative mb-6">
             <h2 class="text-xl leading-8 text-grey-900 font-bold">Your Forms</h2>
@@ -28,6 +27,7 @@
             <FormListItem v-bind="{ form }" v-for="form in forms" />
           </div>
         </div>
+        <UpdatesContainer class="col-span-4" />
       </div>
     </div>
   </app-layout>

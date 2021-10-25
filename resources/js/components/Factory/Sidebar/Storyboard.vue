@@ -5,7 +5,9 @@
     </div>
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
-      <div class="absolute pr-1 -mr-4 inset-0 overflow-auto space-y-3 scrollbar-gradient-white">
+      <div
+        class="absolute pr-1 -mr-4 py-4 inset-0 overflow-auto space-y-3 scrollbar-gradient-white"
+      >
         <BlockContainer />
       </div>
     </div>

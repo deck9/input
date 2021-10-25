@@ -1,4 +1,5 @@
 .smooth-dnd-ghost>button {
+    opacity: .75;
     background-color: theme("colors.blue.50") !important;
 }
 

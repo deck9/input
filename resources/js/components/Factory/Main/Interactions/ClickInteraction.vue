@@ -1,7 +1,7 @@
 <template>
   <div class="px-4 py-2 relative group transition duration-200">
     <div class="flex items-center">
-      <IndexItem class="mr-3" type="click" v-bind="{ index }" />
+      <IndexItem class="mr-3 mt-5" type="click" v-bind="{ index }" />
 
       <section class="grid grid-cols-2 gap-x-2 w-full pr-2">
         <div :class="{ 'col-span-2': multiple }">
@@ -14,7 +14,6 @@
             :id="item.id + '_label'"
             name="label"
             type="text"
-            size="small"
             v-model="label"
             block
             placeholder="Label"
@@ -30,7 +29,6 @@
             :id="item.id + '_reply'"
             name="reply"
             type="text"
-            size="small"
             v-model="reply"
             block
             placeholder="Reply"
@@ -54,7 +52,7 @@
 
 
 <script setup lang="ts">
-import { D9Label, D9Input, D9Icon } from "@deck9/ui"
+import { D9Label, D9Input, D9Icon, D9Button } from "@deck9/ui"
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue"
 import { useWorkbench } from "@/stores"
 import { Ref, ref, watch, withDefaults } from "vue"
