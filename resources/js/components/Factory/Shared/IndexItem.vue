@@ -3,7 +3,7 @@
     class="relative z-10 w-8 h-6 flex items-center justify-center bg-blue-600 rounded text-white"
     :style="indexColor"
   >
-    <D9Icon v-if="typeof index === 'undefined'" :name="iconName" />
+    <D9Icon v-if="iconName" :name="iconName" />
     <span class="text-xs font-mono font-bold" v-else>{{ index }}</span>
   </div>
 </template>
@@ -19,12 +19,12 @@ const props = defineProps<{
   index?: number
 }>()
 
-const iconName = computed((): string => {
+const iconName = computed((): string | false => {
   switch (props.type) {
     case 'input':
       return 'envelope';
     default:
-      return 'play-circle'
+      return false
   }
 })
 
