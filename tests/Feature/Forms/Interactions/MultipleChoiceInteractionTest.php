@@ -13,6 +13,6 @@ class MultipleChoiceInteractionTest extends TestCase
 
     protected function getInteractionType()
     {
-        return FormBlockInteraction::TYPE_MULTIPLE;
+        return FormBlockInteraction::TYPE_CLICK;
     }
 }
