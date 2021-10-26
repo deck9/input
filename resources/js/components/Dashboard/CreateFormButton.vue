@@ -10,26 +10,25 @@
 
 <script setup lang="ts">
 import { D9Button } from "@deck9/ui";
-import { ref } from "vue"
+import { ref } from "vue";
 import { callCreateForm } from "@/api/forms";
 import { Inertia } from "@inertiajs/inertia";
 
-const isSubmitting = ref(false)
+const isSubmitting = ref(false);
 
 const createForm = async () => {
   try {
-    isSubmitting.value = true
+    isSubmitting.value = true;
 
-    let response = await callCreateForm()
+    let response = await callCreateForm();
 
-    if (response.status = 200) {
-      Inertia.visit(window.route('forms.edit', { id: response.data.uuid }))
+    if (response.status === 200) {
+      Inertia.visit(window.route("forms.edit", { id: response.data.uuid }));
     }
   } catch (error) {
     setTimeout(() => {
-      isSubmitting.value = false
-    }, 200)
+      isSubmitting.value = false;
+    }, 200);
   }
-}
-
+};
 </script>

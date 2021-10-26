@@ -6,7 +6,16 @@
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
       <div
-        class="absolute pr-1 -mr-4 py-4 inset-0 overflow-auto space-y-3 scrollbar-gradient-white"
+        class="
+          absolute
+          pr-1
+          -mr-4
+          py-4
+          inset-0
+          overflow-auto
+          space-y-3
+          scrollbar-gradient-white
+        "
       >
         <BlockContainer />
       </div>
@@ -14,7 +23,18 @@
 
     <div class="flex flex-grow items-center" v-else>
       <div
-        class="bg-grey-100 rounded-lg border px-3 py-6 text-center flex flex-col items-center justify-center flex-grow"
+        class="
+          bg-grey-100
+          rounded-lg
+          border
+          px-3
+          py-6
+          text-center
+          flex flex-col
+          items-center
+          justify-center
+          flex-grow
+        "
       >
         <span class="font-bold">No blocks found</span>
         <span>Create your first block now</span>
@@ -35,33 +55,32 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useForm, useWorkbench } from '@/stores';
+import { onMounted, ref } from "vue";
+import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
-import PrivacyToggle from './PrivacyToggle.vue';
-import BlockContainer from './BlockContainer.vue';
+import PrivacyToggle from "./PrivacyToggle.vue";
+import BlockContainer from "./BlockContainer.vue";
 
-const isLoaded = ref(false)
-const store = useForm()
-const workbench = useWorkbench()
+const isLoaded = ref(false);
+const store = useForm();
+const workbench = useWorkbench();
 
 onMounted(async () => {
-  await store.getBlocks()
+  await store.getBlocks();
 
   if (!workbench.block && store.hasBlocks && store.blocks) {
     const params = new URLSearchParams(window.location.search);
     const values = Object.fromEntries(params.entries());
-    const found = store.blocks.find((i) => i.uuid === values["block"])
+    const found = store.blocks.find((i) => i.uuid === values["block"]);
 
     if (found) {
-      workbench.putOnWorkbench(found)
+      workbench.putOnWorkbench(found);
     } else {
-      workbench.putOnWorkbench(store.blocks[0])
+      workbench.putOnWorkbench(store.blocks[0]);
     }
   }
 
-  isLoaded.value = true
-})
+  isLoaded.value = true;
+});
 </script>

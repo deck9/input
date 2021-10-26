@@ -1,6 +1,21 @@
 <template>
   <button
-    class="bg-white border-2 cursor-pointer flex-col inline-flex items-center justify-center mr-1 px-2 py-4 relative rounded transition-sm w-32"
+    class="
+      bg-white
+      border-2
+      cursor-pointer
+      flex-col
+      inline-flex
+      items-center
+      justify-center
+      mr-1
+      px-2
+      py-4
+      relative
+      rounded
+      transition-sm
+      w-32
+    "
     :class="
       isActive
         ? 'border-blue-400 text-blue-500'
@@ -19,27 +34,26 @@
   </button>
 </template>
 
-
 <script setup lang="ts">
-import { computed } from '@vue/reactivity';
-import { D9Icon } from '@deck9/ui';
-import InteractionTypeIcon from "../Shared/InteractionTypeIcon.vue"
+import { computed } from "@vue/reactivity";
+import { D9Icon } from "@deck9/ui";
+import InteractionTypeIcon from "../Shared/InteractionTypeIcon.vue";
 
 const props = defineProps<{
-  value: string,
-  label: string,
-  current?: FormBlockModel["type"]
-}>()
+  value: string;
+  label: string;
+  current?: FormBlockModel["type"];
+}>();
 
 const emits = defineEmits<{
   (e: "onInput", value: FormBlockModel["type"]): void;
-}>()
+}>();
 
 const isActive = computed(() => {
-  return props.value === props.current
-})
+  return props.value === props.current;
+});
 
 const emitInput = () => {
-  emits('onInput', props.value as FormBlockModel["type"])
-}
+  emits("onInput", props.value as FormBlockModel["type"]);
+};
 </script>

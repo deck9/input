@@ -2,17 +2,18 @@
   <div>
     <ConfigureInput v-if="workbench.block?.type === 'input'" />
     <ConfigureClick
-      v-if="workbench.block?.type === 'click' || workbench.block?.type === 'multiple'"
+      v-if="
+        workbench.block?.type === 'click' ||
+        workbench.block?.type === 'multiple'
+      "
     />
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { useWorkbench } from '@/stores';
-import ConfigureInput from './ConfigureInput.vue';
-import ConfigureClick from './ConfigureClick.vue';
-import ConfigureMultiple from './ConfigureMultiple.vue';
+import { useWorkbench } from "@/stores";
+import ConfigureInput from "./ConfigureInput.vue";
+import ConfigureClick from "./ConfigureClick.vue";
 
-const workbench = useWorkbench()
+const workbench = useWorkbench();
 </script>

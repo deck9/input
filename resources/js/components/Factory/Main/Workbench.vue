@@ -10,13 +10,12 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { useWorkbench } from '@/stores';
-import BlockMetaHeader from './BlockMetaHeader.vue';
-import BlockMessage from './BlockMessage.vue';
-import BlockType from './BlockType.vue';
-import BlockInteractions from './BlockInteractions.vue';
+import { useWorkbench } from "@/stores";
+import BlockMetaHeader from "./BlockMetaHeader.vue";
+import BlockMessage from "./BlockMessage.vue";
+import BlockType from "./BlockType.vue";
+import BlockInteractions from "./BlockInteractions.vue";
 
 const workbench = useWorkbench();
 </script>

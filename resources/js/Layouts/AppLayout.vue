@@ -22,7 +22,8 @@
                 <jet-nav-link
                   :href="route('dashboard')"
                   :active="route().current('dashboard')"
-                >Dashboard</jet-nav-link>
+                  >Dashboard</jet-nav-link
+                >
               </div>
             </div>
 
@@ -39,7 +40,14 @@
                   <template #trigger>
                     <button
                       v-if="$page.props.jetstream.managesProfilePhotos"
-                      class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition"
+                      class="
+                        flex
+                        text-sm
+                        border-2 border-transparent
+                        rounded-full
+                        focus:outline-none focus:border-gray-300
+                        transition
+                      "
                     >
                       <img
                         class="h-8 w-8 rounded-full object-cover"
@@ -51,7 +59,22 @@
                     <span v-else class="inline-flex rounded-md">
                       <button
                         type="button"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-grey-300 bg-grey-900 hover:text-blue-200 focus:outline-none transition"
+                        class="
+                          inline-flex
+                          items-center
+                          px-3
+                          py-2
+                          border border-transparent
+                          text-sm
+                          leading-4
+                          font-medium
+                          rounded-md
+                          text-grey-300
+                          bg-grey-900
+                          hover:text-blue-200
+                          focus:outline-none
+                          transition
+                        "
                       >
                         {{ $page.props.user.name }}
                         <svg
@@ -72,14 +95,19 @@
 
                   <template #content>
                     <!-- Account Management -->
-                    <div class="block px-4 py-2 text-xs text-gray-400">Manage Account</div>
+                    <div class="block px-4 py-2 text-xs text-gray-400">
+                      Manage Account
+                    </div>
 
-                    <jet-dropdown-link :href="route('profile.show')">Profile</jet-dropdown-link>
+                    <jet-dropdown-link :href="route('profile.show')"
+                      >Profile</jet-dropdown-link
+                    >
 
                     <jet-dropdown-link
                       :href="route('api-tokens.index')"
                       v-if="$page.props.jetstream.hasApiFeatures"
-                    >API Tokens</jet-dropdown-link>
+                      >API Tokens</jet-dropdown-link
+                    >
 
                     <div class="border-t border-gray-100"></div>
 
@@ -96,7 +124,10 @@
       </nav>
 
       <!-- Page Content -->
-      <main class="flex flex-grow justify-center w-full" :class="limitHeight ? 'h-1' : ''">
+      <main
+        class="flex flex-grow justify-center w-full"
+        :class="limitHeight ? 'h-1' : ''"
+      >
         <slot></slot>
       </main>
     </div>
@@ -110,9 +141,8 @@ import JetBanner from "@/Jetstream/Banner.vue";
 import JetDropdown from "@/Jetstream/Dropdown.vue";
 import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
 import JetNavLink from "@/Jetstream/NavLink.vue";
-import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
-import FormMenuActions from "@/components/Factory/FormMenuActions.vue"
-import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue"
+import FormMenuActions from "@/components/Factory/FormMenuActions.vue";
+import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
@@ -128,7 +158,6 @@ export default defineComponent({
     JetDropdown,
     JetDropdownLink,
     JetNavLink,
-    JetResponsiveNavLink,
     Link,
     FormMenuActions,
     FactoryNavigation,

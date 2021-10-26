@@ -1,4 +1,3 @@
-
 <template>
   <Container lock-axis="y" orientation="vertical" @drop="onDrop">
     <Draggable v-for="block in store.blocks" :key="block.uuid">
@@ -14,13 +13,18 @@ import FinalBlock from "./FinalBlock.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import { useForm } from "@/stores";
 
-const store = useForm()
+const store = useForm();
 
-const onDrop = ({ removedIndex, addedIndex }: { [x: string]: number | null }): void => {
+const onDrop = ({
+  removedIndex,
+  addedIndex,
+}: {
+  [x: string]: number | null;
+}): void => {
   if (removedIndex === null || addedIndex === null) {
     return;
   }
 
-  store.changeBlockSequence(removedIndex, addedIndex)
-}
+  store.changeBlockSequence(removedIndex, addedIndex);
+};
 </script>

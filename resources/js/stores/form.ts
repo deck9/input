@@ -1,92 +1,100 @@
 import { defineStore } from "pinia";
-import { callUpdateForm } from "@/api/forms"
-import { callGetFormBlocks, callCreateFormBlock, callUpdateBlockSequence, callDeleteFormBlock } from "@/api/blocks"
+import { callUpdateForm } from "@/api/forms";
+import {
+    callGetFormBlocks,
+    callCreateFormBlock,
+    callUpdateBlockSequence,
+    callDeleteFormBlock,
+} from "@/api/blocks";
 
 declare interface FormStore {
-    form: FormModel | null
-    blocks: FormBlockModel[] | null
+    form: FormModel | null;
+    blocks: FormBlockModel[] | null;
 }
 
-export const useForm = defineStore('form', {
-
+export const useForm = defineStore("form", {
     state: (): FormStore => {
         return {
             form: null,
             blocks: null,
-        }
+        };
     },
 
     getters: {
         hasBlocks: (state): boolean => {
-            return state.blocks && state.blocks.length ? true : false
-        }
+            return state.blocks && state.blocks.length ? true : false;
+        },
     },
 
     actions: {
-
         clearForm() {
             this.form = null;
             this.blocks = null;
         },
 
         async getBlocks() {
-            if (!this.form) { return; }
+            if (!this.form) {
+                return;
+            }
 
-            let response = await callGetFormBlocks(this.form.id)
+            const response = await callGetFormBlocks(this.form.id);
 
-            this.blocks = response.data
+            this.blocks = response.data;
         },
 
         async updateForm(newValues: Partial<FormModel>) {
             if (!this.form) {
-                return
+                return;
             }
 
             Object.entries(newValues).forEach((value) => {
-                const key = value[0]
-                const setting = value[1]
+                const key = value[0];
+                const setting = value[1];
 
-                if (this.form && this.form.hasOwnProperty(key)) {
-                    this.form[key] = setting
+                if (
+                    this.form &&
+                    Object.prototype.hasOwnProperty.call(this.form, key)
+                ) {
+                    this.form[key] = setting;
                 }
-            })
+            });
 
-            await callUpdateForm(this.form)
+            await callUpdateForm(this.form);
         },
 
         async createFormBlock() {
             if (!this.form) {
-                return
+                return;
             }
 
             try {
-                let response = await callCreateFormBlock(this.form.id)
+                const response = await callCreateFormBlock(this.form.id);
 
                 if (response.status === 201 && this.blocks) {
-                    this.blocks.push(response.data)
+                    this.blocks.push(response.data);
                 }
             } catch (error) {
-                console.warn(error)
+                console.warn(error);
             }
         },
 
         async deleteFormBlock(block: FormBlockModel) {
             if (!this.form) {
-                return
+                return;
             }
 
             try {
-                let response = await callDeleteFormBlock(block.id)
+                const response = await callDeleteFormBlock(block.id);
 
                 if (response.status === 200) {
-                    let index = this.blocks?.findIndex((item) => {
-                        return item.id === block.id
-                    })
+                    const index = this.blocks?.findIndex((item) => {
+                        return item.id === block.id;
+                    });
 
-                    if (index) this.blocks?.splice(index, 1)
+                    if (index) this.blocks?.splice(index, 1);
                 }
             } catch (error) {
-                console.warn(error)
+                console.warn(error);
             }
         },
 
@@ -96,24 +104,28 @@ export const useForm = defineStore('form', {
             }
 
             // move item to target position
-            this.blocks.splice(to, 0, this.blocks.splice(from, 1)[0])
+            this.blocks.splice(to, 0, this.blocks.splice(from, 1)[0]);
 
             // set new sequence numbers to blocks
             this.blocks = this.blocks.map((item, key) => {
-                return { ...item, sequence: key }
-            })
+                return { ...item, sequence: key };
+            });
 
             // generate an array of ids to update sequence on server
-            let saveSequenceRequestData: Array<number> = this.blocks.map((item) => {
-                return item.id;
-            })
+            const saveSequenceRequestData: Array<number> = this.blocks.map(
+                (item) => {
+                    return item.id;
+                }
+            );
 
             try {
-                await callUpdateBlockSequence(this.form.id, saveSequenceRequestData)
+                await callUpdateBlockSequence(
+                    this.form.id,
+                    saveSequenceRequestData
+                );
             } catch (error) {
-                console.warn(error)
+                console.warn(error);
             }
         },
-
-    }
+    },
 });

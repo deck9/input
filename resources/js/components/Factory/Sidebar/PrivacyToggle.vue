@@ -1,7 +1,15 @@
 <template>
   <div class="py-4 flex justify-end items-center">
     <span
-      class="text-xs text-grey-900 font-bold relative leading-none flex items-center mr-4"
+      class="
+        text-xs text-grey-900
+        font-bold
+        relative
+        leading-none
+        flex
+        items-center
+        mr-4
+      "
       :class="store.form?.has_data_privacy ? 'text-blue-500' : 'text-grey-900'"
     >
       <D9Icon name="user-shield" class="mr-2 transition-lg" />GDPR Consent
@@ -10,18 +18,17 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { D9Icon, D9Switch } from '@deck9/ui';
-import { ref, watch } from "vue"
-import { useForm } from '@/stores';
+import { D9Icon, D9Switch } from "@deck9/ui";
+import { ref, watch } from "vue";
+import { useForm } from "@/stores";
 
-const store = useForm()
+const store = useForm();
 
-const enabled = ref(store.form?.has_data_privacy ? true : false)
+const enabled = ref(store.form?.has_data_privacy ? true : false);
 
 watch(enabled, async (change) => {
-  await store.updateForm({ 'has_data_privacy': change })
-  await store.getBlocks()
-})
+  await store.updateForm({ has_data_privacy: change });
+  await store.getBlocks();
+});
 </script>

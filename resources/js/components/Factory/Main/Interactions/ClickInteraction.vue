@@ -6,7 +6,14 @@
       <section class="grid grid-cols-2 gap-x-2 w-full pr-2">
         <div :class="{ 'col-span-2': multiple }">
           <D9Label
-            class="block text-xs font-bold leading-0 text-grey-700 cursor-pointer"
+            class="
+              block
+              text-xs
+              font-bold
+              leading-0
+              text-grey-700
+              cursor-pointer
+            "
             :id="`${item.id}_label`"
             label="Label"
           />
@@ -21,7 +28,14 @@
         </div>
         <div v-if="!multiple">
           <D9Label
-            class="block text-xs font-bold leading-0 text-grey-700 cursor-pointer"
+            class="
+              block
+              text-xs
+              font-bold
+              leading-0
+              text-grey-700
+              cursor-pointer
+            "
             :id="item.id + '_reply'"
             label="Reply"
           />
@@ -38,10 +52,30 @@
     </div>
 
     <div
-      class="absolute right-0 inset-y-0 pt-5 flex items-center opacity-0 group-hover:opacity-100 transition duration-200"
+      class="
+        absolute
+        right-0
+        inset-y-0
+        pt-5
+        flex
+        items-center
+        opacity-0
+        group-hover:opacity-100
+        transition
+        duration-200
+      "
     >
       <button
-        class="bg-red-600 text-white w-4 h-4 rounded-full flex items-center justify-center"
+        class="
+          bg-red-600
+          text-white
+          w-4
+          h-4
+          rounded-full
+          flex
+          items-center
+          justify-center
+        "
         @click="workbench.deleteInteraction(item)"
       >
         <D9Icon size="xs" name="times" />
@@ -50,33 +84,35 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { D9Label, D9Input, D9Icon, D9Button } from "@deck9/ui"
-import IndexItem from "@/components/Factory/Shared/IndexItem.vue"
-import { useWorkbench } from "@/stores"
-import { Ref, ref, watch, withDefaults } from "vue"
+import { D9Label, D9Input, D9Icon } from "@deck9/ui";
+import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
+import { useWorkbench } from "@/stores";
+import { Ref, ref, watch, withDefaults } from "vue";
 
-const workbench = useWorkbench()
+const workbench = useWorkbench();
 
-const props = withDefaults(defineProps<{
-  index?: number
-  multiple?: boolean
-  item: FormBlockInteractionModel
-}>(), {
-  multiple: false,
-})
+const props = withDefaults(
+  defineProps<{
+    index?: number;
+    multiple?: boolean;
+    item: FormBlockInteractionModel;
+  }>(),
+  {
+    multiple: false,
+  }
+);
 
-const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label)
-const reply: Ref<FormBlockInteractionModel["label"]> = ref(props.item.reply)
+const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
+const reply: Ref<FormBlockInteractionModel["label"]> = ref(props.item.reply);
 
 watch([label, reply], (newValues) => {
   const update = {
     id: props.item.id,
     label: newValues[0],
-    reply: newValues[1]
-  }
+    reply: newValues[1],
+  };
 
-  workbench.updateInteraction(update)
-})
+  workbench.updateInteraction(update);
+});
 </script>

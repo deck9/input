@@ -3,27 +3,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from '@vue/reactivity';
-import { D9Icon } from '@deck9/ui';
+import { computed } from "@vue/reactivity";
+import { D9Icon } from "@deck9/ui";
 
 const props = defineProps<{
-  type: string
-}>()
+  type: string;
+}>();
 
 const iconName = computed((): string | false => {
   switch (props.type) {
-    case 'multiple':
-      return 'plus-circle'
-    case 'click':
-      return 'hand-point-right'
-    case 'input':
-      return 'pencil-alt'
-    case 'message':
-      return 'envelope'
+    case "multiple":
+      return "plus-circle";
+    case "click":
+      return "hand-point-right";
+    case "input":
+      return "pencil-alt";
+    case "message":
+      return "envelope";
 
     default:
-      return false
+      return false;
   }
-})
-
+});
 </script>

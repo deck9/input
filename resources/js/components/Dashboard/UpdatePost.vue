@@ -10,13 +10,13 @@
 
 <script setup lang="ts">
 import { PostOrPage } from "@tryghost/content-api";
-import { PropType } from "vue"
-import { D9Button } from "@deck9/ui"
+import { PropType } from "vue";
+import { D9Button } from "@deck9/ui";
 
 defineProps({
   post: {
     type: Object as PropType<PostOrPage>,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>
