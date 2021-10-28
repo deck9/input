@@ -4,6 +4,7 @@
       <Storyboard class="col-span-6 lg:col-span-5 xl:col-span-4" />
       <div class="col-span-6 lg:col-span-7 xl:col-span-8 overflow-y-auto">
         <Workbench v-if="workbench.block" :key="workbench.block.id" />
+        <FinalBlockSettings v-else-if="workbench.isEditingFinalBlock" />
       </div>
     </div>
   </app-layout>
@@ -13,6 +14,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Storyboard from "@/components/Factory/Sidebar/Storyboard.vue";
 import Workbench from "@/components/Factory/Main/Workbench.vue";
+import FinalBlockSettings from "@/components/Factory/Main/FinalBlockSettings.vue";
 import { useForm, useWorkbench } from "@/stores";
 import { onUnmounted } from "@vue/runtime-core";
 

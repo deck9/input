@@ -74,7 +74,9 @@ onMounted(async () => {
     const values = Object.fromEntries(params.entries());
     const found = store.blocks.find((i) => i.uuid === values["block"]);
 
-    if (found) {
+    if (values["block"] === "final") {
+      workbench.editFinalBlock();
+    } else if (found) {
       workbench.putOnWorkbench(found);
     } else {
       workbench.putOnWorkbench(store.blocks[0]);

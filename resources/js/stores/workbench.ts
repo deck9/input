@@ -44,6 +44,7 @@ export const useWorkbench = defineStore("workbench", {
         editFinalBlock() {
             this.clearWorkbench();
             this.isEditingFinalBlock = true;
+            replaceRouteQuery({ block: "final" });
         },
 
         putOnWorkbench(block: FormBlockModel) {
