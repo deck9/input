@@ -45,7 +45,7 @@
       <D9Button
         @click="store.createFormBlock()"
         label="Add block"
-        type="dark"
+        color="dark"
         icon="plus"
         icon-position="right"
       />

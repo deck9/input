@@ -3,7 +3,7 @@
     <h2 class="text-lg font-medium mb-4">{{ post.title }}</h2>
     <p class="text-sm leading-6">{{ post.excerpt }}</p>
     <div class="mt-4">
-      <D9Button label="Read more" type="dark" icon="info-circle" />
+      <D9Button label="Read more" color="dark" icon="info-circle" />
     </div>
   </div>
 </template>

@@ -33,7 +33,7 @@
           label="Add new option"
           icon="plus"
           icon-position="left"
-          type="dark"
+          color="dark"
           @click="createClickInteraction"
         />
       </div>
