@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
-class FormController extends Controller
+class FormResultsController extends Controller
 {
-    public function edit(Request $request, string $uuid)
+    public function show(Request $request, string $uuid)
     {
         $form = $request->user()
             ->forms()
             ->withUuid($uuid)
             ->firstOrFail();
 
-        return Inertia::render('Forms/Edit', [
+        return Inertia::render('Forms/Results', [
             'form' => $form,
         ]);
     }
