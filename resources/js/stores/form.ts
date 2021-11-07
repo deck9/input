@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
-import { callUpdateForm, callUploadAvatar } from "@/api/forms";
+import {
+    callDeleteAvatar,
+    callUpdateForm,
+    callUploadAvatar,
+} from "@/api/forms";
 import {
     callGetFormBlocks,
     callCreateFormBlock,
@@ -49,6 +53,15 @@ export const useForm = defineStore("form", {
 
             const response = await callUploadAvatar(this.form, file);
             this.form.avatar = response.data.avatar;
+        },
+
+        async removeAvatar() {
+            if (!this.form) {
+                return;
+            }
+
+            await callDeleteAvatar(this.form);
+            this.form.avatar = null;
         },
 
         async updateForm(newValues: Partial<FormModel>) {

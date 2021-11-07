@@ -1,32 +1,15 @@
 <template>
   <div>
-    <div class="mb-4">
-      <D9Label label="Avatar Image" />
-      <div class="flex items-center space-x-4">
-        <div
-          class="h-24 w-24 rounded-full bg-blue-50 border-2 border-blue-100 overflow-hidden object-cover object-bottom"
-        >
-          <img v-if="store?.form?.avatar" :src="store.form.avatar" />
-        </div>
-        <D9Button
-          label="Upload"
-          @click="initUpload"
-          :is-disabled="isSelecting"
-          :is-loading="isSelecting"
-        ></D9Button>
-        <input type="file" class="hidden" ref="upload" @change="selectFiles" />
-        <D9Button label="Remove" color="dark"></D9Button>
-      </div>
-    </div>
+    <AvatarUpload class="mb-4" />
 
     <div class="mb-4">
       <D9Label label="Name" />
-      <D9Input type="text" block />
+      <D9Input type="text" :value="store?.form?.name" block />
     </div>
 
     <div class="mb-4">
       <D9Label label="Description" />
-      <D9Input type="text" block />
+      <D9Input type="text" block :value="store?.form?.description" />
     </div>
 
     <D9Button label="Save Options" />
@@ -36,27 +19,7 @@
 <script setup lang="ts">
 import { useForm } from "@/stores";
 import { D9Button, D9Label, D9Input } from "@deck9/ui";
-import { Ref, ref } from "vue";
+import AvatarUpload from "./partials/AvatarUpload.vue";
 
 const store = useForm();
-const upload = ref(null) as unknown as Ref<HTMLElement>;
-const isSelecting = ref(false);
-
-const initUpload = () => {
-  isSelecting.value = true;
-  upload.value?.click();
-
-  setTimeout(() => {
-    isSelecting.value = false;
-  }, 2000);
-};
-
-const selectFiles = (payload: InputEvent) => {
-  const files = (payload?.target as HTMLInputElement).files;
-
-  if (files && files.length > 0) {
-    const file = files[0];
-    store.changeAvatar(file);
-  }
-};
 </script>

@@ -54,3 +54,20 @@ export function callUploadAvatar(
         }
     });
 }
+
+export function callDeleteAvatar(
+    form: FormModel
+): Promise<AxiosResponse<FormModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.delete(
+                window.route("api.forms.images.delete", { uuid: form.uuid })
+            );
+            if (response.status === 200) {
+                resolve(response as AxiosResponse<FormModel>);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
