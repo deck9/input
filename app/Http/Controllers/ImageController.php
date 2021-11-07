@@ -1,27 +1,24 @@
 <?php
 
-namespace App;
+namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use League\Glide\ServerFactory;
 use Illuminate\Support\Facades\Storage;
 use League\Glide\Responses\LaravelResponseFactory;
 
-class GlideCache
+class ImageController extends Controller
 {
-    public function clear($path)
+    public function show($path)
     {
-        if (!$path) {
-            return;
-        }
-
         $server = ServerFactory::create([
             'response' => new LaravelResponseFactory(app('request')),
             'source' => Storage::disk('images')->getDriver(),
             'cache' => Storage::getDriver(),
             'cache_path_prefix' => '.cache',
-            'base_url' => 'images',
+            'base_url' => 'avatars',
         ]);
 
-        $server->deleteCache($path);
+        return $server->getImageResponse($path, request()->all());
     }
 }

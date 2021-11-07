@@ -137,13 +137,13 @@ class Form extends Model
 
     public function hasAvatar()
     {
-        return Storage::disk('avatars')->exists($this->avatar_path);
+        return Storage::disk('images')->exists($this->avatar_path);
     }
 
     public function avatarImage()
     {
         if ($this->hasAvatar()) {
-            return url('avatars/' . $this->avatar_path);
+            return url('images/' . $this->avatar_path);
         }
 
         return false;

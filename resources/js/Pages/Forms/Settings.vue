@@ -35,7 +35,7 @@
                 v-show="selected"
                 class="absolute left-0 inset-y-0 w-1 bg-blue-400"
               ></div>
-              <span class="truncate"> {{ item.name }}</span>
+              <span class="truncate">{{ item.name }}</span>
             </button>
           </Tab>
         </TabList>

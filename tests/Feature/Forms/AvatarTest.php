@@ -16,11 +16,11 @@ class AvatarTest extends TestCase
     public function can_upload_a_single_avatar_image_for_a_form()
     {
         $form = Form::factory()->create();
-        Storage::fake('avatars');
+        Storage::fake('images');
 
         // test with valid file size
         $this->actingAs($form->user)
-            ->json('POST', route('api.forms.avatars.store', $form->uuid), [
+            ->json('POST', route('api.forms.images.store', $form->uuid), [
                 'image' => UploadedFile::fake()->image('avatar.jpeg'),
             ])
             ->assertStatus(201);
@@ -28,25 +28,25 @@ class AvatarTest extends TestCase
         $form = $form->fresh();
         $this->assertTrue($form->hasAvatar());
         $this->assertNotNull($form->avatar_path);
-        Storage::disk('avatars')->assertExists($form->avatar_path);
+        Storage::disk('images')->assertExists($form->avatar_path);
     }
 
     /** @test */
     public function cannot_upload_avatar_if_wrong_format_or_too_big()
     {
-        Storage::fake('avatars');
+        Storage::fake('images');
         $form = Form::factory()->create();
 
         // test with invalid file type
         $this->actingAs($form->user)
-            ->json('POST', route('api.forms.avatars.store', ['uuid' => $form->uuid]), [
+            ->json('POST', route('api.forms.images.store', ['uuid' => $form->uuid]), [
                 'image' => UploadedFile::fake()->create('avatar.pdf'),
             ])
             ->assertStatus(422);
 
         // test with too large file
         $this->actingAs($form->user)
-            ->json('POST', route('api.forms.avatars.store', ['uuid' => $form->uuid]), [
+            ->json('POST', route('api.forms.images.store', ['uuid' => $form->uuid]), [
                 'image' => UploadedFile::fake()->create('avatar.pdf')->size(2500),
             ])
             ->assertStatus(422);
@@ -59,12 +59,12 @@ class AvatarTest extends TestCase
     /** @test */
     public function can_delete_an_uploaded_avatar_image_for_a_form()
     {
-        Storage::fake('avatars');
+        Storage::fake('images');
         $form = Form::factory()->create();
 
         // upload image first
         $this->actingAs($form->user)
-            ->json('POST', route('api.forms.avatars.store', $form->uuid), [
+            ->json('POST', route('api.forms.images.store', $form->uuid), [
                 'image' => UploadedFile::fake()->image('avatar.png'),
             ]);
 
@@ -73,7 +73,7 @@ class AvatarTest extends TestCase
 
         // delete image now
         $this->actingAs($form->user)
-            ->json('DELETE', route('api.forms.avatars.store', $form->uuid))
+            ->json('DELETE', route('api.forms.images.store', $form->uuid))
             ->assertStatus(200);
 
         $form = $form->fresh();

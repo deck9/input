@@ -20,7 +20,7 @@ class FormAvatarController extends Controller
 
         // if old file, clear that first
         if ($form->avatar_path) {
-            Storage::disk('avatars')->delete($form->avatar_path);
+            Storage::disk('images')->delete($form->avatar_path);
             with(new GlideCache)->clear($form->avatar_path);
         }
 
@@ -29,7 +29,7 @@ class FormAvatarController extends Controller
         $filename = sprintf("%s.%s.%s", strtolower(Str::random(6)), time(), $file->extension());
 
         // store to filesystem
-        $file->storeAs($form->uuid, $filename, 'avatars');
+        $file->storeAs($form->uuid, $filename, 'images');
 
         // save to form model
         $form->avatar_path = join('/', [$form->uuid, $filename]);
@@ -46,7 +46,7 @@ class FormAvatarController extends Controller
             ->firstOrFail();
 
         // remove image from disk and cache
-        Storage::disk('avatars')->delete($form->avatar_path);
+        Storage::disk('images')->delete($form->avatar_path);
         $cache = new GlideCache;
         $cache->clear($form->avatar_path);
 

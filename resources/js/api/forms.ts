@@ -32,3 +32,25 @@ export function callUpdateForm(
         }
     });
 }
+
+export function callUploadAvatar(
+    form: FormModel,
+    file: File
+): Promise<AxiosResponse<FormModel>> {
+    const requestData = new FormData();
+    requestData.append("image", file);
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.images.store", { uuid: form.uuid }),
+                requestData
+            );
+            if (response.status === 201) {
+                resolve(response as AxiosResponse<FormModel>);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

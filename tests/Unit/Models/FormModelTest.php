@@ -101,15 +101,15 @@ class FormModelTest extends TestCase
     /** @test */
     public function can_return_path_to_avatar_if_available()
     {
-        Storage::fake('avatars');
+        Storage::fake('images');
         $form = Form::factory()->create();
 
         $this->assertFalse($form->avatarImage());
 
-        Storage::disk('avatars')->put($form->uuid . '/avatar.png', UploadedFile::fake()->image('avatar.png'));
+        Storage::disk('images')->put($form->uuid . '/avatar.png', UploadedFile::fake()->image('avatar.png'));
         $form->avatar_path = $form->uuid . '/avatar.png';
 
-        $this->assertEquals(url('avatars/' . $form->avatar_path), $form->avatarImage());
+        $this->assertEquals(url('images/' . $form->avatar_path), $form->avatarImage());
     }
 
     /** @test */

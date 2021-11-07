@@ -41,8 +41,8 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->delete('forms/{uuid}/publish', [PublishFormController::class, 'delete'])->name('api.forms.publish.delete');
 
     // Form Avatar Routes
-    $router->post('forms/{uuid}/avatar', [FormAvatarController::class, 'store'])->name('api.forms.avatars.store');
-    $router->delete('forms/{uuid}/avatar', [FormAvatarController::class, 'delete'])->name('api.forms.avatars.delete');
+    $router->post('forms/{uuid}/avatar', [FormAvatarController::class, 'store'])->name('api.forms.images.store');
+    $router->delete('forms/{uuid}/avatar', [FormAvatarController::class, 'delete'])->name('api.forms.images.delete');
 
     // Form Results Routes
     $router->get('results/{uuid}', [FormResultsController::class, 'show'])->name('api.forms.results.show');
