@@ -2,24 +2,42 @@
   <div>
     <AvatarUpload class="mb-4" />
 
-    <div class="mb-4">
-      <D9Label label="Name" />
-      <D9Input type="text" :value="store?.form?.name" block />
-    </div>
+    <form @submit.prevent="saveOptions">
+      <div class="mb-4">
+        <D9Label label="Name" />
+        <D9Input type="text" v-model="name" block />
+      </div>
 
-    <div class="mb-4">
-      <D9Label label="Description" />
-      <D9Input type="text" block :value="store?.form?.description" />
-    </div>
+      <div class="mb-4">
+        <D9Label label="Description" />
+        <D9Input type="text" v-model="description" block />
+      </div>
 
-    <D9Button label="Save Options" />
+      <D9Button type="submit" label="Save Options" :is-loading="isSaving" />
+    </form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
 import { D9Button, D9Label, D9Input } from "@deck9/ui";
+import { ref } from "vue";
 import AvatarUpload from "./partials/AvatarUpload.vue";
 
 const store = useForm();
+const isSaving = ref(false);
+
+const name = ref(store?.form?.name);
+const description = ref(store?.form?.description);
+
+const saveOptions = async () => {
+  isSaving.value = true;
+
+  await store.updateForm({
+    name: name.value,
+    description: description.value,
+  });
+
+  isSaving.value = false;
+};
 </script>

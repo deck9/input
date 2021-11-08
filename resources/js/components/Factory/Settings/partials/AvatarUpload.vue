@@ -6,7 +6,7 @@
         class="
           h-24
           w-24
-          rounded-full
+          rounded-lg
           bg-blue-50
           border-2 border-blue-100
           overflow-hidden
