@@ -3,17 +3,19 @@
     <TabGroup
       :vertical="true"
       as="div"
-      class="w-full max-w-5xl mx-auto grid grid-cols-12 gap-x-6 py-6"
+      class="grid w-full max-w-5xl grid-cols-12 px-4 py-6 mx-auto gap-x-6"
     >
       <div class="col-span-4">
         <TabList
           as="nav"
           class="
-            bg-white
-            rounded
-            border border-grey-200
             overflow-hidden
-            divide-y divide-grey-50
+            bg-white
+            border
+            divide-y
+            rounded
+            border-grey-200
+            divide-grey-50
           "
           aria-label="Sidebar"
         >
@@ -33,7 +35,7 @@
             >
               <div
                 v-show="selected"
-                class="absolute left-0 inset-y-0 w-1 bg-blue-400"
+                class="absolute inset-y-0 left-0 w-1 bg-blue-400"
               ></div>
               <span class="truncate">{{ item.name }}</span>
             </button>
@@ -43,7 +45,7 @@
 
       <TabPanels as="div" class="col-span-8">
         <TabPanel v-for="item in navigation" :key="item.name">
-          <h3 class="text-xl font-medium border-b border-grey-300 pb-2">
+          <h3 class="pb-2 text-xl font-medium border-b border-grey-300">
             {{ item.name }}
           </h3>
 
@@ -61,7 +63,9 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 
 import Options from "@/components/Factory/Settings/Options.vue";
+import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import Theme from "@/components/Factory/Settings/Theme.vue";
+import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
 
 import { useForm } from "@/stores";
 import { onUnmounted } from "vue";
@@ -73,9 +77,9 @@ const store = useForm();
 
 const navigation = [
   { name: "Options", component: Options },
-  { name: "Privacy", component: Theme },
+  { name: "Privacy", component: Privacy },
   { name: "Style", component: Theme },
-  { name: "Social Accounts", component: Options },
+  { name: "Social Accounts", component: SocialAccounts },
   { name: "Embeds", component: Theme },
 ];
 
