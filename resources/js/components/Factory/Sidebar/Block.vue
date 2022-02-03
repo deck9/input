@@ -1,31 +1,16 @@
 <template>
   <button
-    class="
-      relative
-      block
-      w-full
-      text-left
-      cursor-pointer
-      px-6
-      py-4
-      group
-      overflow-visible
-    "
+    class="relative block w-full px-6 py-4 overflow-visible text-left cursor-pointer group"
     @click="workbench.putOnWorkbench(block)"
   >
-    <div
-      class="treeline w-1 bg-grey-200 absolute top-6 left-[42px] -bottom-4"
-    ></div>
+    <div class="treeline w-1 bg-grey-200 absolute top-6 left-[42px] -bottom-4"></div>
 
-    <div class="absolute right-3 top-4 z-10 opacity-0 group-hover:opacity-100">
+    <div class="absolute z-10 opacity-0 right-3 top-4 group-hover:opacity-100">
       <D9Menu class="text-grey-500" position="right" :use-portal="true">
-        <div class="flex w-full px-4 py-3 text-xs space-between">
-          <div class="w-full">ID</div>
-          <div class="font-bold">{{ block.uuid }}</div>
-        </div>
         <D9MenuLink
           as="button"
           class="block w-full text-left"
+          :meta="block.uuid"
           @click="copyId"
           label="Copy ID"
         />
@@ -39,36 +24,18 @@
       </D9Menu>
     </div>
 
-    <div class="flex items-start relative">
+    <div class="relative flex items-start">
       <div
-        class="
-          mt-px
-          mr-4
-          flex-shrink-0
-          py-1
-          w-10
-          text-center
-          font-black
-          text-xs
-          rounded-sm
-          transition
-          duration-150
-        "
+        class="flex-shrink-0 w-10 py-1 mt-px mr-4 text-xs font-black text-center transition duration-150 rounded-sm"
         :class="
           isActive ? 'bg-blue-300' : 'bg-grey-200 group-hover:bg-yellow-300'
         "
-      >
-        {{ romanSequence }}
-      </div>
+      >{{ romanSequence }}</div>
 
       <div class="flex w-full pr-4 font-medium">
         <ConsentBlockMessage v-if="block.type === 'consent'" />
-        <div
-          class="mb-2"
-          v-else-if="block.message"
-          v-html="block.message"
-        ></div>
-        <div v-else class="mb-2 text-grey-400 font-light">--Empty--</div>
+        <div class="mb-2" v-else-if="block.message" v-html="block.message"></div>
+        <div v-else class="mb-2 font-light text-grey-400">--Empty--</div>
       </div>
     </div>
 
