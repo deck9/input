@@ -2,8 +2,9 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 const colors = require("tailwindcss/colors");
 
 module.exports = {
-    mode: "jit",
-    purge: [
+    darkMode: "class",
+
+    content: [
         "./node_modules/@deck9/ui/dist/src/index.es.js",
         "./node_modules/smooth-dnd/dist/index.js",
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
@@ -19,11 +20,12 @@ module.exports = {
                 sans: [
                     "Inter var experimental",
                     "Inter var",
+                    // @ts-ignore
                     ...defaultTheme.fontFamily.sans,
                 ],
             },
             colors: {
-                grey: colors.blueGray,
+                grey: colors.slate,
             },
             keyframes: {
                 spinner: {

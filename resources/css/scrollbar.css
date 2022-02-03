@@ -21,7 +21,7 @@ html {
     opacity: 0;
 }
 
-@variants hover {
+@layer utilities {
     .scrollbar {
         scrollbar-width: thin;
         scrollbar-color: var(--thumbBG) var(--scrollbarBG);
