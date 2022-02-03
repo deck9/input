@@ -7,9 +7,17 @@ declare module "*.vue" {
     export default component;
 }
 
-declare module 'vue3-smooth-dnd' {
+declare module "vue3-smooth-dnd" {
     import { DefineComponent } from "vue";
 
-    export const Container: DefineComponent<{}, {}, any>;
-    export const Draggable: DefineComponent<{}, {}, any>;
+    export const Container: DefineComponent<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        any
+    >;
+    export const Draggable: DefineComponent<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        any
+    >;
 }
