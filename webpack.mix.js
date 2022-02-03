@@ -21,10 +21,4 @@ mix.ts("resources/js/app.ts", "public/js")
 
 if (mix.inProduction()) {
     mix.version();
-} else {
-    mix.browserSync({
-        proxy: "https://survy.wip",
-        https: true,
-        notify: false,
-    });
 }

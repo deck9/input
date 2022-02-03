@@ -1,21 +1,10 @@
 <template>
   <div
-    class="
-      relative
-      z-10
-      w-8
-      h-6
-      flex
-      items-center
-      justify-center
-      bg-blue-600
-      rounded
-      text-white
-    "
+    class="relative z-10 flex items-center justify-center w-8 h-6 text-white bg-blue-600 rounded-md"
     :style="indexColor"
   >
     <D9Icon v-if="iconName" :name="iconName" />
-    <span class="text-xs font-mono font-bold" v-else>{{ indexLetter }}</span>
+    <span class="font-mono text-xs font-bold" v-else>{{ indexLetter }}</span>
   </div>
 </template>
 

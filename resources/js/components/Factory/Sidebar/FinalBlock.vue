@@ -1,45 +1,22 @@
 <template>
   <button
-    class="
-      relative
-      block
-      w-full
-      text-left
-      cursor-pointer
-      px-6
-      py-4
-      group
-      overflow-visible
-    "
+    class="relative block w-full px-6 py-4 overflow-visible text-left bg-white cursor-pointer rounded-xl group"
     @click="workbench.editFinalBlock()"
   >
-    <div class="flex items-start relative">
+    <div class="relative flex items-start">
       <div
-        class="
-          mt-px
-          mr-4
-          flex-shrink-0
-          py-1
-          w-10
-          text-center
-          font-black
-          text-xs
-          rounded-sm
-          transition
-          duration-150
-          text-grey-50
-        "
+        class="flex-shrink-0 w-10 py-1 mt-px mr-4 text-xs font-black text-center transition duration-150 rounded-sm text-grey-50"
         :class="
           workbench.isEditingFinalBlock
             ? 'bg-blue-600'
-            : 'bg-grey-900 group-hover:bg-yellow-300'
+            : 'bg-grey-900 group-hover:bg-yellow-400 group-hover:text-yellow-900'
         "
       >
         <D9Icon name="check" />
       </div>
 
       <div class="flex w-full pr-4 font-medium">
-        <div class="mb-2">Final Block</div>
+        <div>Final Block</div>
       </div>
     </div>
   </button>
