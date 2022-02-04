@@ -3,7 +3,7 @@
     <div class="w-full max-w-5xl px-4 mx-auto">
       <FormSummary class="mt-6" v-bind="{ form, blocks: store.blocks }" />
 
-      <TabGroup :vertical="true" as="div" class="grid w-full grid-cols-12 mx-auto mt-8 gap-x-6">
+      <TabGroup :vertical="true" as="div" class="grid w-full grid-cols-12 mx-auto mt-4 gap-x-6">
         <div class="col-span-4 pt-8">
           <TabList
             as="nav"
