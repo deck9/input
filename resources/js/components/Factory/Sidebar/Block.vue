@@ -2,11 +2,11 @@
   <div class="relative my-3 first-of-type:mt-0">
     <div class="treeline w-1 bg-slate-600 absolute top-6 left-[42px] -bottom-4"></div>
     <button
-      class="relative block w-full px-6 py-4 overflow-visible text-left bg-white cursor-pointer bg-opacity-90 rounded-xl group backdrop-blur-sm"
+      class="relative block w-full px-6 py-4 overflow-visible text-left bg-white rounded-md cursor-pointer bg-opacity-90 group backdrop-blur-sm"
       :class="{ 'ring-2 ring-offset-1 ring-blue-500 ring-opacity-50': isActive }"
       @click="workbench.putOnWorkbench(block)"
     >
-      <div class="absolute opacity-0 right-3 top-4 group-hover:opacity-100">
+      <div class="absolute right-3 top-4 group-hover:opacity-100">
         <D9Menu class="text-grey-500" position="right" :use-portal="true">
           <D9MenuLink
             as="button"
