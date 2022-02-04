@@ -1,17 +1,46 @@
 export function romanize(num: number): false | string {
-    let digits = String(+num).split("")
+    const digits = String(+num).split("");
     let roman = "",
         i = 3;
 
-    const key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
-        "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
-        "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
+    const key = [
+        "",
+        "C",
+        "CC",
+        "CCC",
+        "CD",
+        "D",
+        "DC",
+        "DCC",
+        "DCCC",
+        "CM",
+        "",
+        "X",
+        "XX",
+        "XXX",
+        "XL",
+        "L",
+        "LX",
+        "LXX",
+        "LXXX",
+        "XC",
+        "",
+        "I",
+        "II",
+        "III",
+        "IV",
+        "V",
+        "VI",
+        "VII",
+        "VIII",
+        "IX",
+    ];
 
     while (i--) {
-        let popped = digits.pop()
+        const popped = digits.pop();
 
         if (popped) {
-            roman = (key[parseInt(popped) + (i * 10)] || "") + roman;
+            roman = (key[parseInt(popped) + i * 10] || "") + roman;
         }
     }
 
@@ -19,22 +48,22 @@ export function romanize(num: number): false | string {
 }
 
 export function alphabetize(num: number): string {
-    const alphabet = [...'abcdefghijklmnopqrstuvwxyz'];
+    const alphabet = [..."abcdefghijklmnopqrstuvwxyz"];
 
-    return alphabet[num % alphabet.length].toUpperCase()
+    return alphabet[num % alphabet.length].toUpperCase();
 }
 
 export function replaceRouteQuery(query: Record<string, any>): void {
-    const historyState = window.history.state
+    const historyState = window.history.state;
 
-    const url = new URL(document.location.href)
-    const params = new URLSearchParams(url.search)
+    const url = new URL(document.location.href);
+    const params = new URLSearchParams(url.search);
 
-    for (let key in query) {
+    for (const key in query) {
         params.set(key, query[key]);
     }
 
-    url.search = params.toString()
+    url.search = params.toString();
 
-    window.history.replaceState(historyState, "", url.toString())
+    window.history.replaceState(historyState, "", url.toString());
 }

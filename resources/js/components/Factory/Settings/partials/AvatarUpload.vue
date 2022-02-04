@@ -3,15 +3,7 @@
     <D9Label label="Avatar Image" />
     <div class="flex items-center space-x-4">
       <img
-        class="
-          h-24
-          w-24
-          rounded-lg
-          bg-blue-50
-          border-2 border-blue-100
-          overflow-hidden
-          object-cover object-center
-        "
+        class="h-24 w-24 overflow-hidden rounded-lg border-2 border-blue-100 bg-blue-50 object-cover object-center"
         v-if="store?.form?.avatar"
         :src="store.form.avatar"
       />

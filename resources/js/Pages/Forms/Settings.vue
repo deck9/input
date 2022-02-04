@@ -1,25 +1,40 @@
 <template>
   <app-layout title="Form Settings">
-    <div class="w-full max-w-5xl px-4 mx-auto">
-      <FormSummary class="mt-6" v-bind="{ form, blocks: store.blocks }" />
+    <div class="mx-auto w-full max-w-5xl border px-4 sm:border-2">
+      <FormSummary
+        class="mt-6"
+        v-bind="{ form, blocks: store.blocks || undefined }"
+      />
 
-      <TabGroup :vertical="true" as="div" class="grid w-full grid-cols-12 mx-auto mt-4 gap-x-6">
+      <TabGroup
+        :vertical="true"
+        as="div"
+        class="mx-auto mt-4 grid w-full grid-cols-12 gap-x-6"
+      >
         <div class="col-span-4 pt-8">
           <TabList
             as="nav"
-            class="overflow-hidden bg-white border divide-y rounded border-grey-200 divide-grey-50"
+            class="divide-y divide-grey-50 overflow-hidden rounded border border-grey-200 bg-white"
             aria-label="Sidebar"
           >
-            <Tab v-slot="{ selected }" as="template" v-for="item in navigation" :key="item.name">
+            <Tab
+              v-for="item in navigation"
+              v-slot="{ selected }"
+              :key="item.name"
+              as="template"
+            >
               <button
                 :class="[
                   selected
                     ? 'bg-grey-50'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-                  'relative block w-full text-left px-3 py-3 text-sm font-medium',
+                  'relative block w-full px-3 py-3 text-left text-sm font-medium',
                 ]"
               >
-                <div v-show="selected" class="absolute inset-y-0 left-0 w-1 bg-blue-400"></div>
+                <div
+                  v-show="selected"
+                  class="absolute inset-y-0 left-0 w-1 bg-blue-400"
+                />
                 <span class="truncate">{{ item.name }}</span>
               </button>
             </Tab>
@@ -28,10 +43,12 @@
 
         <TabPanels as="div" class="col-span-8">
           <TabPanel v-for="item in navigation" :key="item.name">
-            <h3 class="pb-2 text-xl font-medium border-b border-grey-300">{{ item.name }}</h3>
+            <h3 class="border-b border-grey-300 pb-2 text-xl font-medium">
+              {{ item.name }}
+            </h3>
 
             <div class="mt-6">
-              <component :is="item.component"></component>
+              <component :is="item.component" />
             </div>
           </TabPanel>
         </TabPanels>
@@ -58,7 +75,7 @@ const store = useForm();
 
 onMounted(async () => {
   await store.getBlocks();
-})
+});
 
 const navigation = [
   { name: "Options", component: Options },

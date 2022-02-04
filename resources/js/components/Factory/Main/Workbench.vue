@@ -1,5 +1,5 @@
 <template>
-  <div v-if="workbench.block" class="max-w-xl mx-auto px-4 py-4">
+  <div v-if="workbench.block" class="mx-auto max-w-xl px-4 py-4">
     <BlockMetaHeader :block="workbench.block" />
 
     <BlockType class="my-16" />

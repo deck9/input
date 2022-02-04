@@ -1,9 +1,13 @@
 <template>
   <div class="relative my-3 first-of-type:mt-0">
-    <div class="treeline w-1 bg-slate-600 absolute top-6 left-[42px] -bottom-4"></div>
+    <div
+      class="treeline absolute top-6 left-[42px] -bottom-4 w-1 bg-slate-600"
+    />
     <button
-      class="relative block w-full px-6 py-4 overflow-visible text-left bg-white rounded-md cursor-pointer bg-opacity-90 group backdrop-blur-sm"
-      :class="{ 'ring-2 ring-offset-1 ring-blue-500 ring-opacity-50': isActive }"
+      class="group relative block w-full cursor-pointer overflow-visible rounded-md bg-white bg-opacity-90 px-6 py-4 text-left backdrop-blur-sm"
+      :class="{
+        'ring-2 ring-blue-500 ring-opacity-50 ring-offset-1': isActive,
+      }"
       @click="workbench.putOnWorkbench(block)"
     >
       <div class="absolute right-3 top-4 group-hover:opacity-100">
@@ -12,38 +16,42 @@
             as="button"
             class="block w-full text-left"
             :meta="block.uuid"
-            @click="copyId"
             label="Copy ID"
+            @click="copyId"
           />
           <D9MenuLink
             as="button"
             class="block w-full text-left"
-            @click.stop="deleteBlock"
             :disabled="block.type === 'consent'"
             label="Delete"
+            @click.stop="deleteBlock"
           />
         </D9Menu>
       </div>
 
       <div
-        class="flex-shrink-0 w-10 py-1 text-xs font-black text-center transition duration-150 rounded-md"
+        class="w-10 flex-shrink-0 rounded-md py-1 text-center text-xs font-black transition duration-150"
         :class="
-          isActive ? 'bg-blue-500 text-blue-50' : 'bg-grey-200 group-hover:bg-yellow-400'
+          isActive
+            ? 'bg-blue-500 text-blue-50'
+            : 'bg-grey-200 group-hover:bg-yellow-400'
         "
-      >{{ romanSequence }}</div>
+      >
+        {{ romanSequence }}
+      </div>
 
-      <div class="relative flex items-start mt-3">
+      <div class="relative mt-3 flex items-start">
         <div class="flex w-full pr-4">
           <ConsentBlockMessage v-if="block.type === 'consent'" />
-          <div class="mb-2" v-else-if="block.message" v-html="block.message"></div>
+          <div v-else-if="block.message" class="mb-2" v-html="block.message" />
           <div v-else class="mb-2 font-light text-grey-400">--Empty--</div>
         </div>
       </div>
 
       <BlockInteraction
+        v-for="(interaction, index) in activeInteractions"
         v-bind="{ interaction, index }"
         :key="interaction.id"
-        v-for="(interaction, index) in activeInteractions"
       />
     </button>
   </div>

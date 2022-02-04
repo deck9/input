@@ -15,12 +15,7 @@ import { useForm } from "@/stores";
 
 const store = useForm();
 
-const onDrop = ({
-  removedIndex,
-  addedIndex,
-}: {
-  [x: string]: number | null;
-}): void => {
+const onDrop = ({ removedIndex, addedIndex }: any): void => {
   if (removedIndex === null || addedIndex === null) {
     return;
   }

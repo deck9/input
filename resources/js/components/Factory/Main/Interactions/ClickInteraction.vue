@@ -1,19 +1,12 @@
 <template>
-  <div class="px-4 py-2 relative group transition duration-200">
+  <div class="group relative px-4 py-2 transition duration-200">
     <div class="flex items-center">
       <IndexItem class="mr-3 mt-5" type="click" v-bind="{ index }" />
 
-      <section class="grid grid-cols-2 gap-x-2 w-full pr-2">
+      <section class="grid w-full grid-cols-2 gap-x-2 pr-2">
         <div :class="{ 'col-span-2': multiple }">
           <D9Label
-            class="
-              block
-              text-xs
-              font-bold
-              leading-0
-              text-grey-700
-              cursor-pointer
-            "
+            class="leading-0 block cursor-pointer text-xs font-bold text-grey-700"
             :id="`${item.id}_label`"
             label="Label"
           />
@@ -28,14 +21,7 @@
         </div>
         <div v-if="!multiple">
           <D9Label
-            class="
-              block
-              text-xs
-              font-bold
-              leading-0
-              text-grey-700
-              cursor-pointer
-            "
+            class="leading-0 block cursor-pointer text-xs font-bold text-grey-700"
             :id="item.id + '_reply'"
             label="Reply"
           />
@@ -52,30 +38,10 @@
     </div>
 
     <div
-      class="
-        absolute
-        right-0
-        inset-y-0
-        pt-5
-        flex
-        items-center
-        opacity-0
-        group-hover:opacity-100
-        transition
-        duration-200
-      "
+      class="absolute inset-y-0 right-0 flex items-center pt-5 opacity-0 transition duration-200 group-hover:opacity-100"
     >
       <button
-        class="
-          bg-red-600
-          text-white
-          w-4
-          h-4
-          rounded-full
-          flex
-          items-center
-          justify-center
-        "
+        class="flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-white"
         @click="workbench.deleteInteraction(item)"
       >
         <D9Icon size="xs" name="times" />

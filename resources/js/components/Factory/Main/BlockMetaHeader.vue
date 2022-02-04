@@ -1,14 +1,14 @@
 <template>
-  <div class="mb-4 text-grey-500 text-xs font-mono flex justify-between">
+  <div class="mb-4 flex justify-between font-mono text-xs text-grey-500">
     <div>
-      <span class="text-xs mr-1">ID</span>
-      <span class="bg-grey-300 inline-block leading-normal px-2 rounded">
+      <span class="mr-1 text-xs">ID</span>
+      <span class="inline-block rounded bg-grey-300 px-2 leading-normal">
         {{ block.uuid }}
       </span>
     </div>
     <div>
-      <span class="text-xs mr-1">Last Change</span>
-      <span class="bg-grey-300 inline-block leading-normal px-2 rounded">{{
+      <span class="mr-1 text-xs">Last Change</span>
+      <span class="inline-block rounded bg-grey-300 px-2 leading-normal">{{
         formattedUpdatedAt
       }}</span>
     </div>

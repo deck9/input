@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative z-10 flex items-center justify-center w-8 h-6 text-white bg-blue-600 rounded-md"
+    class="relative z-10 flex h-6 w-8 items-center justify-center rounded-md bg-blue-600 text-white"
     :style="indexColor"
   >
     <D9Icon v-if="iconName" :name="iconName" />

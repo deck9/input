@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-grey-200 rounded-lg px-6 py-8">
-    <h2 class="text-lg font-medium mb-4">{{ post.title }}</h2>
+  <div class="rounded-lg bg-grey-200 px-6 py-8">
+    <h2 class="mb-4 text-lg font-medium">{{ post.title }}</h2>
     <p class="text-sm leading-6">{{ post.excerpt }}</p>
     <div class="mt-4">
       <D9Button label="Read more" color="dark" icon="info-circle" />

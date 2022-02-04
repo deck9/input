@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="font-bold mb-2 text-grey-700 text-sm">
+    <h3 class="mb-2 text-sm font-bold text-grey-700">
       <D9Icon class="mr-2" name="user-shield" />Data Processing Consent
     </h3>
     <div class="text-sm">

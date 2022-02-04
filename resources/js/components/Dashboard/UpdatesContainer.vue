@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="mb-6">
-      <h2 class="text-xl leading-8 text-grey-900 font-bold">Updates</h2>
+      <h2 class="text-xl font-bold leading-8 text-grey-900">Updates</h2>
     </div>
 
     <div class="space-y-4">
-      <div class="bg-grey-200 p-4 rounded-lg" v-if="posts.length === 0">
+      <div class="rounded-lg bg-grey-200 p-4" v-if="posts.length === 0">
         <D9Skeleton class="text-grey-300" footer />
       </div>
       <UpdatePost v-for="post in posts" v-bind="{ post }" :key="post.id" />

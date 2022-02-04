@@ -45,18 +45,7 @@
           </div>
 
           <div
-            class="
-              grid
-              gap-1
-              max-w-xl
-              mt-4
-              px-4
-              py-4
-              font-mono
-              text-sm
-              bg-gray-100
-              rounded-lg
-            "
+            class="mt-4 grid max-w-xl gap-1 rounded-lg bg-gray-100 px-4 py-4 font-mono text-sm"
           >
             <div v-for="code in recoveryCodes" :key="code">
               {{ code }}
@@ -164,7 +153,7 @@ export default defineComponent({
     },
 
     regenerateRecoveryCodes() {
-      axios.post("/user/two-factor-recovery-codes").then((response) => {
+      axios.post("/user/two-factor-recovery-codes").then(() => {
         this.showRecoveryCodes();
       });
     },

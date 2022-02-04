@@ -1,7 +1,7 @@
 <template>
-  <div class="text-sm space-x-4" v-if="store.form">
+  <div class="space-x-4 text-sm" v-if="store.form">
     <a
-      class="text-grey-400 hover:text-grey-100 focus:text-grey-200 transition"
+      class="text-grey-400 transition hover:text-grey-100 focus:text-grey-200"
       href="#"
     >
       <D9Icon class="mr-1" name="play-circle"></D9Icon>View Form

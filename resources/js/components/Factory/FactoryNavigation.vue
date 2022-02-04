@@ -1,5 +1,5 @@
 <template>
-  <section v-if="store.form" class="w-full text-center space-x-1 text-sm">
+  <section v-if="store.form" class="w-full space-x-1 text-center text-sm">
     <NavigationButton icon="pencil-alt" route-name="forms.edit"
       >Edit</NavigationButton
     >

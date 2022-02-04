@@ -1,16 +1,25 @@
 <template>
   <div class="flex flex-col flex-grow min-h-full border-r border-grey-200">
-    <div v-if="!isLoaded" class="flex items-center justify-center w-full px-4 py-12">
+    <div
+      v-if="!isLoaded"
+      class="flex items-center justify-center w-full px-4 py-12"
+    >
       <D9Spinner class="text-blue-300 opacity-50" />
     </div>
 
-    <div v-else-if="store.hasBlocks" class="relative flex-grow">
+    <div
+      v-else-if="store.hasBlocks"
+      class="relative flex-grow"
+    >
       <div class="absolute inset-0 px-6 py-4 overflow-auto">
         <BlockContainer />
       </div>
     </div>
 
-    <div class="flex items-center flex-grow px-4" v-else>
+    <div
+      v-else
+      class="flex items-center flex-grow px-4"
+    >
       <div
         class="flex flex-col items-center justify-center flex-grow px-3 py-6 text-center bg-white border rounded-lg"
       >
@@ -24,11 +33,11 @@
       class="flex items-center justify-between px-4 py-3 bg-white border-t border-grey-200"
     >
       <D9Button
-        @click="store.createFormBlock()"
         label="Add block"
         color="dark"
         icon="plus"
         icon-position="right"
+        @click="store.createFormBlock()"
       />
 
       <PrivacyToggle />

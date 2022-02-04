@@ -1,11 +1,11 @@
 <template>
   <button
-    class="relative block w-full px-6 py-4 overflow-visible text-left bg-white cursor-pointer rounded-xl group"
+    class="group relative block w-full cursor-pointer overflow-visible rounded-xl bg-white px-6 py-4 text-left"
     @click="workbench.editFinalBlock()"
   >
     <div class="relative flex items-start">
       <div
-        class="flex-shrink-0 w-10 py-1 mt-px mr-4 text-xs font-black text-center transition duration-150 rounded-sm text-grey-50"
+        class="mt-px mr-4 w-10 flex-shrink-0 rounded-sm py-1 text-center text-xs font-black text-grey-50 transition duration-150"
         :class="
           workbench.isEditingFinalBlock
             ? 'bg-blue-600'
@@ -24,8 +24,7 @@
 
 <script setup lang="ts">
 import { D9Icon } from "@deck9/ui";
-import { useWorkbench, useForm } from "@/stores";
+import { useWorkbench } from "@/stores";
 
 const workbench = useWorkbench();
-const store = useForm();
 </script>

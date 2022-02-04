@@ -12,18 +12,18 @@
       </div>
       <div v-show="form.total_sessions > 0">
         <D9Icon class="mr-2" name="chart-pie" />
-        <span class="font-semibold">{{ form.completion_rate }}%</span> completions
+        <span class="font-semibold">{{ form.completion_rate }}%</span>
+        completions
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { D9Icon } from '@deck9/ui';
+import { D9Icon } from "@deck9/ui";
 
 defineProps<{
   form: FormModel;
   blocks?: FormBlockModel[];
 }>();
-
 </script>

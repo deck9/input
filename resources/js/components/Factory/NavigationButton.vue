@@ -1,6 +1,6 @@
 <template>
   <a
-    class="text-grey-300 font-medium px-4 py-2 rounded"
+    class="rounded px-4 py-2 font-medium text-grey-300"
     :class="isActive ? 'bg-grey-900' : 'hover:bg-grey-700'"
     :href="resolvedRoute"
   >

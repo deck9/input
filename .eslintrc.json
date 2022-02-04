@@ -4,23 +4,21 @@
         "plugin:vue/vue3-essential",
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
-        "@vue/typescript/recommended",
-        "@vue/prettier/@typescript-eslint",
-        "@vue/prettier"
+        "plugin:@typescript-eslint/recommended"
     ],
+    "parser": "vue-eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2020,
         "parser": "@typescript-eslint/parser"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
+    "plugins": ["@typescript-eslint"],
+    "ignorePatterns": ["webpack*.js"],
     "rules": {
         "no-console": "off",
         "no-debugger": "off",
         "no-undef": "off",
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "vue/multi-word-component-names": "off"
     },
     "globals": {
         "defineProps": true,

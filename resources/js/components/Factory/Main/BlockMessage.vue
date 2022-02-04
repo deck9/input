@@ -5,19 +5,7 @@
       <textarea
         ref="messageInput"
         rows="1"
-        class="
-          appearance-none
-          px-4
-          py-3
-          rounded
-          bg-white
-          text-xl
-          w-full
-          p-0
-          border-0
-          resize-y
-          focus:outline-none focus:ring-0
-        "
+        class="w-full resize-y appearance-none rounded border-0 bg-white p-0 px-4 py-3 text-xl focus:outline-none focus:ring-0"
         @input="updateMessage"
         :value="workbench.block?.message ?? ''"
       ></textarea>

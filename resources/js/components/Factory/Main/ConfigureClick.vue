@@ -2,22 +2,13 @@
   <div>
     <h2 class="mb-2 text-base font-bold">Configure Choices</h2>
 
-    <div class="bg-white px-4 py-6 rounded">
+    <div class="rounded bg-white px-4 py-6">
       <div
         v-if="activeInteractions?.length === 0"
-        class="
-          bg-grey-200
-          block
-          font-heading
-          mb-4
-          px-4
-          py-3
-          rounded
-          text-grey-700
-        "
+        class="font-heading mb-4 block rounded bg-grey-200 px-4 py-3 text-grey-700"
       >
         Nothing here yet.
-        <small class="font-sans text-sm block"
+        <small class="block font-sans text-sm"
           >Add your first option by clicking on the button below.</small
         >
       </div>

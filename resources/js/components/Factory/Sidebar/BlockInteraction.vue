@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex items-center py-2 ml-[3px]">
+  <div class="relative ml-[3px] flex items-center py-2">
     <IndexItem :type="interaction.type" :index="index" />
     <div class="ml-3 text-sm font-medium">{{ interaction.label ?? "-" }}</div>
   </div>

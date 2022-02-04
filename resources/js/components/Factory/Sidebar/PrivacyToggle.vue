@@ -1,18 +1,10 @@
 <template>
-  <div class="py-4 flex justify-end items-center">
+  <div class="flex items-center justify-end py-4">
     <span
-      class="
-        text-xs text-grey-900
-        font-bold
-        relative
-        leading-none
-        flex
-        items-center
-        mr-4
-      "
+      class="relative mr-4 flex items-center text-xs font-bold leading-none text-grey-900"
       :class="store.form?.has_data_privacy ? 'text-blue-500' : 'text-grey-900'"
     >
-      <D9Icon name="user-shield" class="mr-2 transition-lg" />GDPR Consent
+      <D9Icon name="user-shield" class="transition-lg mr-2" />GDPR Consent
     </span>
     <D9Switch label="Enable GDPR Consent" v-model="enabled" />
   </div>

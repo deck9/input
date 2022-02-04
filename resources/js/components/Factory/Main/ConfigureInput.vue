@@ -2,7 +2,7 @@
   <div>
     <h2 class="mb-2 text-base font-bold">Configure Input</h2>
 
-    <div class="bg-white px-6 py-6 rounded">
+    <div class="rounded bg-white px-6 py-6">
       <div class="mb-4">
         <D9Label label="Placeholder" />
         <D9Input
