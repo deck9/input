@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col flex-grow min-h-full bg-grey-200">
+  <div class="flex flex-col flex-grow min-h-full border-r border-grey-200">
     <div v-if="!isLoaded" class="flex items-center justify-center w-full px-4 py-12">
       <D9Spinner class="text-blue-300 opacity-50" />
     </div>
 
-    <div v-else-if="store.hasBlocks" class="relative flex-grow px-4">
-      <div class="absolute inset-0 px-3 py-4 overflow-auto">
+    <div v-else-if="store.hasBlocks" class="relative flex-grow">
+      <div class="absolute inset-0 px-6 py-4 overflow-auto">
         <BlockContainer />
       </div>
     </div>
@@ -21,7 +21,7 @@
 
     <div
       v-if="isLoaded"
-      class="flex items-center justify-between px-4 py-3 border-t bg-grey-300 border-slate-300"
+      class="flex items-center justify-between px-4 py-3 bg-white border-t border-grey-200"
     >
       <D9Button
         @click="store.createFormBlock()"
