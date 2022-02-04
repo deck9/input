@@ -1,20 +1,7 @@
 <template>
   <app-layout title="Form Settings">
     <div class="w-full max-w-5xl px-4 mx-auto">
-      <div class="px-3 py-2 mt-6 border rounded border-grey-200 bg-grey-50">
-        <h1 class="text-xl font-bold text-blue-900">{{ form.name }}</h1>
-        <div class="flex space-x-3 text-sm text-grey-500">
-          <div>
-            <span class="font-semibold">{{ store.blocks?.length ?? 0 }}</span> blocks
-          </div>
-          <div>
-            <span class="font-semibold">{{ form.total_sessions }}</span> sessions
-          </div>
-          <div v-show="form.total_sessions > 0">
-            <span class="font-semibold">{{ form.completion_rate }}%</span> completions
-          </div>
-        </div>
-      </div>
+      <FormSummary class="mt-6" v-bind="{ form, blocks: store.blocks }" />
 
       <TabGroup :vertical="true" as="div" class="grid w-full grid-cols-12 mx-auto mt-8 gap-x-6">
         <div class="col-span-4 pt-8">
@@ -56,12 +43,11 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
-
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import Theme from "@/components/Factory/Settings/Theme.vue";
+import FormSummary from "@/components/Factory/FormSummary.vue";
 import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
-
 import { useForm } from "@/stores";
 import { onMounted, onUnmounted } from "vue";
 
