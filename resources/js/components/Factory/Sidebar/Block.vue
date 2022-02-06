@@ -1,7 +1,7 @@
 <template>
-  <div class="relative my-3 first-of-type:mt-0">
+  <div class="relative my-6 first-of-type:mt-0">
     <div
-      class="treeline absolute top-6 left-[42px] -bottom-4 w-1 bg-slate-600"
+      class="treeline absolute top-6 left-[42px] -bottom-6 w-[2px] bg-slate-300"
     />
     <button
       class="group relative block w-full cursor-pointer overflow-visible rounded-md bg-white bg-opacity-90 px-6 py-4 text-left backdrop-blur-sm"
@@ -31,11 +31,7 @@
 
       <div
         class="w-10 flex-shrink-0 rounded-md py-1 text-center text-xs font-black transition duration-150"
-        :class="
-          isActive
-            ? 'bg-blue-500 text-blue-50'
-            : 'bg-grey-200 group-hover:bg-yellow-400'
-        "
+        :class="isActive ? 'text-blue-800' : ''"
       >
         {{ romanSequence }}
       </div>
@@ -44,7 +40,7 @@
         <div class="flex w-full pr-4">
           <ConsentBlockMessage v-if="block.type === 'consent'" />
           <div v-else-if="block.message" class="mb-2" v-html="block.message" />
-          <div v-else class="mb-2 font-light text-grey-400">--Empty--</div>
+          <div v-else class="text-grey-400 mb-2 font-light">--no message--</div>
         </div>
       </div>
 

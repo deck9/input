@@ -18,7 +18,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: [
-                    "Inter var experimental",
+                    // "Inter var experimental",
                     "Inter var",
                     // @ts-ignore
                     ...defaultTheme.fontFamily.sans,

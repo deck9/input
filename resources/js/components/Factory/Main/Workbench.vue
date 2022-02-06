@@ -2,11 +2,13 @@
   <div v-if="workbench.block" class="mx-auto max-w-xl px-4 py-4">
     <BlockMetaHeader :block="workbench.block" />
 
-    <BlockType class="my-16" />
-    <BlockMessage class="my-16" />
+    <div class="space-y-8">
+      <BlockType />
+      <BlockMessage />
 
-    <!-- Configurations -->
-    <BlockInteractions v-if="workbench.needsInteractionSetup" class="my-16" />
+      <!-- Configurations -->
+      <BlockInteractions v-if="workbench.needsInteractionSetup" />
+    </div>
   </div>
 </template>
 
