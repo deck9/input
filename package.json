@@ -42,10 +42,10 @@
         "typescript": "^4.5.5",
         "vue": "^3.2.20",
         "vue-loader": "^17.0.0",
-        "vue-tsc": "^0.31.1"
+        "vue-tsc": "^0.31.2"
     },
     "dependencies": {
-        "@deck9/ui": "^0.9.4",
+        "@deck9/ui": "^0.9.5",
         "@pinia/plugin-debounce": "^0.0.2",
         "@tiptap/extension-link": "^2.0.0-beta.36",
         "@tiptap/starter-kit": "^2.0.0-beta.181",

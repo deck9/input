@@ -5,14 +5,14 @@
   >
     <div class="relative flex items-start">
       <div
-        class="mt-px mr-4 w-10 flex-shrink-0 rounded-sm py-1 text-center text-xs font-black text-grey-50 transition duration-150"
+        class="text-grey-50 mt-px mr-4 w-10 flex-shrink-0 rounded py-1 text-center text-xs font-black transition duration-150"
         :class="
           workbench.isEditingFinalBlock
             ? 'bg-blue-600'
             : 'bg-grey-900 group-hover:bg-yellow-400 group-hover:text-yellow-900'
         "
       >
-        <D9Icon name="check" />
+        <D9Icon name="trophy" />
       </div>
 
       <div class="flex w-full pr-4 font-medium">
