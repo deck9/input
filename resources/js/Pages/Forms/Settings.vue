@@ -1,6 +1,6 @@
 <template>
   <app-layout title="Form Settings">
-    <div class="mx-auto w-full max-w-5xl border px-4 sm:border-2">
+    <div class="mx-auto w-full max-w-5xl px-4">
       <FormSummary
         class="mt-6"
         v-bind="{ form, blocks: store.blocks || undefined }"
