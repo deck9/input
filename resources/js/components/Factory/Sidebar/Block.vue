@@ -1,8 +1,5 @@
 <template>
-  <div class="relative my-6 first-of-type:mt-0">
-    <div
-      class="treeline absolute top-6 left-[42px] -bottom-6 w-[2px] bg-slate-300"
-    />
+  <div class="relative my-4 text-sm first-of-type:mt-0">
     <button
       class="group relative block w-full cursor-pointer overflow-visible rounded-md bg-white bg-opacity-90 px-6 py-4 text-left backdrop-blur-sm"
       :class="{
@@ -27,13 +24,6 @@
             @click.stop="deleteBlock"
           />
         </D9Menu>
-      </div>
-
-      <div
-        class="w-10 flex-shrink-0 rounded-md py-1 text-center text-xs font-black transition duration-150"
-        :class="isActive ? 'text-blue-800' : ''"
-      >
-        {{ romanSequence }}
       </div>
 
       <div class="relative mt-3 flex items-start">

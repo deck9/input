@@ -24,7 +24,7 @@
 
     <div
       v-if="isLoaded"
-      class="border-grey-200 flex items-center justify-between border-t bg-white px-4 py-3"
+      class="border-grey-200 flex items-center justify-center border-t bg-white px-4 py-3"
     >
       <D9Button
         label="Add block"
