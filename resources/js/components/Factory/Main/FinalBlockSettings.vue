@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-xl px-4 py-4">
+  <div class="ml-12 max-w-xl px-4 py-4">
     <div class="my-16">
       <h2 class="mb-2 text-base font-bold">Outro</h2>
 
