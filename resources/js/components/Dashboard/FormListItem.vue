@@ -3,9 +3,9 @@
     class="transition-sm text-grey-900 group relative mb-2 flex rounded bg-white px-8 py-4 no-underline shadow-sm hover:cursor-default hover:no-underline"
     :href="route('forms.edit', form.uuid)"
   >
-    <div class="flex w-1/2 items-center">
+    <div class="flex w-1/2 shrink-0 items-center">
       <div
-        class="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full p-2"
+        class="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full p-2"
         :style="`background-color: ${form.brand_color};`"
       >
         <img
@@ -21,8 +21,8 @@
           >{{ form.initials }}</span
         >
       </div>
-      <div class="ml-6">
-        <h3 class="mb-1 text-base font-bold">{{ form.name }}</h3>
+      <div class="ml-6 overflow-hidden">
+        <h3 class="mb-1 truncate text-base font-bold">{{ form.name }}</h3>
 
         <div v-if="form.is_published" class="flex items-center">
           <span
@@ -38,7 +38,7 @@
         </div>
       </div>
     </div>
-    <div class="flex w-full items-center justify-center">
+    <div class="flex w-1/2 shrink-0 items-center justify-start">
       <div class="mx-2 leading-none">
         <div class="font-heading flex items-center text-xl font-medium">
           {{ form.completion_rate }}%
