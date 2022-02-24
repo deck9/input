@@ -25,7 +25,12 @@ module.exports = {
                 ],
             },
             colors: {
+                gray: null,
+                slate: null,
                 grey: colors.slate,
+            },
+            borderColor: {
+                DEFAULT: colors.slate[300],
             },
             keyframes: {
                 spinner: {
