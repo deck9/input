@@ -1,7 +1,7 @@
 <template>
   <Container lock-axis="y" orientation="vertical" @drop="onDrop">
     <Draggable v-for="block in store.blocks" :key="block.uuid">
-      <Block :block="block" />
+      <Block :block="block" :key="`${block.sequence}-${block.uuid}`" />
     </Draggable>
     <FinalBlock />
   </Container>

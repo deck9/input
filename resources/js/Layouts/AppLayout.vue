@@ -4,21 +4,21 @@
 
     <jet-banner />
 
-    <div class="min-h-screen bg-gray-100 flex flex-col">
+    <div class="bg-grey-50 flex min-h-screen flex-col">
       <nav class="bg-grey-800">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
+          <div class="flex h-16 justify-between">
             <div class="flex">
               <!-- Logo -->
-              <div class="flex-shrink-0 flex items-center">
+              <div class="flex flex-shrink-0 items-center">
                 <Link :href="route('dashboard')">
                   <jet-application-logo mode="dark" class="block h-5 w-auto" />
                 </Link>
               </div>
 
               <!-- Navigation Links -->
-              <div class="space-x-8 -my-px ml-10 flex">
+              <div class="-my-px ml-10 flex space-x-8">
                 <jet-nav-link
                   :href="route('dashboard')"
                   :active="route().current('dashboard')"
@@ -27,27 +27,20 @@
               </div>
             </div>
 
-            <div class="flex items-center mx-4">
+            <div class="mx-4 flex items-center">
               <FactoryNavigation />
             </div>
 
-            <div class="flex items-center ml-6">
+            <div class="ml-6 flex items-center">
               <FormMenuActions class="mr-3" />
 
               <!-- Settings Dropdown -->
-              <div class="ml-3 relative">
+              <div class="relative ml-3">
                 <jet-dropdown align="right" width="48">
                   <template #trigger>
                     <button
                       v-if="$page.props.jetstream.managesProfilePhotos"
-                      class="
-                        flex
-                        text-sm
-                        border-2 border-transparent
-                        rounded-full
-                        focus:outline-none focus:border-gray-300
-                        transition
-                      "
+                      class="flex rounded-full border-2 border-transparent text-sm transition focus:border-gray-300 focus:outline-none"
                     >
                       <img
                         class="h-8 w-8 rounded-full object-cover"
@@ -59,22 +52,7 @@
                     <span v-else class="inline-flex rounded-md">
                       <button
                         type="button"
-                        class="
-                          inline-flex
-                          items-center
-                          px-3
-                          py-2
-                          border border-transparent
-                          text-sm
-                          leading-4
-                          font-medium
-                          rounded-md
-                          text-grey-300
-                          bg-grey-900
-                          hover:text-blue-200
-                          focus:outline-none
-                          transition
-                        "
+                        class="text-grey-300 bg-grey-900 inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 transition hover:text-blue-200 focus:outline-none"
                       >
                         {{ $page.props.user.name }}
                         <svg
@@ -125,7 +103,7 @@
 
       <!-- Page Content -->
       <main
-        class="flex flex-grow justify-center w-full"
+        class="flex w-full flex-grow justify-center"
         :class="limitHeight ? 'h-1' : ''"
       >
         <slot></slot>

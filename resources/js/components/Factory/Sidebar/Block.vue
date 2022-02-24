@@ -1,14 +1,29 @@
 <template>
-  <div class="relative my-4 text-sm first-of-type:mt-0">
+  <div class="relative my-6 text-sm first-of-type:mt-0">
+    <div
+      class="treeline absolute inset-x-0 -bottom-6 top-0 flex justify-center"
+    >
+      <button
+        class="absolute inset-x-0 bottom-[4px] rounded-full leading-none opacity-0 transition-opacity duration-150 hover:opacity-100"
+      >
+        <D9Icon class="text-grey-400 bg-grey-50" name="plus-circle" />
+      </button>
+    </div>
     <button
-      class="group relative block w-full cursor-pointer overflow-visible rounded-md bg-white bg-opacity-90 px-6 py-4 text-left backdrop-blur-sm"
+      class="group relative block w-full cursor-pointer overflow-visible rounded-md border px-6 py-4 text-left shadow-sm"
       :class="{
-        'ring-2 ring-blue-500 ring-opacity-50 ring-offset-1': isActive,
+        'bg-grey-200 border-grey-300': isActive,
+        'border-grey-200 bg-white bg-opacity-90 backdrop-blur-sm': !isActive,
       }"
       @click="workbench.putOnWorkbench(block)"
     >
-      <div class="absolute right-3 top-4 group-hover:opacity-100">
-        <D9Menu class="text-grey-500" position="right" :use-portal="true">
+      <div class="absolute right-3 top-4 opacity-50 group-hover:opacity-100">
+        <D9Menu
+          class="text-grey-400"
+          position="right"
+          :use-portal="true"
+          ref="menu"
+        >
           <D9MenuLink
             as="button"
             class="block w-full text-left"
@@ -45,11 +60,10 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { romanize } from "@/utils";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
 import { useWorkbench, useForm } from "@/stores";
-import { D9Menu, D9MenuLink } from "@deck9/ui";
+import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 
@@ -61,10 +75,6 @@ const props = defineProps<{
 }>();
 
 const { activeInteractions } = useActiveInteractions(props.block);
-
-const romanSequence = computed(() => {
-  return romanize(props.block.sequence + 1);
-});
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id
