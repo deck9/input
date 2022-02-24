@@ -1,33 +1,18 @@
 <template>
-  <div>
-    <h2 class="mb-2 text-base font-bold">Configure Input</h2>
-
-    <div class="rounded bg-white px-6 py-6">
-      <div class="mb-4">
-        <D9Label label="Placeholder" />
-        <D9Input
-          placeholder="Your placeholder text"
-          type="text"
-          block
-          v-model="label"
-        />
-      </div>
-      <div class="mb-4">
-        <D9Label label="Validate user input" />
-        <D9Select
-          class="block"
-          placeholder="Select a type"
-          v-model="selected"
-          :options="options"
-        />
-      </div>
-    </div>
+  <div class="mb-4">
+    <D9Label label="Placeholder Text" />
+    <D9Input
+      placeholder="Your placeholder text"
+      type="text"
+      block
+      v-model="label"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Label, D9Input, D9Select } from "@deck9/ui";
+import { D9Label, D9Input } from "@deck9/ui";
 import { watch, Ref, ref } from "vue";
 import { onMounted } from "@vue/runtime-core";
 

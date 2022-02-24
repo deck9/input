@@ -1,30 +1,24 @@
 <template>
-  <div class="group relative px-4 py-2 transition duration-200">
+  <div class="group relative py-1 transition duration-200">
     <div class="flex items-center">
-      <IndexItem class="mr-3 mt-5" type="click" v-bind="{ index }" />
-
-      <section class="grid w-full grid-cols-2 gap-x-2 pr-2">
+      <section class="grid w-full grid-cols-2 gap-x-2">
         <div :class="{ 'col-span-2': multiple }">
-          <D9Label
-            class="leading-0 block cursor-pointer text-xs font-bold text-grey-700"
-            :id="`${item.id}_label`"
-            label="Label"
-          />
-          <D9Input
-            :id="item.id + '_label'"
-            name="label"
-            type="text"
-            v-model="label"
-            block
-            placeholder="Label"
-          />
+          <div class="relative">
+            <D9Input
+              :id="item.id + '_label'"
+              class="pl-12"
+              name="label"
+              type="text"
+              v-model="label"
+              block
+              placeholder="Label"
+            />
+            <span class="absolute inset-y-0 flex items-center px-3">
+              <IndexItem class="" type="click" v-bind="{ index }" />
+            </span>
+          </div>
         </div>
         <div v-if="!multiple">
-          <D9Label
-            class="leading-0 block cursor-pointer text-xs font-bold text-grey-700"
-            :id="item.id + '_reply'"
-            label="Reply"
-          />
           <D9Input
             :id="item.id + '_reply'"
             name="reply"
@@ -38,20 +32,23 @@
     </div>
 
     <div
-      class="absolute inset-y-0 right-0 flex items-center pt-5 opacity-0 transition duration-200 group-hover:opacity-100"
+      class="text-grey-400 absolute inset-y-2 -left-24 flex w-24 items-center justify-end space-x-2 pr-2 opacity-0 transition duration-200 group-hover:opacity-100"
     >
       <button
-        class="flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-white"
+        class="hover:text-grey-600"
         @click="workbench.deleteInteraction(item)"
       >
-        <D9Icon size="xs" name="times" />
+        <D9Icon name="trash" />
+      </button>
+      <button class="handle hover:text-grey-600">
+        <D9Icon name="grip-vertical" />
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { D9Label, D9Input, D9Icon } from "@deck9/ui";
+import { D9Input, D9Icon } from "@deck9/ui";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch, withDefaults } from "vue";

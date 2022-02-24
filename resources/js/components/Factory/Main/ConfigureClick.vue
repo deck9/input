@@ -1,33 +1,39 @@
 <template>
   <div>
-    <h2 class="mb-2 text-base font-bold">Configure Choices</h2>
-
-    <div class="rounded bg-white px-4 py-6">
-      <div
-        v-if="activeInteractions?.length === 0"
-        class="font-heading mb-4 block rounded bg-grey-200 px-4 py-3 text-grey-700"
+    <div
+      v-if="workbench.currentInteractions?.length === 0"
+      class="font-heading bg-grey-200 text-grey-700 mb-4 block rounded px-4 py-3"
+    >
+      Nothing here yet.
+      <small class="block font-sans text-sm"
+        >Add your first option by clicking on the button below.</small
       >
-        Nothing here yet.
-        <small class="block font-sans text-sm"
-          >Add your first option by clicking on the button below.</small
-        >
-      </div>
+    </div>
 
-      <ClickInteraction
-        v-for="(item, index) in activeInteractions"
+    <Container
+      lock-axis="y"
+      drag-handle-selector="button.handle"
+      orientation="vertical"
+      @drop="onDrop"
+    >
+      <Draggable
+        v-for="(item, index) in workbench.currentInteractions"
         :key="item.id"
-        v-bind="{ item, index, multiple: workbench.isMultipleChoice }"
-      />
-
-      <div class="mt-4">
-        <D9Button
-          label="Add new option"
-          icon="plus"
-          icon-position="left"
-          color="dark"
-          @click="createClickInteraction"
+      >
+        <ClickInteraction
+          v-bind="{ item, index, multiple: workbench.isMultipleChoice }"
         />
-      </div>
+      </Draggable>
+    </Container>
+
+    <div class="mt-4">
+      <D9Button
+        label="Add new option"
+        icon="plus"
+        icon-position="left"
+        color="dark"
+        @click="createClickInteraction"
+      />
     </div>
   </div>
 </template>
@@ -37,11 +43,18 @@ import { useWorkbench } from "@/stores";
 import { D9Button } from "@deck9/ui";
 import { ref } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
-import useActiveInteractions from "../Shared/useActiveInteractions";
+import { Container, Draggable } from "vue3-smooth-dnd";
 
 const workbench = useWorkbench();
 
-const { activeInteractions } = useActiveInteractions(workbench.block);
+const onDrop = ({ removedIndex, addedIndex }: any): void => {
+  if (removedIndex === null || addedIndex === null) {
+    return;
+  }
+
+  workbench.changeInteractionSequence(removedIndex, addedIndex);
+};
+
 const isCreatingInteraction = ref(false);
 
 const createClickInteraction = async () => {

@@ -7,6 +7,8 @@ import {
     callUpdateFormBlockInteraction,
 } from "@/api/interactions";
 import { replaceRouteQuery } from "@/utils";
+import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
+import { ComputedRef } from "vue";
 
 interface WorkbenchStore {
     block: FormBlockModel | null;
@@ -33,6 +35,18 @@ export const useWorkbench = defineStore("workbench", {
         },
 
         isMultipleChoice: (state): boolean => state.block?.type === "multiple",
+
+        currentInteractions: (
+            state
+        ): FormBlockInteractionModel[] | undefined => {
+            if (!state.block) {
+                return undefined;
+            }
+
+            const { activeInteractions } = useActiveInteractions(state.block);
+
+            return activeInteractions.value;
+        },
     },
 
     actions: {
@@ -183,6 +197,32 @@ export const useWorkbench = defineStore("workbench", {
             } catch (error) {
                 console.warn(error);
             }
+        },
+
+        async changeInteractionSequence(from: number, to: number) {
+            if (!this.currentInteractions || !this.block?.interactions) {
+                return;
+            }
+
+            const items = this.currentInteractions.map((i) => i.id);
+
+            // move item to target position
+            items.splice(to, 0, items.splice(from, 1)[0]);
+
+            // set new sequence numbers to blocks
+            items.map((id, key) => {
+                if (!this.block?.interactions) {
+                    return;
+                }
+
+                const index = this.block.interactions.findIndex((item) => {
+                    return item.id === id;
+                });
+
+                if (index !== -1) {
+                    this.block.interactions[index].sequence = key;
+                }
+            });
         },
     },
 

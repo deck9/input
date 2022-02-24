@@ -1,4 +1,5 @@
 import { computed, ComputedRef } from "vue";
+import sortBy from "lodash/sortBy";
 
 export default function (block: FormBlockModel | null): {
     activeInteractions: ComputedRef<FormBlockInteractionModel[] | undefined>;
@@ -34,7 +35,7 @@ export default function (block: FormBlockModel | null): {
                 break;
         }
 
-        return interactions;
+        return sortBy(interactions, ["sequence"]);
     });
 
     return {

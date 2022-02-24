@@ -1,14 +1,15 @@
 <template>
-  <div v-if="workbench.block" class="ml-12 max-w-xl px-4 py-4">
-    <BlockMetaHeader :block="workbench.block" />
-
-    <div class="space-y-8">
-      <BlockType />
+  <div
+    v-if="workbench.block"
+    class="relative ml-24 flex h-full max-w-xl flex-col justify-between px-4 pt-8"
+  >
+    <div class="space-y-8 pb-24">
       <BlockMessage />
-
-      <!-- Configurations -->
+      <BlockType />
       <BlockInteractions v-if="workbench.needsInteractionSetup" />
     </div>
+
+    <BlockMetaHeader class="py-4" :block="workbench.block" />
   </div>
 </template>
 

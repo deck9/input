@@ -1,5 +1,7 @@
 <template>
   <div>
+    <h2 class="mb-2 text-base font-bold">Settings</h2>
+
     <ConfigureInput v-if="workbench.block?.type === 'input'" />
     <ConfigureClick
       v-if="
