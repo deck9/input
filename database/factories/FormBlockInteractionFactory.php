@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\FormBlock;
-use App\Models\Model;
 use App\Models\FormBlockInteraction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

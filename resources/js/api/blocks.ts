@@ -72,7 +72,7 @@ export function callUpdateBlockSequence(
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.blocks.sequence.update", { form: id }),
+                window.route("api.blocks.sequence", { form: id }),
                 {
                     sequence,
                 }

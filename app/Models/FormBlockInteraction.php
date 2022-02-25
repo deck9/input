@@ -31,6 +31,10 @@ class FormBlockInteraction extends Model
 
         self::creating(function ($model) {
             $model->uuid = Uuid::uuid4();
+
+            if (!$model->sequence) {
+                $model->sequence = self::where('form_block_id', $model->form_block_id)->count();
+            }
         });
 
         self::created(function ($model) {

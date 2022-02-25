@@ -22,7 +22,7 @@ class BlockSequenceTest extends TestCase
         $this->assertEquals(1, $blockB->json('sequence'));
 
         $response = $this->actingAs($form->user)
-            ->json('POST', route('api.blocks.sequence.update', ['form' => $form->id]), [
+            ->json('POST', route('api.blocks.sequence', ['form' => $form->id]), [
                 'sequence' => [$blockB->json('id'), $blockA->json('id')]
             ]);
         $response->assertStatus(204);
