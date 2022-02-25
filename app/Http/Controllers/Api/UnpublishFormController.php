@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Events\FormPublished;
 use App\Http\Controllers\Controller;
 
-class PublishFormController extends Controller
+class UnpublishFormController extends Controller
 {
     public function __invoke(Request $request, $uuid)
     {
@@ -16,10 +16,8 @@ class PublishFormController extends Controller
             ->firstOrFail();
 
         $form->update([
-            'published_at' => now(),
+            'published_at' => null,
         ]);
-
-        event(new FormPublished($form));
 
         return response()->json($form, 200);
     }

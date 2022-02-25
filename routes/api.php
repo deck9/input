@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\FormBlockController;
 use App\Http\Controllers\Api\FormAvatarController;
 use App\Http\Controllers\Api\FormResultsController;
 use App\Http\Controllers\Api\PublishFormController;
+use App\Http\Controllers\Api\UnpublishFormController;
 use App\Http\Controllers\Api\FormBlockSequenceController;
 use App\Http\Controllers\Api\InteractionResultsController;
 use App\Http\Controllers\Api\FormBlockInteractionController;
@@ -38,8 +39,8 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->delete('forms/{uuid}', [FormController::class, 'delete'])->name('api.forms.delete');
 
     // Form Publishing Routes
-    $router->post('forms/{uuid}/publish', [PublishFormController::class, 'create'])->name('api.forms.publish.create');
-    $router->delete('forms/{uuid}/publish', [PublishFormController::class, 'delete'])->name('api.forms.publish.delete');
+    $router->post('forms/{uuid}/publish', PublishFormController::class)->name('api.forms.publish');
+    $router->post('forms/{uuid}/unpublish', UnpublishFormController::class)->name('api.forms.unpublish');
 
     // Form Avatar Routes
     $router->post('forms/{uuid}/avatar', [FormAvatarController::class, 'store'])->name('api.forms.images.store');
