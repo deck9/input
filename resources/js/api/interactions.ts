@@ -60,3 +60,23 @@ export function callDeleteFormBlockInteraction(
         }
     });
 }
+
+export function callUpdateInteractionSequence(
+    id: number,
+    sequence: number[]
+): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.interactions.sequence", { block: id }),
+                {
+                    sequence,
+                }
+            );
+
+            resolve(response as AxiosResponse);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

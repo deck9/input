@@ -5,6 +5,7 @@ import {
     callCreateFormBlockInteraction,
     callDeleteFormBlockInteraction,
     callUpdateFormBlockInteraction,
+    callUpdateInteractionSequence,
 } from "@/api/interactions";
 import { replaceRouteQuery } from "@/utils";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
@@ -204,13 +205,18 @@ export const useWorkbench = defineStore("workbench", {
                 return;
             }
 
-            const items = this.currentInteractions.map((i) => i.id);
+            const saveSequenceRequestData: Array<number> =
+                this.currentInteractions.map((i) => i.id);
 
             // move item to target position
-            items.splice(to, 0, items.splice(from, 1)[0]);
+            saveSequenceRequestData.splice(
+                to,
+                0,
+                saveSequenceRequestData.splice(from, 1)[0]
+            );
 
             // set new sequence numbers to blocks
-            items.map((id, key) => {
+            saveSequenceRequestData.map((id, key) => {
                 if (!this.block?.interactions) {
                     return;
                 }
@@ -223,6 +229,15 @@ export const useWorkbench = defineStore("workbench", {
                     this.block.interactions[index].sequence = key;
                 }
             });
+
+            try {
+                await callUpdateInteractionSequence(
+                    this.block.id,
+                    saveSequenceRequestData
+                );
+            } catch (error) {
+                console.warn(error);
+            }
         },
     },
 
