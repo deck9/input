@@ -42,6 +42,15 @@ class FormBlockInteraction extends Model
                 'uuid' => (new Hashids())->encode($model->id),
             ]);
         });
+
+        self::deleted(function ($model) {;
+            $model->block->updateInteractionSequence(
+                self::where("form_block_id", $model->form_block_id)
+                    ->where('type', $model->type)
+                    ->pluck('id')
+                    ->toArray()
+            );
+        });
     }
 
     public function block()

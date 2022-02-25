@@ -18,12 +18,7 @@
       @click="workbench.putOnWorkbench(block)"
     >
       <div class="absolute right-3 top-4 opacity-50 group-hover:opacity-100">
-        <D9Menu
-          class="text-grey-400"
-          position="right"
-          :use-portal="true"
-          ref="menu"
-        >
+        <D9Menu class="text-grey-400" position="right" :use-portal="true">
           <D9MenuLink
             as="button"
             class="block w-full text-left"

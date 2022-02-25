@@ -8,10 +8,15 @@
               :id="item.id + '_label'"
               class="pl-12"
               name="label"
+              ref="labelElement"
               type="text"
               v-model="label"
               block
               placeholder="Label"
+              @keyup.enter="keyboardCommands"
+              @keyup.up="keyboardCommands"
+              @keyup.down="keyboardCommands"
+              @keydown.meta.delete.prevent="keyboardCommands"
             />
             <span class="absolute inset-y-0 flex items-center px-3">
               <IndexItem class="" type="click" v-bind="{ index }" />
@@ -26,21 +31,23 @@
             v-model="reply"
             block
             placeholder="Reply"
+            @keyup.enter="keyboardCommands"
           />
         </div>
       </section>
     </div>
 
     <div
-      class="text-grey-400 absolute inset-y-2 -left-24 flex w-24 items-center justify-end space-x-2 pr-2 opacity-0 transition duration-200 group-hover:opacity-100"
+      class="absolute inset-y-2 -left-24 flex w-24 items-center justify-end space-x-2 pr-2 text-grey-400 opacity-0 transition duration-200 group-hover:opacity-100"
     >
       <button
+        tabindex="-1"
         class="hover:text-grey-600"
         @click="workbench.deleteInteraction(item)"
       >
         <D9Icon name="trash" />
       </button>
-      <button class="handle hover:text-grey-600">
+      <button tabindex="-1" class="handle hover:text-grey-600">
         <D9Icon name="grip-vertical" />
       </button>
     </div>
@@ -57,7 +64,7 @@ const workbench = useWorkbench();
 
 const props = withDefaults(
   defineProps<{
-    index?: number;
+    index: number;
     multiple?: boolean;
     item: FormBlockInteractionModel;
   }>(),
@@ -65,6 +72,15 @@ const props = withDefaults(
     multiple: false,
   }
 );
+
+const emit = defineEmits<{
+  (e: "next", index: number): void;
+  (e: "nextSoft", index: number): void;
+  (e: "previous", index: number): void;
+  (e: "delete", index: number): void;
+}>();
+
+const labelElement = ref(null) as unknown as Ref<HTMLElement>;
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
 const reply: Ref<FormBlockInteractionModel["label"]> = ref(props.item.reply);
@@ -77,5 +93,39 @@ watch([label, reply], (newValues) => {
   };
 
   workbench.updateInteraction(update);
+});
+
+const keyboardCommands = async (event: KeyboardEvent) => {
+  switch (event.key) {
+    case "Enter":
+      // check for modifier
+      if (event.shiftKey) {
+        return emit("previous", props.index);
+      }
+
+      return emit("next", props.index);
+
+    case "Backspace":
+      if (event.metaKey) {
+        await workbench.deleteInteraction(props.item);
+        emit("delete", props.index);
+      }
+      break;
+
+    case "ArrowUp":
+      return emit("previous", props.index);
+
+    case "ArrowDown":
+      return emit("nextSoft", props.index);
+  }
+};
+
+const focus = () => {
+  labelElement.value.focus();
+};
+
+defineExpose({
+  item: props.item,
+  focus,
 });
 </script>

@@ -49,4 +49,25 @@ class BlockInteractionSequenceTest extends TestCase
         $this->assertEquals(1, $interactions[0]->sequence);
         $this->assertEquals(2, $interactions[1]->sequence);
     }
+
+    /** @test */
+    public function deleting_an_interaction_updates_sequence_on_remaining_interactions()
+    {
+        $block = FormBlock::factory()->create();
+        $interactions = FormBlockInteraction::factory()->count(3)->create([
+            'form_block_id' => $block->id,
+        ]);
+
+        // delete the second interaction
+        $this->actingAs($block->form->user)
+            ->json('DELETE', route('api.interactions.delete', $interactions[1]->id))
+            ->assertStatus(200);
+
+        // refresh from db
+        $interactions = $block->interactions()->get();
+
+        $this->assertCount(2, $interactions);
+        $this->assertEquals(0, $interactions[0]->sequence);
+        $this->assertEquals(1, $interactions[1]->sequence);
+    }
 }

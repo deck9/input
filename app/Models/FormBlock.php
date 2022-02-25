@@ -98,4 +98,12 @@ class FormBlock extends Model
     {
         return typingDelay($this->message);
     }
+
+    public function updateInteractionSequence(array $sequence)
+    {
+        foreach ($sequence as $pos => $id) {
+            $interaction = $this->interactions->firstWhere('id', $id);
+            $interaction->update(['sequence' => $pos]);
+        }
+    }
 }

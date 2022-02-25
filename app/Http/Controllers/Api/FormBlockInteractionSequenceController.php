@@ -19,10 +19,7 @@ class FormBlockInteractionSequenceController extends Controller
             'sequence' => 'required|array',
         ]);
 
-        foreach ($request->sequence as $pos => $id) {
-            $interaction = $block->interactions->firstWhere('id', $id);
-            $interaction->update(['sequence' => $pos]);
-        }
+        $block->updateInteractionSequence($request->sequence);
 
         return response()->json(null, 204);
     }
