@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="workbench.currentInteractions?.length === 0"
-      class="font-heading mb-4 block rounded bg-grey-200 px-4 py-3 text-grey-700"
+      class="font-heading block rounded bg-grey-200 px-4 py-3 text-grey-700"
     >
       Nothing here yet.
       <small class="block font-sans text-sm"
@@ -11,6 +11,7 @@
     </div>
 
     <Container
+      v-else
       lock-axis="y"
       drag-handle-selector="button.handle"
       orientation="vertical"
