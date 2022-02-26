@@ -3,17 +3,17 @@
 
   <jet-authentication-card>
     <template #logo>
-      <jet-application-logo class="h-8 mx-auto" />
+      <jet-application-logo class="mx-auto h-8" />
     </template>
 
-    <div class="mb-4 text-sm text-gray-600">
+    <div class="mb-4 text-sm text-grey-600">
       Thanks for signing up! Before getting started, could you verify your email
       address by clicking on the link we just emailed to you? If you didn't
       receive the email, we will gladly send you another.
     </div>
 
     <div
-      class="mb-4 font-medium text-sm text-green-600"
+      class="mb-4 text-sm font-medium text-green-600"
       v-if="verificationLinkSent"
     >
       A new verification link has been sent to the email address you provided
@@ -33,7 +33,7 @@
           :href="route('logout')"
           method="post"
           as="button"
-          class="underline text-sm text-gray-600 hover:text-gray-900"
+          class="text-sm text-grey-600 underline hover:text-grey-900"
           >Log Out</Link
         >
       </div>

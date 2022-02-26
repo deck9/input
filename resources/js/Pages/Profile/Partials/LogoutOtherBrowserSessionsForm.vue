@@ -7,7 +7,7 @@
     </template>
 
     <template #content>
-      <div class="max-w-xl text-sm text-gray-600">
+      <div class="max-w-xl text-sm text-grey-600">
         If necessary, you may log out of all of your other browser sessions
         across all of your devices. Some of your recent sessions are listed
         below; however, this list may not be exhaustive. If you feel your
@@ -29,7 +29,7 @@
               stroke-width="2"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              class="w-8 h-8 text-gray-500"
+              class="h-8 w-8 text-grey-500"
               v-if="session.agent.is_desktop"
             >
               <path
@@ -45,7 +45,7 @@
               fill="none"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="w-8 h-8 text-gray-500"
+              class="h-8 w-8 text-grey-500"
               v-else
             >
               <path d="M0 0h24v24H0z" stroke="none"></path>
@@ -55,16 +55,16 @@
           </div>
 
           <div class="ml-3">
-            <div class="text-sm text-gray-600">
+            <div class="text-sm text-grey-600">
               {{ session.agent.platform }} - {{ session.agent.browser }}
             </div>
 
             <div>
-              <div class="text-xs text-gray-500">
+              <div class="text-xs text-grey-500">
                 {{ session.ip_address }},
 
                 <span
-                  class="text-green-500 font-semibold"
+                  class="font-semibold text-green-500"
                   v-if="session.is_current_device"
                   >This device</span
                 >
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div class="flex items-center mt-5">
+      <div class="mt-5 flex items-center">
         <jet-button @click="confirmLogout">
           Log Out Other Browser Sessions
         </jet-button>

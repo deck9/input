@@ -14,7 +14,7 @@
 
         <template #form>
           <div class="col-span-6">
-            <div class="max-w-xl text-sm text-gray-600">
+            <div class="max-w-xl text-sm text-grey-600">
               Please provide the email address of the person you would like to
               add to this team.
             </div>
@@ -47,32 +47,13 @@
             />
 
             <div
-              class="
-                relative
-                z-0
-                mt-1
-                border border-gray-200
-                rounded-lg
-                cursor-pointer
-              "
+              class="relative z-0 mt-1 cursor-pointer rounded-lg border border-grey-200"
             >
               <button
                 type="button"
-                class="
-                  relative
-                  px-4
-                  py-3
-                  inline-flex
-                  w-full
-                  rounded-lg
-                  focus:z-10
-                  focus:outline-none
-                  focus:border-blue-300
-                  focus:ring
-                  focus:ring-blue-200
-                "
+                class="relative inline-flex w-full rounded-lg px-4 py-3 focus:z-10 focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-200"
                 :class="{
-                  'border-t border-gray-200 rounded-t-none': i > 0,
+                  'rounded-t-none border-t border-grey-200': i > 0,
                   'rounded-b-none': i != Object.keys(availableRoles).length - 1,
                 }"
                 @click="addTeamMemberForm.role = role.key"
@@ -89,7 +70,7 @@
                   <!-- Role Name -->
                   <div class="flex items-center">
                     <div
-                      class="text-sm text-gray-600"
+                      class="text-sm text-grey-600"
                       :class="{
                         'font-semibold': addTeamMemberForm.role == role.key,
                       }"
@@ -114,7 +95,7 @@
                   </div>
 
                   <!-- Role Description -->
-                  <div class="mt-2 text-xs text-gray-600 text-left">
+                  <div class="mt-2 text-left text-xs text-grey-600">
                     {{ role.description }}
                   </div>
                 </div>
@@ -166,17 +147,12 @@
               v-for="invitation in team.team_invitations"
               :key="invitation.id"
             >
-              <div class="text-gray-600">{{ invitation.email }}</div>
+              <div class="text-grey-600">{{ invitation.email }}</div>
 
               <div class="flex items-center">
                 <!-- Cancel Team Invitation -->
                 <button
-                  class="
-                    cursor-pointer
-                    ml-6
-                    text-sm text-red-500
-                    focus:outline-none
-                  "
+                  class="ml-6 cursor-pointer text-sm text-red-500 focus:outline-none"
                   @click="cancelTeamInvitation(invitation)"
                   v-if="userPermissions.canRemoveTeamMembers"
                 >
@@ -210,7 +186,7 @@
             >
               <div class="flex items-center">
                 <img
-                  class="w-8 h-8 rounded-full"
+                  class="h-8 w-8 rounded-full"
                   :src="user.profile_photo_url"
                   :alt="user.name"
                 />
@@ -220,7 +196,7 @@
               <div class="flex items-center">
                 <!-- Manage Team Member Role -->
                 <button
-                  class="ml-2 text-sm text-gray-400 underline"
+                  class="ml-2 text-sm text-grey-400 underline"
                   @click="manageRole(user)"
                   v-if="
                     userPermissions.canAddTeamMembers && availableRoles.length
@@ -230,7 +206,7 @@
                 </button>
 
                 <div
-                  class="ml-2 text-sm text-gray-400"
+                  class="ml-2 text-sm text-grey-400"
                   v-else-if="availableRoles.length"
                 >
                   {{ displayableRole(user.membership.role) }}
@@ -238,7 +214,7 @@
 
                 <!-- Leave Team -->
                 <button
-                  class="cursor-pointer ml-6 text-sm text-red-500"
+                  class="ml-6 cursor-pointer text-sm text-red-500"
                   @click="confirmLeavingTeam"
                   v-if="$page.props.user.id === user.id"
                 >
@@ -247,7 +223,7 @@
 
                 <!-- Remove Team Member -->
                 <button
-                  class="cursor-pointer ml-6 text-sm text-red-500"
+                  class="ml-6 cursor-pointer text-sm text-red-500"
                   @click="confirmTeamMemberRemoval(user)"
                   v-if="userPermissions.canRemoveTeamMembers"
                 >
@@ -270,32 +246,13 @@
       <template #content>
         <div v-if="managingRoleFor">
           <div
-            class="
-              relative
-              z-0
-              mt-1
-              border border-gray-200
-              rounded-lg
-              cursor-pointer
-            "
+            class="relative z-0 mt-1 cursor-pointer rounded-lg border border-grey-200"
           >
             <button
               type="button"
-              class="
-                relative
-                px-4
-                py-3
-                inline-flex
-                w-full
-                rounded-lg
-                focus:z-10
-                focus:outline-none
-                focus:border-blue-300
-                focus:ring
-                focus:ring-blue-200
-              "
+              class="relative inline-flex w-full rounded-lg px-4 py-3 focus:z-10 focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-200"
               :class="{
-                'border-t border-gray-200 rounded-t-none': i > 0,
+                'rounded-t-none border-t border-grey-200': i > 0,
                 'rounded-b-none': i !== Object.keys(availableRoles).length - 1,
               }"
               @click="updateRoleForm.role = role.key"
@@ -311,7 +268,7 @@
                 <!-- Role Name -->
                 <div class="flex items-center">
                   <div
-                    class="text-sm text-gray-600"
+                    class="text-sm text-grey-600"
                     :class="{
                       'font-semibold': updateRoleForm.role === role.key,
                     }"
@@ -336,7 +293,7 @@
                 </div>
 
                 <!-- Role Description -->
-                <div class="mt-2 text-xs text-gray-600">
+                <div class="mt-2 text-xs text-grey-600">
                   {{ role.description }}
                 </div>
               </div>

@@ -14,7 +14,7 @@
         <div class="col-span-4 pt-8">
           <TabList
             as="nav"
-            class="divide-grey-50 border-grey-200 divide-y overflow-hidden rounded border bg-white"
+            class="divide-y divide-grey-50 overflow-hidden rounded border border-grey-200 bg-white"
             aria-label="Sidebar"
           >
             <Tab
@@ -27,7 +27,7 @@
                 :class="[
                   selected
                     ? 'bg-grey-50'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+                    : 'text-grey-600 hover:bg-grey-100 hover:text-grey-900',
                   'relative block w-full px-3 py-3 text-left text-sm font-medium',
                 ]"
               >
@@ -43,7 +43,7 @@
 
         <TabPanels as="div" class="col-span-8">
           <TabPanel v-for="item in navigation" :key="item.name">
-            <h3 class="border-grey-300 border-b pb-2 text-xl font-medium">
+            <h3 class="border-b border-grey-300 pb-2 text-xl font-medium">
               {{ item.name }}
             </h3>
 

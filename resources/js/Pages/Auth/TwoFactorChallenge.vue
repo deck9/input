@@ -3,10 +3,10 @@
 
   <jet-authentication-card>
     <template #logo>
-      <jet-application-logo class="h-8 mx-auto" />
+      <jet-application-logo class="mx-auto h-8" />
     </template>
 
-    <div class="mb-4 text-sm text-gray-600">
+    <div class="mb-4 text-sm text-grey-600">
       <template v-if="!recovery">
         Please confirm access to your account by entering the authentication
         code provided by your authenticator application.
@@ -47,15 +47,10 @@
         />
       </div>
 
-      <div class="flex items-center justify-end mt-4">
+      <div class="mt-4 flex items-center justify-end">
         <button
           type="button"
-          class="
-            text-sm text-gray-600
-            hover:text-gray-900
-            underline
-            cursor-pointer
-          "
+          class="cursor-pointer text-sm text-grey-600 underline hover:text-grey-900"
           @click.prevent="toggleRecovery"
         >
           <template v-if="!recovery"> Use a recovery code </template>

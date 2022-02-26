@@ -137,6 +137,10 @@ class Form extends Model
 
     public function hasAvatar()
     {
+        if (!$this->avatar_path) {
+            return false;
+        }
+
         return Storage::disk('images')->exists($this->avatar_path);
     }
 

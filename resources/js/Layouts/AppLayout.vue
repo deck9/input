@@ -4,7 +4,7 @@
 
     <jet-banner />
 
-    <div class="bg-grey-50 flex min-h-screen flex-col">
+    <div class="flex min-h-screen flex-col bg-grey-50">
       <nav class="bg-grey-800">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,7 +40,7 @@
                   <template #trigger>
                     <button
                       v-if="$page.props.jetstream.managesProfilePhotos"
-                      class="flex rounded-full border-2 border-transparent text-sm transition focus:border-gray-300 focus:outline-none"
+                      class="flex rounded-full border-2 border-transparent text-sm transition focus:border-grey-300 focus:outline-none"
                     >
                       <img
                         class="h-8 w-8 rounded-full object-cover"
@@ -52,7 +52,7 @@
                     <span v-else class="inline-flex rounded-md">
                       <button
                         type="button"
-                        class="text-grey-300 bg-grey-900 inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 transition hover:text-blue-200 focus:outline-none"
+                        class="inline-flex items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 transition hover:text-blue-200 focus:outline-none"
                       >
                         {{ $page.props.user.name }}
                         <svg
@@ -73,7 +73,7 @@
 
                   <template #content>
                     <!-- Account Management -->
-                    <div class="block px-4 py-2 text-xs text-gray-400">
+                    <div class="block px-4 py-2 text-xs text-grey-400">
                       Manage Account
                     </div>
 
@@ -87,7 +87,7 @@
                       >API Tokens</jet-dropdown-link
                     >
 
-                    <div class="border-t border-gray-100"></div>
+                    <div class="border-t border-grey-100"></div>
 
                     <!-- Authentication -->
                     <form @submit.prevent="logout">

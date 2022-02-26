@@ -4,13 +4,13 @@
   <jet-authentication-card>
     <template #logo>
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <jet-application-logo class="h-8 mx-auto" />
+        <jet-application-logo class="mx-auto h-8" />
       </div>
     </template>
 
     <jet-validation-errors class="mb-4" />
 
-    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+    <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
       {{ status }}
     </div>
 
@@ -39,18 +39,18 @@
         />
       </div>
 
-      <div class="block mt-4">
+      <div class="mt-4 block">
         <label class="flex items-center">
           <jet-checkbox name="remember" v-model:checked="form.remember" />
-          <span class="ml-2 text-sm text-gray-600">Remember me</span>
+          <span class="ml-2 text-sm text-grey-600">Remember me</span>
         </label>
       </div>
 
-      <div class="flex items-center justify-end mt-4">
+      <div class="mt-4 flex items-center justify-end">
         <Link
           v-if="canResetPassword"
           :href="route('password.request')"
-          class="underline text-sm text-gray-600 hover:text-gray-900"
+          class="text-sm text-grey-600 underline hover:text-grey-900"
         >
           Forgot your password?
         </Link>
@@ -68,7 +68,7 @@
     <div class="mt-4 text-sm text-grey-500">
       No account yet?
       <Link
-        class="underline text-sm text-gray-600 hover:text-gray-900"
+        class="text-sm text-grey-600 underline hover:text-grey-900"
         :href="route('register')"
         >Create a new account</Link
       >

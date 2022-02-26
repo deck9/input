@@ -7,29 +7,30 @@
     ],
     "license": "Business Source License 1.1",
     "require": {
-        "php": "^7.3|^8.0",
-        "fruitcake/laravel-cors": "^2.0",
+        "php": "^8.1",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "hashids/hashids": "^4.1",
-        "inertiajs/inertia-laravel": "^0.4.3",
-        "laravel/framework": "^8.54",
+        "inertiajs/inertia-laravel": "^0.5.4",
+        "laravel/framework": "^9.0",
         "laravel/jetstream": "^2.4",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "league/glide-laravel": "^1.0",
         "spatie/browsershot": "^3.50",
         "tightenco/ziggy": "^1.0",
         "webpatser/laravel-uuid": "^4.0"
     },
     "require-dev": {
-        "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "pestphp/pest": "^1.18",
+        "nunomaduro/collision": "^6.1",
         "pestphp/pest-plugin-laravel": "^1.1",
-        "phpunit/phpunit": "^9.3.3"
+        "pestphp/pest": "^1.18",
+        "phpunit/phpunit": "^9.3.3",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {

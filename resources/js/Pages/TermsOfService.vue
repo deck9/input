@@ -1,26 +1,16 @@
 <template>
   <Head title="Terms of Service" />
 
-  <div class="font-sans text-gray-900 antialiased">
-    <div class="pt-4 bg-gray-100">
-      <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
+  <div class="font-sans text-grey-900 antialiased">
+    <div class="bg-grey-100 pt-4">
+      <div class="flex min-h-screen flex-col items-center pt-6 sm:pt-0">
         <div>
-          <jet-application-logo class="h-8 mx-auto" />
+          <jet-application-logo class="mx-auto h-8" />
         </div>
 
         <div
           v-html="terms"
-          class="
-            w-full
-            sm:max-w-2xl
-            mt-6
-            p-6
-            bg-white
-            shadow-md
-            overflow-hidden
-            sm:rounded-lg
-            prose
-          "
+          class="prose mt-6 w-full overflow-hidden bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
         ></div>
       </div>
     </div>

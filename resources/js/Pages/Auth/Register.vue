@@ -3,7 +3,7 @@
 
   <jet-authentication-card>
     <template #logo>
-      <jet-application-logo class="h-8 mx-auto" />
+      <jet-application-logo class="mx-auto h-8" />
     </template>
 
     <jet-validation-errors class="mb-4" />
@@ -74,14 +74,14 @@
               <a
                 target="_blank"
                 :href="route('terms.show')"
-                class="underline text-sm text-gray-600 hover:text-gray-900"
+                class="text-sm text-grey-600 underline hover:text-grey-900"
                 >Terms of Service</a
               >
               and
               <a
                 target="_blank"
                 :href="route('policy.show')"
-                class="underline text-sm text-gray-600 hover:text-gray-900"
+                class="text-sm text-grey-600 underline hover:text-grey-900"
                 >Privacy Policy</a
               >
             </div>
@@ -89,10 +89,10 @@
         </jet-label>
       </div>
 
-      <div class="flex items-center justify-end mt-4">
+      <div class="mt-4 flex items-center justify-end">
         <Link
           :href="route('login')"
-          class="underline text-sm text-gray-600 hover:text-gray-900"
+          class="text-sm text-grey-600 underline hover:text-grey-900"
         >
           Already registered?
         </Link>
