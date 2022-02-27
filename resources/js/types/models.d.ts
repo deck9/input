@@ -48,7 +48,16 @@ interface FormModel extends BaseModel {
 }
 
 interface FormBlockModel extends BaseModel {
-    type: "message" | "consent" | "input" | "multiple" | "click";
+    type:
+        | "none"
+        | "consent"
+        | "input-short"
+        | "checkbox"
+        | "radio"
+        | "input-number"
+        | "input-email"
+        | "input-link"
+        | "input-phone";
     message: string | null;
     title: string | null;
     options: string | null;
@@ -68,3 +77,10 @@ interface FormBlockInteractionModel extends BaseModel {
     form_block_id: number;
     deleted_at: string | null;
 }
+
+type InteractionOption = {
+    id?: number;
+    label: string;
+    value: FormBlockModel["type"];
+    icon?: string;
+};

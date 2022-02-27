@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\FormBlockType;
 use App\Models\Form;
 use App\Models\FormBlock;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +26,7 @@ class FormBlockFactory extends Factory
         return [
             'uuid' => $this->faker->uuid,
             'message' => $this->faker->sentence(10),
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
             'responses' => null,
             'sequence' => 0,
             'webhook_url' => null,
@@ -37,7 +38,7 @@ class FormBlockFactory extends Factory
     {
         return $this->state(function () {
             return [
-                'type' => FormBlock::CLICK,
+                'type' => FormBlockType::radio,
             ];
         });
     }

@@ -3,16 +3,15 @@
 namespace Tests\Feature\Forms\Interactions;
 
 use Tests\TestCase;
-use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockType;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Forms\Interactions\InteractionsTestingContract;
 
-class MultipleChoiceInteractionTest extends TestCase
+class CheckboxTest extends TestCase
 {
     use RefreshDatabase, InteractionsTestingContract;
 
-    protected function getInteractionType()
-    {
-        return FormBlockInteraction::TYPE_CLICK;
-    }
+    protected $blockType = FormBlockType::checkbox;
+    protected $interactionType = FormBlockInteractionType::button;
 }

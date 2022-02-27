@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FormBlockInteractionType;
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,12 +14,9 @@ class FormBlockInteraction extends Model
 
     protected $guarded = [];
 
-    const TYPE_CLICK = 'click';
-    const TYPE_INPUT = 'input';
-    const TYPE_CONSENT = 'consent';
-
     protected $casts = [
         'form_block_id' => 'integer',
+        'type' => FormBlockInteractionType::class
     ];
 
     protected $hidden = [

@@ -6,17 +6,18 @@ use App\Models\FormBlock;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockInteractionType;
 
 class FormBlockInteractionController extends Controller
 {
-    public function create(Request $request, FormBlock $block)
+    public function create(FormBlock $block)
     {
-        $request->validate([
-            'type' => 'required',
-        ]);
+        if (!$block->getInteractionType()) {
+            abort(400, 'Invalid block type');
+        }
 
         $interaction = new FormBlockInteraction([
-            'type' => $request->input('type'),
+            'type' => $block->getInteractionType(),
         ]);
 
         $block->interactions()->save($interaction);
@@ -27,19 +28,10 @@ class FormBlockInteractionController extends Controller
     public function update(Request $request, FormBlockInteraction $interaction)
     {
         switch ($interaction->type) {
-            case FormBlockInteraction::TYPE_CLICK:
+            case FormBlockInteractionType::button:
                 $request->validate([
                     'label' => 'min:1',
                 ]);
-                break;
-            case FormBlockInteraction::TYPE_INPUT:
-                $request->validate([
-                    'has_validation' => 'nullable|in:email,numeric,url,none',
-                ]);
-
-                if ($request->has('has_validation')) {
-                    $interaction->has_validation = $request->has_validation;
-                }
                 break;
         }
 

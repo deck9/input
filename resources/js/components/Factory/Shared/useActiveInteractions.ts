@@ -8,15 +8,15 @@ export default function (block: FormBlockModel | null): {
         let interactions;
 
         switch (block?.type) {
-            case "click":
-            case "multiple":
+            case "checkbox":
+            case "radio":
                 interactions =
                     block?.interactions?.filter((i) => {
                         return i.type === "click";
                     }) ?? [];
                 break;
 
-            case "input":
+            case "input-short":
                 interactions =
                     block?.interactions?.filter((i) => {
                         return i.type === "input";

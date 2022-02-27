@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FormBlockInteractionFactory extends Factory
@@ -24,7 +25,7 @@ class FormBlockInteractionFactory extends Factory
     {
         return [
             'uuid' => $this->faker->uuid(),
-            'type' => FormBlockInteraction::TYPE_CLICK,
+            'type' => FormBlockInteractionType::button,
             'form_block_id' => FormBlock::factory(),
         ];
     }

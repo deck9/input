@@ -5,21 +5,31 @@ namespace Tests\Feature\Forms\Interactions;
 use App\Snippet;
 use App\Interaction;
 use App\Models\FormBlock;
+use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockInteractionType;
 
 trait InteractionsTestingContract
 {
-    abstract protected function getInteractionType();
+    protected function getBlockType()
+    {
+        return $this->blockType->value;
+    }
+
+    protected function getInteractionType()
+    {
+        return $this->interactionType->value;
+    }
 
     /** @test */
-    public function can_create_an_interaction_of_this_type()
+    public function can_create_an_interaction_for_block_type()
     {
-        $block = FormBlock::factory()->create();
+        $block = FormBlock::factory()->create([
+            'type' => $this->getBlockType(),
+        ]);
 
         $response = $this->actingAs($block->form->user)
-            ->json('post', route('api.interactions.create', $block->id), [
-                'type' => $this->getInteractionType(),
-            ])
+            ->json('post', route('api.interactions.create', $block->id))
             ->assertStatus(201);
 
         $this->assertNotNull($response->json('uuid'));

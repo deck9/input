@@ -22,7 +22,7 @@
         :key="item.id"
       >
         <ClickInteraction
-          v-bind="{ item, index, multiple: workbench.isMultipleChoice }"
+          v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateInputs.bind(index)"
           @next="focusNextItem"

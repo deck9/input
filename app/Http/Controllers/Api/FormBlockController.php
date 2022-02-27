@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Form;
 use App\Models\FormBlock;
+use App\Enums\FormBlockType;
 use Illuminate\Http\Request;
 use App\Events\FormBlocksUpdated;
 use App\Http\Controllers\Controller;
@@ -21,7 +22,7 @@ class FormBlockController extends Controller
 
         if (!$form->has_data_privacy) {
             $blocks = $blocks->reject(function ($item) {
-                return $item->type === FormBlock::CONSENT;
+                return $item->type === FormBlockType::consent;
             });
         }
 
@@ -41,7 +42,7 @@ class FormBlockController extends Controller
         $sequence = $form->blocks->count();
 
         $block = $form->blocks()->create([
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
             'sequence' => $sequence
         ]);
 

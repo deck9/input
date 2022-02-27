@@ -3,16 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Models\FormBlock;
+use App\Enums\FormBlockType;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FormBlockUpdateRequest extends FormRequest
 {
-    const VALID_TYPES = [
-        FormBlock::MESSAGE,
-        FormBlock::CLICK,
-        FormBlock::INPUT,
-        FormBlock::MULTIPLE,
-    ];
 
     /**
      * Determine if the user is authorized to make this request.
@@ -36,11 +32,7 @@ class FormBlockUpdateRequest extends FormRequest
             'webhook_url' => 'url|nullable',
             'options' => 'array|nullable',
             'title' => 'string|nullable',
-            'type' => [function ($attribute, $value, $fail) {
-                if (!in_array($value, self::VALID_TYPES)) {
-                    $fail('Snippet Type is not allowed');
-                }
-            }]
+            'type' => [new Enum(FormBlockType::class)]
         ];
     }
 

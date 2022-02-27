@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\User;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\UploadedFile;
 use App\Models\FormSessionResponse;
@@ -66,14 +67,14 @@ class FormModelTest extends TestCase
     {
         $form = Form::factory()->create();
         $form->blocks()->saveMany(FormBlock::factory()->count(8)->make([
-            'type' => FormBlock::INPUT,
+            'type' => FormBlockType::short,
         ]));
         $form->blocks()->saveMany(FormBlock::factory()->count(4)->make([
-            'type' => FormBlock::CLICK,
+            'type' => FormBlockType::radio,
             'responses' => [['content' => 'Yes']],
         ]));
         $form->blocks()->saveMany(FormBlock::factory()->count(3)->make([
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
         ]));
 
         $this->assertEquals(12, $form->actionBlocksCount());
@@ -84,10 +85,10 @@ class FormModelTest extends TestCase
     {
         $form = Form::factory()->create();
         $blockA = FormBlock::factory()->make([
-            'type' => FormBlock::CLICK,
+            'type' => FormBlockType::radio,
         ]);
         $blockB = FormBlock::factory()->make([
-            'type' => FormBlock::INPUT,
+            'type' => FormBlockType::short,
         ]);
         $form->blocks()->save($blockA);
         $form->blocks()->save($blockB);

@@ -5,8 +5,9 @@ namespace Tests\Feature\Forms;
 use Tests\TestCase;
 use App\Models\FormBlock;
 use App\Models\FormSession;
-use App\Models\FormBlockInteraction;
 use App\Models\FormSessionResponse;
+use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ResultsTest extends TestCase
@@ -19,12 +20,12 @@ class ResultsTest extends TestCase
         $block = FormBlock::factory()->create();
 
         $interactionA = FormBlockInteraction::factory()->create([
-            'type' => FormBlockInteraction::TYPE_CLICK,
+            'type' => FormBlockInteractionType::button,
             'label' => 'Yes',
             'form_block_id' => $block->id,
         ]);
         $interactionB = FormBlockInteraction::factory()->create([
-            'type' => FormBlockInteraction::TYPE_CLICK,
+            'type' => FormBlockInteractionType::button,
             'label' => 'Yes',
             'form_block_id' => $block->id,
         ]);

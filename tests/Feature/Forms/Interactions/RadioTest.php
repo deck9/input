@@ -3,18 +3,18 @@
 namespace Tests\Feature\Forms\Interactions;
 
 use Tests\TestCase;
+use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Forms\Interactions\InteractionsTestingContract;
 
-class ClickInteractionTest extends TestCase
+class RadioTest extends TestCase
 {
     use RefreshDatabase, InteractionsTestingContract;
 
-    protected function getInteractionType()
-    {
-        return FormBlockInteraction::TYPE_CLICK;
-    }
+    protected $blockType = FormBlockType::radio;
+    protected $interactionType = FormBlockInteractionType::button;
 
     /** @test @api*/
     public function can_not_update_interaction_with_empty_label()

@@ -9,7 +9,6 @@ import {
 } from "@/api/interactions";
 import { replaceRouteQuery } from "@/utils";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
-import { ComputedRef } from "vue";
 
 interface WorkbenchStore {
     block: FormBlockModel | null;
@@ -35,7 +34,7 @@ export const useWorkbench = defineStore("workbench", {
                 : false;
         },
 
-        isMultipleChoice: (state): boolean => state.block?.type === "multiple",
+        isCheckboxInput: (state): boolean => state.block?.type === "checkbox",
 
         currentInteractions: (
             state

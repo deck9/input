@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\Form;
 use App\Models\User;
 use App\Models\FormBlock;
+use App\Enums\FormBlockType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FormTest extends TestCase
@@ -15,6 +16,7 @@ class FormTest extends TestCase
     /** @test */
     public function can_create_a_new_form()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -30,6 +32,7 @@ class FormTest extends TestCase
     /** @test */
     public function when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->actingAs($user)->post(route('api.forms.create'));
@@ -41,6 +44,7 @@ class FormTest extends TestCase
     /** @test */
     public function a_created_form_should_have_a_default_consent_snippet()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->actingAs($user)->post(route('api.forms.create'));
@@ -48,7 +52,7 @@ class FormTest extends TestCase
 
         $this->assertCount(1, $form->blocks);
         $block = $form->blocks->first();
-        $this->assertEquals(FormBlock::CONSENT, $block->type);
+        $this->assertEquals(FormBlockType::consent, $block->type);
     }
 
     /** @test */
@@ -57,6 +61,7 @@ class FormTest extends TestCase
         $form = Form::factory()->create();
 
         // test response for unauthorized user
+        /** @var User $otherUser */
         $otherUser = User::factory()->create();
         $responseA = $this->actingAs($otherUser)
             ->get(route('forms.edit', $form->uuid));
@@ -177,6 +182,7 @@ class FormTest extends TestCase
             'description' => 'better description',
         ];
 
+        /** @var User $newUser */
         $newUser = User::factory()->create();
 
         $this->actingAs($newUser)
