@@ -1,5 +1,5 @@
 <template>
-  <div class="border-grey-200 flex min-h-full flex-grow flex-col border-r">
+  <div class="flex min-h-full flex-grow flex-col border-r border-grey-200">
     <div
       v-if="!isLoaded"
       class="flex w-full items-center justify-center px-4 py-12"
@@ -24,7 +24,7 @@
 
     <div
       v-if="isLoaded"
-      class="border-grey-200 flex items-center justify-center border-t bg-white px-4 py-3"
+      class="flex items-center justify-center border-t border-grey-200 bg-white px-4 py-3"
     >
       <D9Button
         label="Add block"
@@ -33,8 +33,6 @@
         icon-position="right"
         @click="store.createFormBlock()"
       />
-
-      <!-- <PrivacyToggle /> -->
     </div>
   </div>
 </template>
@@ -43,7 +41,6 @@
 import { onMounted, ref } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
-// import PrivacyToggle from "./PrivacyToggle.vue";
 import BlockContainer from "./BlockContainer.vue";
 
 const isLoaded = ref(false);
