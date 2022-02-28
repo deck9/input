@@ -71,3 +71,24 @@ export function callDeleteAvatar(
         }
     });
 }
+
+export function callGetFormBlockMapping(): Promise<
+    AxiosResponse<{ mapping: Record<string, string> }>
+> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.get(
+                window.route("api.form-blocks.mapping")
+            );
+            if (response.status === 200) {
+                resolve(
+                    response as AxiosResponse<{
+                        mapping: Record<string, string>;
+                    }>
+                );
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

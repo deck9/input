@@ -29,6 +29,7 @@ onUnmounted(() => {
   store.clearForm();
 });
 
+store.getFormBlockMapping();
 store.$patch({
   form: props.form,
 });
