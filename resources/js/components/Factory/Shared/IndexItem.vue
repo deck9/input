@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex h-5 w-6 items-center justify-center rounded-md bg-blue-600 text-xs text-white"
+    class="relative flex h-5 w-6 items-center justify-center rounded-md bg-blue-500 text-xs text-white"
     :style="indexColor"
   >
     <D9Icon v-if="iconName" :name="iconName" />
@@ -47,7 +47,7 @@ const indexLetter = computed((): string => {
 });
 
 const indexColor = computed((): string => {
-  if (typeof props.index !== "undefined" && props.type === "click") {
+  if (typeof props.index !== "undefined" && props.type === "button") {
     return `background-color: #${colors[props.index % colors.length]};`;
   }
 

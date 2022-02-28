@@ -3,6 +3,7 @@ import {
     callDeleteAvatar,
     callUpdateForm,
     callUploadAvatar,
+    callGetFormBlockMapping,
 } from "@/api/forms";
 import {
     callGetFormBlocks,
@@ -14,12 +15,14 @@ import {
 declare interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
+    mapping: Record<string, string> | null;
 }
 
 export const useForm = defineStore("form", {
     state: (): FormStore => {
         return {
             form: null,
+            mapping: null,
             blocks: null,
         };
     },
@@ -34,6 +37,12 @@ export const useForm = defineStore("form", {
         clearForm() {
             this.form = null;
             this.blocks = null;
+        },
+
+        async getFormBlockMapping() {
+            const response = await callGetFormBlockMapping();
+
+            this.mapping = response.data.mapping;
         },
 
         async getBlocks() {

@@ -16,22 +16,11 @@
 import { useWorkbench } from "@/stores";
 import { D9Select } from "@deck9/ui";
 import { ref, Ref, watch } from "vue";
+import { useBlockTypes } from "../utils/useBlockTypes";
 
 const workbench = useWorkbench();
 
-type InteractionOption = {
-  id: number;
-  label: string;
-  value: FormBlockModel["type"];
-  icon?: string;
-};
-
-const types: Ref<Array<InteractionOption>> = ref([
-  { id: 1, label: "No Inputs", value: "message", icon: "envelope" },
-  { id: 2, label: "Single Choice", value: "click", icon: "envelope" },
-  { id: 3, label: "Multiple Choice", value: "multiple", icon: "envelope" },
-  { id: 4, label: "Input", value: "input", icon: "envelope" },
-]) as Ref<Array<InteractionOption>>;
+const { types } = useBlockTypes();
 
 const matched = types.value.find((type) => {
   return type.value === workbench.block?.type;

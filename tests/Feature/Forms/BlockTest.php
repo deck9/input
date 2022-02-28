@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\User;
 use Hashids\Hashids;
 use App\Models\FormBlock;
+use App\Enums\FormBlockType;
 use App\Events\FormBlocksUpdated;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -35,7 +36,8 @@ class BlockTest extends TestCase
     /** @test */
     public function can_only_create_blocks_for_forms_that_a_user_owns()
     {
-        $otherUser = User::factory()->create();
+        /** @var User $otherUser */
+        $otherUser = User::factory()->create([]);
         $form = Form::factory()->create();
 
         $this->actingAs($otherUser)
@@ -50,7 +52,7 @@ class BlockTest extends TestCase
 
         FormBlock::factory()->create([
             'form_id' => $form->id,
-            'type' => FormBlock::CONSENT,
+            'type' => FormBlockType::consent,
         ]);
 
         FormBlock::factory()->count(5)->create([
@@ -71,7 +73,7 @@ class BlockTest extends TestCase
 
         FormBlock::factory()->create([
             'form_id' => $form->id,
-            'type' => FormBlock::CONSENT,
+            'type' => FormBlockType::consent,
         ]);
 
         FormBlock::factory()->count(5)->create([
@@ -90,27 +92,28 @@ class BlockTest extends TestCase
     {
         $block = FormBlock::factory()->create([
             'message' => 'Hey there',
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
         ]);
 
         $response = $this->actingAs($block->form->user)
             ->json('post', route('api.blocks.update', $block->id), [
                 'message' => 'Ok?',
-                'type' => FormBlock::CLICK,
-            ]);
+                'type' => FormBlockType::radio,
+            ])->assertSuccessful();
 
         $this->assertEquals('Ok?', $response->json('message'));
-        $this->assertEquals(FormBlock::CLICK, $response->json('type'));
+        $this->assertEquals(FormBlockType::radio->value, $response->json('type'));
     }
 
     /** @test */
     public function cannot_create_or_update_blocks_of_not_owned_form()
     {
+        /** @var User $otherUser */
         $otherUser = User::factory()->create();
 
         $block = FormBlock::factory()->create([
             'message' => 'Hey there',
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
         ]);
 
         $this->actingAs($otherUser)
@@ -120,12 +123,12 @@ class BlockTest extends TestCase
         $this->actingAs($otherUser)
             ->json('post', route('api.blocks.update', $block->id), [
                 'message' => 'Ok?',
-                'type' => FormBlock::CLICK,
+                'type' => FormBlockType::radio,
             ])
             ->assertStatus(403);
 
         $this->assertEquals('Hey there', $block->fresh()->message);
-        $this->assertEquals(FormBlock::MESSAGE, $block->fresh()->type);
+        $this->assertEquals(FormBlockType::none, $block->fresh()->type);
     }
 
     /** @test */
@@ -135,13 +138,13 @@ class BlockTest extends TestCase
 
         $block = FormBlock::factory()->create([
             'message' => 'Hey there',
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
         ]);
 
         $this->actingAs($block->form->user)
             ->json('post', route('api.blocks.update', $block->id), [
                 'message' => 'Ok?',
-                'type' => FormBlock::CLICK,
+                'type' => FormBlockType::radio,
             ]);
 
         Event::assertDispatched(FormBlocksUpdated::class, function ($event) use ($block) {
@@ -164,6 +167,7 @@ class BlockTest extends TestCase
     /** @test */
     public function cannot_delete_blocks_of_other_users()
     {
+        /** @var User $otherUser */
         $otherUser = User::factory()->create();
         $block = FormBlock::factory()->create();
 

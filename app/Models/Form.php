@@ -6,6 +6,7 @@ use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -272,7 +273,7 @@ class Form extends Model
     public function createDefaultConsent()
     {
         FormBlock::create([
-            'type' => FormBlock::CONSENT,
+            'type' => FormBlockType::consent,
             'form_id' => $this->id,
         ]);
     }

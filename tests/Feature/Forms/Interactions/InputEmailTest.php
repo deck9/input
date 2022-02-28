@@ -3,16 +3,16 @@
 namespace Tests\Feature\Forms\Interactions;
 
 use Tests\TestCase;
+use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Forms\Interactions\InteractionsTestingContract;
 
-class MultipleChoiceInteractionTest extends TestCase
+class InputEmailTest extends TestCase
 {
     use RefreshDatabase, InteractionsTestingContract;
 
-    protected function getInteractionType()
-    {
-        return FormBlockInteraction::TYPE_CLICK;
-    }
+    protected $blockType = FormBlockType::email;
+    protected $interactionType = FormBlockInteractionType::input;
 }

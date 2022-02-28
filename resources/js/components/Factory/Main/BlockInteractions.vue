@@ -2,13 +2,8 @@
   <div>
     <h2 class="mb-2 text-base font-bold">Settings</h2>
 
-    <ConfigureInput v-if="workbench.block?.type === 'input'" />
-    <ConfigureClicks
-      v-if="
-        workbench.block?.type === 'click' ||
-        workbench.block?.type === 'multiple'
-      "
-    />
+    <ConfigureInput v-if="workbench.usesInteractionType === 'input'" />
+    <ConfigureClicks v-if="workbench.usesInteractionType === 'button'" />
   </div>
 </template>
 

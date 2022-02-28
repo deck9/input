@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Enums\FormBlockType;
 use Tests\TestCase;
 use App\Models\FormBlock;
 use Tests\CreatesBlocks;
@@ -43,13 +44,13 @@ class FormBlockModelTest extends TestCase
     public function model_has_function_to_determine_if_the_type_expects_responses()
     {
         $snippetA = $this->createBlock([
-            'type' => FormBlock::CLICK,
+            'type' => FormBlockType::radio,
         ]);
         $snippetB = $this->createBlock([
-            'type' => FormBlock::INPUT,
+            'type' => FormBlockType::short,
         ]);
         $snippetC = $this->createBlock([
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
         ]);
 
         $this->assertEquals(true, $snippetA->hasResponseAction());
@@ -71,10 +72,10 @@ class FormBlockModelTest extends TestCase
     public function has_scope_to_get_only_answerable_snippets()
     {
         $this->createBlock([
-            'type' => FormBlock::INPUT,
+            'type' => FormBlockType::short,
         ]);
         $this->createBlock([
-            'type' => FormBlock::MESSAGE,
+            'type' => FormBlockType::none,
         ]);
 
         $result = FormBlock::onlyInteractive()->get();

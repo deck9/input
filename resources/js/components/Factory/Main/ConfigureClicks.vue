@@ -22,7 +22,7 @@
         :key="item.id"
       >
         <ClickInteraction
-          v-bind="{ item, index, multiple: workbench.isMultipleChoice }"
+          v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateInputs.bind(index)"
           @next="focusNextItem"
@@ -68,7 +68,7 @@ const createClickInteraction = async () => {
   isCreatingInteraction.value = true;
 
   try {
-    await workbench.createInteraction("click");
+    await workbench.createInteraction("button");
     return Promise.resolve();
   } catch (error) {
     return Promise.reject(error);

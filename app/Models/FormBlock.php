@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\FormBlockInteractionType;
+use App\Enums\FormBlockType;
 use App\Models\Form;
 use Hashids\Hashids;
 use App\Scopes\Sequence;
@@ -15,12 +17,6 @@ class FormBlock extends Model
 {
     use HasFactory;
 
-    public const MESSAGE = 'message';
-    public const CLICK = 'click';
-    public const INPUT = 'input';
-    public const MULTIPLE = 'multiple';
-    public const CONSENT = 'consent';
-
     protected $guarded = [];
 
     protected $with = ['interactions'];
@@ -31,6 +27,7 @@ class FormBlock extends Model
         'is_child' => 'boolean',
         'form_id' => 'integer',
         'options' => 'array',
+        'type' => FormBlockType::class,
     ];
 
     protected $appends = [
@@ -61,12 +58,14 @@ class FormBlock extends Model
 
     public function scopeOnlyInteractive($query)
     {
-        return $query->whereIn('type', [self::CLICK, self::INPUT]);
+        return $query->whereNotIn('type', [
+            FormBlockType::none
+        ]);
     }
 
     public function hasResponseAction()
     {
-        return in_array($this->type, [self::CLICK, self::INPUT]);
+        return !in_array($this->type, [FormBlockType::none]);
     }
 
     public function hasInput()
@@ -97,6 +96,29 @@ class FormBlock extends Model
     public function typingDelay()
     {
         return typingDelay($this->message);
+    }
+
+
+    public function getInteractionType(): FormBlockInteractionType | null
+    {
+        switch ($this->type) {
+            case FormBlockType::short:
+            case FormBlockType::email:
+            case FormBlockType::phone:
+            case FormBlockType::link:
+            case FormBlockType::number:
+                return FormBlockInteractionType::input;
+
+            case FormBlockType::checkbox:
+            case FormBlockType::radio:
+                return FormBlockInteractionType::button;
+
+            case FormBlockType::consent:
+                return FormBlockInteractionType::consent;
+
+            default:
+                return null;
+        }
     }
 
     public function updateInteractionSequence(array $sequence)

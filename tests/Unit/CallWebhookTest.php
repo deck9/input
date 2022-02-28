@@ -9,6 +9,7 @@ use App\Models\FormBlock;
 use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use Illuminate\Support\Facades\Http;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CallWebhookTest extends TestCase
@@ -26,7 +27,7 @@ class CallWebhookTest extends TestCase
 
         $interaction = FormBlockInteraction::factory()->create([
             'label' => 'Yes',
-            'type' => FormBlockInteraction::TYPE_CLICK,
+            'type' => FormBlockInteractionType::button,
             'form_block_id' => $block->id,
         ]);
 
