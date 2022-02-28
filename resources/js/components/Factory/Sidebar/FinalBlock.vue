@@ -1,6 +1,6 @@
 <template>
   <button
-    class="group relative block w-full cursor-pointer overflow-visible rounded-md border px-6 py-4 text-left shadow-sm"
+    class="group relative block w-full cursor-pointer overflow-visible rounded-md border px-6 py-6 text-left shadow-sm"
     :class="
       workbench.isEditingFinalBlock
         ? 'border-grey-300 bg-grey-200'
