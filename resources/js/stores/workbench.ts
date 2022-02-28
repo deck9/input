@@ -1,3 +1,4 @@
+import { useForm } from "@/stores/form";
 import { callUpdateFormBlock } from "@/api/blocks";
 import { defineStore } from "pinia";
 import { DebouncedFunc } from "lodash";
@@ -27,11 +28,23 @@ export const useWorkbench = defineStore("workbench", {
 
     getters: {
         needsInteractionSetup: (state): boolean => {
-            const typesWithSetup = ["click", "multiple", "input"];
+            const store = useForm();
 
-            return state.block
-                ? typesWithSetup.includes(state.block.type)
-                : false;
+            if (!store.mapping || !state.block) {
+                return false;
+            }
+
+            return typeof store.mapping[state.block.type] !== "undefined";
+        },
+
+        usesInteractionType: (state): string | undefined => {
+            const store = useForm();
+
+            if (!store.mapping || !state.block) {
+                return undefined;
+            }
+
+            return store.mapping[state.block.type];
         },
 
         isCheckboxInput: (state): boolean => state.block?.type === "checkbox",

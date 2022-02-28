@@ -70,7 +70,7 @@ interface FormBlockModel extends BaseModel {
 }
 
 interface FormBlockInteractionModel extends BaseModel {
-    type: "consent" | "input" | "click";
+    type: "button" | "input" | "consent";
     label: string | null;
     reply: string | null;
     has_validation: "none" | "email" | "url" | "numeric" | null;
