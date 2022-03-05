@@ -66,6 +66,11 @@ const createClickInteraction = async () => {
 
   try {
     await workbench.createInteraction("button");
+
+    nextTick(() => {
+      focusLastItem();
+    });
+
     return Promise.resolve();
   } catch (error) {
     return Promise.reject(error);
@@ -113,10 +118,6 @@ const focusNextItem = async (fromIndex: number, create = true) => {
     }
 
     await createClickInteraction();
-
-    nextTick(() => {
-      focusNextItem(fromIndex);
-    });
   } else {
     // if there is a next item, find it in template refs an focus it
     inputs.value[destination.id].focus();
@@ -129,6 +130,16 @@ const focusPreviousItem = async (fromIndex: number) => {
   }
 
   let destination = workbench.currentInteractions[fromIndex - 1];
+  inputs.value[destination.id].focus();
+};
+
+const focusLastItem = async () => {
+  if (!workbench.currentInteractions) {
+    return;
+  }
+
+  let destination =
+    workbench.currentInteractions[workbench.currentInteractions.length - 1];
   inputs.value[destination.id].focus();
 };
 </script>
