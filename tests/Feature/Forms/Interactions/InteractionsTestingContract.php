@@ -29,7 +29,9 @@ trait InteractionsTestingContract
         ]);
 
         $response = $this->actingAs($block->form->user)
-            ->json('post', route('api.interactions.create', $block->id))
+            ->json('post', route('api.interactions.create', $block->id), [
+                'type' => $this->getInteractionType(),
+            ])
             ->assertStatus(201);
 
         $this->assertNotNull($response->json('uuid'));

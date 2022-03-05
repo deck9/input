@@ -28,7 +28,7 @@ class FormBlockUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'string',
+            'message' => 'string|nullable',
             'webhook_url' => 'url|nullable',
             'options' => 'array|nullable',
             'title' => 'string|nullable',

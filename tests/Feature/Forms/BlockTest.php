@@ -106,6 +106,24 @@ class BlockTest extends TestCase
     }
 
     /** @test */
+    public function can_update_a_block_with_a_empty_message()
+    {
+        $block = FormBlock::factory()->create([
+            'message' => 'Test Message',
+            'type' => FormBlockType::none,
+        ]);
+
+        $response = $this->actingAs($block->form->user)
+            ->json('post', route('api.blocks.update', $block->id), [
+                'message' => null,
+                'type' => FormBlockType::radio,
+            ])->assertSuccessful();
+
+        $this->assertNull($response->json('message'));
+        $this->assertEquals(FormBlockType::radio->value, $response->json('type'));
+    }
+
+    /** @test */
     public function cannot_create_or_update_blocks_of_not_owned_form()
     {
         /** @var User $otherUser */

@@ -4,20 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\FormBlock;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
 
 class FormBlockInteractionController extends Controller
 {
-    public function create(FormBlock $block)
+    public function create(Request $request, FormBlock $block)
     {
-        if (!$block->getInteractionType()) {
-            abort(400, 'Invalid block type');
-        }
+        $request->validate([
+            'type' => ['required', Rule::in(array_map(
+                fn ($i) => $i->value,
+                FormBlockInteractionType::cases()
+            ))],
+        ]);
 
         $interaction = new FormBlockInteraction([
-            'type' => $block->getInteractionType(),
+            'type' => $request->input('type'),
         ]);
 
         $block->interactions()->save($interaction);
