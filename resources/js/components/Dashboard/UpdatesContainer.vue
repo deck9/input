@@ -25,7 +25,7 @@ const posts = ref<PostOrPage[]>([]);
 onMounted(async () => {
   const response = await api.posts.browse({
     limit: 3,
-    filter: "tag:survy-dashboard",
+    filter: "tag:input-dashboard",
   });
   setTimeout(() => {
     posts.value = response;

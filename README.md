@@ -1,10 +1,10 @@
-# Survy - Survey via Chat
+# Input - Survey via Chat
 
-Survy lets you create chat-like surveys.
+Input lets you create chat-like surveys.
 
 ## Requirements
 
-- PHP 8.x
-- Node 14.x
-- MySQL or MariaDB
-- Redis
+-   PHP 8.x
+-   Node 14.x
+-   MySQL or MariaDB
+-   Redis

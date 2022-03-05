@@ -16,7 +16,7 @@ class UserModelTest extends TestCase
     {
         $user = new User([
             'name' => 'Test',
-            'email' => 'test@getsurvy.com',
+            'email' => 'test@getinput.com',
         ]);
 
         $user->password = Hash::make('secret');

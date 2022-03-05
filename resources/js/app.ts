@@ -6,7 +6,7 @@ import { PiniaDebounce } from "@pinia/plugin-debounce";
 import debounce from "lodash/debounce";
 
 const appName =
-    window.document.getElementsByTagName("title")[0]?.innerText || "Survy";
+    window.document.getElementsByTagName("title")[0]?.innerText || "Input";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
