@@ -1,12 +1,7 @@
-.smooth-dnd-ghost>button {
-    opacity: .75;
-    background-color: theme("colors.blue.50") !important;
+.smooth-dnd-ghost {
+    @apply opacity-90;
 }
 
-.smooth-dnd-ghost .treeline {
-    opacity: 0;
-}
-
-.smooth-dnd-container>.smooth-dnd-draggable-wrapper {
+.smooth-dnd-container > .smooth-dnd-draggable-wrapper {
     overflow: visible !important;
 }

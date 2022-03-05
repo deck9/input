@@ -11,6 +11,7 @@ import {
     callUpdateBlockSequence,
     callDeleteFormBlock,
 } from "@/api/blocks";
+import { useWorkbench } from ".";
 
 declare interface FormStore {
     form: FormModel | null;
@@ -103,6 +104,11 @@ export const useForm = defineStore("form", {
 
                 if (response.status === 201 && this.blocks) {
                     this.blocks.push(response.data);
+
+                    // if new block has been created, we should select it for editing
+                    const workbench = useWorkbench();
+
+                    workbench.putOnWorkbench(response.data);
                 }
             } catch (error) {
                 console.warn(error);

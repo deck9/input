@@ -1,23 +1,21 @@
 <template>
   <div class="relative my-6 text-sm first-of-type:mt-0">
-    <div
-      class="treeline absolute inset-x-0 -bottom-6 top-0 flex justify-center"
-    >
+    <div class="absolute inset-x-0 -bottom-6 top-0 flex justify-center">
       <button
         class="absolute inset-x-0 bottom-[4px] rounded-full leading-none opacity-0 transition-opacity duration-150 hover:opacity-100"
       >
-        <D9Icon class="text-grey-400 bg-grey-50" name="plus-circle" />
+        <D9Icon class="bg-grey-50 text-grey-400" name="plus-circle" />
       </button>
     </div>
     <button
-      class="group relative block w-full cursor-pointer overflow-visible rounded-md border px-6 py-4 text-left shadow-sm"
-      :class="{
-        'bg-grey-200 border-grey-300': isActive,
-        'border-grey-200 bg-white bg-opacity-90 backdrop-blur-sm': !isActive,
-      }"
+      class="group relative block w-full cursor-pointer overflow-visible rounded-md px-6 py-4 text-left shadow-sm"
+      :class="cardStyle"
       @click="workbench.putOnWorkbench(block)"
     >
-      <div class="absolute right-3 top-4 opacity-50 group-hover:opacity-100">
+      <div
+        class="absolute right-3 top-4 hover:opacity-100"
+        :class="isActive ? 'opacity-100' : 'opacity-25'"
+      >
         <D9Menu class="text-grey-400" position="right" :use-portal="true">
           <D9MenuLink
             as="button"
@@ -40,7 +38,7 @@
         <div class="flex w-full pr-4">
           <ConsentBlockMessage v-if="block.type === 'consent'" />
           <div v-else-if="block.message" class="mb-2" v-html="block.message" />
-          <div v-else class="text-grey-400 mb-2 font-light">--no message--</div>
+          <div v-else class="mb-2 font-light text-grey-400">--no message--</div>
         </div>
       </div>
 
@@ -61,6 +59,7 @@ import { useWorkbench, useForm } from "@/stores";
 import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
+import { useActiveCard } from "@/utils/useActiveCard";
 
 const workbench = useWorkbench();
 const store = useForm();
@@ -76,6 +75,8 @@ const isActive = computed((): boolean => {
     ? true
     : false;
 });
+
+const { cardStyle } = useActiveCard(isActive);
 
 const deleteBlock = () => {
   let result = window.confirm("Do you really want to delete this snippet?");

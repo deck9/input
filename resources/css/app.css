@@ -1,12 +1,12 @@
 @import "./typography.css";
 
 /* TAILWIND */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
 
 /* CUSTOM */
 @import "./scrollbar.css";
 @import "./smooth-dnd.css";
 
 /* TAILWIND */
-@import 'tailwindcss/utilities';
+@import "tailwindcss/utilities";
