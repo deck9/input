@@ -3,6 +3,7 @@
     <div class="absolute inset-x-0 -bottom-6 top-0 flex justify-center">
       <button
         class="absolute inset-x-0 bottom-[4px] rounded-full leading-none opacity-0 transition-opacity duration-150 hover:opacity-100"
+        @click="store.createFormBlock(block)"
       >
         <D9Icon class="bg-grey-50 text-grey-400" name="plus-circle" />
       </button>

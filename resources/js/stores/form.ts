@@ -94,7 +94,7 @@ export const useForm = defineStore("form", {
             await callUpdateForm(this.form);
         },
 
-        async createFormBlock() {
+        async createFormBlock(insertAfter: FormBlockModel | null = null) {
             if (!this.form) {
                 return;
             }
@@ -103,7 +103,12 @@ export const useForm = defineStore("form", {
                 const response = await callCreateFormBlock(this.form.id);
 
                 if (response.status === 201 && this.blocks) {
-                    this.blocks.push(response.data);
+                    if (insertAfter !== null) {
+                        const index = this.blocks.indexOf(insertAfter);
+                        this.blocks.splice(index + 1, 0, response.data);
+                    } else {
+                        this.blocks.push(response.data);
+                    }
 
                     // if new block has been created, we should select it for editing
                     const workbench = useWorkbench();
