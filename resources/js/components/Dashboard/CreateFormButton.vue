@@ -1,7 +1,7 @@
 <template>
   <D9Button
     label="Create form"
-    icon="user"
+    icon="add"
     iconPosition="right"
     :isLoading="isSubmitting"
     @click="createForm"

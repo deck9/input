@@ -1,32 +1,13 @@
 <template>
   <div
-    class="
-      min-h-screen
-      flex flex-col
-      sm:justify-center
-      items-center
-      pt-6
-      sm:pt-0
-      bg-grey-200
-    "
+    class="flex min-h-screen flex-col items-center bg-grey-100 pt-6 sm:justify-center sm:pt-0"
   >
-    <div>
-      <slot name="logo" />
-    </div>
-
     <div
-      class="
-        w-full
-        sm:max-w-md
-        mt-6
-        px-6
-        pt-8
-        pb-6
-        bg-white
-        overflow-hidden
-        sm:rounded-lg
-      "
+      class="mt-6 w-full overflow-hidden bg-white px-6 pt-8 pb-6 shadow-md sm:max-w-md sm:rounded-lg"
     >
+      <div class="mb-12">
+        <slot name="logo" />
+      </div>
       <slot />
     </div>
   </div>
