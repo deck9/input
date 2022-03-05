@@ -9,9 +9,12 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from "vue";
 import { computed } from "@vue/reactivity";
 import { D9Icon } from "@deck9/ui";
 import { alphabetize } from "@/utils";
+import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
+const { types } = useBlockTypes();
 
 const colors = [
   "3c92dd",
@@ -24,15 +27,21 @@ const colors = [
   "a5211c",
 ];
 
+const block: FormBlockModel | undefined = inject("block");
+
 const props = defineProps<{
   type: FormBlockInteractionModel["type"];
   index?: number;
 }>();
 
 const iconName = computed((): string | false => {
+  const found = types.value?.find((setting) => {
+    return setting?.value === block?.type;
+  });
+
   switch (props.type) {
     case "input":
-      return "envelope";
+      return found && found.icon ? found.icon : "envelope";
     default:
       return false;
   }

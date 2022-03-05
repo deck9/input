@@ -19,6 +19,9 @@ import BlockMetaHeader from "./BlockMetaHeader.vue";
 import BlockMessage from "./BlockMessage.vue";
 import BlockType from "./BlockType.vue";
 import BlockInteractions from "./BlockInteractions.vue";
+import { provide } from "@vue/runtime-core";
 
 const workbench = useWorkbench();
+
+provide("block", workbench.block);
 </script>

@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
 import { useWorkbench, useForm } from "@/stores";
@@ -68,6 +68,8 @@ const store = useForm();
 const props = defineProps<{
   block: FormBlockModel;
 }>();
+
+provide("block", props.block);
 
 const { activeInteractions } = useActiveInteractions(props.block);
 
