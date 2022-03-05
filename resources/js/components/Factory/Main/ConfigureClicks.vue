@@ -1,14 +1,10 @@
 <template>
   <div>
-    <div
+    <EmptyState
       v-if="workbench.currentInteractions?.length === 0"
-      class="font-heading block rounded bg-grey-200 px-4 py-3 text-grey-700"
-    >
-      Nothing here yet.
-      <small class="block font-sans text-sm"
-        >Add your first option by clicking on the button below.</small
-      >
-    </div>
+      title="Nothing here yet."
+      description="Add your first option by clicking on the button below."
+    />
 
     <Container
       v-else
@@ -51,6 +47,7 @@ import { D9Button } from "@deck9/ui";
 import { Ref, ref, nextTick } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
+import EmptyState from "@/components/EmptyState.vue";
 
 const workbench = useWorkbench();
 

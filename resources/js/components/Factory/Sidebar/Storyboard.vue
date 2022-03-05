@@ -14,12 +14,10 @@
     </div>
 
     <div v-else class="flex flex-grow items-center px-4">
-      <div
-        class="flex flex-grow flex-col items-center justify-center rounded-lg border bg-white px-3 py-6 text-center"
-      >
-        <span class="font-bold">No blocks found</span>
-        <span>Create your first block now</span>
-      </div>
+      <EmptyState
+        title="No blocks found"
+        description="Create your first block now"
+      />
     </div>
 
     <div
@@ -42,6 +40,7 @@ import { onMounted, ref } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
 import BlockContainer from "./BlockContainer.vue";
+import EmptyState from "@/components/EmptyState.vue";
 
 const isLoaded = ref(false);
 const store = useForm();
