@@ -73,7 +73,6 @@ interface FormBlockInteractionModel extends BaseModel {
     type: "button" | "input" | "consent";
     label: string | null;
     reply: string | null;
-    has_validation: "none" | "email" | "url" | "numeric" | null;
     form_block_id: number;
     deleted_at: string | null;
 }
@@ -83,4 +82,24 @@ type InteractionOption = {
     label: string;
     value: FormBlockModel["type"];
     icon?: string;
+};
+
+type PublicFormBlockInteractionModel = {
+    id: string;
+    type: "button" | "input" | "consent";
+    label: string | null;
+    reply: string | null;
+};
+
+type PublicFormBlockModel = {
+    id: string;
+    message: string | null;
+    title: string | null;
+    type: FormBlockModel["type"];
+    interactions: Array<PublicFormBlockInteractionModel>;
+};
+
+type FormStoryboard = {
+    count: integer;
+    blocks: Array<PublicFormBlockModel>;
 };

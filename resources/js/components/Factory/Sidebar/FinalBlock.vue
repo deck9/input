@@ -12,7 +12,7 @@
       </div>
 
       <div class="flex w-full pr-4 font-medium">
-        <div>Final Block</div>
+        <div>Form Completion</div>
       </div>
     </div>
   </button>

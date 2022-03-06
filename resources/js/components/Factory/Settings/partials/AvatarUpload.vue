@@ -1,12 +1,12 @@
 <template>
   <div>
-    <D9Label label="Avatar Image" />
+    <D9Label label="Brand Image" />
+    <img
+      class="my-2 block h-16 overflow-hidden rounded bg-white object-cover px-4 py-2"
+      v-if="store?.form?.avatar"
+      :src="store.form.avatar"
+    />
     <div class="flex items-center space-x-4">
-      <img
-        class="h-24 w-24 overflow-hidden rounded-lg border-2 border-blue-100 bg-blue-50 object-cover object-center"
-        v-if="store?.form?.avatar"
-        :src="store.form.avatar"
-      />
       <D9Button
         label="Upload"
         @click="initUpload"

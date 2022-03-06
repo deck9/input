@@ -3,8 +3,9 @@ import { callGetFormStoryboard } from "@/api/conversation";
 
 type ConversationStore = {
     form: FormModel | null;
-    storyboard: FormBlockModel[] | null;
-    queue: FormBlockModel[] | null;
+    storyboard: PublicFormBlockModel[] | null;
+    queue: PublicFormBlockModel[] | null;
+    current: number;
 };
 
 export const useConversation = defineStore("form", {
@@ -13,13 +14,30 @@ export const useConversation = defineStore("form", {
             form: null,
             storyboard: null,
             queue: null,
+            current: 0,
         };
+    },
+
+    getters: {
+        currentBlock: (state): PublicFormBlockModel | null => {
+            if (state.queue && state.queue.length >= state.current) {
+                return state.queue[state.current];
+            }
+
+            return null;
+        },
     },
 
     actions: {
         async initForm(id) {
             const response = await callGetFormStoryboard(id);
-            console.log("p", response);
+
+            this.storyboard = response.data.blocks;
+            this.queue = response.data.blocks;
+        },
+
+        next() {
+            this.current += 1;
         },
     },
 });
