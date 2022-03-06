@@ -1,7 +1,7 @@
 <template>
   <app-layout title="Edit Form" limit-height>
     <div class="flex w-full">
-      <Storyboard class="w-full max-w-lg" />
+      <Storyboard class="w-full max-w-sm xl:max-w-lg" />
       <div class="w-full overflow-y-auto">
         <Workbench v-if="workbench.block" :key="workbench.block.id" />
         <FinalBlockSettings v-else-if="workbench.isEditingFinalBlock" />

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="workbench.block"
-    class="relative ml-24 flex h-full max-w-xl flex-col justify-between px-4 pt-8"
+    class="relative mx-12 flex h-full max-w-xl flex-col justify-between px-4 pt-8 xl:mx-24"
   >
     <div class="space-y-8 pb-24">
       <BlockMessage />
