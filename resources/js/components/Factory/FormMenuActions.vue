@@ -2,7 +2,7 @@
   <div class="space-x-4 text-sm" v-if="store.form">
     <a
       class="text-grey-400 transition hover:text-grey-100 focus:text-grey-200"
-      href="#"
+      :href="store.formUrl"
     >
       <D9Icon class="mr-1" name="play-circle"></D9Icon>View Form
     </a>

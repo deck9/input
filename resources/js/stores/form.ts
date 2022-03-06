@@ -33,6 +33,14 @@ export const useForm = defineStore("form", {
         hasBlocks: (state): boolean => {
             return state.blocks && state.blocks.length ? true : false;
         },
+
+        formUrl: (state): string => {
+            if (state.form) {
+                return window.route("forms.show", { uuid: state.form?.uuid });
+            }
+
+            return "";
+        },
     },
 
     actions: {
