@@ -38,14 +38,16 @@
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     <!-- Scripts -->
-    @routes
-    <script src="{{ mix('js/app.js') }}" defer></script>
     <script src="{{ mix('js/classic.js') }}" defer></script>
     <script src="{{ mix('js/conversation.js') }}" defer></script>
+    @routes
+    <script lang="js">
+    {!! $form->getJavascriptConfig() !!}
+    </script>
 </head>
 
 <body class="font-sans antialiased">
-    @inertia
+    <div id="input-classic"></div>
 </body>
 
 </html>
