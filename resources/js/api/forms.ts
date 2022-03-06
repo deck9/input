@@ -33,6 +33,20 @@ export function callUpdateForm(
     });
 }
 
+export function callDeleteForm(form: FormModel): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.delete(
+                window.route("api.forms.update", { uuid: form.uuid })
+            );
+
+            resolve(response.status === 200);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callUploadAvatar(
     form: FormModel,
     file: File

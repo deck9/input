@@ -65,6 +65,7 @@ import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import Theme from "@/components/Factory/Settings/Theme.vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
+import Delete from "@/components/Factory/Settings/Delete.vue";
 import { useForm } from "@/stores";
 import { onMounted, onUnmounted } from "vue";
 
@@ -83,6 +84,7 @@ const navigation = [
   { name: "Style", component: Theme },
   { name: "Social Accounts", component: SocialAccounts },
   { name: "Embeds", component: Theme },
+  { name: "Delete", component: Delete },
 ];
 
 onUnmounted(() => {

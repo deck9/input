@@ -4,6 +4,7 @@ import {
     callUpdateForm,
     callUploadAvatar,
     callGetFormBlockMapping,
+    callDeleteForm,
 } from "@/api/forms";
 import {
     callGetFormBlocks,
@@ -92,6 +93,19 @@ export const useForm = defineStore("form", {
             });
 
             await callUpdateForm(this.form);
+        },
+
+        async deleteForm() {
+            if (!this.form) {
+                return;
+            }
+
+            const result = await callDeleteForm(this.form);
+            if (result) {
+                this.clearForm();
+            }
+
+            return Promise.resolve();
         },
 
         async createFormBlock(insertAfter: FormBlockModel | null = null) {

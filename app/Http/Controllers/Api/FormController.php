@@ -95,6 +95,6 @@ class FormController extends Controller
 
         $form->delete();
 
-        return response()->json('', 200);
+        return response()->json(null, 200);
     }
 }
