@@ -1,9 +1,9 @@
 <template>
-  <div class="ml-24 max-w-xl px-4 py-4">
-    <div class="my-16">
+  <div class="relative mx-12 max-w-xl space-y-16 px-4 pt-8 xl:mx-24">
+    <div>
       <h2 class="mb-2 text-base font-bold">Outro</h2>
 
-      <form class="rounded bg-white px-6 py-6" @submit.prevent="saveOutro">
+      <form class="" @submit.prevent="saveOutro">
         <div class="mb-4">
           <D9Label label="Headline" />
           <D9Input type="text" block v-model="outroHeadline" />
@@ -23,7 +23,7 @@
       </form>
     </div>
 
-    <div class="my-16">
+    <div>
       <h2 class="mb-2 flex items-center text-base font-bold">
         <span class="inline-block">Call to Action</span>
         <D9Switch
@@ -35,7 +35,7 @@
       </h2>
 
       <form
-        class="rounded bg-white px-6 py-6 transition"
+        class="transition"
         :class="isCtaOn ? 'opacity-100' : 'pointer-events-none opacity-50'"
         @submit.prevent="saveCTA"
       >

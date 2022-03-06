@@ -10,6 +10,8 @@
         :vertical="true"
         as="div"
         class="mx-auto mt-4 grid w-full grid-cols-12 gap-x-6"
+        :selectedIndex="selectedTabIndex"
+        @change="tabChanged"
       >
         <div class="col-span-4 pt-8">
           <TabList
@@ -62,30 +64,52 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
-import Appearance from "@/components/Factory/Settings/Appearance.vue";
+// import Appearance from "@/components/Factory/Settings/Appearance.vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
 import Delete from "@/components/Factory/Settings/Delete.vue";
 import { useForm } from "@/stores";
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps<{
   form: FormModel;
 }>();
 const store = useForm();
 
+const selectedTabIndex = ref(0);
+
+const navigation: Array<{
+  name: string;
+  component: any;
+  slug: string;
+}> = [
+  { name: "Options", component: Options, slug: "options" },
+  { name: "Privacy", component: Privacy, slug: "privacy" },
+  // { name: "Appearance", component: Appearance, slug: 'appearance' },
+  { name: "Social Accounts", component: SocialAccounts, slug: "accounts" },
+  // { name: "Embeds", component: Appearance, slug: 'embeds' },
+  { name: "Delete", component: Delete, slug: "delete" },
+];
+
 onMounted(async () => {
   await store.getBlocks();
 });
 
-const navigation = [
-  { name: "Options", component: Options },
-  { name: "Privacy", component: Privacy },
-  { name: "Appearance", component: Appearance },
-  { name: "Social Accounts", component: SocialAccounts },
-  { name: "Embeds", component: Appearance },
-  { name: "Delete", component: Delete },
-];
+const tabChanged = (index: number) => {
+  const item = navigation[index];
+  location.hash = item.slug;
+  selectedTabIndex.value = index;
+};
+
+const foundIndex = navigation.findIndex(
+  (item) => item.slug === location.hash.replace("#", "")
+);
+
+if (foundIndex !== -1) {
+  tabChanged(foundIndex);
+} else {
+  tabChanged(0);
+}
 
 onUnmounted(() => {
   store.clearForm();
