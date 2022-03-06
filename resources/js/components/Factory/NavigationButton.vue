@@ -4,7 +4,7 @@
     :class="isActive ? 'bg-grey-900' : 'hover:bg-grey-700'"
     :href="resolvedRoute"
   >
-    <D9Icon class="mr-2" name="chart-pie" />
+    <D9Icon class="mr-2" :name="icon" />
     <slot></slot>
   </a>
 </template>

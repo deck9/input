@@ -3,27 +3,27 @@
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
         <D9Label label="Instagram" />
-        <D9Input type="url" v-model="instagram" block />
+        <D9Input type="text" v-model="instagram" block />
       </div>
 
       <div class="mb-4">
         <D9Label label="Github" />
-        <D9Input type="url" v-model="github" block />
+        <D9Input type="text" v-model="github" block />
       </div>
 
       <div class="mb-4">
         <D9Label label="Twitter" />
-        <D9Input type="url" v-model="twitter" block />
+        <D9Input type="text" v-model="twitter" block />
       </div>
 
       <div class="mb-4">
         <D9Label label="LinkedIn" />
-        <D9Input type="url" v-model="linkedin" block />
+        <D9Input type="text" v-model="linkedin" block />
       </div>
 
       <div class="mb-4">
         <D9Label label="Facebook" />
-        <D9Input type="url" v-model="facebook" block />
+        <D9Input type="text" v-model="facebook" block />
       </div>
 
       <D9Button
