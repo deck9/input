@@ -65,4 +65,14 @@ class FormBlockInteraction extends Model
     {
         return $this->responses->count();
     }
+
+    public function getPublicJson()
+    {
+        return [
+            'id' => $this->uuid,
+            'type' => $this->type->value,
+            'label' => $this->label,
+            'reply' => $this->reply,
+        ];
+    }
 }

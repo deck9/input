@@ -287,4 +287,18 @@ class Form extends Model
 
         return $output;
     }
+
+    public function getPublicStoryboard()
+    {
+        $blockCount = $this->blocksCount();
+
+        $blocks = $this->blocks->map(function ($block) {
+            return $block->getPublicJson();
+        });
+
+        return [
+            'count' => $blockCount,
+            'blocks' => $blocks,
+        ];
+    }
 }

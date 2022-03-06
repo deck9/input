@@ -78,6 +78,12 @@ class FormBlock extends Model
         return $this->hasMany(FormBlockInteraction::class, 'form_block_id');
     }
 
+    public function activeInteractions()
+    {
+        return $this->hasMany(FormBlockInteraction::class, 'form_block_id')
+            ->where('type', $this->getInteractionType());
+    }
+
     public function responses()
     {
         return $this->hasMany(FormSessionResponse::class);
@@ -127,5 +133,18 @@ class FormBlock extends Model
             $interaction = $this->interactions->firstWhere('id', $id);
             $interaction->update(['sequence' => $pos]);
         }
+    }
+
+    public function getPublicJson()
+    {
+        return [
+            'id' => $this->uuid,
+            'type' => $this->type->value,
+            'title' => $this->title,
+            'message' => $this->message,
+            'interactions' => $this->activeInteractions->map(function ($interaction) {
+                return $interaction->getPublicJson();
+            })->toArray(),
+        ];
     }
 }
