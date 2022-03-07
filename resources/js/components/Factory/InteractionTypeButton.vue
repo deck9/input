@@ -27,7 +27,7 @@ import InteractionTypeIcon from "./Shared/InteractionTypeIcon.vue";
 const props = defineProps<{
   value: string;
   label: string;
-  current?: FormBlockModel["type"];
+  current?: FormBlockType;
 }>();
 
 const emits = defineEmits<{

@@ -27,11 +27,11 @@ import InteractionTypeIcon from "../Shared/InteractionTypeIcon.vue";
 const props = defineProps<{
   value: string;
   label: string;
-  current?: FormBlockModel["type"];
+  current?: FormBlockType;
 }>();
 
 const emits = defineEmits<{
-  (e: "onInput", value: FormBlockModel["type"]): void;
+  (e: "onInput", value: FormBlockType): void;
 }>();
 
 const isActive = computed(() => {
@@ -39,6 +39,6 @@ const isActive = computed(() => {
 });
 
 const emitInput = () => {
-  emits("onInput", props.value as FormBlockModel["type"]);
+  emits("onInput", props.value as FormBlockType);
 };
 </script>
