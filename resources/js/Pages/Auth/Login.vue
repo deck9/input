@@ -4,20 +4,20 @@
   <jet-authentication-card>
     <template #logo>
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <jet-application-logo class="mx-auto h-8" />
+        <jet-application-logo mode="dark" class="mx-auto h-8" />
       </div>
     </template>
-
-    <jet-validation-errors class="mb-4" />
 
     <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
       {{ status }}
     </div>
 
+    <jet-validation-errors class="mb-6" />
+
     <form @submit.prevent="submit">
       <div>
-        <jet-label for="email" value="Email" />
-        <jet-input
+        <d9-label for="email" label="Email" />
+        <d9-input
           id="email"
           type="email"
           class="mt-1 block w-full"
@@ -28,8 +28,8 @@
       </div>
 
       <div class="mt-4">
-        <jet-label for="password" value="Password" />
-        <jet-input
+        <d9-label for="password" label="Password" />
+        <d9-input
           id="password"
           type="password"
           class="mt-1 block w-full"
@@ -41,37 +41,44 @@
 
       <div class="mt-4 block">
         <label class="flex items-center">
-          <jet-checkbox name="remember" v-model:checked="form.remember" />
-          <span class="ml-2 text-sm text-grey-600">Remember me</span>
+          <d9-checkbox
+            name="remember"
+            v-model:checked="form.remember"
+            label="Remember me"
+          />
         </label>
       </div>
 
       <div class="mt-4 flex items-center justify-end">
-        <Link
-          v-if="canResetPassword"
-          :href="route('password.request')"
-          class="text-sm text-grey-600 underline hover:text-grey-900"
-        >
-          Forgot your password?
-        </Link>
-
-        <jet-button
+        <d9-button
+          type="submit"
           class="ml-4"
-          :class="{ 'opacity-25': form.processing }"
+          :isLoading="form.processing"
           :disabled="form.processing"
+          label="Log in"
+          color="dark"
         >
-          Log in
-        </jet-button>
+        </d9-button>
       </div>
     </form>
 
-    <div class="mt-4 text-sm text-grey-500">
+    <div class="text-sm text-grey-500">
       No account yet?
       <Link
-        class="text-sm text-grey-600 underline hover:text-grey-900"
+        class="text-sm text-grey-400 underline hover:text-grey-200"
         :href="route('register')"
         >Create a new account</Link
       >
+    </div>
+    <div class="mt-2 text-sm text-grey-500">
+      Forgot your password?
+      <Link
+        v-if="canResetPassword"
+        :href="route('password.request')"
+        class="text-sm text-grey-400 underline hover:text-grey-200"
+      >
+        Reset it
+      </Link>
     </div>
   </jet-authentication-card>
 </template>
@@ -80,10 +87,7 @@
 import { defineComponent } from "vue";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
-import JetButton from "@/Jetstream/Button.vue";
-import JetInput from "@/Jetstream/Input.vue";
-import JetCheckbox from "@/Jetstream/Checkbox.vue";
-import JetLabel from "@/Jetstream/Label.vue";
+import { D9Input, D9Label, D9Checkbox, D9Button } from "@deck9/ui";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 
@@ -92,10 +96,10 @@ export default defineComponent({
     Head,
     JetAuthenticationCard,
     JetApplicationLogo,
-    JetButton,
-    JetInput,
-    JetCheckbox,
-    JetLabel,
+    D9Input,
+    D9Label,
+    D9Checkbox,
+    D9Button,
     JetValidationErrors,
     Link,
   },
