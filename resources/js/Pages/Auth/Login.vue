@@ -14,6 +14,8 @@
 
     <jet-validation-errors class="mb-6" />
 
+    <h1 class="mb-6 text-center text-2xl font-bold text-grey-300">Sign In</h1>
+
     <form @submit.prevent="submit">
       <div>
         <d9-label for="email" label="Email" />
