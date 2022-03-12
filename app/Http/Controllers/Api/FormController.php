@@ -18,8 +18,6 @@ class FormController extends Controller
             'has_data_privacy' => false,
         ]);
 
-        $form->createDefaultConsent();
-
         return response()->json($form, 200);
     }
 

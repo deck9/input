@@ -270,14 +270,6 @@ class Form extends Model
             ->count();
     }
 
-    public function createDefaultConsent()
-    {
-        FormBlock::create([
-            'type' => FormBlockType::consent,
-            'form_id' => $this->id,
-        ]);
-    }
-
     public function getJavascriptConfig()
     {
         $settings = $this->toJson();
