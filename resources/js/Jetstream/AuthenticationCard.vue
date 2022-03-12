@@ -1,14 +1,12 @@
 <template>
   <div
-    class="flex min-h-screen flex-col items-center bg-grey-100 pt-6 sm:justify-center sm:pt-0"
+    class="dark flex min-h-screen flex-col items-center bg-grey-900 pt-6 sm:justify-center sm:pt-0"
   >
-    <div
-      class="mt-6 w-full overflow-hidden bg-white px-6 pt-8 pb-6 shadow-md sm:max-w-md sm:rounded-lg"
-    >
-      <div class="mb-12">
-        <slot name="logo" />
-      </div>
+    <div class="w-full overflow-hidden px-6 pt-8 pb-6 sm:max-w-md">
       <slot />
+    </div>
+    <div class="mt-8">
+      <slot name="logo" />
     </div>
   </div>
 </template>

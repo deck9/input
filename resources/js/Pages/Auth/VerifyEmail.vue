@@ -3,10 +3,14 @@
 
   <jet-authentication-card>
     <template #logo>
-      <jet-application-logo class="mx-auto h-8" />
+      <jet-application-logo mode="dark" class="mx-auto h-8" />
     </template>
 
-    <div class="mb-4 text-sm text-grey-600">
+    <h1 class="mb-6 text-center text-2xl font-bold text-grey-300">
+      Verify your email
+    </h1>
+
+    <div class="mb-4 text-sm text-grey-400">
       Thanks for signing up! Before getting started, could you verify your email
       address by clicking on the link we just emailed to you? If you didn't
       receive the email, we will gladly send you another.
@@ -22,18 +26,19 @@
 
     <form @submit.prevent="submit">
       <div class="mt-4 flex items-center justify-between">
-        <jet-button
-          :class="{ 'opacity-25': form.processing }"
+        <d9-button
+          type="submit"
+          color="dark"
+          :isLoading="form.processing"
           :disabled="form.processing"
-        >
-          Resend Verification Email
-        </jet-button>
+          label="Resend Verification Email"
+        />
 
         <Link
           :href="route('logout')"
           method="post"
           as="button"
-          class="text-sm text-grey-600 underline hover:text-grey-900"
+          class="text-sm text-grey-400 underline hover:text-grey-200"
           >Log Out</Link
         >
       </div>
@@ -45,7 +50,7 @@
 import { defineComponent } from "vue";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
-import JetButton from "@/Jetstream/Button.vue";
+import { D9Button } from "@deck9/ui";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
@@ -53,7 +58,7 @@ export default defineComponent({
     Head,
     JetAuthenticationCard,
     JetApplicationLogo,
-    JetButton,
+    D9Button,
     Link,
   },
 
