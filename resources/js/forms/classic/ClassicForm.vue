@@ -1,7 +1,12 @@
 <template>
   <div class="mx-auto max-w-xl">
     <div class="py-4">
-      <img class="h-12" :src="settings.avatar" :alt="settings.name" />
+      <img
+        v-if="settings.avatar"
+        class="h-12"
+        :src="settings.avatar"
+        :alt="settings.name"
+      />
     </div>
 
     <Block v-if="store.currentBlock" :block="store.currentBlock" />
