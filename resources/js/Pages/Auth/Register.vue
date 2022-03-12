@@ -13,19 +13,6 @@
     </h1>
 
     <form @submit.prevent="submit">
-      <div>
-        <d9-label for="name" label="Name" />
-        <d9-input
-          id="name"
-          type="text"
-          class="mt-1 block w-full"
-          v-model="form.name"
-          required
-          autofocus
-          autocomplete="name"
-        />
-      </div>
-
       <div class="mt-4">
         <d9-label for="email" label="Email" />
         <d9-input
@@ -49,24 +36,12 @@
         />
       </div>
 
-      <div class="mt-4">
-        <d9-label for="password_confirmation" label="Confirm Password" />
-        <d9-input
-          id="password_confirmation"
-          type="password"
-          class="mt-1 block w-full"
-          v-model="form.password_confirmation"
-          required
-          autocomplete="new-password"
-        />
-      </div>
-
       <div
         class="mt-4"
         v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature"
       >
         <div class="flex items-center">
-          <d9-checkbox name="terms" id="terms" v-model:checked="form.terms" />
+          <d9-checkbox name="terms" id="terms" v-model="form.terms" />
           <label for="terms" class="ml-2 text-grey-500">
             I agree to the
             <a
@@ -131,10 +106,8 @@ export default defineComponent({
   data() {
     return {
       form: this.$inertia.form({
-        name: "",
         email: "",
         password: "",
-        password_confirmation: "",
         terms: false,
       }),
     };

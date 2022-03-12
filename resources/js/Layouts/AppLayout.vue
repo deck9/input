@@ -54,7 +54,7 @@
                         type="button"
                         class="inline-flex items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 transition hover:text-blue-200 focus:outline-none"
                       >
-                        {{ $page.props.user.name }}
+                        {{ $page.props.user.name || "Account" }}
                         <svg
                           class="ml-2 -mr-0.5 h-4 w-4"
                           xmlns="http://www.w3.org/2000/svg"
