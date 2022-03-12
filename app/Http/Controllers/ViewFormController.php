@@ -11,6 +11,9 @@ class ViewFormController extends Controller
     public function show(Request $request, $uuid)
     {
         $form = Form::where('uuid', $uuid)->firstOrFail();
-        return Inertia::render('Forms/Show', ['form' => $form]);
+
+        return response()->view('form', [
+            'form' => $form,
+        ]);
     }
 }

@@ -4,18 +4,19 @@ export declare function route(
     name?: undefined,
     params?: RouteParamsWithQueryOverload,
     absolute?: boolean,
-    config?: Config,
+    config?: Config
 ): Router;
 
 export declare function route(
     name: string,
     params?: RouteParamsWithQueryOverload,
     absolute?: boolean,
-    config?: Config,
+    config?: Config
 ): string;
 
 declare global {
     interface Window {
-        route: typeof route
+        route: typeof route;
+        iptSettings: any;
     }
 }

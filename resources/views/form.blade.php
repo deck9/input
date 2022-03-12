@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Input') }}</title>
+        <title>{{ $form->name }} - a form by {{ $form->user->name }}</title>
 
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
@@ -41,14 +41,16 @@
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
         <!-- Scripts -->
-        @routes
-        <script src="{{ mix('js/app.js') }}" defer></script>
         <script src="{{ mix('js/classic.js') }}" defer></script>
         <script src="{{ mix('js/conversation.js') }}" defer></script>
+        @routes
+        <script lang="js">
+            {!! $form->getJavascriptConfig() !!}
+        </script>
     </head>
 
     <body class="font-sans antialiased">
-        @inertia
+        <div id="input-classic"></div>
     </body>
 
 </html>

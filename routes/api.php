@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PublishFormController;
 use App\Http\Controllers\Api\UnpublishFormController;
 use App\Http\Controllers\Api\FormBlockMappingController;
 use App\Http\Controllers\Api\FormBlockSequenceController;
+use App\Http\Controllers\Api\GetFormStoryboardController;
 use App\Http\Controllers\Api\InteractionResultsController;
 use App\Http\Controllers\Api\FormBlockInteractionController;
 use App\Http\Controllers\Api\FormBlockInteractionSequenceController;
@@ -30,6 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+$router->get('public/forms/{uuid}/storyboard', GetFormStoryboardController::class)->name('api.public.forms.storyboard');
 
 $router->middleware(['auth:sanctum'])->group(function (Router $router) {
 

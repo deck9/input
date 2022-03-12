@@ -11,7 +11,10 @@ const mix = require("laravel-mix");
  |
  */
 
-mix.ts("resources/js/app.ts", "public/js")
+mix
+    .ts("resources/js/app.ts", "public/js")
+    .ts("resources/js/forms/classic.ts", "public/js")
+    .ts("resources/js/forms/conversation.ts", "public/js")
     .vue()
     .postCss("resources/css/app.css", "public/css", [
         require("postcss-import"),

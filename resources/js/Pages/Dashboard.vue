@@ -6,7 +6,7 @@
       >
         <div class="col-span-8">
           <div class="relative mb-6 flex items-center justify-between">
-            <h2 class="text-grey-900 text-xl font-bold leading-8">
+            <h2 class="text-xl font-bold leading-8 text-grey-900">
               Your Forms
             </h2>
             <CreateFormButton />
@@ -17,11 +17,11 @@
             class="w-full rounded bg-white px-16 py-16 text-center"
           >
             <h2
-              class="font-heading text-grey-900 mb-4 text-center text-2xl font-black leading-none"
+              class="font-heading mb-4 text-center text-2xl font-black leading-none text-grey-900"
             >
               Start by creating a form
             </h2>
-            <p class="text-grey-600 text-sm">
+            <p class="text-sm text-grey-600">
               You haven't created a survey yet. Click on "New survey" in the top
               right corner to begin with a new survey. To get you started really
               quickly you can watch the following introduction for the BotReach

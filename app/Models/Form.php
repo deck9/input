@@ -277,4 +277,28 @@ class Form extends Model
             'form_id' => $this->id,
         ]);
     }
+
+    public function getJavascriptConfig()
+    {
+        $settings = $this->toJson();
+
+        $output = "window.iptSettings = window.iptSettings || [];";
+        $output .= "window.iptSettings = ${settings}";
+
+        return $output;
+    }
+
+    public function getPublicStoryboard()
+    {
+        $blockCount = $this->blocksCount();
+
+        $blocks = $this->blocks->map(function ($block) {
+            return $block->getPublicJson();
+        });
+
+        return [
+            'count' => $blockCount,
+            'blocks' => $blocks,
+        ];
+    }
 }

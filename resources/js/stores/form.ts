@@ -14,7 +14,7 @@ import {
 } from "@/api/blocks";
 import { useWorkbench } from ".";
 
-declare interface FormStore {
+interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
     mapping: Record<string, string> | null;
