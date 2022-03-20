@@ -11,8 +11,12 @@
       />
     </div>
 
-    <div class="h-full pt-10 pb-12 md:pt-[16vh]">
-      <Block v-if="store.currentBlock" :block="store.currentBlock" />
+    <div class="mx-auto h-full w-full max-w-md pt-10 pb-12 md:pt-[16vh]">
+      <Block
+        v-if="store.currentBlock"
+        :block="store.currentBlock"
+        :key="store.currentBlock.id"
+      />
     </div>
 
     <footer class="space-x-2 text-center text-xs">
