@@ -47,10 +47,20 @@
         <script lang="js">
             {!! $form->getJavascriptConfig() !!}
         </script>
+
+        <style>
+            html {
+                height: 100%;
+            }
+
+            body {
+                height: 100vh;
+            }
+        </style>
     </head>
 
     <body class="font-sans antialiased">
-        <div id="input-classic"></div>
+        <div class="h-full" id="input-classic"></div>
     </body>
 
 </html>

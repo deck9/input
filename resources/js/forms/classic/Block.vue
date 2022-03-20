@@ -1,5 +1,5 @@
 <template>
-  <form class="mt-10 h-full" @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit">
     <div class="prose" v-html="block.message"></div>
 
     <div class="mt-6">
@@ -24,12 +24,7 @@
       </div>
     </div>
 
-    <button
-      type="submit"
-      class="mt-4 rounded bg-black px-2 py-1 font-medium text-white"
-    >
-      Next
-    </button>
+    <FormButton />
   </form>
 </template>
 
@@ -37,6 +32,7 @@
 import { useConversation } from "@/stores/conversation";
 import ButtonAction from "./interactions/ButtonAction.vue";
 import InputAction from "./interactions/InputAction.vue";
+import FormButton from "./FormButton.vue";
 import { computed, Ref, ref } from "vue";
 
 const props = defineProps<{
