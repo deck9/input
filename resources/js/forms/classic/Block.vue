@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <FormButton />
+    <FormButton ref="submitButton" />
   </form>
 </template>
 
@@ -33,15 +33,23 @@ import { useConversation } from "@/stores/conversation";
 import ButtonAction from "./interactions/ButtonAction.vue";
 import InputAction from "./interactions/InputAction.vue";
 import FormButton from "./FormButton.vue";
-import { computed, Ref, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
+import { templateRef } from "@vueuse/core";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
 }>();
 
 const response: Ref<string | undefined> = ref(undefined);
+const submitButton = templateRef<HTMLElement | null>("submitButton", null);
 
 const store = useConversation();
+
+onMounted(() => {
+  if (props.block.type === "none") {
+    submitButton.value?.focus();
+  }
+});
 
 const useButtonComponent = computed(() => {
   return ["radio", "checkbox"].includes(props.block.type);
@@ -59,6 +67,11 @@ const useInputComponent = computed(() => {
 
 const onSubmit = () => {
   response.value = undefined;
-  store.next();
+
+  if (store.isLastBlock) {
+    console.log("submit form now");
+  } else {
+    store.next();
+  }
 };
 </script>
