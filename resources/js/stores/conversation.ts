@@ -19,6 +19,14 @@ export const useConversation = defineStore("form", {
     },
 
     getters: {
+        isLastBlock: (state): boolean => {
+            if (!state.queue) {
+                return false;
+            }
+
+            return state.queue.length <= state.current + 1;
+        },
+
         currentBlock: (state): PublicFormBlockModel | null => {
             if (state.queue && state.queue.length >= state.current) {
                 return state.queue[state.current];
