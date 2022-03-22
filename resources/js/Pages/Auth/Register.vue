@@ -3,7 +3,7 @@
 
   <jet-authentication-card>
     <template #logo>
-      <jet-application-logo mode="dark" class="mx-auto h-8" />
+      <jet-application-logo class="mx-auto h-8 text-white" />
     </template>
 
     <jet-validation-errors class="mb-6" />

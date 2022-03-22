@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <FormButton ref="submitButton" />
+    <FormButton ref="submitButton" :isFinalConfirm="store.isLastBlock" />
   </form>
 </template>
 
@@ -66,11 +66,12 @@ const useInputComponent = computed(() => {
 });
 
 const onSubmit = () => {
-  response.value = undefined;
+  store.setResponse(response.value);
 
   if (store.isLastBlock) {
-    console.log("submit form now");
+    console.log("submit form now", store.payload);
   } else {
+    response.value = undefined;
     store.next();
   }
 };

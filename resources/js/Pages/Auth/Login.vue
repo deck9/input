@@ -4,7 +4,7 @@
   <jet-authentication-card>
     <template #logo>
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <jet-application-logo mode="dark" class="mx-auto h-8" />
+        <jet-application-logo class="mx-auto h-8 text-white" />
       </div>
     </template>
 

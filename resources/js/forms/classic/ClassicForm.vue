@@ -22,6 +22,14 @@
     <footer class="space-x-2 text-center text-xs">
       <a href="">Privacy Policy</a>
       <a href="">Legal Notice</a>
+      <div
+        class="mt-4 rounded bg-black py-2 px-4 text-left text-xs text-yellow-600"
+      >
+        <pre>current: {{ store.current }}</pre>
+        <pre>isLastBlock: {{ store.isLastBlock }}</pre>
+        <pre>{{ store.payload }}</pre>
+        <pre>{{ store.currentBlock }}</pre>
+      </div>
     </footer>
   </div>
 </template>

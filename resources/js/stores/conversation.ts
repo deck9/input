@@ -6,6 +6,7 @@ type ConversationStore = {
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: number;
+    payload: Record<string, any>;
 };
 
 export const useConversation = defineStore("form", {
@@ -15,6 +16,7 @@ export const useConversation = defineStore("form", {
             storyboard: null,
             queue: null,
             current: 0,
+            payload: {},
         };
     },
 
@@ -34,6 +36,14 @@ export const useConversation = defineStore("form", {
 
             return null;
         },
+
+        currentBlockIdentifier(): string | null {
+            if (!this.currentBlock) {
+                return null;
+            }
+
+            return this.currentBlock.title || this.currentBlock.id;
+        },
     },
 
     actions: {
@@ -42,6 +52,12 @@ export const useConversation = defineStore("form", {
 
             this.storyboard = response.data.blocks;
             this.queue = response.data.blocks;
+        },
+
+        setResponse(value) {
+            if (this.currentBlockIdentifier) {
+                this.payload[this.currentBlockIdentifier] = value;
+            }
         },
 
         next() {
