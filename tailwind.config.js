@@ -17,14 +17,6 @@ module.exports = {
 
     theme: {
         extend: {
-            fontFamily: {
-                sans: [
-                    // "Inter var experimental",
-                    "Inter var",
-                    // @ts-ignore
-                    ...defaultTheme.fontFamily.sans,
-                ],
-            },
             colors: {
                 gray: null,
                 slate: null,
