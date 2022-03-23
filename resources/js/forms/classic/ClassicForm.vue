@@ -12,11 +12,21 @@
     </div>
 
     <div class="mx-auto h-full w-full max-w-md pt-10 pb-12 md:pt-[16vh]">
-      <Block
-        v-if="store.currentBlock"
-        :block="store.currentBlock"
-        :key="store.currentBlock.id"
-      />
+      <transition
+        mode="out-in"
+        enter-from-class="opacity-0 translate-y-4"
+        enter-active-class="transition duration-300 ease-out"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-active-class="transition duration-100 ease-in"
+        leave-to-class="opacity-0 -translate-y-10"
+      >
+        <Block
+          v-if="store.currentBlock"
+          :block="store.currentBlock"
+          :key="store.currentBlock.id"
+        />
+      </transition>
     </div>
 
     <footer class="flex justify-between text-center text-xs">
