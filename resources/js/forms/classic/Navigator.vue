@@ -7,7 +7,7 @@
       class="border-r border-grey-100 py-1 hover:bg-grey-100"
       @click="emit('prev')"
     >
-      <D9Icon size="md" icon="chevron-left" />
+      <D9Icon icon="chevron-left" />
     </button>
     <span class="col-span-2 inline-block whitespace-nowrap py-1 font-medium">
       <span>{{ currentPage }}</span>
@@ -18,7 +18,7 @@
       class="border-l border-grey-100 py-1 hover:bg-grey-100"
       @click="emit('next')"
     >
-      <D9Icon size="1x" icon="chevron-right" />
+      <D9Icon icon="chevron-right" />
     </button>
   </div>
 </template>
