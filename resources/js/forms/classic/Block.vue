@@ -40,12 +40,17 @@ const props = defineProps<{
   block: PublicFormBlockModel;
 }>();
 
+const store = useConversation();
 const response: Ref<string | undefined> = ref(undefined);
+// if we render the block, and user has already set a response, we should reload the response
+if (store.currentResponse !== null) {
+  response.value = store.currentResponse;
+}
+
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);
 
-const store = useConversation();
-
 onMounted(() => {
+  // we should focus interactions if we can
   if (props.block.type === "none") {
     submitButton.value?.focus();
   }
@@ -65,14 +70,13 @@ const useInputComponent = computed(() => {
   ].includes(props.block.type);
 });
 
-const onSubmit = () => {
+const onSubmit = async () => {
   store.setResponse(response.value);
 
-  if (store.isLastBlock) {
-    console.log("submit form now", store.payload);
-  } else {
+  const isSubmitted = await store.next();
+
+  if (!isSubmitted) {
     response.value = undefined;
-    store.next();
   }
 };
 </script>

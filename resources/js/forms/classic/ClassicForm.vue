@@ -20,10 +20,16 @@
     </div>
 
     <footer class="space-x-2 text-center text-xs">
+      <Navigator
+        :current-page="store.current + 1"
+        @prev="store.back()"
+        @next="store.next()"
+      />
+
       <a href="">Privacy Policy</a>
       <a href="">Legal Notice</a>
       <div
-        class="mt-4 rounded bg-black py-2 px-4 text-left text-xs text-yellow-600"
+        class="fixed right-0 bottom-0 mt-4 w-64 rounded bg-black py-2 px-4 text-left text-xs text-yellow-600"
       >
         <pre>current: {{ store.current }}</pre>
         <pre>isLastBlock: {{ store.isLastBlock }}</pre>
@@ -36,6 +42,7 @@
 
 <script lang="ts" setup>
 import Block from "@/forms/classic/Block.vue";
+import Navigator from "@/forms/classic/Navigator.vue";
 import { useConversation } from "@/stores/conversation";
 
 const props = defineProps<{

@@ -21,7 +21,15 @@ export const useConversation = defineStore("form", {
     },
 
     getters: {
-        isLastBlock: (state): boolean => {
+        isFirstBlock(state): boolean {
+            if (!state.queue) {
+                return false;
+            }
+
+            return state.current === 0;
+        },
+
+        isLastBlock(state): boolean {
             if (!state.queue) {
                 return false;
             }
@@ -32,6 +40,14 @@ export const useConversation = defineStore("form", {
         currentBlock: (state): PublicFormBlockModel | null => {
             if (state.queue && state.queue.length >= state.current) {
                 return state.queue[state.current];
+            }
+
+            return null;
+        },
+
+        currentResponse(): string | null {
+            if (this.currentBlockIdentifier) {
+                return this.payload[this.currentBlockIdentifier];
             }
 
             return null;
@@ -60,8 +76,26 @@ export const useConversation = defineStore("form", {
             }
         },
 
-        next() {
+        back() {
+            if (this.isFirstBlock) {
+                return;
+            }
+
+            this.current -= 1;
+        },
+
+        /**
+         * Increases current block by one or submits form if last block is triggered.
+         * @returns {Promise<boolean>}
+         */
+        next(): Promise<boolean> {
+            if (this.isLastBlock) {
+                console.log("submit form now", this.payload);
+                return Promise.resolve(true);
+            }
+
             this.current += 1;
+            return Promise.resolve(false);
         },
     },
 });

@@ -3,7 +3,7 @@
 
   <jet-authentication-card>
     <template #logo>
-      <jet-application-logo mode="dark" class="mx-auto h-8 text-white" />
+      <jet-application-logo class="mx-auto h-8 text-white" />
     </template>
 
     <h1 class="mb-6 text-center text-2xl font-bold text-grey-300">

@@ -7,16 +7,17 @@
       :name="block.id"
       :id="action.id"
       :placeholder="action.label || 'Enter text'"
-      v-model="inputValue"
+      :value="modelValue"
       ref="inputElement"
       autocomplete="off"
       @input="onInput"
+      v-once
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, Ref, ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string | null): void;
@@ -28,16 +29,13 @@ defineProps<{
   action: PublicFormBlockInteractionModel;
 }>();
 
-const inputElement: Ref<HTMLInputElement> = ref(
-  null
-) as unknown as Ref<HTMLInputElement>;
-const inputValue: Ref<string> = ref("");
+const inputElement = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
-  inputElement.value.focus();
+  inputElement.value?.focus();
 });
 
 const onInput = () => {
-  emit("update:modelValue", inputValue.value);
+  emit("update:modelValue", inputElement.value?.value ?? null);
 };
 </script>
