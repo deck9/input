@@ -19,22 +19,15 @@
       />
     </div>
 
-    <footer class="space-x-2 text-center text-xs">
+    <footer class="flex justify-between text-center text-xs">
       <Navigator
         :current-page="store.current + 1"
         @prev="store.back()"
         @next="store.next()"
       />
-
-      <a href="">Privacy Policy</a>
-      <a href="">Legal Notice</a>
-      <div
-        class="fixed right-0 bottom-0 mt-4 w-64 rounded bg-black py-2 px-4 text-left text-xs text-yellow-600"
-      >
-        <pre>current: {{ store.current }}</pre>
-        <pre>isLastBlock: {{ store.isLastBlock }}</pre>
-        <pre>{{ store.payload }}</pre>
-        <pre>{{ store.currentBlock }}</pre>
+      <div class="space-x-4">
+        <a href="">Privacy Policy</a>
+        <a href="">Legal Notice</a>
       </div>
     </footer>
   </div>
