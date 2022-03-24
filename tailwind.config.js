@@ -1,5 +1,13 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
 const colors = require("tailwindcss/colors");
+
+function withOpacityValue(variable) {
+    return ({ opacityValue }) => {
+      if (opacityValue === undefined) {
+        return `rgb(var(${variable}))`
+      }
+      return `rgba(var(${variable}), ${opacityValue})`
+    }
+  }
 
 module.exports = {
     darkMode: "class",
@@ -21,6 +29,8 @@ module.exports = {
                 gray: null,
                 slate: null,
                 grey: colors.slate,
+                primary: withOpacityValue('--color-primary'),
+                secondary: withOpacityValue('--color-secondary'),
             },
             borderColor: {
                 DEFAULT: colors.slate[300],

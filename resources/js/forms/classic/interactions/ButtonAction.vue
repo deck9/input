@@ -1,9 +1,9 @@
 <template>
   <label
     :for="action.id"
-    class="relative block cursor-pointer rounded border py-2 pl-6 pr-3 focus:border-grey-600 focus:outline-none focus:ring-1 focus:ring-grey-600"
+    class="relative block cursor-pointer rounded border py-2 pl-6 pr-3"
     :class="{
-      'border-grey-600 ring-1 ring-grey-600': isChecked,
+      'border-primary ring-1 ring-primary': isChecked,
       'border-grey-300': !isChecked,
     }"
   >
@@ -11,7 +11,7 @@
       <span
         class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium"
         :class="{
-          'bg-grey-600 text-grey-50': isChecked,
+          'bg-primary text-grey-50': isChecked,
           'bg-grey-300': !isChecked,
         }"
         >{{ index + 1 }}</span
@@ -21,7 +21,7 @@
     <span class="pl-4"> {{ action.label }}</span>
     <div class="absolute inset-y-0 right-4 flex items-center">
       <input
-        class="border-grey-800 checked:bg-grey-600 checked:hover:bg-grey-600 focus:ring-grey-600 focus:checked:bg-grey-600 focus:checked:outline-none focus:checked:ring-0 focus:checked:ring-offset-0"
+        class="border-grey-300 checked:bg-primary checked:hover:bg-primary focus:ring-primary focus:checked:bg-primary focus:checked:outline-none focus:checked:ring-0 focus:checked:ring-offset-0"
         :type="inputType"
         :name="block.id"
         :id="action.id"

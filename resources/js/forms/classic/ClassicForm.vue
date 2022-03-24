@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mx-auto flex h-full max-w-screen-sm flex-col justify-between py-8 px-4 md:px-0"
+    class="conversation-theme mx-auto flex h-full max-w-screen-sm flex-col justify-between py-8 px-4 md:px-0"
   >
     <div class="py-4">
       <img
@@ -27,17 +27,20 @@
           :key="store.currentBlock.id"
         />
         <div v-else-if="store.isSubmitted">
-          <h2 class="text-lg font-medium">Form submitted</h2>
-          <p class="mt-2 text-base leading-6">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa,
-            aspernatur placeat. Exercitationem ab molestias saepe nihil
-            blanditiis, et odio qui, eveniet maiores, id eos eum sed! Illum
-            laborum molestias dignissimos.
+          <h2 class="text-lg font-medium">
+            {{ store.form?.eoc_headline || "Form Submitted" }}
+          </h2>
+          <p v-if="store.form?.eoc_text" class="mt-2 text-base leading-6">
+            {{ store.form?.eoc_text }}
           </p>
           <pre class="mt-4 rounded bg-black px-4 py-4 text-xs text-green-600"
             >{{ JSON.stringify(store.payload) }} </pre
           >
-          <CallToActionButton label="Close" />
+          <CallToActionButton
+            v-if="store.form?.cta_link"
+            :href="store.form?.cta_link"
+            :label="store.form?.cta_label ?? 'Close'"
+          />
         </div>
       </transition>
     </div>
@@ -50,8 +53,18 @@
         @next="store.next()"
       />
       <div class="space-x-4">
-        <a href="">Privacy Policy</a>
-        <a href="">Legal Notice</a>
+        <a
+          v-if="store.form?.privacy_link"
+          :href="store.form?.privacy_link"
+          target="_blank"
+          >Privacy Policy</a
+        >
+        <a
+          v-if="store.form?.legal_notice_link"
+          :href="store.form?.legal_notice_link"
+          target="_blank"
+          >Legal Notice</a
+        >
       </div>
     </footer>
   </div>
@@ -64,9 +77,16 @@ import CallToActionButton from "./CallToActionButton.vue";
 import { useConversation } from "@/stores/conversation";
 
 const props = defineProps<{
-  settings: any;
+  settings: PublicFormModel;
 }>();
 
 const store = useConversation();
-store.initForm(props.settings.uuid);
+store.initForm(props.settings);
 </script>
+
+<style>
+.conversation-theme {
+  --color-primary: 236, 72, 153;
+  --color-secondary: 2, 10, 5;
+}
+</style>

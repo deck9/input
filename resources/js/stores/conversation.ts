@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { callGetFormStoryboard } from "@/api/conversation";
 
 type ConversationStore = {
-    form: FormModel | null;
+    form: PublicFormModel | null;
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: number;
@@ -67,11 +67,22 @@ export const useConversation = defineStore("form", {
     },
 
     actions: {
-        async initForm(id) {
-            const response = await callGetFormStoryboard(id);
+        async initForm(initialPayload: string | PublicFormModel) {
+            const id =
+                typeof initialPayload === "string"
+                    ? initialPayload
+                    : initialPayload.uuid;
 
-            this.storyboard = response.data.blocks;
-            this.queue = response.data.blocks;
+            if (typeof initialPayload !== "string") {
+                this.form = initialPayload as PublicFormModel;
+            } else {
+                console.log("todo: get public form model from api");
+            }
+
+            const storyboardResponse = await callGetFormStoryboard(id);
+
+            this.storyboard = storyboardResponse.data.blocks;
+            this.queue = storyboardResponse.data.blocks;
         },
 
         setResponse(value) {

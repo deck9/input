@@ -8,3 +8,9 @@
 
 /* TAILWIND */
 @import "tailwindcss/utilities";
+
+.conversation-theme {
+    /* --color-primary: 236, 72, 153; */
+    --color-primary: 0, 0, 0;
+    --color-secondary: 2, 10, 5;
+}
