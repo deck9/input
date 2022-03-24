@@ -1,7 +1,7 @@
 <template>
   <div class="mt-8 flex items-center">
-    <button
-      type="submit"
+    <a
+      href="#"
       ref="button"
       :class="{ 'pointer-events-none opacity-50': isProcessing || isDisabled }"
       class="relative rounded-md border border-transparent bg-black px-5 py-1 font-medium text-white shadow transition duration-200 hover:bg-grey-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 sm:px-10"
@@ -13,15 +13,7 @@
       >
         <D9Icon class="animate-spin" icon="circle-notch" />
       </span>
-    </button>
-
-    <span
-      :class="{ 'pointer-events-none opacity-0': isDisabled }"
-      class="ml-4 inline-block text-xs font-bold leading-none text-grey-700 transition duration-150"
-    >
-      Enter
-      <D9Icon class="ml-px rotate-90" icon="turn-down" />
-    </span>
+    </a>
   </div>
 </template>
 

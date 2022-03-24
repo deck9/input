@@ -7,6 +7,8 @@ type ConversationStore = {
     queue: PublicFormBlockModel[] | null;
     current: number;
     payload: Record<string, any>;
+    isProcessing: boolean;
+    isSubmitted: boolean;
 };
 
 export const useConversation = defineStore("form", {
@@ -17,6 +19,8 @@ export const useConversation = defineStore("form", {
             queue: null,
             current: 0,
             payload: {},
+            isProcessing: false,
+            isSubmitted: false,
         };
     },
 
@@ -90,7 +94,15 @@ export const useConversation = defineStore("form", {
          */
         next(): Promise<boolean> {
             if (this.isLastBlock) {
-                console.log("submit form now", this.payload);
+                this.isProcessing = true;
+                setTimeout(() => {
+                    this.isSubmitted = true;
+                    this.isProcessing = false;
+                    console.log(
+                        "submit form now",
+                        JSON.stringify(this.payload)
+                    );
+                }, 1500);
                 return Promise.resolve(true);
             }
 

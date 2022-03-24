@@ -24,7 +24,12 @@
       </div>
     </div>
 
-    <FormButton ref="submitButton" :isFinalConfirm="store.isLastBlock" />
+    <FormButton
+      :isDisabled="!isValid"
+      :isProcessing="store.isProcessing"
+      ref="submitButton"
+      :label="store.isLastBlock ? 'Submit' : 'Next'"
+    />
   </form>
 </template>
 
@@ -33,15 +38,21 @@ import { useConversation } from "@/stores/conversation";
 import ButtonAction from "./interactions/ButtonAction.vue";
 import InputAction from "./interactions/InputAction.vue";
 import FormButton from "./FormButton.vue";
-import { computed, onMounted, Ref, ref } from "vue";
-import { templateRef } from "@vueuse/core";
+import { computed, onMounted, ref } from "vue";
+import { templateRef, onKeyStroke } from "@vueuse/core";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
 }>();
 
 const store = useConversation();
-const response: Ref<string | undefined> = ref(undefined);
+const response = ref<string | undefined>(undefined);
+const isValid = computed(() => {
+  return (
+    (response.value && response.value.length > 0) || props.block.type === "none"
+  );
+});
+
 // if we render the block, and user has already set a response, we should reload the response
 if (store.currentResponse !== null) {
   response.value = store.currentResponse;
@@ -79,4 +90,14 @@ const onSubmit = async () => {
     response.value = undefined;
   }
 };
+
+onKeyStroke("Enter", (e) => {
+  if (!isValid.value) {
+    return;
+  }
+
+  e.preventDefault();
+
+  onSubmit();
+});
 </script>
