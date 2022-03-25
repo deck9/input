@@ -26,22 +26,7 @@
           :block="store.currentBlock"
           :key="store.currentBlock.id"
         />
-        <div v-else-if="store.isSubmitted">
-          <h2 class="text-lg font-medium">
-            {{ store.form?.eoc_headline || "Form Submitted" }}
-          </h2>
-          <p v-if="store.form?.eoc_text" class="mt-2 text-base leading-6">
-            {{ store.form?.eoc_text }}
-          </p>
-          <pre class="mt-4 rounded bg-black px-4 py-4 text-xs text-green-600"
-            >{{ JSON.stringify(store.payload) }} </pre
-          >
-          <CallToActionButton
-            v-if="store.form?.cta_link"
-            :href="store.form?.cta_link"
-            :label="store.form?.cta_label ?? 'Close'"
-          />
-        </div>
+        <CompletionPage v-else-if="store.isSubmitted" />
       </transition>
     </div>
 
@@ -72,8 +57,8 @@
 
 <script lang="ts" setup>
 import Block from "@/forms/classic/Block.vue";
+import CompletionPage from "@/forms/classic/CompletionPage.vue";
 import Navigator from "@/forms/classic/Navigator.vue";
-import CallToActionButton from "./CallToActionButton.vue";
 import { useConversation } from "@/stores/conversation";
 
 const props = defineProps<{
