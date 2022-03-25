@@ -14,7 +14,6 @@ class FormController extends Controller
         $form = Form::create([
             'name' => NameFactory::generate(),
             'user_id' => $request->user()->id,
-            'brand_color' => Form::DEFAULT_BRAND_COLOR,
             'has_data_privacy' => false,
         ]);
 

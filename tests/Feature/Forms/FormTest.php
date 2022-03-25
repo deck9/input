@@ -42,20 +42,6 @@ class FormTest extends TestCase
     }
 
     /** @test */
-    public function a_created_form_should_have_a_default_consent_snippet()
-    {
-        /** @var User $user */
-        $user = User::factory()->create();
-
-        $this->actingAs($user)->post(route('api.forms.create'));
-        $form = Form::get()->last();
-
-        $this->assertCount(1, $form->blocks);
-        $block = $form->blocks->first();
-        $this->assertEquals(FormBlockType::consent, $block->type);
-    }
-
-    /** @test */
     public function authenticated_user_can_view_the_edit_page_of_his_form()
     {
         $form = Form::factory()->create();

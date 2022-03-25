@@ -60,6 +60,7 @@ import Block from "@/forms/classic/Block.vue";
 import CompletionPage from "@/forms/classic/CompletionPage.vue";
 import Navigator from "@/forms/classic/Navigator.vue";
 import { useConversation } from "@/stores/conversation";
+import { ref } from "vue";
 
 const props = defineProps<{
   settings: PublicFormModel;
@@ -67,11 +68,16 @@ const props = defineProps<{
 
 const store = useConversation();
 store.initForm(props.settings);
+
+const primaryColor = ref<string>(store.form?.brand_color ?? "37, 99, 235");
+const contrastColor = ref<string>(
+  store.form?.contrast_color ?? "255, 255, 255"
+);
 </script>
 
 <style>
 .conversation-theme {
-  --color-primary: 236, 72, 153;
-  --color-secondary: 2, 10, 5;
+  --color-primary: v-bind(primaryColor);
+  --color-secondary: v-bind(contrastColor);
 }
 </style>

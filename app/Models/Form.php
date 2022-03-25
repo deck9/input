@@ -6,7 +6,6 @@ use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
-use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -17,8 +16,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Form extends Model
 {
     use HasFactory, SoftDeletes;
-
-    const DEFAULT_BRAND_COLOR = '#1C44E3';
 
     protected $guarded = [];
 
