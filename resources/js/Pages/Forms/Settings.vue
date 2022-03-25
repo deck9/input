@@ -64,7 +64,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
-// import Appearance from "@/components/Factory/Settings/Appearance.vue";
+import Appearance from "@/components/Factory/Settings/Appearance.vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
 import Delete from "@/components/Factory/Settings/Delete.vue";
@@ -85,7 +85,7 @@ const navigation: Array<{
 }> = [
   { name: "Options", component: Options, slug: "options" },
   { name: "Privacy", component: Privacy, slug: "privacy" },
-  // { name: "Appearance", component: Appearance, slug: 'appearance' },
+  { name: "Appearance", component: Appearance, slug: "appearance" },
   { name: "Social Accounts", component: SocialAccounts, slug: "accounts" },
   // { name: "Embeds", component: Appearance, slug: 'embeds' },
   { name: "Delete", component: Delete, slug: "delete" },

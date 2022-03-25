@@ -33,7 +33,7 @@ function getContrastYIQ(string $hexcolor): string
     $b = hexdec(substr($hexcolor, 4, 2));
     $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
 
-    return ($yiq >= 128) ? 'black' : 'white';
+    return ($yiq >= 150) ? '#000000' : '#ffffff';
 }
 
 function injectNestedSnippets($originalSnippets)

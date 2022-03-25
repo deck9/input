@@ -60,6 +60,7 @@ import Block from "@/forms/classic/Block.vue";
 import CompletionPage from "@/forms/classic/CompletionPage.vue";
 import Navigator from "@/forms/classic/Navigator.vue";
 import { useConversation } from "@/stores/conversation";
+import { hyphenate } from "@vue/shared";
 import { ref } from "vue";
 
 const props = defineProps<{
@@ -69,15 +70,36 @@ const props = defineProps<{
 const store = useConversation();
 store.initForm(props.settings);
 
-const primaryColor = ref<string>(store.form?.brand_color ?? "37, 99, 235");
+function hexToRgb(hex) {
+  const width = hex.length === 4 ? 1 : 2;
+  const regex = new RegExp(
+    `^#?([a-f\\d]{${width}})([a-f\\d]{${width}})([a-f\\d]{${width}})$`,
+    "i"
+  );
+  const result = regex.exec(hex);
+
+  if (result) {
+    const r = parseInt(result[1], 16);
+    const g = parseInt(result[2], 16);
+    const b = parseInt(result[3], 16);
+
+    return `${r}, ${g}, ${b}`;
+  }
+
+  return null;
+}
+
+const primaryColor = ref<string>(
+  hexToRgb(store.form?.brand_color) ?? "37, 99, 235"
+);
 const contrastColor = ref<string>(
-  store.form?.contrast_color ?? "255, 255, 255"
+  hexToRgb(store.form?.contrast_color) ?? "255, 255, 255"
 );
 </script>
 
 <style>
 .conversation-theme {
   --color-primary: v-bind(primaryColor);
-  --color-secondary: v-bind(contrastColor);
+  --color-contrast: v-bind(contrastColor);
 }
 </style>

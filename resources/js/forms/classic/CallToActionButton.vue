@@ -4,7 +4,7 @@
       :href="href"
       ref="button"
       :class="{ 'pointer-events-none opacity-50': isProcessing || isDisabled }"
-      class="relative rounded-md border border-transparent bg-primary px-5 py-1 font-medium text-white shadow transition duration-200 hover:bg-primary/75 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:px-10"
+      class="text-contrast relative rounded-md border border-transparent bg-primary px-5 py-1 font-medium shadow transition duration-200 hover:bg-primary/75 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:px-10"
     >
       <span :class="{ invisible: isProcessing }">{{ label }}</span>
       <span

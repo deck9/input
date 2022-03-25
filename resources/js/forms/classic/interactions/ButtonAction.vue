@@ -11,7 +11,7 @@
       <span
         class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium"
         :class="{
-          'bg-primary text-grey-50': isChecked,
+          'text-contrast bg-primary': isChecked,
           'bg-grey-300': !isChecked,
         }"
         >{{ index + 1 }}</span
