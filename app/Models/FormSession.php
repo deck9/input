@@ -16,6 +16,16 @@ class FormSession extends Model
 
     protected $casts = [
         'params' => 'array',
+        'is_completed' => 'boolean',
+        'has_data_privacy' => 'boolean',
+    ];
+
+    protected $hidden = [
+        "id", "form_id", "updated_at",
+    ];
+
+    protected $appends = [
+        "is_completed",
     ];
 
     public function form()
@@ -38,8 +48,12 @@ class FormSession extends Model
         return $this->hasMany(FormSessionResponse::class);
     }
 
-    public function getIsCompletedAttribute()
+    public function getIsCompletedAttribute(): bool
     {
-        return !is_null($this->original['is_completed']);
+        if (array_key_exists('is_completed', $this->attributes)) {
+            return !is_null($this->original['is_completed']);
+        }
+
+        return false;
     }
 }

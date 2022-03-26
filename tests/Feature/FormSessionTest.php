@@ -40,4 +40,26 @@ class FormSessionTest extends TestCase
         $session = $form->fresh()->sessions()->first();
         $this->assertCount(2, $session->params);
     }
+
+    /** @test */
+    public function create_session_only_return_whitelisted_attributes()
+    {
+        $form = Form::factory()->create();
+
+        $response = $this->json('POST', route('api.public.forms.session.create', [
+            'uuid' => $form->uuid,
+            'params' => [
+                'foo' => 'bar',
+                'boo' => 'faz',
+            ],
+        ]))->assertStatus(201);
+
+        $response->assertJsonStructure([
+            "token",
+            "has_data_privacy",
+            "is_completed",
+            "params",
+            "created_at",
+        ]);
+    }
 }

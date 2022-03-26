@@ -25,3 +25,26 @@ export function callGetFormStoryboard(
         }
     });
 }
+
+export function callCreateFormSession(
+    uuid: string
+): Promise<AxiosResponse<FormSessionModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { route } = useRoutes();
+
+            const resolvedRoute = route("api.public.forms.session.create", {
+                uuid,
+            });
+
+            if (resolvedRoute) {
+                const response = await handler.post(resolvedRoute);
+                resolve(response as AxiosResponse<FormSessionModel>);
+            } else {
+                reject("route not found");
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

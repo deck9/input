@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
-import { callGetFormStoryboard } from "@/api/conversation";
+import {
+    callCreateFormSession,
+    callGetFormStoryboard,
+} from "@/api/conversation";
 
 type FormBlockInteractionPayload = {
     payload: any;
@@ -8,6 +11,7 @@ type FormBlockInteractionPayload = {
 
 type ConversationStore = {
     form?: PublicFormModel;
+    session?: FormSessionModel;
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: number;
@@ -23,6 +27,7 @@ export const useConversation = defineStore("form", {
     state: (): ConversationStore => {
         return {
             form: undefined,
+            session: undefined,
             storyboard: null,
             queue: null,
             current: 0,
@@ -92,6 +97,9 @@ export const useConversation = defineStore("form", {
             }
 
             const storyboardResponse = await callGetFormStoryboard(id);
+            const formSessionResponse = await callCreateFormSession(id);
+
+            console.log(formSessionResponse);
 
             this.storyboard = storyboardResponse.data.blocks;
             this.queue = storyboardResponse.data.blocks;
@@ -128,11 +136,9 @@ export const useConversation = defineStore("form", {
                     (p) => p.actionId === action.id
                 );
 
-                if (foundIndex === -1) {
-                    currentPayload.push(givenPayload);
-                } else {
-                    currentPayload.splice(foundIndex, 1);
-                }
+                foundIndex === -1
+                    ? currentPayload.push(givenPayload)
+                    : currentPayload.splice(foundIndex, 1);
             }
         },
 

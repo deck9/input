@@ -139,3 +139,11 @@ type FormStoryboard = {
     count: integer;
     blocks: Array<PublicFormBlockModel>;
 };
+
+type FormSessionModel = {
+    token: string;
+    params: string;
+    is_completed: boolean;
+    has_data_privacy: boolean;
+    created_at: string;
+};
