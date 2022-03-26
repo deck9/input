@@ -13,7 +13,6 @@
           :block="block"
           :index="index"
           :action="action"
-          v-model="response"
         ></component>
       </div>
     </div>
@@ -31,47 +30,40 @@
 import FormButton from "./FormButton.vue";
 import { useConversation } from "@/stores/conversation";
 import { useActions } from "@/forms/classic/useActions";
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
 }>();
-
 const store = useConversation();
-const { response, actionComponent, isValid } = useActions(props.block);
 
-// if we render the block, and user has already set a response, we should reload the response
-if (store.currentResponse !== null) {
-  response.value = store.currentResponse;
-}
+const { actionComponent, actionValidator } = useActions(props.block);
 
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);
+const isValid = computed(() => {
+  return actionValidator ? actionValidator(store.currentPayload) : true;
+});
 
 onMounted(() => {
-  // we should focus submit button on text only blocks
-  if (props.block.type === "none") {
+  // we should focus submit button, if no action component is present
+  if (!actionComponent) {
     submitButton.value?.focus();
   }
 });
 
 const onSubmit = async () => {
-  store.setResponse(response.value);
-
-  const isSubmitted = await store.next();
-
-  if (!isSubmitted) {
-    response.value = undefined;
-  }
-};
-
-onKeyStroke("Enter", (e) => {
   if (!isValid.value) {
     return;
   }
 
-  e.preventDefault();
+  await store.next();
+};
 
+onKeyStroke("Enter", (e) => {
+  e.preventDefault();
   onSubmit();
 });
+
+defineExpose({ isValid, onSubmit });
 </script>

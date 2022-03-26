@@ -7,7 +7,7 @@
       :name="block.id"
       :id="action.id"
       :placeholder="action.label || 'Enter text'"
-      :value="modelValue"
+      :value="storeValue"
       ref="inputElement"
       autocomplete="off"
       @input="onInput"
@@ -18,17 +18,16 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
+import { useConversation } from "@/stores/conversation";
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-}>();
+const store = useConversation();
 
-defineProps<{
-  modelValue?: string;
+const props = defineProps<{
   block: PublicFormBlockModel;
   action: PublicFormBlockInteractionModel;
 }>();
 
+const storeValue = store.currentPayload?.[props.action.id]?.payload;
 const inputElement = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
@@ -36,6 +35,7 @@ onMounted(() => {
 });
 
 const onInput = () => {
-  emit("update:modelValue", inputElement.value?.value ?? null);
+  const input = inputElement.value?.value ?? null;
+  store.setResponse(props.action, input);
 };
 </script>

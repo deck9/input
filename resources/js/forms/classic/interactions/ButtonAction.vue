@@ -11,7 +11,7 @@
       <span
         class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium"
         :class="{
-          'text-contrast bg-primary': isChecked,
+          'bg-primary text-contrast': isChecked,
           'bg-grey-300': !isChecked,
         }"
         >{{ index + 1 }}</span
@@ -28,7 +28,7 @@
         :value="action.label"
         @input="onInput"
         ref="buttonElement"
-        :checked="action.label === modelValue"
+        :checked="isChecked"
       />
     </div>
   </label>
@@ -38,30 +38,27 @@
 import { computed } from "@vue/runtime-core";
 import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref } from "vue";
+import { useConversation } from "@/stores/conversation";
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string | null): void;
-}>();
+const store = useConversation();
 
 const props = defineProps<{
-  modelValue?: string;
   index: number;
   block: PublicFormBlockModel;
   action: PublicFormBlockInteractionModel;
 }>();
 
-const inputType = computed(() => {
-  if (props.block.type === "checkbox") {
-    return "checkbox";
-  }
-
-  return "radio";
-});
+const buttonElement = ref<HTMLInputElement | null>(null);
+const inputType = props.block.type === "checkbox" ? "checkbox" : "radio";
+const shortcutKey = (props.index + 1).toString();
 
 const isChecked = computed<boolean>(() => {
-  return props.action.label === props.modelValue;
+  if (Array.isArray(store.currentPayload)) {
+    return false;
+  } else {
+    return props.action.id === store.currentPayload?.actionId;
+  }
 });
-const buttonElement = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
   if (props.index === 0) {
@@ -71,9 +68,8 @@ onMounted(() => {
 
 const onInput = () => {
   buttonElement.value?.focus();
-  emit("update:modelValue", props.action.label);
+  store.setResponse(props.action, props.action.label);
 };
 
-const shortcutKey = (props.index + 1).toString();
 onKeyStroke(shortcutKey, onInput, { target: document });
 </script>

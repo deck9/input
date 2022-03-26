@@ -9,5 +9,14 @@ export function useInputAction(block: PublicFormBlockModel) {
         "input-phone",
     ].includes(block.type);
 
-    return { useThis, component: InputAction };
+    const validator = (input: any) => {
+        switch (block.type) {
+            case "input-email":
+                return input?.payload?.length > 5;
+            default:
+                return true;
+        }
+    };
+
+    return { useThis, component: InputAction, validator };
 }

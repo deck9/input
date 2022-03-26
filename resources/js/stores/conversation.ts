@@ -1,12 +1,20 @@
 import { defineStore } from "pinia";
 import { callGetFormStoryboard } from "@/api/conversation";
 
+type FormBlockInteractionPayload = {
+    payload: any;
+    actionId: string;
+};
+
 type ConversationStore = {
     form?: PublicFormModel;
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: number;
-    payload: Record<string, any>;
+    payload: Record<
+        string,
+        FormBlockInteractionPayload | FormBlockInteractionPayload[]
+    >;
     isProcessing: boolean;
     isSubmitted: boolean;
 };
@@ -38,7 +46,9 @@ export const useConversation = defineStore("form", {
                 return false;
             }
 
-            return state.queue.length <= state.current + 1;
+            console.log(state.current + 1, state.queue.length);
+
+            return state.current + 1 >= state.queue.length;
         },
 
         currentBlock: (state): PublicFormBlockModel | null => {
@@ -49,9 +59,13 @@ export const useConversation = defineStore("form", {
             return null;
         },
 
-        currentResponse(): string | null {
-            if (this.currentBlockIdentifier) {
-                return this.payload[this.currentBlockIdentifier];
+        currentPayload(
+            state
+        ): FormBlockInteractionPayload | FormBlockInteractionPayload[] | null {
+            if (!this.currentBlock) return null;
+
+            if (state.payload[this.currentBlock.id]) {
+                return state.payload[this.currentBlock.id];
             }
 
             return null;
@@ -85,10 +99,16 @@ export const useConversation = defineStore("form", {
             this.queue = storyboardResponse.data.blocks;
         },
 
-        setResponse(value) {
-            if (this.currentBlockIdentifier) {
-                this.payload[this.currentBlockIdentifier] = value;
-            }
+        setResponse(
+            action: PublicFormBlockInteractionModel,
+            value: string | boolean | null
+        ) {
+            if (!this.currentBlock) return;
+
+            this.payload[this.currentBlock.id] = {
+                payload: value,
+                actionId: action.id,
+            };
         },
 
         back() {
