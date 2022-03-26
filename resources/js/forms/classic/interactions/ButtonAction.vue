@@ -54,7 +54,11 @@ const shortcutKey = (props.index + 1).toString();
 
 const isChecked = computed<boolean>(() => {
   if (Array.isArray(store.currentPayload)) {
-    return false;
+    return (
+      store.currentPayload.findIndex(
+        (value) => value.actionId === props.action.id
+      ) !== -1
+    );
   } else {
     return props.action.id === store.currentPayload?.actionId;
   }
@@ -68,7 +72,11 @@ onMounted(() => {
 
 const onInput = () => {
   buttonElement.value?.focus();
-  store.setResponse(props.action, props.action.label);
+  if (inputType === "checkbox") {
+    store.toggleResponse(props.action, props.action.label);
+  } else {
+    store.setResponse(props.action, props.action.label);
+  }
 };
 
 onKeyStroke(shortcutKey, onInput, { target: document });

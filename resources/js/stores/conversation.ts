@@ -109,6 +109,33 @@ export const useConversation = defineStore("form", {
             };
         },
 
+        toggleResponse(
+            action: PublicFormBlockInteractionModel,
+            value: string | boolean | null
+        ) {
+            if (!this.currentBlock) return;
+
+            const givenPayload = {
+                payload: value,
+                actionId: action.id,
+            };
+            const currentPayload = this.payload[this.currentBlock.id];
+
+            if (!Array.isArray(currentPayload)) {
+                this.payload[this.currentBlock.id] = [givenPayload];
+            } else {
+                const foundIndex = currentPayload.findIndex(
+                    (p) => p.actionId === action.id
+                );
+
+                if (foundIndex === -1) {
+                    currentPayload.push(givenPayload);
+                } else {
+                    currentPayload.splice(foundIndex, 1);
+                }
+            }
+        },
+
         back() {
             if (this.isFirstBlock) {
                 return;
