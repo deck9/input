@@ -1,4 +1,5 @@
 import InputAction from "@/forms/classic/interactions/InputAction.vue";
+import { string, number } from "yup";
 
 export function useInputAction(block: PublicFormBlockModel) {
     const useThis = [
@@ -10,9 +11,23 @@ export function useInputAction(block: PublicFormBlockModel) {
     ].includes(block.type);
 
     const validator = (input: any) => {
+        const emailValidator = string().required().email();
+        const linkValidator = string().required().url();
+        const numberValidator = number().required();
+        const phoneValidator = string()
+            .required()
+            .min(7)
+            .matches(/^[+]?(?:[0-9]+[\s-]?[0-9]+)+$/);
+
         switch (block.type) {
             case "input-email":
-                return input?.payload?.length > 5;
+                return emailValidator.isValidSync(input?.payload);
+            case "input-number":
+                return numberValidator.isValidSync(input?.payload);
+            case "input-link":
+                return linkValidator.isValidSync(input?.payload);
+            case "input-phone":
+                return phoneValidator.isValidSync(input?.payload);
             default:
                 return true;
         }
