@@ -1,11 +1,12 @@
 <template>
   <div
     class="grid w-24 grid-cols-4 rounded border border-grey-200 text-grey-800"
+    :class="{ 'pointer-events-none opacity-50': store.isSubmitted }"
   >
     <button
       type="button"
       class="border-r border-grey-100 py-1 hover:bg-grey-100"
-      @click="emit('prev')"
+      @click="store.back()"
     >
       <D9Icon icon="chevron-left" />
     </button>
@@ -16,7 +17,7 @@
     <button
       type="button"
       class="border-l border-grey-100 py-1 hover:bg-grey-100"
-      @click="emit('next')"
+      @click="store.next()"
     >
       <D9Icon icon="chevron-right" />
     </button>
@@ -25,14 +26,13 @@
 
 <script lang="ts" setup>
 import { D9Icon } from "@deck9/ui";
+import { useConversation } from "@/stores/conversation";
+import { computed, ref } from "vue";
 
-defineProps<{
-  currentPage: number;
-  totalPages?: number;
-}>();
+const store = useConversation();
 
-const emit = defineEmits<{
-  (e: "prev"): void;
-  (e: "next"): void;
-}>();
+const totalPages = ref(0);
+const currentPage = computed(() => {
+  return store.current + 1;
+});
 </script>

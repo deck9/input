@@ -35,8 +35,8 @@
 
 <script lang="ts" setup>
 import { useConversation } from "@/stores/conversation";
-import ButtonAction from "./interactions/ButtonAction.vue";
-import InputAction from "./interactions/InputAction.vue";
+import ButtonAction from "../interactions/ButtonAction.vue";
+import InputAction from "../interactions/InputAction.vue";
 import FormButton from "./FormButton.vue";
 import { computed, onMounted, ref } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { callGetFormStoryboard } from "@/api/conversation";
 
 type ConversationStore = {
-    form: PublicFormModel | null;
+    form?: PublicFormModel;
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: number;
@@ -14,7 +14,7 @@ type ConversationStore = {
 export const useConversation = defineStore("form", {
     state: (): ConversationStore => {
         return {
-            form: null,
+            form: undefined,
             storyboard: null,
             queue: null,
             current: 0,

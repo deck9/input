@@ -2,14 +2,7 @@
   <div
     class="conversation-theme mx-auto flex h-full max-w-screen-sm flex-col justify-between py-8 px-4 md:px-0"
   >
-    <div class="py-4">
-      <img
-        v-if="settings.avatar"
-        class="h-12 w-auto object-contain"
-        :src="settings.avatar"
-        :alt="settings.name"
-      />
-    </div>
+    <Header :form="store.form" />
 
     <div class="mx-auto h-full w-full max-w-screen-sm pt-10 pb-12 md:pt-[16vh]">
       <transition
@@ -31,37 +24,20 @@
     </div>
 
     <footer class="flex justify-between text-center text-xs">
-      <Navigator
-        :class="{ 'pointer-events-none opacity-50': store.isSubmitted }"
-        :current-page="store.current + 1"
-        @prev="store.back()"
-        @next="store.next()"
-      />
-      <div class="space-x-4">
-        <a
-          v-if="store.form?.privacy_link"
-          :href="store.form?.privacy_link"
-          target="_blank"
-          >Privacy Policy</a
-        >
-        <a
-          v-if="store.form?.legal_notice_link"
-          :href="store.form?.legal_notice_link"
-          target="_blank"
-          >Legal Notice</a
-        >
-      </div>
+      <Navigator />
+      <FooterNavigation :form="store.form" />
     </footer>
   </div>
 </template>
 
 <script lang="ts" setup>
-import Block from "@/forms/classic/Block.vue";
-import CompletionPage from "@/forms/classic/CompletionPage.vue";
-import Navigator from "@/forms/classic/Navigator.vue";
+import Header from "@/forms/classic/layout/Header.vue";
+import Block from "@/forms/classic/layout/Block.vue";
+import CompletionPage from "@/forms/classic/layout/CompletionPage.vue";
+import Navigator from "@/forms/classic/layout/Navigator.vue";
+import FooterNavigation from "@/forms/classic/layout/FooterNavigation.vue";
 import { useConversation } from "@/stores/conversation";
-import { hyphenate } from "@vue/shared";
-import { ref } from "vue";
+import { useThemableColor } from "@/utils/useThemableColor";
 
 const props = defineProps<{
   settings: PublicFormModel;
@@ -70,31 +46,8 @@ const props = defineProps<{
 const store = useConversation();
 store.initForm(props.settings);
 
-function hexToRgb(hex) {
-  const width = hex.length === 4 ? 1 : 2;
-  const regex = new RegExp(
-    `^#?([a-f\\d]{${width}})([a-f\\d]{${width}})([a-f\\d]{${width}})$`,
-    "i"
-  );
-  const result = regex.exec(hex);
-
-  if (result) {
-    const r = parseInt(result[1], 16);
-    const g = parseInt(result[2], 16);
-    const b = parseInt(result[3], 16);
-
-    return `${r}, ${g}, ${b}`;
-  }
-
-  return null;
-}
-
-const primaryColor = ref<string>(
-  hexToRgb(store.form?.brand_color) ?? "37, 99, 235"
-);
-const contrastColor = ref<string>(
-  hexToRgb(store.form?.contrast_color) ?? "255, 255, 255"
-);
+const primaryColor = useThemableColor(store.form?.brand_color ?? "#1f2937");
+const contrastColor = useThemableColor(store.form?.contrast_color ?? "#f9fafb");
 </script>
 
 <style>
