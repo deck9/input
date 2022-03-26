@@ -52,7 +52,6 @@ class FormStoryboardTest extends TestCase
             'label' => 'Option ' . $sequence->index,
         ]))->create();
 
-
         $response = $this->json('GET', route('api.public.forms.storyboard', ['uuid' => $form->uuid]));
 
         $this->assertEquals(2, $response->json('count'));
