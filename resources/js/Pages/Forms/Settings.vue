@@ -62,12 +62,13 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
+import Appearance from "@/components/Factory/Settings/Appearance.vue";
+import Delete from "@/components/Factory/Settings/Delete.vue";
+import FormSummary from "@/components/Factory/FormSummary.vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
-import Appearance from "@/components/Factory/Settings/Appearance.vue";
-import FormSummary from "@/components/Factory/FormSummary.vue";
 import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
-import Delete from "@/components/Factory/Settings/Delete.vue";
+import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
 import { onMounted, onUnmounted, ref } from "vue";
 
@@ -88,6 +89,11 @@ const navigation: Array<{
   { name: "Appearance", component: Appearance, slug: "appearance" },
   { name: "Social Accounts", component: SocialAccounts, slug: "accounts" },
   // { name: "Embeds", component: Appearance, slug: 'embeds' },
+  {
+    name: "Template Export",
+    component: TemplateExport,
+    slug: "tempalte-export",
+  },
   { name: "Delete", component: Delete, slug: "delete" },
 ];
 

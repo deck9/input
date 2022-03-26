@@ -75,4 +75,14 @@ class FormBlockInteraction extends Model
             'reply' => $this->reply,
         ];
     }
+
+    public function toTemplate()
+    {
+        return $this->only([
+            'type',
+            'label',
+            'reply',
+            'sequence'
+        ]);
+    }
 }

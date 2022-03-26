@@ -147,4 +147,23 @@ class FormBlock extends Model
             })->toArray(),
         ];
     }
+
+    public function toTemplate()
+    {
+        $blocks = $this->only([
+            'message',
+            'type',
+            'title',
+            'has_parent_interaction',
+            'sequence'
+        ]);
+
+        $interactions = $this->interactions->map(function ($interactions) {
+            return $interactions->toTemplate();
+        })->toArray();
+
+        return array_merge($blocks, [
+            'interactions' => $interactions,
+        ]);
+    }
 }

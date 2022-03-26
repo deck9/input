@@ -106,3 +106,24 @@ export function callGetFormBlockMapping(): Promise<
         }
     });
 }
+
+export function callGetFormTemplate(
+    form
+): Promise<AxiosResponse<{ mapping: Record<string, string> }>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.get(
+                window.route("api.forms.template-export", { form: form })
+            );
+            if (response.status === 200) {
+                resolve(
+                    response as AxiosResponse<{
+                        mapping: Record<string, string>;
+                    }>
+                );
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

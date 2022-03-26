@@ -290,4 +290,33 @@ class Form extends Model
             'blocks' => $blocks,
         ];
     }
+
+    public function toTemplate()
+    {
+        $this->load('blocks.interactions');
+
+        $form = $this->only([
+            'name',
+            'description',
+            'eoc_text',
+            'eoc_headline',
+            'cta_label',
+            'cta_link',
+            'linkedin',
+            'github',
+            'instagram',
+            'facebook',
+            'twitter',
+            'show_cta_link',
+            'show_social_links',
+        ]);
+
+        $blocks = $this->blocks->map(function ($block) {
+            return $block->toTemplate();
+        })->toArray();
+
+        return array_merge($form, [
+            'blocks' => $blocks,
+        ]);
+    }
 }
