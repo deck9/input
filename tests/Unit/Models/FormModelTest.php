@@ -121,10 +121,10 @@ class FormModelTest extends TestCase
         ]);
 
         $this->assertEquals('#ffffff', $form->brandColor());
-        $this->assertEquals('black', $form->contrastColor);
+        $this->assertEquals('#000000', $form->contrastColor);
 
         $form->brand_color = '#000000';
-        $this->assertEquals('white', $form->contrastColor);
+        $this->assertEquals('#ffffff', $form->contrastColor);
     }
 
     /** @test */
@@ -135,7 +135,7 @@ class FormModelTest extends TestCase
         ]);
 
         $this->assertEquals('#000000', $form->brandColor());
-        $this->assertEquals('white', $form->contrastColor);
+        $this->assertEquals('#ffffff', $form->contrastColor);
     }
 
     /** @test */
@@ -146,7 +146,7 @@ class FormModelTest extends TestCase
         ]);
 
         $this->assertEquals('#ffffff', $form->toArray()['brand_color']);
-        $this->assertEquals('black', $form->toArray()['contrast_color']);
+        $this->assertEquals('#000000', $form->toArray()['contrast_color']);
     }
 
     /** @test */

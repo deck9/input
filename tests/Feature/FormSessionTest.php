@@ -29,7 +29,7 @@ class FormSessionTest extends TestCase
     {
         $form = Form::factory()->create();
 
-        $response = $this->json('POST', route('api.public.forms.session.create', [
+        $this->json('POST', route('api.public.forms.session.create', [
             'uuid' => $form->uuid,
             'params' => [
                 'foo' => 'bar',
