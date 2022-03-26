@@ -8,19 +8,13 @@
         v-for="(action, index) in block.interactions"
         :key="action.id"
       >
-        <ButtonAction
-          v-if="useButtonComponent"
+        <component
+          :is="actionComponent"
           :block="block"
           :index="index"
           :action="action"
           v-model="response"
-        />
-        <InputAction
-          v-if="useInputComponent"
-          :block="block"
-          :action="action"
-          v-model="response"
-        />
+        ></component>
       </div>
     </div>
 
@@ -34,11 +28,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useConversation } from "@/stores/conversation";
-import ButtonAction from "../interactions/ButtonAction.vue";
-import InputAction from "../interactions/InputAction.vue";
 import FormButton from "./FormButton.vue";
-import { computed, onMounted, ref } from "vue";
+import { useConversation } from "@/stores/conversation";
+import { useActions } from "@/forms/classic/useActions";
+import { onMounted } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
 
 const props = defineProps<{
@@ -46,12 +39,7 @@ const props = defineProps<{
 }>();
 
 const store = useConversation();
-const response = ref<string | undefined>(undefined);
-const isValid = computed(() => {
-  return (
-    (response.value && response.value.length > 0) || props.block.type === "none"
-  );
-});
+const { response, actionComponent, isValid } = useActions(props.block);
 
 // if we render the block, and user has already set a response, we should reload the response
 if (store.currentResponse !== null) {
@@ -61,24 +49,10 @@ if (store.currentResponse !== null) {
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);
 
 onMounted(() => {
-  // we should focus interactions if we can
+  // we should focus submit button on text only blocks
   if (props.block.type === "none") {
     submitButton.value?.focus();
   }
-});
-
-const useButtonComponent = computed(() => {
-  return ["radio", "checkbox"].includes(props.block.type);
-});
-
-const useInputComponent = computed(() => {
-  return [
-    "input-short",
-    "input-email",
-    "input-number",
-    "input-link",
-    "input-phone",
-  ].includes(props.block.type);
 });
 
 const onSubmit = async () => {
