@@ -46,8 +46,6 @@ export const useConversation = defineStore("form", {
                 return false;
             }
 
-            console.log(state.current + 1, state.queue.length);
-
             return state.current + 1 >= state.queue.length;
         },
 
