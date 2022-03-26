@@ -17,7 +17,7 @@
     <button
       type="button"
       class="border-l border-grey-100 py-1 hover:bg-grey-100"
-      @click="store.next()"
+      @click="!store.isLastBlock ? store.next() : false"
     >
       <D9Icon icon="chevron-right" />
     </button>
