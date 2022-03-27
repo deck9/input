@@ -99,8 +99,7 @@ export const useConversation = defineStore("form", {
             const storyboardResponse = await callGetFormStoryboard(id);
             const formSessionResponse = await callCreateFormSession(id);
 
-            console.log(formSessionResponse);
-
+            this.session = formSessionResponse.data;
             this.storyboard = storyboardResponse.data.blocks;
             this.queue = storyboardResponse.data.blocks;
         },
