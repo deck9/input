@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "esnext",
         "module": "esnext",
-        "strict": false,
+        "strict": true,
         "jsx": "preserve",
         "importHelpers": true,
         "moduleResolution": "node",
@@ -11,7 +11,7 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "allowJs": true,
+        "allowJs": false,
         "sourceMap": true,
         "baseUrl": ".",
         "paths": {
