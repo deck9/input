@@ -74,7 +74,6 @@ type FormBlockType =
 type FormBlockInteractionType = "button" | "input" | "consent";
 
 interface FormBlockInteractionModel extends BaseModel {
-    id: string;
     type: FormBlockInteractionType;
     label: string | null;
     reply: string | null;
