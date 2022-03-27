@@ -11,7 +11,7 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
         <link rel="manifest" href="/icons/site.webmanifest">
-        <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#0055d9">
+        <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#ef4444">
         <link rel="shortcut icon" href="/icons/favicon.ico">
         <meta name="msapplication-TileColor" content="#202020">
         <meta name="msapplication-config" content="/icons/browserconfig.xml">
