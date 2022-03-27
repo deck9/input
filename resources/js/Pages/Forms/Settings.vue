@@ -101,7 +101,7 @@ onMounted(async () => {
   await store.getBlocks();
 });
 
-const tabChanged = (index: number) => {
+const tabChanged = (index: any) => {
   const item = navigation[index];
   location.hash = item.slug;
   selectedTabIndex.value = index;

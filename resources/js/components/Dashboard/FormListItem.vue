@@ -57,6 +57,6 @@
 import { D9Icon } from "@deck9/ui";
 
 defineProps<{
-  form: FormBlockModel;
+  form: FormModel;
 }>();
 </script>

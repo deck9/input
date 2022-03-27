@@ -30,11 +30,7 @@
           </div>
 
           <div v-else>
-            <FormListItem
-              v-bind="{ form }"
-              :key="form.id"
-              v-for="form in forms"
-            />
+            <FormListItem :form="form" :key="form.id" v-for="form in forms" />
           </div>
         </div>
         <UpdatesContainer class="col-span-4" />
