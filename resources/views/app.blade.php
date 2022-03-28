@@ -44,7 +44,6 @@
         @routes
         <script src="{{ mix('js/app.js') }}" defer></script>
         <script src="{{ mix('js/classic.js') }}" defer></script>
-        <script src="{{ mix('js/conversation.js') }}" defer></script>
     </head>
 
     <body class="font-sans antialiased">
