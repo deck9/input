@@ -164,7 +164,7 @@ class Form extends Model
     public function avatarImage()
     {
         if ($this->hasAvatar()) {
-            return url('images/' . $this->avatar_path);
+            return asset('images/' . $this->avatar_path);
         }
 
         return false;
