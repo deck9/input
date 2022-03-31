@@ -15,9 +15,9 @@ mix
     .ts("resources/js/app.ts", "public/js", {
         transpileOnly: mix.inProduction(),
     })
-    // .ts("resources/js/forms/classic.ts", "public/js", {
-    //     transpileOnly: mix.inProduction(),
-    // })
+    .ts("resources/js/forms/classic.ts", "public/js", {
+        transpileOnly: mix.inProduction(),
+    })
     .vue()
     .postCss("resources/css/app.css", "public/css", [
         require("postcss-import"),
