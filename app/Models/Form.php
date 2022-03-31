@@ -6,6 +6,7 @@ use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Models\Traits\TemplateImports;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -15,9 +16,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Form extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, TemplateImports;
 
     const DEFAULT_BRAND_COLOR = '#1f2937';
+
+    const TEMPLATE_ATTRIBUTES = [
+        'name',
+        'description',
+        'eoc_text',
+        'eoc_headline',
+        'cta_label',
+        'cta_link',
+        'linkedin',
+        'github',
+        'instagram',
+        'facebook',
+        'twitter',
+        'show_cta_link',
+        'show_social_links',
+    ];
 
     protected $guarded = [];
 
@@ -291,34 +308,5 @@ class Form extends Model
             'count' => $blockCount,
             'blocks' => $blocks,
         ];
-    }
-
-    public function toTemplate()
-    {
-        $this->load('blocks.interactions');
-
-        $form = $this->only([
-            'name',
-            'description',
-            'eoc_text',
-            'eoc_headline',
-            'cta_label',
-            'cta_link',
-            'linkedin',
-            'github',
-            'instagram',
-            'facebook',
-            'twitter',
-            'show_cta_link',
-            'show_social_links',
-        ]);
-
-        $blocks = $this->blocks->map(function ($block) {
-            return $block->toTemplate();
-        })->toArray();
-
-        return array_merge($form, [
-            'blocks' => $blocks,
-        ]);
     }
 }

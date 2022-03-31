@@ -8,7 +8,6 @@ use App\Models\FormBlock;
 use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FormExportTemplateTest extends TestCase

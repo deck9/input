@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\FormBlockMappingController;
 use App\Http\Controllers\Api\FormBlockSequenceController;
 use App\Http\Controllers\Api\GetFormStoryboardController;
 use App\Http\Controllers\Api\FormTemplateExportController;
+use App\Http\Controllers\Api\FormTemplateImportController;
 use App\Http\Controllers\Api\InteractionResultsController;
 use App\Http\Controllers\Api\FormBlockInteractionController;
 use App\Http\Controllers\Api\FormBlockInteractionSequenceController;
@@ -75,4 +76,5 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->post('{block}/interactions/sequence', FormBlockInteractionSequenceController::class)->name('api.interactions.sequence');
 
     $router->get('forms/{form}/template-export', FormTemplateExportController::class)->name('api.forms.template-export');
+    $router->post('forms/{form}/template-import', FormTemplateImportController::class)->name('api.forms.template-import');
 });

@@ -12,6 +12,13 @@ class FormBlockInteraction extends Model
 {
     use HasFactory;
 
+    public const TEMPLATE_ATTRIBUTES = [
+        'type',
+        'label',
+        'reply',
+        'sequence'
+    ];
+
     protected $guarded = [];
 
     protected $casts = [
@@ -78,11 +85,6 @@ class FormBlockInteraction extends Model
 
     public function toTemplate()
     {
-        return $this->only([
-            'type',
-            'label',
-            'reply',
-            'sequence'
-        ]);
+        return $this->only(self::TEMPLATE_ATTRIBUTES);
     }
 }

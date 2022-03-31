@@ -17,6 +17,14 @@ class FormBlock extends Model
 {
     use HasFactory;
 
+    public const TEMPLATE_ATTRIBUTES = [
+        'message',
+        'type',
+        'title',
+        'has_parent_interaction',
+        'sequence'
+    ];
+
     protected $guarded = [];
 
     protected $with = ['interactions'];
@@ -150,13 +158,7 @@ class FormBlock extends Model
 
     public function toTemplate()
     {
-        $blocks = $this->only([
-            'message',
-            'type',
-            'title',
-            'has_parent_interaction',
-            'sequence'
-        ]);
+        $blocks = $this->only(self::TEMPLATE_ATTRIBUTES);
 
         $interactions = $this->interactions->map(function ($interactions) {
             return $interactions->toTemplate();
