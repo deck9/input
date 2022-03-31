@@ -4,7 +4,7 @@
       <div
         class="mx-auto grid max-w-7xl grid-cols-12 gap-x-10 px-4 sm:px-6 lg:px-8"
       >
-        <div class="col-span-8">
+        <div class="col-span-12 lg:col-span-8">
           <div class="relative mb-6 flex items-center justify-between">
             <h2 class="text-xl font-bold leading-8 text-grey-900">
               Your Forms
@@ -33,7 +33,7 @@
             <FormListItem :form="form" :key="form.id" v-for="form in forms" />
           </div>
         </div>
-        <UpdatesContainer class="col-span-4" />
+        <UpdatesContainer class="col-span-12 mt-6 lg:col-span-4 lg:mt-0" />
       </div>
     </div>
   </app-layout>
