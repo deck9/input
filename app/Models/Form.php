@@ -17,6 +17,8 @@ class Form extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const DEFAULT_BRAND_COLOR = '#1f2937';
+
     protected $guarded = [];
 
     protected $dates = ['deleted_at'];

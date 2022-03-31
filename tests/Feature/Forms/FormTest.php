@@ -42,6 +42,18 @@ class FormTest extends TestCase
     }
 
     /** @test */
+    public function a_new_form_should_have_a_default_brand_color_set()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('api.forms.create'));
+        $form = Form::get()->last();
+
+        $this->assertEquals(Form::DEFAULT_BRAND_COLOR, $form->brand_color);
+    }
+
+    /** @test */
     public function authenticated_user_can_view_the_edit_page_of_his_form()
     {
         $form = Form::factory()->create();

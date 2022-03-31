@@ -15,6 +15,7 @@ class FormController extends Controller
             'name' => NameFactory::generate(),
             'user_id' => $request->user()->id,
             'has_data_privacy' => false,
+            'brand_color' => Form::DEFAULT_BRAND_COLOR,
         ]);
 
         return response()->json($form, 200);
