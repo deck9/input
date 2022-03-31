@@ -158,7 +158,7 @@ class Form extends Model
             return false;
         }
 
-        return Storage::disk('images')->exists($this->avatar_path);
+        return Storage::exists($this->avatar_path);
     }
 
     public function avatarImage()

@@ -16,7 +16,7 @@ class AvatarTest extends TestCase
     public function can_upload_a_single_avatar_image_for_a_form()
     {
         $form = Form::factory()->create();
-        Storage::fake('images');
+        Storage::fake();
 
         // test with valid file size
         $this->actingAs($form->user)
@@ -28,13 +28,13 @@ class AvatarTest extends TestCase
         $form = $form->fresh();
         $this->assertTrue($form->hasAvatar());
         $this->assertNotNull($form->avatar_path);
-        Storage::disk('images')->assertExists($form->avatar_path);
+        Storage::assertExists($form->avatar_path);
     }
 
     /** @test */
     public function cannot_upload_avatar_if_wrong_format_or_too_big()
     {
-        Storage::fake('images');
+        Storage::fake();
         $form = Form::factory()->create();
 
         // test with invalid file type
@@ -59,7 +59,7 @@ class AvatarTest extends TestCase
     /** @test */
     public function can_delete_an_uploaded_avatar_image_for_a_form()
     {
-        Storage::fake('images');
+        Storage::fake();
         $form = Form::factory()->create();
 
         // upload image first

@@ -32,7 +32,7 @@ class CreatePreviewImage implements ShouldQueue
             ])
         );
 
-        Storage::disk('public')->makeDirectory('previews');
+        Storage::makeDirectory('previews');
 
         $this->browsershot->url(route('internal.meta-preview', $event->form->id))
             ->setNodeModulePath(base_path('node_modules'))

@@ -13,7 +13,7 @@ class ImageController extends Controller
     {
         $server = ServerFactory::create([
             'response' => new LaravelResponseFactory(app('request')),
-            'source' => Storage::disk('images')->getDriver(),
+            'source' => Storage::getDriver(),
             'cache' => Storage::getDriver(),
             'cache_path_prefix' => '.cache',
             'base_url' => 'avatars',
