@@ -16,6 +16,23 @@ export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
     });
 }
 
+export function callGetForm(
+    form: FormModel
+): Promise<AxiosResponse<FormModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.show", { uuid: form.uuid }),
+                form
+            );
+
+            resolve(response as AxiosResponse<FormModel>);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callUpdateForm(
     form: FormModel
 ): Promise<AxiosResponse<FormModel>> {
@@ -114,6 +131,31 @@ export function callGetFormTemplate(
         try {
             const response = await handler.get(
                 window.route("api.forms.template-export", { form: form })
+            );
+            if (response.status === 200) {
+                resolve(
+                    response as AxiosResponse<{
+                        mapping: Record<string, string>;
+                    }>
+                );
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callImportFormTemplate(
+    form,
+    template: string
+): Promise<AxiosResponse<{ mapping: Record<string, string> }>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.template-import", { form: form }),
+                {
+                    template,
+                }
             );
             if (response.status === 200) {
                 resolve(

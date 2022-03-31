@@ -90,9 +90,9 @@ const navigation: Array<{
   { name: "Social Accounts", component: SocialAccounts, slug: "accounts" },
   // { name: "Embeds", component: Appearance, slug: 'embeds' },
   {
-    name: "Template Export",
+    name: "Template Export / Import",
     component: TemplateExport,
-    slug: "tempalte-export",
+    slug: "template-export-import",
   },
   { name: "Delete", component: Delete, slug: "delete" },
 ];

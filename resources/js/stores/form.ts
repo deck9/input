@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import {
     callDeleteAvatar,
     callUpdateForm,
+    callGetForm,
     callUploadAvatar,
     callGetFormBlockMapping,
     callDeleteForm,
@@ -47,6 +48,19 @@ export const useForm = defineStore("form", {
         clearForm() {
             this.form = null;
             this.blocks = null;
+        },
+
+        async refreshForm() {
+            if (this.form) {
+                const response = await callGetForm(this.form);
+                this.form = response.data;
+            }
+
+            if (this.blocks) {
+                await this.getBlocks();
+            }
+
+            return Promise.resolve(true);
         },
 
         async getFormBlockMapping() {
