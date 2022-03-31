@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e7f77d7a1d7ac225a79dc783514bd26",
+    "content-hash": "b873ec2d7970b63d6da63ced46e5d683",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2402,6 +2402,55 @@
                 "source": "https://github.com/thephpleague/flysystem-aws-s3-v3/tree/3.0.11"
             },
             "time": "2022-03-04T16:39:25+00:00"
+        },
+        {
+            "name": "league/flysystem-memory",
+            "version": "3.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-memory.git",
+                "reference": "71164f1b0193dc4b0d1688f581af276c3ba0bbc8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/71164f1b0193dc4b0d1688f581af276c3ba0bbc8",
+                "reference": "71164f1b0193dc4b0d1688f581af276c3ba0bbc8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "league/flysystem": "^2.0.0 || ^3.0.0",
+                "php": "^8.0.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\InMemory\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "In-memory filesystem adapter for Flysystem.",
+            "keywords": [
+                "Flysystem",
+                "file",
+                "files",
+                "filesystem",
+                "memory"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem-memory/issues",
+                "source": "https://github.com/thephpleague/flysystem-memory/tree/3.0.9"
+            },
+            "time": "2022-02-22T07:15:18+00:00"
         },
         {
             "name": "league/glide",
