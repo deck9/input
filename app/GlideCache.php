@@ -21,7 +21,7 @@ class GlideCache
         $server = ServerFactory::create([
             'response' => new LaravelResponseFactory(app('request')),
             'source' => Storage::getDriver(),
-            'cache' => new Filesystem($adapter),
+            'cache' => config('filesystems.default') === 'minio' ? new Filesystem($adapter) : Storage::getDriver(),
             'cache_path_prefix' => '.cache',
             'base_url' => 'images',
         ]);
