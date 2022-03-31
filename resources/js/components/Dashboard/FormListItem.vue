@@ -6,7 +6,7 @@
     <div class="flex w-1/2 shrink-0 items-center">
       <div
         class="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full p-2"
-        :style="`background-color: ${form.brand_color};`"
+        :style="`background-color: ${form.brand_color ?? '#232323'};`"
       >
         <span
           class="text-sm font-black uppercase"
