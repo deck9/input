@@ -10,22 +10,33 @@ use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 
 class GlideCache
 {
-    public function clear($path)
-    {
-        if (!$path) {
-            return;
-        }
 
+    public $server;
+
+    public function __construct()
+    {
         $adapter = new InMemoryFilesystemAdapter();
 
-        $server = ServerFactory::create([
+        $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory(app('request')),
             'source' => Storage::getDriver(),
             'cache' => config('filesystems.default') === 'minio' ? new Filesystem($adapter) : Storage::getDriver(),
             'cache_path_prefix' => '.cache',
             'base_url' => 'images',
         ]);
+    }
 
-        $server->deleteCache($path);
+    public function clear($path)
+    {
+        if (!$path) {
+            return;
+        }
+
+        $this->server->deleteCache($path);
+    }
+
+    public function getServer()
+    {
+        return $this->server;
     }
 }
