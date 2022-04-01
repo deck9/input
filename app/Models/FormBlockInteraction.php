@@ -65,7 +65,7 @@ class FormBlockInteraction extends Model
 
     public function responses()
     {
-        return $this->hasMany(FormSessionResponse::class);
+        return $this->hasMany(FormSessionResponse::class, 'form_block_interaction_id');
     }
 
     public function getResponsesCountAttribute()

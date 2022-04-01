@@ -56,4 +56,12 @@ class FormSession extends Model
 
         return false;
     }
+
+    public function submit($payload)
+    {
+        foreach ($payload as $blockUuid => $blockPayload) {
+            $block = FormBlock::where('uuid', $blockUuid)->firstOrFail();
+            $block->submit($this, $blockPayload);
+        }
+    }
 }

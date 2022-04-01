@@ -168,4 +168,21 @@ class FormBlock extends Model
             'interactions' => $interactions,
         ]);
     }
+
+    public function submit(FormSession $session, array $data)
+    {
+        if (!has_string_keys($data)) {
+            collect($data)->each(fn ($chunk) => $this->submit($session, $chunk));
+        } else {
+            $interaction = $this->interactions()
+                ->where('uuid', $data['actionId'])
+                ->firstOrFail();
+
+            return $session->responses()->create([
+                'form_block_id' => $this->id,
+                'form_block_interaction_id' => $interaction->id,
+                'value' => $data['payload'],
+            ]);
+        }
+    }
 }
