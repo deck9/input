@@ -7,8 +7,8 @@
         />
       </g>
       <path
-        class="text-red-500"
-        fill="#ef4444"
+        class="text-indigo-500"
+        fill="#5046e5"
         d="M248 1.8 260 0v109h-12Z"
         :style="animate ? 'animation: 2.4s linear infinite both flicker' : ''"
       />
