@@ -59,7 +59,20 @@
     </head>
 
     <body class="font-sans antialiased">
-        <div class="h-full" id="input-classic"></div>
+
+        @auth
+        @if(auth()->user()->id === $form->user_id)
+        <div class="bg-grey-700 py-2 absolute inset-x-0 top-0 px-4">
+            <div class="max-w-screen-lg mx-auto text-indigo-50 text-sm flex justify-between">
+                <a class="underline" href="{{ route('forms.edit', $form->uuid) }}">Back to Editor</a>
+                <span class="font-bold">You are viewing a preview of your form.</span>
+            </div>
+        </div>
+        @endif
+        @endauth
+
+        <div class="h-full {{ auth()->user() && auth()->user()->id === $form->user_id ? 'pt-10' : ''}}"
+             id="input-classic"></div>
     </body>
 
 </html>
