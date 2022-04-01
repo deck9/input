@@ -147,3 +147,13 @@ type FormSessionModel = {
     has_data_privacy: boolean;
     created_at: string;
 };
+
+type FormSubmitPayload = Record<
+    string,
+    FormBlockInteractionPayload | FormBlockInteractionPayload[]
+>;
+
+type FormBlockInteractionPayload = {
+    payload: any;
+    actionId: string;
+};

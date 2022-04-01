@@ -63,5 +63,7 @@ class FormSession extends Model
             $block = FormBlock::where('uuid', $blockUuid)->firstOrFail();
             $block->submit($this, $blockPayload);
         }
+
+        return true;
     }
 }

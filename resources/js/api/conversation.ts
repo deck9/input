@@ -48,3 +48,31 @@ export function callCreateFormSession(
         }
     });
 }
+
+export function callSubmitForm(
+    uuid: string,
+    token: string,
+    payload: FormSubmitPayload
+): Promise<AxiosResponse<null>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { route } = useRoutes();
+
+            const resolvedRoute = route("api.public.forms.submit", {
+                uuid,
+            });
+
+            if (resolvedRoute) {
+                const response = await handler.post(resolvedRoute, {
+                    token,
+                    payload,
+                });
+                resolve(response as AxiosResponse<null>);
+            } else {
+                reject("route not found");
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

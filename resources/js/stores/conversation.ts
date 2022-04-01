@@ -2,12 +2,8 @@ import { defineStore } from "pinia";
 import {
     callCreateFormSession,
     callGetFormStoryboard,
+    callSubmitForm,
 } from "@/api/conversation";
-
-type FormBlockInteractionPayload = {
-    payload: any;
-    actionId: string;
-};
 
 type ConversationStore = {
     form?: PublicFormModel;
@@ -15,10 +11,7 @@ type ConversationStore = {
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: number;
-    payload: Record<
-        string,
-        FormBlockInteractionPayload | FormBlockInteractionPayload[]
-    >;
+    payload: FormSubmitPayload;
     isProcessing: boolean;
     isSubmitted: boolean;
 };
@@ -153,22 +146,29 @@ export const useConversation = defineStore("form", {
          * Increases current block by one or submits form if last block is triggered.
          * @returns {Promise<boolean>}
          */
-        next(): Promise<boolean> {
+        async next(): Promise<boolean> {
             if (this.isLastBlock) {
                 this.isProcessing = true;
-                setTimeout(() => {
+
+                if (this.form?.uuid && this.session?.token) {
+                    await callSubmitForm(
+                        this.form.uuid,
+                        this.session.token,
+                        this.payload
+                    );
+
                     this.isSubmitted = true;
                     this.isProcessing = false;
-                    console.log(
-                        "submit form now",
-                        JSON.stringify(this.payload)
-                    );
-                }, 1500);
-                return Promise.resolve(true);
-            }
 
-            this.current += 1;
-            return Promise.resolve(false);
+                    return Promise.resolve(true);
+                } else {
+                    this.isProcessing = false;
+                    return Promise.reject(new Error("Form or session not set"));
+                }
+            } else {
+                this.current += 1;
+                return Promise.resolve(false);
+            }
         },
     },
 });

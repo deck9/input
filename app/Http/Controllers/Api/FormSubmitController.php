@@ -22,6 +22,6 @@ class FormSubmitController extends Controller
             ->firstOrFail()
             ->submit($request->input('payload'));
 
-        return response()->json([''], 200);
+        return response()->json(null, 201);
     }
 }
