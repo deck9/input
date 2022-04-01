@@ -1,5 +1,7 @@
 <template>
   <div>
+    <AvatarUpload class="mb-4" />
+
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
         <D9Label label="Brand Color" />
@@ -24,6 +26,7 @@
 import { useForm } from "@/stores";
 import { D9Button, D9Label, D9Input } from "@deck9/ui";
 import { ref } from "vue";
+import AvatarUpload from "./partials/AvatarUpload.vue";
 
 const store = useForm();
 const isSaving = ref(false);
