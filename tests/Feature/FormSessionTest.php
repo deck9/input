@@ -95,7 +95,7 @@ EOD;
         ]);
 
         $form->refresh();
-        $submitted->assertStatus(200);
+        $submitted->assertStatus(201);
         $this->assertCount(1, $form->blocks[0]->interactions[0]->responses);
         $this->assertCount(4, $form->responses);
     }
