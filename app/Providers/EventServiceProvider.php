@@ -22,7 +22,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         FormPublished::class => [
-            CreatePreviewImage::class,
+            // CreatePreviewImage::class,
         ],
     ];
 
