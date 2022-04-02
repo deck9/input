@@ -36,6 +36,7 @@ class ResultsTest extends TestCase
             ]);
 
             FormSessionResponse::factory()->create([
+                'value' => $interactionA->label,
                 'form_block_id'  => $block->id,
                 'form_block_interaction_id' => $interactionA->id, // This uses Interaction A
                 'form_session_id' => $session->id,
@@ -48,6 +49,7 @@ class ResultsTest extends TestCase
             ]);
 
             FormSessionResponse::factory()->create([
+                'value' => $interactionB->label,
                 'form_block_id'  => $block->id,
                 'form_block_interaction_id' => $interactionB->id, // This uses Interaction B
                 'form_session_id' => $session->id,
