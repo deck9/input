@@ -107,11 +107,15 @@ class FormBlock extends Model
         return $this->typingDelay();
     }
 
+    public function getSessionCountAttribute()
+    {
+        return $this->responses()->selectRaw("COUNT(DISTINCT form_session_id) as count")->first()->count;
+    }
+
     public function typingDelay()
     {
         return typingDelay($this->message);
     }
-
 
     public function getInteractionType(): FormBlockInteractionType | null
     {

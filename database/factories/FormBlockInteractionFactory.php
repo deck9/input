@@ -26,6 +26,7 @@ class FormBlockInteractionFactory extends Factory
         return [
             'uuid' => $this->faker->uuid(),
             'type' => FormBlockInteractionType::button,
+            'label' => $this->faker->word,
             'form_block_id' => FormBlock::factory(),
         ];
     }

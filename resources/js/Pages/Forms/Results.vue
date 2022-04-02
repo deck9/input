@@ -1,9 +1,12 @@
 <template>
-  <app-layout title="Results" limit-height>
-    <div class="w-full max-w-screen-lg py-6 text-left">
-      <h3 class="text-slate-900 text-xl font-bold">Results</h3>
+  <app-layout title="Results">
+    <div class="w-full max-w-5xl px-4 pb-8 text-left">
+      <FormSummary
+        class="mt-6"
+        v-bind="{ form, blocks: store.blocks || undefined }"
+      />
 
-      <div class="mt-6 space-y-4">
+      <div class="mt-6 space-y-6">
         <BlockResultItem
           :block="block"
           v-for="block in store.blocks"
@@ -24,6 +27,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@/stores";
 import { onMounted, onUnmounted } from "vue";
+import FormSummary from "@/components/Factory/FormSummary.vue";
 import BlockResultItem from "@/components/Factory/Results/BlockResultItem.vue";
 import EmptyState from "@/components/EmptyState.vue";
 
@@ -37,7 +41,7 @@ onUnmounted(() => {
 });
 
 onMounted(async () => {
-  await Promise.all([store.getBlocks(), store.getFormBlockMapping()]);
+  await Promise.all([store.getBlocks(true), store.getFormBlockMapping()]);
 });
 
 store.$patch({

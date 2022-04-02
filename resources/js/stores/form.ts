@@ -69,12 +69,15 @@ export const useForm = defineStore("form", {
             this.mapping = response.data.mapping;
         },
 
-        async getBlocks() {
+        async getBlocks(includeResults = false) {
             if (!this.form) {
                 return;
             }
 
-            const response = await callGetFormBlocks(this.form.id);
+            const response = await callGetFormBlocks(
+                this.form.id,
+                includeResults
+            );
 
             this.blocks = response.data;
         },

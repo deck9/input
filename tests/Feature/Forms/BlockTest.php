@@ -10,7 +10,7 @@ use App\Models\FormBlock;
 use App\Enums\FormBlockType;
 use App\Events\FormBlocksUpdated;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Foundation\Testing\WithFaker;
+use Database\Seeders\SimpleFormSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BlockTest extends TestCase
@@ -67,24 +67,21 @@ class BlockTest extends TestCase
     }
 
     /** @test */
-    public function can_get_blocks_related_to_a_form_with_consent_block()
+    public function can_get_blocks_with_results_loaded()
     {
-        $form = Form::factory()->create(['has_data_privacy' => true]);
-
-        FormBlock::factory()->create([
-            'form_id' => $form->id,
-            'type' => FormBlockType::consent,
-        ]);
-
-        FormBlock::factory()->count(5)->create([
-            'form_id' => $form->id,
-        ]);
+        $this->seed(SimpleFormSeeder::class);
+        $form = Form::first();
 
         $response = $this->actingAs($form->user)
-            ->json('get', route('api.blocks.index', $form->id));
+            ->json('get', route('api.blocks.index', $form->id), [
+                'includeResults' => 'true',
+            ]);
 
-        $response->assertStatus(200);
-        $this->assertCount(6, $response->json());
+        $this->assertEquals(5, $response->json('1.session_count'));
+        $this->assertEquals(5, $response->json('2.session_count'));
+        $this->assertEquals(5, $response->json('3.session_count'));
+        $this->assertNotNull($response->json('1.interactions.0.responses_count'));
+        $this->assertNotNull($response->json('2.interactions.0.responses_count'));
     }
 
     /** @test */

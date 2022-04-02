@@ -27,7 +27,7 @@ class FormBlockInteraction extends Model
     ];
 
     protected $hidden = [
-        'responses',
+        // 'responses',
     ];
 
     protected static function boot()

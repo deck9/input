@@ -3,12 +3,18 @@ import { AxiosResponse } from "axios";
 import handler from "./handler";
 
 export function callGetFormBlocks(
-    id: number
+    id: number,
+    includeResults = false
 ): Promise<AxiosResponse<FormBlockModel[]>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
-                window.route("api.blocks.index", { form: id })
+                window.route("api.blocks.index", { form: id }),
+                {
+                    params: {
+                        includeResults,
+                    },
+                }
             );
 
             resolve(response as AxiosResponse<FormBlockModel[]>);

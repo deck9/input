@@ -20,15 +20,12 @@ class FormBlockController extends Controller
 
         $blocks = $form->blocks->sortBy('sequence');
 
-        if (!$form->has_data_privacy) {
-            $blocks = $blocks->reject(function ($item) {
-                return $item->type === FormBlockType::consent;
+        if ($request->has('includeResults') && $request->input('includeResults') === 'true') {
+            $blocks->each(function ($block) {
+                $block->setAppends(['session_count']);
+                $block->interactions->each->setAppends(['responses_count']);
             });
         }
-
-        $blocks->each(function ($block) {
-            $block->interactions->each->setAppends(['responses_count']);
-        });
 
         return response()->json($blocks->values()->toArray());
     }

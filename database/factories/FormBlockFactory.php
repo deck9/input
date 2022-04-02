@@ -27,7 +27,6 @@ class FormBlockFactory extends Factory
             'uuid' => $this->faker->uuid,
             'message' => $this->faker->sentence(10),
             'type' => FormBlockType::none,
-            'responses' => null,
             'sequence' => 0,
             'webhook_url' => null,
             'form_id' => Form::factory()

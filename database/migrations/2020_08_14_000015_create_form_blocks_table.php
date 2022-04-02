@@ -19,7 +19,6 @@ class CreateFormBlocksTable extends Migration
             $table->text('message')->nullable();
             $table->string('title', 1024)->nullable();
             $table->longText('options')->nullable();
-            $table->text('responses')->nullable();
             $table->string('uuid', 36);
             $table->bigInteger('has_parent_interaction')->nullable();
             $table->string('webhook_url')->nullable();
