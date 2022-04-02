@@ -21,9 +21,8 @@ export function callGetForm(
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await handler.post(
-                window.route("api.forms.show", { uuid: form.uuid }),
-                form
+            const response = await handler.get(
+                window.route("api.forms.show", { uuid: form.uuid })
             );
 
             resolve(response as AxiosResponse<FormModel>);

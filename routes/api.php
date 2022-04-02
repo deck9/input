@@ -55,12 +55,6 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->post('forms/{uuid}/avatar', [FormAvatarController::class, 'store'])->name('api.forms.images.store');
     $router->delete('forms/{uuid}/avatar', [FormAvatarController::class, 'delete'])->name('api.forms.images.delete');
 
-    // Form Results Routes
-    $router->get('results/{uuid}', [FormResultsController::class, 'show'])->name('api.forms.results.show');
-
-    // Single Interaction Responses
-    $router->get('interactions/{interaction}/responses', [InteractionResultsController::class, 'show'])->name('api.interactions.results.show');
-
     // Block API Routes
     $router->get('forms/{form}/blocks', [FormBlockController::class, 'index'])->name('api.blocks.index');
     $router->post('forms/{form}/blocks', [FormBlockController::class, 'create'])->name('api.blocks.create');
