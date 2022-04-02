@@ -33,6 +33,7 @@ onMounted(async () => {
   await store.getFormBlockMapping();
 });
 
+workbench.clearWorkbench();
 store.$patch({
   form: props.form,
 });
