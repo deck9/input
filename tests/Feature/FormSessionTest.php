@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Form;
+use App\Models\FormSession;
 use App\Models\FormSessionResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -98,5 +99,7 @@ EOD;
         $submitted->assertStatus(201);
         $this->assertCount(1, $form->blocks[0]->interactions[0]->responses);
         $this->assertCount(4, $form->responses);
+
+        $this->assertTrue(FormSession::where('token', $token)->first()->is_completed);
     }
 }

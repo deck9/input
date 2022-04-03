@@ -64,6 +64,8 @@ class FormSession extends Model
             $block->submit($this, $blockPayload);
         }
 
+        $this->update(['is_completed' => now()]);
+
         return true;
     }
 }
