@@ -246,7 +246,6 @@ class Form extends Model
     public function getTotalSessionsAttribute()
     {
         return $this->sessions()
-            ->whereHas('responses')
             ->count();
     }
 
@@ -262,7 +261,7 @@ class Form extends Model
     public function getCompletionRateAttribute()
     {
         try {
-            return round(($this->completedSessions() / $this->totalSessions()) * 100, 2);
+            return round(($this->completedSessions / $this->totalSessions) * 100, 2);
         } catch (\Throwable $th) {
             return 0;
         }
