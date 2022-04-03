@@ -6,7 +6,7 @@
         v-bind="{ form, blocks: store.blocks || undefined }"
       />
 
-      <div class="mt-6 space-y-6">
+      <div class="mt-6 space-y-6" v-if="form.total_sessions">
         <BlockResultItem
           :block="block"
           v-for="block in store.blocks"
@@ -15,7 +15,8 @@
       </div>
 
       <EmptyState
-        v-if="!store.blocks?.length"
+        class="mt-6"
+        v-else
         title="No results found"
         description="There are no results to show right now"
       />
