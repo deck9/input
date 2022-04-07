@@ -40,6 +40,11 @@ class FormBlock extends Model
 
     protected $appends = [
         'typing_delay',
+        'interactions',
+    ];
+
+    protected $hidden = [
+        'formBlockInteractions'
     ];
 
     protected static function boot()
@@ -90,6 +95,11 @@ class FormBlock extends Model
     {
         return $this->hasMany(FormBlockInteraction::class, 'form_block_id')
             ->where('type', $this->getInteractionType());
+    }
+
+    public function getInteractionsAttribute()
+    {
+        return $this->formBlockInteractions;
     }
 
     public function responses()
