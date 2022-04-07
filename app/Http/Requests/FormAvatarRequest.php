@@ -24,7 +24,7 @@ class FormAvatarRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => 'required|image|max:2048|dimensions:max_width=1600,max_height=1600',
+            'image' => 'required|image|max:4096',
         ];
     }
 
