@@ -54,8 +54,6 @@ class AvatarTest extends TestCase
         $this->assertFalse($form->hasAvatar());
     }
 
-
-
     /** @test */
     public function can_delete_an_uploaded_avatar_image_for_a_form()
     {
@@ -77,6 +75,28 @@ class AvatarTest extends TestCase
             ->assertStatus(200);
 
         $form = $form->fresh();
+        $this->assertFalse($form->hasAvatar());
+        $this->assertNull($form->avatar_path);
+    }
+
+    /** @test */
+    public function trying_to_delete_avatar_if_nothing_is_set_does_nothing()
+    {
+        $this->withoutExceptionHandling();
+        Storage::fake();
+        $form = Form::factory()->create();
+
+        // should have no avatar
+        $this->assertFalse($form->hasAvatar());
+        $this->assertNull($form->avatar_path);
+
+        // delete image now
+        $this->actingAs($form->user)
+            ->json('DELETE', route('api.forms.images.store', $form->uuid))
+            ->assertStatus(200);
+
+        $form = $form->fresh();
+        // nothing has changed
         $this->assertFalse($form->hasAvatar());
         $this->assertNull($form->avatar_path);
     }

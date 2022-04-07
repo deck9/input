@@ -46,12 +46,15 @@ class FormAvatarController extends Controller
             ->firstOrFail();
 
         // remove image from disk and cache
-        Storage::delete($form->avatar_path);
-        $cache = new GlideCache;
-        $cache->clear($form->avatar_path);
+        if ($form->hasAvatar()) {
+            Storage::delete($form->avatar_path);
+            $cache = new GlideCache;
+            $cache->clear($form->avatar_path);
 
-        $form->avatar_path = null;
-        $form->save();
+            $form->avatar_path = null;
+            $form->save();
+        }
+
 
         return response()->json($form, 200);
     }
