@@ -40,9 +40,4 @@ class FormBlockUpdateRequest extends FormRequest
     {
         return $this->filled('message');
     }
-
-    public function hasResponses()
-    {
-        return $this->exists('responses') && !empty($this->input('responses'));
-    }
 }

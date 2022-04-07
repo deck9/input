@@ -17,7 +17,7 @@ class FormSubmitController extends Controller
             'payload' => 'required|array',
         ]);
 
-        $form->sessions()
+        $form->formSessions()
             ->where('token', $request->input('token'))
             ->firstOrFail()
             ->submit($request->input('payload'));

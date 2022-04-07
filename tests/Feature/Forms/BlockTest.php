@@ -75,8 +75,8 @@ class BlockTest extends TestCase
         $this->assertEquals(5, $response->json('1.session_count'));
         $this->assertEquals(5, $response->json('2.session_count'));
         $this->assertEquals(5, $response->json('3.session_count'));
-        $this->assertNotNull($response->json('1.form_block_interactions.0.responses_count'));
-        $this->assertNotNull($response->json('2.form_block_interactions.0.responses_count'));
+        $this->assertNotNull($response->json('1.interactions.0.responses_count'));
+        $this->assertNotNull($response->json('2.interactions.0.responses_count'));
     }
 
     /** @test */

@@ -12,15 +12,15 @@ class FormResultsController extends Controller
         $form = $request->user()
             ->forms()
             ->withUuid($uuid)
-            ->with('blocks')
+            ->with('formBlocks')
             ->firstOrFail();
 
-        $form->blocks->each(
+        $form->formBlocks->each(
             fn ($item) => $item->formBlockInteractions->each->setAppends(['responses_count'])
         );
 
         return response()->json([
-            'blocks' => $form->blocks,
+            'blocks' => $form->formBlocks,
         ], 200);
     }
 }

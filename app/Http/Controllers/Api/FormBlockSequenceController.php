@@ -19,7 +19,7 @@ class FormBlockSequenceController extends Controller
         ]);
 
         foreach ($request->sequence as $pos => $id) {
-            $snippet = $form->blocks->firstWhere('id', $id);
+            $snippet = $form->formBlocks->firstWhere('id', $id);
             $snippet->update(['sequence' => $pos]);
         }
 

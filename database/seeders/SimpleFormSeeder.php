@@ -66,7 +66,7 @@ class SimpleFormSeeder extends Seeder
             for ($i = rand(1, 3); $i > 0; $i--) {
                 $action = $checkboxInteractions->shuffle()->shift();
 
-                $session->responses()->create([
+                $session->formSessionResponses()->create([
                     'value' => $action->label,
                     'form_block_id' => $block->id,
                     'form_block_interaction_id' => $action->id,
@@ -92,7 +92,7 @@ class SimpleFormSeeder extends Seeder
         $sessions->each(function ($session) use ($block, $checkboxInteractions) {
             $action = $checkboxInteractions->shuffle()->shift();
 
-            $session->responses()->create([
+            $session->formSessionResponses()->create([
                 'value' => $action->label,
                 'form_block_id' => $block->id,
                 'form_block_interaction_id' => $action->id,
@@ -115,7 +115,7 @@ class SimpleFormSeeder extends Seeder
         ]);
 
         $sessions->each(function ($session) use ($block, $action) {
-            $session->responses()->create([
+            $session->formSessionResponses()->create([
                 'value' => Str::random(16),
                 'form_block_id' => $block->id,
                 'form_block_interaction_id' => $action->id,

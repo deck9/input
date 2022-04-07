@@ -14,6 +14,6 @@ class InteractionResultsController extends Controller
             abort(403);
         }
 
-        return response()->json(['responses' => $interaction->responses], 200);
+        return response()->json(['responses' => $interaction->formSessionResponses], 200);
     }
 }

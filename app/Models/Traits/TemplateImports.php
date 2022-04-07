@@ -10,11 +10,11 @@ trait TemplateImports
 {
     public function toTemplate()
     {
-        $this->load('blocks.formBlockInteractions');
+        $this->load('formBlocks.formBlockInteractions');
 
         $form = $this->only(Form::TEMPLATE_ATTRIBUTES);
 
-        $blocks = $this->blocks->map(function ($block) {
+        $blocks = $this->formBlocks->map(function ($block) {
             return $block->toTemplate();
         })->toArray();
 
@@ -32,11 +32,11 @@ trait TemplateImports
             $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
         );
 
-        $this->blocks()->delete();
+        $this->formBlocks()->delete();
 
         $blocks->each(function ($item) {
             $item = collect($item);
-            $block = $this->blocks()
+            $block = $this->formBlocks()
                 ->create(
                     $item
                         ->only(FormBlock::TEMPLATE_ATTRIBUTES)

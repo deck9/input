@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Form extends Model
 {
@@ -98,22 +101,22 @@ class Form extends Model
         return $query->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());
     }
 
-    public function blocks()
+    public function formBlocks(): HasMany
     {
         return $this->hasMany(FormBlock::class);
     }
 
-    public function sessions()
+    public function formSessions(): HasMany
     {
         return $this->hasMany(FormSession::class);
     }
 
-    public function responses()
+    public function formSessionResponses(): HasManyThrough
     {
         return $this->hasManyThrough(FormSessionResponse::class, FormBlock::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -130,19 +133,19 @@ class Form extends Model
 
     public function blocksCount()
     {
-        return $this->blocks->count();
+        return $this->formBlocks->count();
     }
 
     public function actionBlocksCount()
     {
-        return $this->blocks->filter(function ($item) {
+        return $this->formBlocks->filter(function ($item) {
             return $item->hasResponseAction();
         })->count();
     }
 
     public function responsesCount()
     {
-        $result = $this->responses()
+        $result = $this->formSessionResponses()
             ->select(DB::raw('count(*) as response_count'))
             ->groupBy('form_block_id')
             ->orderBy('response_count', 'DESC')
@@ -234,7 +237,7 @@ class Form extends Model
 
     public function countSessions()
     {
-        $blocks = $this->blocks->pluck('id')->toArray();
+        $blocks = $this->formBlocks->pluck('id')->toArray();
 
         return FormSessionResponse::select('session')
             ->whereIn('form_block_id', $blocks)
@@ -245,14 +248,14 @@ class Form extends Model
 
     public function getTotalSessionsAttribute()
     {
-        return $this->sessions()
+        return $this->formSessions()
             ->count();
     }
 
     public function getCompletedSessionsAttribute()
     {
-        return $this->sessions()
-            ->whereHas('responses')
+        return $this->formSessions()
+            ->whereHas('formSessionResponses')
             ->get()
             ->where('is_completed', true)
             ->count();
@@ -274,7 +277,7 @@ class Form extends Model
 
     public function countSessionsForCurrentMonth()
     {
-        $blocks = $this->blocks->pluck('id')->toArray();
+        $blocks = $this->formBlocks->pluck('id')->toArray();
 
         return FormSessionResponse::select('*')
             ->whereYear('created_at', '=', Carbon::now())
@@ -299,7 +302,7 @@ class Form extends Model
     {
         $blockCount = $this->blocksCount();
 
-        $blocks = $this->blocks->map(function ($block) {
+        $blocks = $this->formBlocks->map(function ($block) {
             return $block->getPublicJson();
         });
 

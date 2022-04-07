@@ -42,7 +42,7 @@ EOD;
             ],
         ]))->assertStatus(201);
 
-        $session = $form->fresh()->sessions()->first();
+        $session = $form->fresh()->formSessions()->first();
         $this->assertCount(2, $session->params);
     }
 
@@ -97,8 +97,8 @@ EOD;
 
         $form->refresh();
         $submitted->assertStatus(201);
-        $this->assertCount(1, $form->blocks[0]->formBlockInteractions[0]->responses);
-        $this->assertCount(4, $form->responses);
+        $this->assertCount(1, $form->formBlocks[0]->formBlockInteractions[0]->formSessionResponses);
+        $this->assertCount(4, $form->formSessionResponses);
 
         $this->assertTrue(FormSession::where('token', $token)->first()->is_completed);
     }

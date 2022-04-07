@@ -35,8 +35,8 @@ class CallWebhook implements ShouldQueue
      */
     public function handle()
     {
-        $responses = $this->session->responses->mapWithKeys(function ($response) {
-            return [$response->block->uuid => $response->value];
+        $responses = $this->session->formSessionResponses->mapWithKeys(function ($response) {
+            return [$response->formBlock->uuid => $response->value];
         });
 
         $request = array_merge([

@@ -11,7 +11,7 @@ class MetaPreviewController extends Controller
     public function show($id)
     {
         $form = Form::find($id);
-        $block = $form->blocks()
+        $block = $form->formBlocks()
             ->whereHas('formBlockInteractions')
             ->first();
 

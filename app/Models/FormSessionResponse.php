@@ -26,13 +26,12 @@ class FormSessionResponse extends Model
         return $query->where('token', $token);
     }
 
-    public function block()
+    public function formBlock()
     {
-        return $this->belongsTo(FormBlock::class, 'form_block_id')
-            ->withoutGlobalScope(WithoutChildren::class);
+        return $this->belongsTo(FormBlock::class, 'form_block_id');
     }
 
-    public function session()
+    public function formSession()
     {
         return $this->belongsTo(FormSession::class, 'form_session_id');
     }

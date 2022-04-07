@@ -41,12 +41,12 @@ EOD;
         $this->assertEquals('Form Import Test', $form->name);
         $this->assertEquals('This is just a test', $form->description);
         $this->assertEquals($user->id, $form->user_id);
-        $this->assertCount(3, $form->blocks);
+        $this->assertCount(3, $form->formBlocks);
 
-        $this->assertCount(1, $form->blocks[1]->formBlockInteractions);
-        $this->assertEquals(FormBlockType::short, $form->blocks[1]->type);
+        $this->assertCount(1, $form->formBlocks[1]->formBlockInteractions);
+        $this->assertEquals(FormBlockType::short, $form->formBlocks[1]->type);
 
-        $this->assertCount(2, $form->blocks[2]->formBlockInteractions);
-        $this->assertEquals(FormBlockType::radio, $form->blocks[2]->type);
+        $this->assertCount(2, $form->formBlocks[2]->formBlockInteractions);
+        $this->assertEquals(FormBlockType::radio, $form->formBlocks[2]->type);
     }
 }

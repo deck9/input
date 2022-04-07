@@ -86,6 +86,16 @@ class FormBlock extends Model
         return $this->type === 'input';
     }
 
+    public function formSessionResponses()
+    {
+        return $this->hasMany(FormSessionResponse::class);
+    }
+
+    public function form()
+    {
+        return $this->belongsTo(Form::class, 'form_id');
+    }
+
     public function formBlockInteractions()
     {
         return $this->hasMany(FormBlockInteraction::class, 'form_block_id');
@@ -102,16 +112,6 @@ class FormBlock extends Model
         return $this->formBlockInteractions;
     }
 
-    public function responses()
-    {
-        return $this->hasMany(FormSessionResponse::class);
-    }
-
-    public function form()
-    {
-        return $this->belongsTo(Form::class, 'form_id');
-    }
-
     public function getTypingDelayAttribute()
     {
         return $this->typingDelay();
@@ -119,7 +119,7 @@ class FormBlock extends Model
 
     public function getSessionCountAttribute()
     {
-        return $this->responses()->selectRaw("COUNT(DISTINCT form_session_id) as count")->first()->count;
+        return $this->formSessionResponses()->selectRaw("COUNT(DISTINCT form_session_id) as count")->first()->count;
     }
 
     public function typingDelay()
@@ -192,7 +192,7 @@ class FormBlock extends Model
                 ->where('uuid', $data['actionId'])
                 ->firstOrFail();
 
-            return $session->responses()->create([
+            return $session->formSessionResponses()->create([
                 'form_block_id' => $this->id,
                 'form_block_interaction_id' => $interaction->id,
                 'value' => $data['payload'],

@@ -43,7 +43,7 @@ class FormSession extends Model
         return Carbon::now()->diffInMinutes($this->updated_at) <= 120;
     }
 
-    public function responses()
+    public function formSessionResponses()
     {
         return $this->hasMany(FormSessionResponse::class);
     }

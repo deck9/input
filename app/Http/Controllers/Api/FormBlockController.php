@@ -18,11 +18,11 @@ class FormBlockController extends Controller
             abort(403);
         }
 
-        $blocks = $form->blocks->sortBy('sequence');
+        $blocks = $form->formBlocks->sortBy('sequence');
 
         if ($request->has('includeResults') && $request->input('includeResults') === 'true') {
             $blocks->each(function ($block) {
-                $block->setAppends(['session_count']);
+                $block->setAppends(['session_count', 'interactions']);
                 $block->formBlockInteractions->each->setAppends(['responses_count']);
             });
         }
@@ -36,9 +36,9 @@ class FormBlockController extends Controller
             abort(403);
         }
 
-        $sequence = $form->blocks->count();
+        $sequence = $form->formBlocks->count();
 
-        $block = $form->blocks()->create([
+        $block = $form->formBlocks()->create([
             'type' => FormBlockType::none,
             'sequence' => $sequence
         ]);

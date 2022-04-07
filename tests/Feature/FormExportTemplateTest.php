@@ -17,24 +17,16 @@ class FormExportTemplateTest extends TestCase
     /** @test */
     public function can_export_a_form_as_a_string()
     {
-        $form = Form::factory()->create([
-            'name' => 'Test Form',
-            'description' => 'A template Export Test',
-            'brand_color' => '#487596',
-        ]);
-
-        $block = FormBlock::factory()->create([
-            'message' => 'Hello World',
-            'type' => FormBlockType::short,
-            'sequence' => 0,
-            'form_id' => $form->id,
-        ]);
-
-        FormBlockInteraction::factory()->create([
-            'form_block_id' => $block->id,
-            'type' => FormBlockInteractionType::input,
-            'label' => 'Test Input'
-        ]);
+        $form = Form::factory()
+            ->has(
+                FormBlock::factory(['type' => FormBlockType::short])
+                    ->has(FormBlockInteraction::factory())
+            )
+            ->create([
+                'name' => 'Test Form',
+                'description' => 'A template Export Test',
+                'brand_color' => '#487596',
+            ]);
 
         $response = $this->actingAs($form->user)
             ->json('GET', route('api.forms.template-export', [

@@ -36,12 +36,12 @@ class CallWebhookTest extends TestCase
             'value' => 'Yes',
         ]);
 
-        $job = new CallWebhook($response->session, $block->webhook_url);
+        $job = new CallWebhook($response->formSession, $block->webhook_url);
         $job->handle();
 
         Http::assertSent(function ($request) use ($response, $block) {
             return $request->url() == $block->webhook_url &&
-                $request['_id'] == $response->session->token &&
+                $request['_id'] == $response->formSession->token &&
                 $request[$block->uuid] == 'Yes';
         });
     }

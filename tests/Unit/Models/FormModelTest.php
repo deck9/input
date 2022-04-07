@@ -57,7 +57,7 @@ class FormModelTest extends TestCase
     public function can_return_the_total_amount_of_related_blocks()
     {
         $form = Form::factory()->create();
-        $form->blocks()->saveMany(FormBlock::factory()->count(12)->make());
+        $form->formBlocks()->saveMany(FormBlock::factory()->count(12)->make());
 
         $this->assertEquals(12, $form->blocksCount());
     }
@@ -66,13 +66,13 @@ class FormModelTest extends TestCase
     public function can_return_total_amount_of_snippets_with_action_options()
     {
         $form = Form::factory()->create();
-        $form->blocks()->saveMany(FormBlock::factory()->count(8)->make([
+        $form->formBlocks()->saveMany(FormBlock::factory()->count(8)->make([
             'type' => FormBlockType::short,
         ]));
-        $form->blocks()->saveMany(FormBlock::factory()->count(4)->make([
+        $form->formBlocks()->saveMany(FormBlock::factory()->count(4)->make([
             'type' => FormBlockType::radio,
         ]));
-        $form->blocks()->saveMany(FormBlock::factory()->count(3)->make([
+        $form->formBlocks()->saveMany(FormBlock::factory()->count(3)->make([
             'type' => FormBlockType::none,
         ]));
 
@@ -89,8 +89,8 @@ class FormModelTest extends TestCase
         $blockB = FormBlock::factory()->make([
             'type' => FormBlockType::short,
         ]);
-        $form->blocks()->save($blockA);
-        $form->blocks()->save($blockB);
+        $form->formBlocks()->save($blockA);
+        $form->formBlocks()->save($blockB);
 
         FormSessionResponse::factory()->count(10)->create(['form_block_id' => $blockA->id]);
         FormSessionResponse::factory()->count(5)->create(['form_block_id' => $blockB->id]);

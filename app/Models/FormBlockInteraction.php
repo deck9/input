@@ -26,10 +26,6 @@ class FormBlockInteraction extends Model
         'type' => FormBlockInteractionType::class
     ];
 
-    protected $hidden = [
-        // 'responses',
-    ];
-
     protected static function boot()
     {
         parent::boot();
@@ -63,14 +59,14 @@ class FormBlockInteraction extends Model
         return $this->belongsTo(FormBlock::class, 'form_block_id');
     }
 
-    public function responses()
+    public function formSessionResponses()
     {
         return $this->hasMany(FormSessionResponse::class, 'form_block_interaction_id');
     }
 
     public function getResponsesCountAttribute()
     {
-        return $this->responses->count();
+        return $this->formSessionResponses->count();
     }
 
     public function getPublicJson()

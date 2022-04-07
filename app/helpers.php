@@ -36,47 +36,6 @@ function getContrastYIQ(string $hexcolor): string
     return ($yiq >= 150) ? '#000000' : '#ffffff';
 }
 
-function injectNestedSnippets($originalSnippets)
-{
-    $snippets = [];
-
-    foreach ($originalSnippets as $key => $snippet) {
-        try {
-            if (!$snippet->responses) {
-                $snippets[] = $snippet->toArray();
-                continue;
-            }
-        } catch (\Exception $e) {
-            continue;
-        }
-
-        $transformedResponses = [];
-
-        foreach ($snippet->responses as $response) {
-            $tempResponse = [];
-
-            if (array_key_exists('reaction', $response) && !is_null($response['reaction'])) {
-                $reaction = FormBlock::withUuid($response['reaction'])->first();
-                $tempResponse['reaction'] = $reaction->toArray();
-            }
-
-            if (array_key_exists('children', $response) && !empty($response['children'])) {
-                $children = [];
-                foreach ($response['children'] as $child) {
-                    $children[] = FormBlock::withUuid($child)->first();
-                }
-                $tempResponse['children'] = injectNestedSnippets($children);
-            }
-
-            $transformedResponses[] = array_merge($response, $tempResponse);
-        }
-
-        $snippets[] = array_merge($snippet->toArray(), ['responses' => $transformedResponses]);
-    }
-
-    return $snippets;
-}
-
 function has_string_keys(array $array)
 {
     return count(array_filter(array_keys($array), 'is_string')) > 0;
