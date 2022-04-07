@@ -8,7 +8,7 @@
 
       <div class="mb-4">
         <D9Label label="Description" />
-        <D9Input type="text" v-model="description" block />
+        <D9Textarea v-model="description" block />
       </div>
 
       <D9Button type="submit" label="Save Options" :is-loading="isSaving" />
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
-import { D9Button, D9Label, D9Input } from "@deck9/ui";
+import { D9Button, D9Label, D9Input, D9Textarea } from "@deck9/ui";
 import { ref } from "vue";
 
 const store = useForm();
