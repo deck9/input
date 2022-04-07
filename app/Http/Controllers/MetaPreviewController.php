@@ -11,7 +11,9 @@ class MetaPreviewController extends Controller
     public function show($id)
     {
         $form = Form::find($id);
-        $block = $form->blocks()->whereHas('interactions')->first();
+        $block = $form->blocks()
+            ->whereHas('formBlockInteractions')
+            ->first();
 
         return Inertia::render('Form/PreviewImage', [
             'form' => $form,

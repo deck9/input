@@ -21,13 +21,13 @@ class RadioTest extends TestCase
     {
         $interaction = FormBlockInteraction::factory()->create();
 
-        $this->actingAs($interaction->block->form->user)
+        $this->actingAs($interaction->formBlock->form->user)
             ->json('post', route('api.interactions.update', $interaction), [
                 'label' => ''
             ])
             ->assertStatus(422);
 
-        $this->actingAs($interaction->block->form->user)
+        $this->actingAs($interaction->formBlock->form->user)
             ->json('post', route('api.interactions.update', $interaction), [
                 'label' => NULL,
             ])

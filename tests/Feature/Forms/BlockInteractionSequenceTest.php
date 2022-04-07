@@ -53,6 +53,8 @@ class BlockInteractionSequenceTest extends TestCase
     /** @test */
     public function deleting_an_interaction_updates_sequence_on_remaining_interactions()
     {
+        $this->withoutExceptionHandling();
+
         $block = FormBlock::factory()->create();
         $interactions = FormBlockInteraction::factory()->count(3)->create([
             'form_block_id' => $block->id,
@@ -64,7 +66,7 @@ class BlockInteractionSequenceTest extends TestCase
             ->assertStatus(200);
 
         // refresh from db
-        $interactions = $block->interactions()->get();
+        $interactions = $block->formBlockInteractions()->get();
 
         $this->assertCount(2, $interactions);
         $this->assertEquals(0, $interactions[0]->sequence);

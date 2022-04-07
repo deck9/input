@@ -23,7 +23,7 @@ class FormBlockController extends Controller
         if ($request->has('includeResults') && $request->input('includeResults') === 'true') {
             $blocks->each(function ($block) {
                 $block->setAppends(['session_count']);
-                $block->interactions->each->setAppends(['responses_count']);
+                $block->formBlockInteractions->each->setAppends(['responses_count']);
             });
         }
 

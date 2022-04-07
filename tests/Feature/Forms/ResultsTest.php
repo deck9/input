@@ -5,6 +5,7 @@ namespace Tests\Feature\Forms;
 use Tests\TestCase;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Enums\FormBlockType;
 use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
@@ -18,7 +19,9 @@ class ResultsTest extends TestCase
     public function can_get_summarized_results_for_a_form()
     {
         $this->markTestSkipped();
-        $block = FormBlock::factory()->create();
+        $block = FormBlock::factory()->create([
+            'type' => FormBlockType::radio,
+        ]);
 
         $interactionA = FormBlockInteraction::factory()->create([
             'type' => FormBlockInteractionType::button,
@@ -38,7 +41,7 @@ class ResultsTest extends TestCase
 
             FormSessionResponse::factory()->create([
                 'value' => $interactionA->label,
-                'form_block_id'  => $block->id,
+                'form_block_id' => $block->id,
                 'form_block_interaction_id' => $interactionA->id, // This uses Interaction A
                 'form_session_id' => $session->id,
             ]);

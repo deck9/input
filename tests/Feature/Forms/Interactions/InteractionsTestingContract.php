@@ -2,12 +2,8 @@
 
 namespace Tests\Feature\Forms\Interactions;
 
-use App\Snippet;
-use App\Interaction;
 use App\Models\FormBlock;
-use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
-use App\Enums\FormBlockInteractionType;
 
 trait InteractionsTestingContract
 {
@@ -46,7 +42,7 @@ trait InteractionsTestingContract
             'type' => $this->getInteractionType(),
         ]);
 
-        $response = $this->actingAs($interaction->block->form->user)
+        $response = $this->actingAs($interaction->formBlock->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
                 'label' => 'Click me',
                 'reply' => 'This is my reply',
@@ -63,7 +59,7 @@ trait InteractionsTestingContract
             'type' => $this->getInteractionType(),
         ]);
 
-        $response = $this->actingAs($interaction->block->form->user)
+        $response = $this->actingAs($interaction->formBlock->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
                 'uuid' => 'i-10',
             ]);
@@ -78,7 +74,7 @@ trait InteractionsTestingContract
             'type' => $this->getInteractionType(),
         ]);
 
-        $this->actingAs($interaction->block->form->user)
+        $this->actingAs($interaction->formBlock->form->user)
             ->json('delete', route('api.interactions.delete', $interaction->id))
             ->assertStatus(200);
 

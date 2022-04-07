@@ -71,7 +71,6 @@ class FormModelTest extends TestCase
         ]));
         $form->blocks()->saveMany(FormBlock::factory()->count(4)->make([
             'type' => FormBlockType::radio,
-            'responses' => [['content' => 'Yes']],
         ]));
         $form->blocks()->saveMany(FormBlock::factory()->count(3)->make([
             'type' => FormBlockType::none,

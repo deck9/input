@@ -30,4 +30,18 @@ class FormBlockInteractionFactory extends Factory
             'form_block_id' => FormBlock::factory(),
         ];
     }
+
+    public function input()
+    {
+        return $this->state(
+            fn () => ['type' => FormBlockInteractionType::input]
+        );
+    }
+
+    public function button()
+    {
+        return $this->state(
+            fn () => ['type' => FormBlockInteractionType::button]
+        );
+    }
 }

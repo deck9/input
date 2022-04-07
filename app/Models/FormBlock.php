@@ -27,7 +27,7 @@ class FormBlock extends Model
 
     protected $guarded = [];
 
-    protected $with = ['interactions'];
+    protected $with = ['formBlockInteractions'];
 
     protected $casts = [
         'responses' => 'array',
@@ -81,7 +81,7 @@ class FormBlock extends Model
         return $this->type === 'input';
     }
 
-    public function interactions()
+    public function formBlockInteractions()
     {
         return $this->hasMany(FormBlockInteraction::class, 'form_block_id');
     }
@@ -142,7 +142,7 @@ class FormBlock extends Model
     public function updateInteractionSequence(array $sequence)
     {
         foreach ($sequence as $pos => $id) {
-            $interaction = $this->interactions->firstWhere('id', $id);
+            $interaction = $this->formBlockInteractions->firstWhere('id', $id);
             $interaction->update(['sequence' => $pos]);
         }
     }
@@ -164,12 +164,12 @@ class FormBlock extends Model
     {
         $blocks = $this->only(self::TEMPLATE_ATTRIBUTES);
 
-        $interactions = $this->interactions->map(function ($interactions) {
+        $interactions = $this->formBlockInteractions->map(function ($interactions) {
             return $interactions->toTemplate();
         })->toArray();
 
         return array_merge($blocks, [
-            'interactions' => $interactions,
+            'formBlockInteractions' => $interactions,
         ]);
     }
 
@@ -178,7 +178,7 @@ class FormBlock extends Model
         if (!has_string_keys($data)) {
             collect($data)->each(fn ($chunk) => $this->submit($session, $chunk));
         } else {
-            $interaction = $this->interactions()
+            $interaction = $this->formBlockInteractions()
                 ->where('uuid', $data['actionId'])
                 ->firstOrFail();
 

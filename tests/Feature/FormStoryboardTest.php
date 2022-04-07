@@ -6,10 +6,9 @@ use Tests\TestCase;
 use App\Models\Form;
 use App\Models\FormBlock;
 use App\Enums\FormBlockType;
+use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
-use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class FormStoryboardTest extends TestCase
 {
@@ -20,37 +19,16 @@ class FormStoryboardTest extends TestCase
     {
         $form = Form::factory()->create();
 
-        $blockA = FormBlock::factory()->create([
-            'form_id' => $form->id,
-            'type' => FormBlockType::short,
-            'sequence' => 0,
-            'message' => 'Block A content',
-        ]);
+        FormBlock::factory()
+            ->for($form)
+            ->has(FormBlockInteraction::factory()->input())
+            ->create(['type' => FormBlockType::short]);
 
-        FormBlockInteraction::factory()->create([
-            'form_block_id' => $blockA->id,
-            'type' => FormBlockInteractionType::input,
-            'label' => 'Input 1'
-        ]);
-
-        $blockB = FormBlock::factory()->create([
-            'form_id' => $form->id,
-            'type' => FormBlockType::radio,
-            'sequence' => 1,
-            'message' => 'Block B content',
-        ]);
-
-        // assign that to block b, but should not be in output
-        FormBlockInteraction::factory()->create([
-            'form_block_id' => $blockB->id,
-            'type' => FormBlockInteractionType::input,
-        ]);
-
-        FormBlockInteraction::factory()->count(4)->state(new Sequence(fn ($sequence) => [
-            'form_block_id' => $blockB->id,
-            'type' => FormBlockInteractionType::button,
-            'label' => 'Option ' . $sequence->index,
-        ]))->create();
+        FormBlock::factory()->for($form)
+            // assign that to block b, but should not be in output
+            ->has(FormBlockInteraction::factory()->input())
+            ->has(FormBlockInteraction::factory()->button()->count(4))
+            ->create(['type' => FormBlockType::radio]);
 
         $response = $this->json('GET', route('api.public.forms.storyboard', ['uuid' => $form->uuid]));
 

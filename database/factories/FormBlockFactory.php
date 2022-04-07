@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Enums\FormBlockType;
 use App\Models\Form;
 use App\Models\FormBlock;
+use App\Enums\FormBlockType;
+use App\Models\FormBlockInteraction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FormBlockFactory extends Factory
@@ -33,12 +34,8 @@ class FormBlockFactory extends Factory
         ];
     }
 
-    public function question()
+    public function input($type, $attributes = [])
     {
-        return $this->state(function () {
-            return [
-                'type' => FormBlockType::radio,
-            ];
-        });
+        return $this->has(FormBlockInteraction::factory()->input($type, $attributes));
     }
 }

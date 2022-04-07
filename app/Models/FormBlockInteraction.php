@@ -49,7 +49,7 @@ class FormBlockInteraction extends Model
         });
 
         self::deleted(function ($model) {;
-            $model->block->updateInteractionSequence(
+            $model->formBlock->updateInteractionSequence(
                 self::where("form_block_id", $model->form_block_id)
                     ->where('type', $model->type)
                     ->pluck('id')
@@ -58,7 +58,7 @@ class FormBlockInteraction extends Model
         });
     }
 
-    public function block()
+    public function formBlock()
     {
         return $this->belongsTo(FormBlock::class, 'form_block_id');
     }

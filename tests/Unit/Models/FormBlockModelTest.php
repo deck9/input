@@ -2,15 +2,13 @@
 
 namespace Tests\Unit\Models;
 
-use App\Enums\FormBlockType;
 use Tests\TestCase;
 use App\Models\FormBlock;
-use Tests\CreatesBlocks;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FormBlockModelTest extends TestCase
 {
-    use RefreshDatabase, CreatesBlocks;
+    use RefreshDatabase;
 
     /** @test */
     public function the_typing_delay_field_returns_time_in_milliseconds()
@@ -41,24 +39,6 @@ class FormBlockModelTest extends TestCase
     }
 
     /** @test */
-    public function model_has_function_to_determine_if_the_type_expects_responses()
-    {
-        $snippetA = $this->createBlock([
-            'type' => FormBlockType::radio,
-        ]);
-        $snippetB = $this->createBlock([
-            'type' => FormBlockType::short,
-        ]);
-        $snippetC = $this->createBlock([
-            'type' => FormBlockType::none,
-        ]);
-
-        $this->assertEquals(true, $snippetA->hasResponseAction());
-        $this->assertEquals(true, $snippetB->hasResponseAction());
-        $this->assertEquals(false, $snippetC->hasResponseAction());
-    }
-
-    /** @test */
     public function has_scope_to_get_snippet_by_uuid()
     {
         $snippet = FormBlock::factory()->create();
@@ -66,20 +46,5 @@ class FormBlockModelTest extends TestCase
         $result = FormBlock::withUuid($snippet->uuid)->first();
 
         $this->assertEquals($result->id, $snippet->id);
-    }
-
-    /** @test */
-    public function has_scope_to_get_only_answerable_snippets()
-    {
-        $this->createBlock([
-            'type' => FormBlockType::short,
-        ]);
-        $this->createBlock([
-            'type' => FormBlockType::none,
-        ]);
-
-        $result = FormBlock::onlyInteractive()->get();
-
-        $this->assertEquals(1, $result->count());
     }
 }

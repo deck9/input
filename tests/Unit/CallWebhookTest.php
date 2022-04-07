@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Tests\CreatesBlocks;
 use App\Jobs\CallWebhook;
 use App\Models\FormBlock;
 use App\Models\FormSessionResponse;
@@ -14,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CallWebhookTest extends TestCase
 {
-    use RefreshDatabase, CreatesBlocks;
+    use RefreshDatabase;
 
     /** @test */
     public function the_webhook_jobs_submits_response_data_to_webhook_url()

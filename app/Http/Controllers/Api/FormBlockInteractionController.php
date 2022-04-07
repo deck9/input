@@ -24,7 +24,7 @@ class FormBlockInteractionController extends Controller
             'type' => $request->input('type'),
         ]);
 
-        $block->interactions()->save($interaction);
+        $block->formBlockInteractions()->save($interaction);
 
         return response()->json($interaction->fresh(), 201);
     }

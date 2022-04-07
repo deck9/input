@@ -16,7 +16,7 @@ class FormResultsController extends Controller
             ->firstOrFail();
 
         $form->blocks->each(
-            fn ($item) => $item->interactions->each->setAppends(['responses_count'])
+            fn ($item) => $item->formBlockInteractions->each->setAppends(['responses_count'])
         );
 
         return response()->json([

@@ -43,7 +43,9 @@ class FormExportTemplateTest extends TestCase
 
         $response->assertJsonFragment([
             'name' => 'Test Form',
-            'description' => 'A template Export Test',
+            'description' => 'A template Export Test'
         ]);
+
+        $this->assertNotNull($response->json('blocks.0.formBlockInteractions'));
     }
 }

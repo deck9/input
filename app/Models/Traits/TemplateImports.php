@@ -10,7 +10,7 @@ trait TemplateImports
 {
     public function toTemplate()
     {
-        $this->load('blocks.interactions');
+        $this->load('blocks.formBlockInteractions');
 
         $form = $this->only(Form::TEMPLATE_ATTRIBUTES);
 
@@ -43,9 +43,9 @@ trait TemplateImports
                         ->toArray()
                 );
 
-            if ($item->has('interactions') && count((array) $item->get('interactions', []))) {
-                collect($item->get('interactions', []))->each(function ($interaction) use ($block) {
-                    $block->interactions()->create(
+            if ($item->has('formBlockInteractions') && count((array) $item->get('formBlockInteractions', []))) {
+                collect($item->get('formBlockInteractions', []))->each(function ($interaction) use ($block) {
+                    $block->formBlockInteractions()->create(
                         collect($interaction)
                             ->only(FormBlockInteraction::TEMPLATE_ATTRIBUTES)
                             ->toArray()
