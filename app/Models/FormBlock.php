@@ -39,7 +39,6 @@ class FormBlock extends Model
     ];
 
     protected $appends = [
-        'typing_delay',
         'interactions',
     ];
 
@@ -112,19 +111,9 @@ class FormBlock extends Model
         return $this->formBlockInteractions;
     }
 
-    public function getTypingDelayAttribute()
-    {
-        return $this->typingDelay();
-    }
-
     public function getSessionCountAttribute()
     {
         return $this->formSessionResponses()->selectRaw("COUNT(DISTINCT form_session_id) as count")->first()->count;
-    }
-
-    public function typingDelay()
-    {
-        return typingDelay($this->message);
     }
 
     public function getInteractionType(): FormBlockInteractionType | null

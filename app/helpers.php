@@ -6,19 +6,6 @@ const DELAY_MULTIPLICATOR = 30;
 const MAX_DELAY = 1500;
 
 /**
- * calculates a delay in milliseconds by counting string length and
- * multiplying it with a constant factor.
- *
- * @param string $message
- *
- * @return int
- */
-function typingDelay($message, $max_delay = MAX_DELAY): int
-{
-    return min($max_delay, strlen(strip_tags($message)) * DELAY_MULTIPLICATOR);
-}
-
-/**
  * calculates if the contrast color of the passed hexcode should be black or white
  *
  * @param string $hexcolor
