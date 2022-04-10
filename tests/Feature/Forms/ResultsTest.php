@@ -36,7 +36,7 @@ class ResultsTest extends TestCase
 
         for ($i = 0; $i < 2; $i++) {
             $session = FormSession::factory()->create([
-                'form_id' => $block->form->id,
+                'form_id' => $block->form->uuid,
             ]);
 
             FormSessionResponse::factory()->create([
@@ -49,7 +49,7 @@ class ResultsTest extends TestCase
 
         for ($i = 0; $i < 1; $i++) {
             $session = FormSession::factory()->create([
-                'form_id' => $block->form->id,
+                'form_id' => $block->form->uuid,
             ]);
 
             FormSessionResponse::factory()->create([

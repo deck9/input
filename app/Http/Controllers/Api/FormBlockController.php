@@ -14,9 +14,7 @@ class FormBlockController extends Controller
 {
     public function index(Request $request, Form $form)
     {
-        if ($request->user()->cannot('view', $form)) {
-            abort(403);
-        }
+        $this->authorize('view', $form);
 
         $blocks = $form->formBlocks->sortBy('sequence');
 
@@ -30,11 +28,9 @@ class FormBlockController extends Controller
         return response()->json($blocks->values()->toArray());
     }
 
-    public function create(Request $request, Form $form)
+    public function create(Form $form)
     {
-        if ($request->user()->cannot('update', $form)) {
-            abort(403);
-        }
+        $this->authorize('update', $form);
 
         $sequence = $form->formBlocks->count();
 
@@ -48,9 +44,7 @@ class FormBlockController extends Controller
 
     public function update(FormBlockUpdateRequest $request, FormBlock $block)
     {
-        if ($request->user()->cannot('update', $block)) {
-            abort(403);
-        }
+        $this->authorize('update', $block);
 
         $block->update($request->validated());
 
@@ -62,9 +56,7 @@ class FormBlockController extends Controller
 
     public function delete(Request $request, FormBlock $block)
     {
-        if ($request->user()->cannot('delete', $block)) {
-            abort(403);
-        }
+        $this->authorize('delete', $block);
 
         $block->delete();
 

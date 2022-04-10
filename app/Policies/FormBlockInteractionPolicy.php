@@ -10,8 +10,18 @@ class FormBlockInteractionPolicy
 {
     use HandlesAuthorization;
 
-    public function show(User $user, FormBlockInteraction $interaction)
+    public function view(User $user, FormBlockInteraction $interaction)
     {
-        return $user->id === $interaction->block->form->user_id;
+        return $user->id === $interaction->formBlock->form->user_id;
+    }
+
+    public function update(User $user, FormBlockInteraction $interaction)
+    {
+        return $user->id === $interaction->formBlock->form->user_id;
+    }
+
+    public function delete(User $user, FormBlockInteraction $interaction)
+    {
+        return $user->id === $interaction->formBlock->form->user_id;
     }
 }

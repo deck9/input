@@ -11,9 +11,7 @@ class FormBlockInteractionSequenceController extends Controller
 {
     public function __invoke(Request $request, FormBlock $block)
     {
-        if ($request->user()->cannot('update', $block)) {
-            abort(403);
-        }
+        $this->authorize('update', $block);
 
         $request->validate([
             'sequence' => 'required|array',

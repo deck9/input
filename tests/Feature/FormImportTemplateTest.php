@@ -29,7 +29,7 @@ EOD;
         ]);
 
         $response = $this->actingAs($user)->post(route('api.forms.template-import', [
-            'form' => $form->id
+            'form' => $form->uuid
         ]), [
             'template' => $this->importTemplateString,
         ])->assertStatus(200);

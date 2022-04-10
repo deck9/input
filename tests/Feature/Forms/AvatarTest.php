@@ -39,14 +39,14 @@ class AvatarTest extends TestCase
 
         // test with invalid file type
         $this->actingAs($form->user)
-            ->json('POST', route('api.forms.images.store', ['uuid' => $form->uuid]), [
+            ->json('POST', route('api.forms.images.store', ['form' => $form->uuid]), [
                 'image' => UploadedFile::fake()->create('avatar.pdf'),
             ])
             ->assertStatus(422);
 
         // test with too large file
         $this->actingAs($form->user)
-            ->json('POST', route('api.forms.images.store', ['uuid' => $form->uuid]), [
+            ->json('POST', route('api.forms.images.store', ['form' => $form->uuid]), [
                 'image' => UploadedFile::fake()->create('avatar.pdf')->size(2500),
             ])
             ->assertStatus(422);

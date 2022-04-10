@@ -30,7 +30,9 @@ class FormStoryboardTest extends TestCase
             ->has(FormBlockInteraction::factory()->button()->count(4))
             ->create(['type' => FormBlockType::radio]);
 
-        $response = $this->json('GET', route('api.public.forms.storyboard', ['uuid' => $form->uuid]));
+        $response = $this->json('GET', route('api.public.forms.storyboard', [
+            'form' => $form->uuid
+        ]));
 
         $this->assertEquals(2, $response->json('count'));
         $this->assertCount(1, $response->json('blocks.0.interactions'));

@@ -8,10 +8,8 @@ use App\Http\Controllers\Controller;
 
 class FormSubmitController extends Controller
 {
-    public function __invoke(Request $request, $uuid)
+    public function __invoke(Request $request, Form $form)
     {
-        $form = Form::where('uuid', $uuid)->firstOrFail();
-
         $request->validate([
             'token' => 'required|string',
             'payload' => 'array',

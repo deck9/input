@@ -30,7 +30,7 @@ class FormExportTemplateTest extends TestCase
 
         $response = $this->actingAs($form->user)
             ->json('GET', route('api.forms.template-export', [
-                'form' => $form->id,
+                'form' => $form->uuid,
             ]))->assertStatus(200);
 
         $response->assertJsonFragment([

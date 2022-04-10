@@ -22,7 +22,7 @@ EOD;
         $form = Form::factory()->create();
 
         $response = $this->json('POST', route('api.public.forms.session.create', [
-            'uuid' => $form->uuid,
+            'form' => $form->uuid,
         ]))->assertStatus(201);
 
         $this->assertNotNull($response->json('token'));
@@ -35,7 +35,7 @@ EOD;
         $form = Form::factory()->create();
 
         $this->json('POST', route('api.public.forms.session.create', [
-            'uuid' => $form->uuid,
+            'form' => $form->uuid,
             'params' => [
                 'foo' => 'bar',
                 'boo' => 'faz',
@@ -52,7 +52,7 @@ EOD;
         $form = Form::factory()->create();
 
         $response = $this->json('POST', route('api.public.forms.session.create', [
-            'uuid' => $form->uuid,
+            'form' => $form->uuid,
             'params' => [
                 'foo' => 'bar',
                 'boo' => 'faz',
@@ -77,7 +77,7 @@ EOD;
         $session = FormSession::factory()->create(['form_id' => $form->id]);
 
         $submitted = $this->json('POST', route('api.public.forms.submit', [
-            'uuid' => $form->uuid
+            'form' => $form->uuid
         ]), [
             'token' => $session->token,
             'payload' => [
@@ -107,7 +107,7 @@ EOD;
         $session = FormSession::factory()->create();
 
         $submitted = $this->json('POST', route('api.public.forms.submit', [
-            'uuid' => $session->form->uuid
+            'form' => $session->form->uuid
         ]), [
             'token' => $session->token,
             'payload' => []

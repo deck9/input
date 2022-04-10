@@ -14,24 +14,24 @@ class BlockSequenceTest extends TestCase
     /** @test */
     public function can_change_the_sequence_of_blocks()
     {
-        $form = Form::factory()->create();
-        $blockA = $this->actingAs($form->user)->json('post', route('api.blocks.create', $form->id));
-        $blockB = $this->actingAs($form->user)->json('post', route('api.blocks.create', $form->id));
+        $form = Form::factory()
+            ->has(FormBlock::factory(['sequence' => 0]))
+            ->has(FormBlock::factory(['sequence' => 1]))
+            ->create();
 
-        $this->assertEquals(0, $blockA->json('sequence'));
-        $this->assertEquals(1, $blockB->json('sequence'));
+        $this->assertEquals(0, $form->formBlocks[0]->sequence);
+        $this->assertEquals(1, $form->formBlocks[1]->sequence);
 
-        $response = $this->actingAs($form->user)
-            ->json('POST', route('api.blocks.sequence', ['form' => $form->id]), [
-                'sequence' => [$blockB->json('id'), $blockA->json('id')]
-            ]);
-        $response->assertStatus(204);
+        $this->actingAs($form->user)
+            ->json('POST', route('api.blocks.sequence', ['form' => $form->uuid]), [
+                'sequence' => [
+                    $form->formBlocks[1]->id,
+                    $form->formBlocks[0]->id
+                ]
+            ])->assertStatus(204);
 
         // Now test that the sequence of the blocks is the inverse
-        $blockA = FormBlock::find($blockA->json('id'));
-        $blockB = FormBlock::find($blockB->json('id'));
-
-        $this->assertEquals(1, $blockA->sequence);
-        $this->assertEquals(0, $blockB->sequence);
+        $this->assertEquals(1, $form->formBlocks[0]->fresh()->sequence);
+        $this->assertEquals(0, $form->formBlocks[1]->fresh()->sequence);
     }
 }

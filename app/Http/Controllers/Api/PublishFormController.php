@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Form;
 use Illuminate\Http\Request;
 use App\Events\FormPublished;
 use App\Http\Controllers\Controller;
 
 class PublishFormController extends Controller
 {
-    public function __invoke(Request $request, $uuid)
+    public function __invoke(Request $request, Form $form)
     {
-        $form = $request->user()
-            ->forms()
-            ->withUuid($uuid)
-            ->firstOrFail();
+        $this->authorize('update', $form);
 
         $form->update([
             'published_at' => now(),

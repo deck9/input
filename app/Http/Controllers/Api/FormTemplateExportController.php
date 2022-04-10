@@ -8,11 +8,9 @@ use App\Http\Controllers\Controller;
 
 class FormTemplateExportController extends Controller
 {
-    public function __invoke(Request $request, Form $form)
+    public function __invoke(Form $form)
     {
-        if ($request->user()->cannot('view', $form)) {
-            abort(403);
-        }
+        $this->authorize('view', $form);
 
         return response()->json($form->toTemplate(), 200);
     }

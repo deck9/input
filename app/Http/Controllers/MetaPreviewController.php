@@ -8,9 +8,8 @@ use Illuminate\Http\Request;
 
 class MetaPreviewController extends Controller
 {
-    public function show($id)
+    public function show(Form $form)
     {
-        $form = Form::find($id);
         $block = $form->formBlocks()
             ->whereHas('formBlockInteractions')
             ->first();

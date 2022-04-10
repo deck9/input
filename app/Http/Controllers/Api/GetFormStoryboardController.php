@@ -8,10 +8,8 @@ use App\Http\Controllers\Controller;
 
 class GetFormStoryboardController extends Controller
 {
-    public function __invoke(Request $request, string $uuid)
+    public function __invoke(Form $form)
     {
-        $form = Form::where('uuid', $uuid)->firstOrFail();
-
         return response()->json($form->getPublicStoryboard(), 200);
     }
 }

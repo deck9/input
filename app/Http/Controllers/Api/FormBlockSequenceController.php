@@ -10,9 +10,7 @@ class FormBlockSequenceController extends Controller
 {
     public function __invoke(Request $request, Form $form)
     {
-        if ($request->user()->cannot('update', $form)) {
-            abort(403);
-        }
+        $this->authorize('update', $form);
 
         $request->validate([
             'sequence' => 'required|array',

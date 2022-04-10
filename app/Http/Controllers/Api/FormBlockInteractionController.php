@@ -13,6 +13,8 @@ class FormBlockInteractionController extends Controller
 {
     public function create(Request $request, FormBlock $block)
     {
+        $this->authorize('update', $block);
+
         $request->validate([
             'type' => ['required', Rule::in(array_map(
                 fn ($i) => $i->value,
@@ -31,6 +33,8 @@ class FormBlockInteractionController extends Controller
 
     public function update(Request $request, FormBlockInteraction $interaction)
     {
+        $this->authorize('update', $interaction);
+
         switch ($interaction->type) {
             case FormBlockInteractionType::button:
                 $request->validate([
@@ -47,6 +51,8 @@ class FormBlockInteractionController extends Controller
 
     public function delete(Request $request, FormBlockInteraction $interaction)
     {
+        $this->authorize('delete', $interaction);
+
         $interaction->delete();
 
         return response()->json('', 200);

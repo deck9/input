@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\GlideCache;
+use App\Models\Form;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,12 +12,9 @@ use App\Http\Requests\FormAvatarRequest;
 
 class FormAvatarController extends Controller
 {
-    public function store(FormAvatarRequest $request, string $uuid)
+    public function store(FormAvatarRequest $request, Form $form)
     {
-        $form = $request->user()
-            ->forms()
-            ->withUuid($uuid)
-            ->firstOrFail();
+        $this->authorize('update', $form);
 
         // if old file, clear that first
         if ($form->avatar_path) {
@@ -38,12 +36,9 @@ class FormAvatarController extends Controller
         return response()->json($form, 201);
     }
 
-    public function delete(Request $request, string $uuid)
+    public function delete(Form $form)
     {
-        $form = $request->user()
-            ->forms()
-            ->withUuid($uuid)
-            ->firstOrFail();
+        $this->authorize('update', $form);
 
         // remove image from disk and cache
         if ($form->hasAvatar()) {

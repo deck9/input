@@ -21,13 +21,9 @@ class FormController extends Controller
         return response()->json($form, 200);
     }
 
-    public function show(Request $request, String $uuid)
+    public function show(Request $request, Form $form)
     {
-        $form = $request
-            ->user()
-            ->forms()
-            ->withUuid($uuid)
-            ->firstOrFail();
+        $this->authorize('view', $form);
 
         if ($request->user()->cannot('view', $form)) {
             abort(403);
@@ -36,16 +32,9 @@ class FormController extends Controller
         return response()->json($form);
     }
 
-    public function update(Request $request, $uuid)
+    public function update(Request $request, Form $form)
     {
-        $form = $request->user()
-            ->forms()
-            ->withUuid($uuid)
-            ->firstOrFail();
-
-        if ($request->user()->cannot('update', $form)) {
-            abort(403);
-        }
+        $this->authorize('update', $form);
 
         $form->update(
             $request->only(
@@ -80,16 +69,9 @@ class FormController extends Controller
         return response()->json($form, 200);
     }
 
-    public function delete(Request $request, $uuid)
+    public function delete(Form $form)
     {
-        $form = $request->user()
-            ->forms()
-            ->withUuid($uuid)
-            ->firstOrFail();
-
-        if ($request->user()->cannot('delete', $form)) {
-            abort(403);
-        }
+        $this->authorize('delete', $form);
 
         $form->delete();
 

@@ -185,7 +185,7 @@ class FormTest extends TestCase
 
         $this->actingAs($newUser)
             ->json('POST', route('api.forms.update', $form->uuid), $updateRequest)
-            ->assertStatus(404);
+            ->assertStatus(403);
     }
 
     /** @test */

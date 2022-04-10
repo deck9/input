@@ -23,7 +23,7 @@ class BlockTest extends TestCase
         $form = Form::factory()->create();
 
         $response = $this->actingAs($form->user)
-            ->json('post', route('api.blocks.create', $form->id))
+            ->json('post', route('api.blocks.create', $form->uuid))
             ->assertSuccessful();
 
         $block = FormBlock::get()->last();
@@ -55,7 +55,7 @@ class BlockTest extends TestCase
         ]);
 
         $response = $this->actingAs($form->user)
-            ->json('get', route('api.blocks.index', $form->id));
+            ->json('get', route('api.blocks.index', $form->uuid));
 
         $response->assertStatus(200);
         $this->assertCount(5, $response->json());
@@ -68,7 +68,7 @@ class BlockTest extends TestCase
         $form = Form::first();
 
         $response = $this->actingAs($form->user)
-            ->json('get', route('api.blocks.index', $form->id), [
+            ->json('get', route('api.blocks.index', $form->uuid), [
                 'includeResults' => 'true',
             ]);
 
@@ -127,7 +127,7 @@ class BlockTest extends TestCase
         ]);
 
         $this->actingAs($otherUser)
-            ->json('post', route('api.blocks.create', $block->form->id))
+            ->json('post', route('api.blocks.create', $block->form->uuid))
             ->assertStatus(403);
 
         $this->actingAs($otherUser)

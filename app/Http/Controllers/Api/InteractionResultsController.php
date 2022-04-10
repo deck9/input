@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 
 class InteractionResultsController extends Controller
 {
-    public function show(Request $request, FormBlockInteraction $interaction)
+    public function show(FormBlockInteraction $interaction)
     {
-        if ($request->user()->cannot('show', $interaction)) {
-            abort(403);
-        }
+        $this->authorize('view', $interaction);
 
         return response()->json(['responses' => $interaction->formSessionResponses], 200);
     }
