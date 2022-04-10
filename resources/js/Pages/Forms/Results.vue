@@ -6,7 +6,7 @@
         v-bind="{ form, blocks: store.blocks || undefined }"
       />
 
-      <div class="mt-6 space-y-6" v-if="form.total_sessions">
+      <div class="mt-4 grid gap-2 md:grid-cols-2" v-if="form.total_sessions">
         <BlockResultItem
           :block="block"
           v-for="block in store.blocks"
