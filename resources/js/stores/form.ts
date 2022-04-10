@@ -75,7 +75,7 @@ export const useForm = defineStore("form", {
             }
 
             const response = await callGetFormBlocks(
-                this.form.id,
+                this.form.uuid,
                 includeResults
             );
 
@@ -139,7 +139,7 @@ export const useForm = defineStore("form", {
             }
 
             try {
-                const response = await callCreateFormBlock(this.form.id);
+                const response = await callCreateFormBlock(this.form.uuid);
 
                 if (response.status === 201 && this.blocks) {
                     if (insertAfter !== null) {
