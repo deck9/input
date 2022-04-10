@@ -33,10 +33,8 @@ git clone git@github.com:deck9/input.git
 
 Copy the `.env.example` file to `.env` - the contents for the file should, in most cases, work out of the box. You may later generate and set the `APP_KEY` with the `sail artisan key:generate` command.
 
-Also, it is recommended to create a bash alias, to make working with Laravel Sail simple as possible. To do this, you can check out the [Laravel docs](https://laravel.com/docs/9.x/sail#configuring-a-bash-alias) on this topic or just add the following alias to your `.bashrc` or `.zshrc`:
-
 ```bash
-alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+cp .env.example .env
 ```
 
 ### Running
@@ -56,4 +54,22 @@ We also have a hot-reload enabled mode. Please note that this mode currently has
 npm run watch
 # or
 npm run hot # hot reload enabled
+```
+
+### Sail Bash Alias
+
+It is recommended to create a bash alias, to make working with Laravel Sail simple as possible. To do this, you can check out the [Laravel docs](https://laravel.com/docs/9.x/sail#configuring-a-bash-alias) on this topic or just add the following alias to your `.bashrc` or `.zshrc`:
+
+```bash
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+```
+
+With the alias, you can quickly perform tasks on the App Docker Container:
+
+```bash
+sail up -d # start container
+sail artisan tinker # use laravel artisan commands
+sail artisan db:migrate # run database migrations
+sail artisan test # run phpunit
+sail composer {args} # use composer
 ```
