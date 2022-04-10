@@ -66,6 +66,6 @@ class FormSession extends Model
 
         $this->update(['is_completed' => now()]);
 
-        return true;
+        return $this;
     }
 }

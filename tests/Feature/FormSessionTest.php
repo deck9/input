@@ -71,20 +71,15 @@ EOD;
     /** @test */
     public function can_submit_a_form()
     {
-        $this->withoutExceptionHandling();
         $form = Form::factory()->create();
         $form->applyTemplate($this->importTemplateString);
 
-        $response = $this->json('POST', route('api.public.forms.session.create', [
-            'uuid' => $form->uuid,
-        ]))->assertStatus(201);
-
-        $token = $response->json('token');
+        $session = FormSession::factory()->create(['form_id' => $form->id]);
 
         $submitted = $this->json('POST', route('api.public.forms.submit', [
             'uuid' => $form->uuid
         ]), [
-            'token' => $token,
+            'token' => $session->token,
             'payload' => [
                 'jR' => ['actionId' => 'jR', 'payload' => 'tester@getinput.co'],
                 'l5' => ['actionId' => 'k5', 'payload' => 'Yes'],
@@ -93,13 +88,31 @@ EOD;
                     ['actionId' => 'nR', 'payload' => 'Template API']
                 ],
             ]
-        ]);
+        ])->assertStatus(200);
 
         $form->refresh();
-        $submitted->assertStatus(201);
-        $this->assertCount(1, $form->formBlocks[0]->formBlockInteractions[0]->formSessionResponses);
+        $this->assertCount(
+            1,
+            $form->formBlocks[0]
+                ->formBlockInteractions[0]
+                ->formSessionResponses
+        );
         $this->assertCount(4, $form->formSessionResponses);
+        $this->assertTrue($submitted->json('is_completed'));
+    }
 
-        $this->assertTrue(FormSession::where('token', $token)->first()->is_completed);
+    /** @test */
+    public function can_submit_a_form_without_payload_when_no_input_required()
+    {
+        $session = FormSession::factory()->create();
+
+        $submitted = $this->json('POST', route('api.public.forms.submit', [
+            'uuid' => $session->form->uuid
+        ]), [
+            'token' => $session->token,
+            'payload' => []
+        ])->assertStatus(200);
+
+        $this->assertTrue($submitted->json('is_completed'));
     }
 }

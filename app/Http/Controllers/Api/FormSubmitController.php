@@ -14,14 +14,14 @@ class FormSubmitController extends Controller
 
         $request->validate([
             'token' => 'required|string',
-            'payload' => 'required|array',
+            'payload' => 'array',
         ]);
 
-        $form->formSessions()
+        $session = $form->formSessions()
             ->where('token', $request->input('token'))
             ->firstOrFail()
             ->submit($request->input('payload'));
 
-        return response()->json(null, 201);
+        return response()->json($session, 200);
     }
 }
