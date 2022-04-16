@@ -18,7 +18,7 @@
               </div>
 
               <!-- Navigation Links -->
-              <div class="-my-px ml-10 flex space-x-8">
+              <div class="md -my-px ml-10 hidden space-x-8 md:flex">
                 <jet-nav-link
                   :href="route('dashboard')"
                   :active="route().current('dashboard')"
@@ -38,23 +38,15 @@
               <div class="relative ml-3">
                 <jet-dropdown align="right" width="48">
                   <template #trigger>
-                    <button
-                      v-if="$page.props.jetstream.managesProfilePhotos"
-                      class="flex rounded-full border-2 border-transparent text-sm transition focus:border-grey-300 focus:outline-none"
-                    >
-                      <img
-                        class="h-8 w-8 rounded-full object-cover"
-                        :src="$page.props.user.profile_photo_url"
-                        :alt="$page.props.user.name"
-                      />
-                    </button>
-
-                    <span v-else class="inline-flex rounded-md">
+                    <span class="inline-flex rounded-md">
                       <button
                         type="button"
                         class="inline-flex items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 transition hover:text-blue-200 focus:outline-none"
                       >
-                        {{ $page.props.user.name || "Account" }}
+                        <D9Icon class="md:hidden" name="cog" />
+                        <span class="hidden md:inline-block">
+                          {{ $page.props.user.name || "Account" }}
+                        </span>
                         <svg
                           class="ml-2 -mr-0.5 h-4 w-4"
                           xmlns="http://www.w3.org/2000/svg"
@@ -121,6 +113,7 @@ import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
 import JetNavLink from "@/Jetstream/NavLink.vue";
 import FormMenuActions from "@/components/Factory/FormMenuActions.vue";
 import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
+import { D9Icon } from "@deck9/ui";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
@@ -139,6 +132,7 @@ export default defineComponent({
     Link,
     FormMenuActions,
     FactoryNavigation,
+    D9Icon,
   },
 
   data() {

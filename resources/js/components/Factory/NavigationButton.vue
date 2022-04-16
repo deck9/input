@@ -4,8 +4,10 @@
     :class="isActive ? 'bg-grey-900' : 'hover:bg-grey-700'"
     :href="resolvedRoute"
   >
-    <D9Icon class="mr-2" :name="icon" />
-    <slot></slot>
+    <D9Icon class="md:mr-2" :name="icon" />
+    <span class="hidden md:inline">
+      <slot></slot>
+    </span>
   </a>
 </template>
 
