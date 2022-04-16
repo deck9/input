@@ -8,7 +8,7 @@
     </div>
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
-      <div class="absolute inset-0 overflow-auto px-6 py-4">
+      <div class="absolute inset-0 overflow-auto px-4 py-4">
         <BlockContainer />
       </div>
     </div>
