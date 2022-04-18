@@ -29,4 +29,13 @@ class FormSessionFactory extends Factory
             'form_id' => Form::factory(),
         ];
     }
+
+    public function completed()
+    {
+        return $this->state(function () {
+            return [
+                'is_completed' => now(),
+            ];
+        });
+    }
 }
