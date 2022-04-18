@@ -1,6 +1,6 @@
 <template>
-  <div class>
-    <h1 class="text-xl font-bold text-slate-900">{{ form.name }}</h1>
+  <div>
+    <h1 class="text-slate-900 text-xl font-bold">{{ form.name }}</h1>
     <div class="flex space-x-5 text-sm text-grey-400">
       <div>
         <D9Icon class="mr-2" name="envelope" />

@@ -31,6 +31,11 @@ class FormSessionResponse extends Model
         return $this->belongsTo(FormBlock::class, 'form_block_id');
     }
 
+    public function formBlockInteraction()
+    {
+        return $this->belongsTo(FormBlockInteraction::class, 'form_block_interaction_id');
+    }
+
     public function formSession()
     {
         return $this->belongsTo(FormSession::class, 'form_session_id');
