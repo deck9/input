@@ -51,21 +51,22 @@ EOD;
     {
         $form = Form::factory()->create();
 
-        $response = $this->json('POST', route('api.public.forms.session.create', [
+        $this->json('POST', route('api.public.forms.session.create', [
             'form' => $form->uuid,
             'params' => [
                 'foo' => 'bar',
                 'boo' => 'faz',
             ],
-        ]))->assertStatus(201);
-
-        $response->assertJsonStructure([
-            "token",
-            "has_data_privacy",
-            "is_completed",
-            "params",
-            "created_at",
-        ]);
+        ]))
+            ->assertStatus(201)
+            ->assertJsonMissing(["id", "created_at"])
+            ->assertJsonStructure([
+                "token",
+                "has_data_privacy",
+                "is_completed",
+                "params",
+                "created_at",
+            ]);
     }
 
     /** @test */
