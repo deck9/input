@@ -128,6 +128,10 @@ class FormTest extends TestCase
             // End of Conversation
             'eoc_headline' => 'Thank You',
             'eoc_text' => 'You can close this window now',
+
+            // Submit
+            'submit_method' => 'POST',
+            'submit_webhook' => 'https://n8n.deck9.co/webhook/test-submit',
         ];
 
         $this->actingAs($form->user)

@@ -16,6 +16,26 @@
     </div>
 
     <div>
+      <h2 class="mb-2 text-base font-bold">External Webhook</h2>
+
+      <div>
+        <div class="mb-4">
+          <D9Label label="Submit Method" />
+          <D9Select block :options="submitTypes" v-model="submitMethod" />
+        </div>
+        <div class="mb-4">
+          <D9Label label="Webhook / Submit URL" />
+          <D9Input
+            icon="external-link"
+            type="url"
+            block
+            v-model="submitWebhook"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div>
       <h2 class="mb-2 flex items-center text-base font-bold">
         <span class="inline-block">CTA Link</span>
         <D9Switch class="ml-2" label="" v-model="isCtaOn"></D9Switch>
@@ -44,7 +64,7 @@
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
-import { D9Label, D9Input, D9Switch } from "@deck9/ui";
+import { D9Label, D9Input, D9Select, D9Switch } from "@deck9/ui";
 import { onBeforeUnmount, ref, watch } from "vue";
 import debounce from "lodash/debounce";
 
@@ -53,26 +73,48 @@ const store = useForm();
 const outroHeadline = ref(store.form?.eoc_headline);
 const outroMessage = ref(store.form?.eoc_text);
 
+const submitTypes = ref([
+  { label: "GET", value: "GET" },
+  { label: "POST", value: "POST" },
+]);
+
+const submitMethod = ref(
+  store.form?.submit_method
+    ? submitTypes.value.find((i) => i.value === store.form?.submit_method)
+    : submitTypes.value[0]
+);
+const submitWebhook = ref(store.form?.submit_webhook);
+
 const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);
 const ctaLink = ref(store.form?.cta_link);
 
-const saveCompletionPageSettings = debounce(async () => {
+const saveFormSubmitSettings = debounce(async () => {
   await store.updateForm({
     eoc_headline: outroHeadline.value,
     eoc_text: outroMessage.value,
     show_cta_link: isCtaOn.value,
     cta_label: ctaLabel.value,
     cta_link: ctaLink.value,
+    submit_method: submitMethod.value?.value,
+    submit_webhook: submitWebhook.value,
   });
 }, 400);
 
 watch(
-  [outroHeadline, outroMessage, isCtaOn, ctaLabel, ctaLink],
-  saveCompletionPageSettings
+  [
+    outroHeadline,
+    outroMessage,
+    isCtaOn,
+    ctaLabel,
+    ctaLink,
+    submitMethod,
+    submitWebhook,
+  ],
+  saveFormSubmitSettings
 );
 
 onBeforeUnmount(async () => {
-  await saveCompletionPageSettings.flush();
+  await saveFormSubmitSettings.flush();
 });
 </script>
