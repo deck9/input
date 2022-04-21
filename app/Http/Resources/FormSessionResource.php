@@ -21,7 +21,8 @@ class FormSessionResource extends JsonResource
             'started_at' => $this->created_at,
             'completed_at' => $this->getRawOriginal('is_completed'),
             'params' => json_encode($this->params),
-            'responses' => FormSessionResponseResource::collection($this->formSessionResponses)->resolve(),
+            'responses' => collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())
+                ->mapWithKeys(fn ($item) => [$item['name'] => $item['value']]),
         ];
     }
 }
