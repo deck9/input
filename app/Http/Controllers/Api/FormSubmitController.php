@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Form;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Events\FormSessionCompletedEvent;
 
 class FormSubmitController extends Controller
 {
@@ -19,6 +20,8 @@ class FormSubmitController extends Controller
             ->where('token', $request->input('token'))
             ->firstOrFail()
             ->submit($request->input('payload'));
+
+        event(new FormSessionCompletedEvent($session));
 
         return response()->json($session, 200);
     }
