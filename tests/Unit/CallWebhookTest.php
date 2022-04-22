@@ -3,12 +3,18 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Models\Form;
 use App\Jobs\CallWebhook;
 use App\Models\FormBlock;
+use App\Models\FormSession;
+use App\Enums\FormBlockType;
 use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Event;
 use App\Enums\FormBlockInteractionType;
+use App\Events\FormSessionCompletedEvent;
+use App\Listeners\FormSubmitWebhookListener;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CallWebhookTest extends TestCase
@@ -20,29 +26,33 @@ class CallWebhookTest extends TestCase
     {
         Http::fake();
 
-        $block = FormBlock::factory()->create([
-            'webhook_url' => url('tools/webhook')
+        $form = Form::factory()->has(
+            FormBlock::factory([
+                'type' => FormBlockType::short
+            ])->has(FormBlockInteraction::factory([
+                'type' => FormBlockInteractionType::input
+            ]))
+        )->create([
+            'submit_method' => 'get',
+            'submit_webhook' => 'https://void.work/submit'
         ]);
 
-        $interaction = FormBlockInteraction::factory()->create([
-            'label' => 'Yes',
-            'type' => FormBlockInteractionType::button,
-            'form_block_id' => $block->id,
-        ]);
+        $block = $form->formBlocks->first();
+        $action = $block->formBlockInteractions->first();
 
-        $response = FormSessionResponse::factory()->create([
-            'form_block_interaction_id' => $interaction->id,
-            'form_block_id' => $block->id,
-            'value' => 'Yes',
-        ]);
+        $session = FormSession::factory()->for($form)
+            ->has(FormSessionResponse::factory([
+                'value' => 'test response'
+            ])->for($block)->for($action))
+            ->completed()
+            ->create();
 
-        $job = new CallWebhook($response->formSession, $block->webhook_url);
-        $job->handle();
+        with(new FormSubmitWebhookListener)
+            ->handle(new FormSessionCompletedEvent($session));
 
-        Http::assertSent(function ($request) use ($response, $block) {
-            return $request->url() == $block->webhook_url &&
-                $request['_id'] == $response->formSession->token &&
-                $request[$block->uuid] == 'Yes';
+        Http::assertSent(function ($request) use ($form) {
+            return $request->url() === $form->submit_webhook
+                && $request->method() === strtoupper($form->submit_method);
         });
     }
 }

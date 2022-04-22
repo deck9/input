@@ -19,7 +19,7 @@
           :block="store.currentBlock"
           :key="store.currentBlock.id"
         />
-        <CompletionPage v-else-if="store.isSubmitted" />
+        <FormSubmitSettings v-else-if="store.isSubmitted" />
       </transition>
     </div>
 
@@ -33,7 +33,7 @@
 <script lang="ts" setup>
 import Header from "@/forms/classic/layout/Header.vue";
 import Block from "@/forms/classic/layout/Block.vue";
-import CompletionPage from "@/forms/classic/layout/CompletionPage.vue";
+import FormSubmitSettings from "@/forms/classic/layout/FormSubmitSettings.vue";
 import Navigator from "@/forms/classic/layout/Navigator.vue";
 import FooterNavigation from "@/forms/classic/layout/FooterNavigation.vue";
 import { useConversation } from "@/stores/conversation";

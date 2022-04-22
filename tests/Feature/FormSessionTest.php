@@ -6,6 +6,9 @@ use Tests\TestCase;
 use App\Models\Form;
 use App\Models\FormSession;
 use App\Models\FormSessionResponse;
+use Illuminate\Support\Facades\Event;
+use App\Events\FormSessionCompletedEvent;
+use App\Listeners\FormSubmitWebhookListener;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FormSessionTest extends TestCase
@@ -115,5 +118,22 @@ EOD;
         ])->assertStatus(200);
 
         $this->assertTrue($submitted->json('is_completed'));
+    }
+
+    /** @test */
+    public function when_submitting_a_form_an_event_is_fired()
+    {
+        Event::fake();
+
+        $session = FormSession::factory()->create();
+
+        $this->json('POST', route('api.public.forms.submit', [
+            'form' => $session->form->uuid
+        ]), [
+            'token' => $session->token,
+            'payload' => []
+        ])->assertStatus(200);
+
+        Event::assertListening(FormSessionCompletedEvent::class, FormSubmitWebhookListener::class);
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\FormPublished;
+use App\Events\FormSessionCompletedEvent;
 use App\Listeners\CreatePreviewImage;
+use App\Listeners\FormSubmitWebhookListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,6 +26,10 @@ class EventServiceProvider extends ServiceProvider
         FormPublished::class => [
             // CreatePreviewImage::class,
         ],
+
+        FormSessionCompletedEvent::class => [
+            FormSubmitWebhookListener::class,
+        ]
     ];
 
     /**

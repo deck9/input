@@ -38,6 +38,8 @@ interface FormModel extends BaseModel {
     show_cta_link: boolean;
     show_social_links: boolean;
     is_notification_via_mail: boolean;
+    submit_method: string;
+    submit_url: string;
     user_id: number;
     total_sessions: number;
     completion_rate: number;

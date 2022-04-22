@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use Illuminate\Pipeline\Pipeline;
 use Spatie\Fractal\Facades\Fractal;
 use App\Http\Controllers\Controller;
+use App\Pipes\MergeResponsesIntoSession;
 use App\Http\Resources\FormSessionResource;
 use App\Transformers\FormSessionTransformer;
 
@@ -14,10 +16,22 @@ class FormResultsExportController extends Controller
     {
         $this->authorize('view', $form);
 
-        $completedSessions = $form->formSessions()->whereNotNull('is_completed')->get();
-        $export = collect(FormSessionResource::collection($completedSessions)->resolve());
+        $data = collect(
+            FormSessionResource::collection(
+                $form->formSessions()
+                    ->whereNotNull('is_completed')
+                    ->get()
+            )->resolve()
+        );
 
-        $keys = $export
+        /* With this block, we try to find all response keys that have been used
+        in the collected forms data. Since there can be cases where a session
+        is only partially submitted or fields have been added later on, so they
+        are not contained in older form submissions.
+
+        Goal here is that the exported data has all the fields from collected
+        responses in it. */
+        $keys = $data
             ->reduce(function ($sum, $session) {
                 collect($session['responses'])
                     ->each(function ($item) use (&$sum) {
@@ -27,17 +41,14 @@ class FormResultsExportController extends Controller
                 return $sum;
             }, []);
 
-        $exportFormatted = $export
+        $exportFormatted = $data
             ->map(function ($session) use ($keys) {
-                $responses = collect($session['responses'])
-                    ->mapWithKeys(function ($response) {
-                        return [
-                            $response['name'] => $response['value'],
-                        ];
-                    })->toArray();
-
-                unset($session['responses']);
-                return array_merge($session, $keys, $responses);
+                return array_merge($session, $keys, app(Pipeline::class)
+                    ->send($session)
+                    ->through([
+                        MergeResponsesIntoSession::class
+                    ])
+                    ->thenReturn());
             })->toArray();
 
         return response()->streamDownload(function () use ($exportFormatted) {
