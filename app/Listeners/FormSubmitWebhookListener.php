@@ -2,21 +2,16 @@
 
 namespace App\Listeners;
 
-use App\Http\Resources\FormSessionResource;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Http\Resources\FormSessionResource;
+use App\Pipes\MergeResponsesIntoSession;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Http;
 
-class FormSubmitWebhookListener
+class FormSubmitWebhookListener implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use InteractsWithQueue;
 
     /**
      * Handle the event.
@@ -26,7 +21,6 @@ class FormSubmitWebhookListener
      */
     public function handle($event)
     {
-
         // check if form has webhook settings
         $form = $event->session->form;
 
@@ -34,11 +28,19 @@ class FormSubmitWebhookListener
             return;
         }
 
-        $payload = FormSessionResource::make($event->session)->resolve();
+        $payload = app(Pipeline::class)
+            ->send(FormSessionResource::make($event->session)->resolve())
+            ->through([
+                MergeResponsesIntoSession::class
+            ])
+            ->thenReturn();
 
-        dd($payload);
+        $response = Http::send($form->submit_method, $form->submit_webhook, [
+            'data' => $payload
+        ]);
 
-        dd($form->submit_method, $form->submit_webhook);
-        dd('asdf');
+        $event->session->update([
+            'webhook_submit_status' => $response->status(),
+        ]);
     }
 }
