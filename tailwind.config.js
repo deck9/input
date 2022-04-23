@@ -12,6 +12,8 @@ function withOpacityValue(variable) {
 module.exports = {
     darkMode: "class",
 
+    important: '.ipt',
+
     content: [
         "./node_modules/@deck9/ui/dist/src/index.es.js",
         "./node_modules/smooth-dnd/dist/index.js",
