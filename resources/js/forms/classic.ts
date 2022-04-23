@@ -1,8 +1,11 @@
+import "@css/app.css";
 import { createApp, h } from "vue";
 import { createPinia } from "pinia";
 import ClassicForm from "./classic/ClassicForm.vue";
+import { useRoutes } from "@/utils/useRoutes";
 
 const pinia = createPinia();
+const { route } = useRoutes();
 
 createApp({
     setup: () => {
@@ -13,5 +16,5 @@ createApp({
     },
 })
     .use(pinia)
-    .mixin({ methods: { route: window.route } })
+    .mixin({ methods: { route } })
     .mount("#input-classic");

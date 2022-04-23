@@ -37,15 +37,11 @@
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
         <meta name="twitter:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
         <!-- Scripts -->
-        <script src="{{ mix('js/classic.js') }}" defer></script>
-        @routes
         <script lang="js">
             {!! $form->getJavascriptConfig() !!}
         </script>
+        <script src="{{ mix('js/classic.js') }}" defer></script>
 
         <style>
             html {
@@ -61,7 +57,7 @@
     <body class="font-sans antialiased">
 
         @auth
-        @if(auth()->user()->id === $form->user_id)
+        @if(!$form->is_published && auth()->user()->id === $form->user_id)
         <div class="bg-grey-700 py-2 absolute inset-x-0 top-0 px-4">
             <div class="max-w-screen-lg mx-auto text-indigo-50 text-sm flex justify-between">
                 <a class="underline" href="{{ route('forms.edit', $form->uuid) }}">Back to Editor</a>

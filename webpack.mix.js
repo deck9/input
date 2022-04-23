@@ -19,10 +19,6 @@ mix
         transpileOnly: mix.inProduction(),
     })
     .vue()
-    .postCss("resources/css/app.css", "public/css", [
-        require("postcss-import"),
-        require("tailwindcss"),
-    ])
     .webpackConfig(require("./webpack.config"));
 
 if (mix.inProduction()) {
