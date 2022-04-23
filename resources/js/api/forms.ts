@@ -63,6 +63,46 @@ export function callDeleteForm(form: FormModel): Promise<boolean> {
     });
 }
 
+export function callPublishForm(
+    form: FormModel
+): Promise<AxiosResponse<FormModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.publish", { uuid: form.uuid })
+            );
+
+            if (response.status === 200) {
+                resolve(response as AxiosResponse<FormModel>);
+            } else {
+                reject(false);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callUnpublishForm(
+    form: FormModel
+): Promise<AxiosResponse<FormModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.unpublish", { uuid: form.uuid })
+            );
+
+            if (response.status === 200) {
+                resolve(response as AxiosResponse<FormModel>);
+            } else {
+                reject(false);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callUploadAvatar(
     form: FormModel,
     file: File

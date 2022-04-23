@@ -6,6 +6,8 @@ import {
     callUploadAvatar,
     callGetFormBlockMapping,
     callDeleteForm,
+    callPublishForm,
+    callUnpublishForm,
 } from "@/api/forms";
 import {
     callGetFormBlocks,
@@ -129,6 +131,30 @@ export const useForm = defineStore("form", {
             if (result) {
                 this.clearForm();
             }
+
+            return Promise.resolve();
+        },
+
+        async publishForm() {
+            if (!this.form) {
+                return;
+            }
+
+            const result = await callPublishForm(this.form);
+
+            this.form = result.data;
+
+            return Promise.resolve();
+        },
+
+        async unpublishForm() {
+            if (!this.form) {
+                return;
+            }
+
+            const result = await callUnpublishForm(this.form);
+
+            this.form = result.data;
 
             return Promise.resolve();
         },
