@@ -1,10 +1,10 @@
 <template>
   <div
-    class="conversation-theme mx-auto flex h-full max-w-screen-sm flex-col justify-between py-8 px-4 md:px-0"
+    class="conversation-theme mx-auto flex min-h-full max-w-screen-sm flex-col justify-between py-6 px-2"
   >
     <Header :form="store.form" />
 
-    <div class="mx-auto h-full w-full max-w-screen-sm pt-10 pb-12 md:pt-[16vh]">
+    <div class="mx-auto h-full w-full max-w-screen-sm py-10">
       <transition
         mode="out-in"
         enter-from-class="opacity-0 translate-y-4"
@@ -24,7 +24,7 @@
     </div>
 
     <footer class="flex justify-between text-center text-xs">
-      <Navigator />
+      <Navigator v-show="!store.isSubmitted" />
       <FooterNavigation :form="store.form" />
     </footer>
   </div>
