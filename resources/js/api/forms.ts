@@ -1,5 +1,6 @@
 /* eslint-disable no-async-promise-executor */
 import { AxiosResponse } from "axios";
+import { request } from "http";
 import handler from "./handler";
 
 export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
@@ -186,15 +187,22 @@ export function callGetFormTemplate(
 
 export function callImportFormTemplate(
     form,
-    template: string
+    template: string | File
 ): Promise<AxiosResponse<{ mapping: Record<string, string> }>> {
     return new Promise(async (resolve, reject) => {
         try {
+            let requestData;
+
+            if (typeof template === "string") {
+                requestData = { template };
+            } else {
+                requestData = new FormData();
+                requestData.append("file", template);
+            }
+
             const response = await handler.post(
                 window.route("api.forms.template-import", { form: form }),
-                {
-                    template,
-                }
+                requestData
             );
             if (response.status === 200) {
                 resolve(

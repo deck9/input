@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use Illuminate\Support\Str;
 use Illuminate\Pipeline\Pipeline;
 use Spatie\Fractal\Facades\Fractal;
 use App\Http\Controllers\Controller;
@@ -60,6 +61,6 @@ class FormResultsExportController extends Controller
             }
 
             fclose($out);
-        }, $form->name . '-results.csv');
+        }, Str::slug($form->name) . '.results.csv');
     }
 }

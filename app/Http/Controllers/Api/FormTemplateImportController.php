@@ -15,10 +15,16 @@ class FormTemplateImportController extends Controller
         }
 
         $request->validate([
-            'template' => 'required|json',
+            'file' => 'required_without:template|file|mimetypes:application/json',
+            'template' => 'required_without:file|json',
         ]);
 
-        $form->applyTemplate($request->input('template'));
+        if ($request->has('file')) {
+            $template = file_get_contents($request->file('file'));
+            $form->applyTemplate($template);
+        } else {
+            $form->applyTemplate($request->input('template'));
+        }
 
         return response()->json([
             'message' => 'Template imported successfully',

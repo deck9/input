@@ -1,0 +1,61 @@
+{
+    "name": "Form Import Test",
+    "description": "This is just a test",
+    "eoc_text": "Test Message",
+    "eoc_headline": "Test Completed",
+    "cta_label": "Test CTA",
+    "cta_link": "https://deck9.co",
+    "linkedin": null,
+    "github": null,
+    "instagram": null,
+    "facebook": null,
+    "twitter": null,
+    "show_cta_link": true,
+    "show_social_links": false,
+    "blocks": [
+        {
+            "message": "<p>This is the first message</p>",
+            "type": "none",
+            "title": null,
+            "has_parent_interaction": null,
+            "sequence": 0,
+            "formBlockInteractions": []
+        },
+        {
+            "message": "<p>What is your name?</p>",
+            "type": "input-short",
+            "title": null,
+            "has_parent_interaction": null,
+            "sequence": 1,
+            "formBlockInteractions": [
+                {
+                    "type": "input",
+                    "label": "Your name",
+                    "reply": null,
+                    "sequence": 0
+                }
+            ]
+        },
+        {
+            "message": "<p>Planes or Trains?</p>",
+            "type": "radio",
+            "title": null,
+            "has_parent_interaction": null,
+            "sequence": 2,
+            "formBlockInteractions": [
+                {
+                    "type": "button",
+                    "label": "Planes",
+                    "reply": null,
+                    "sequence": 0
+                },
+                {
+                    "type": "button",
+                    "label": "Trains",
+                    "reply": null,
+                    "sequence": 1
+                }
+            ]
+        }
+    ]
+}

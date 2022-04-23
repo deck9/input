@@ -1,17 +1,27 @@
 <template>
   <div>
     <div class="mb-4">
-      <D9Label label="Export Template" />
-      <D9Textarea v-if="template" readonly v-model="template" block />
-    </div>
-    <div class="mb-4">
-      <D9Label label="Import Template" />
-      <div class="mt-2">
+      <D9Label label="Template Files" />
+      <div class="mt-2 flex space-x-2">
         <D9Button
-          label="Load Template"
+          label="Download"
+          color="dark"
+          @click="downloadTemplate"
+          icon="cloud-download"
+        />
+        <D9Button
+          label="Import"
           :isLoading="isImporting"
           :isDisabled="isImporting"
-          @click="openImport"
+          icon="cloud-upload"
+          @click="initUpload"
+        />
+        <input
+          type="file"
+          class="hidden"
+          ref="uploadInput"
+          accept="application/json"
+          @change="selectFiles"
         />
       </div>
     </div>
@@ -33,14 +43,38 @@ callGetFormTemplate(store.form?.uuid).then((response) => {
 
 const isImporting = ref(false);
 
-const openImport = async () => {
-  const template = window.prompt("Please insert your template");
+const downloadTemplate = () => {
+  const form = store.form?.uuid;
 
-  if (template) {
+  if (form) {
+    window
+      .open(window.route("forms.template-download", { form }), "_blank")
+      ?.focus();
+  }
+};
+
+const uploadInput = ref<HTMLInputElement | null>(null);
+const uploadErrors = ref<string[]>([]);
+
+const initUpload = () => {
+  isImporting.value = true;
+  uploadInput.value?.click();
+
+  setTimeout(() => {
+    isImporting.value = false;
+  }, 2000);
+};
+
+const selectFiles = async (payload: Event) => {
+  const files = (payload?.target as HTMLInputElement).files;
+
+  if (files && files.length > 0) {
+    const file = files[0];
+
     isImporting.value = true;
 
     try {
-      const response = await callImportFormTemplate(store.form?.uuid, template);
+      const response = await callImportFormTemplate(store.form?.uuid, file);
 
       if (response.status === 200) {
         await store.refreshForm();
@@ -50,8 +84,8 @@ const openImport = async () => {
     } catch (error) {
       console.warn("something went wrong", error);
     }
-  }
 
-  isImporting.value = false;
+    isImporting.value = false;
+  }
 };
 </script>

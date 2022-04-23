@@ -18,7 +18,7 @@ class FormResultsExportTest extends TestCase
     /** @test */
     public function can_download_an_export_of_form_results()
     {
-        $form = Form::factory()->create();
+        $form = Form::factory()->create(['name' => 'Test Form']);
 
         $blockA = FormBlock::factory()
             ->for($form)
@@ -50,6 +50,6 @@ class FormResultsExportTest extends TestCase
             ->json('GET', route('forms.results-export', $form))
             ->assertOk();
 
-        $response->assertDownload($form->name . '-results.csv');
+        $response->assertDownload('test-form.results.csv');
     }
 }
