@@ -1,9 +1,9 @@
 <template>
   <div
-    class="relative flex w-full justify-between overflow-hidden rounded px-2 py-1"
+    class="group relative flex w-full justify-between overflow-hidden rounded px-2 py-1"
   >
     <div
-      class="absolute inset-y-0 left-0 bg-grey-300"
+      class="absolute inset-y-0 left-0 bg-blue-50 transition-colors duration-150 group-hover:bg-blue-100"
       :style="`width: ${value}%;`"
     ></div>
     <span class="relative font-medium">{{ label }}</span>
