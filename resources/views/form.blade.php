@@ -67,8 +67,9 @@
         @endif
         @endauth
 
-        <div class="h-full {{ auth()->user() && auth()->user()->id === $form->user_id ? 'pt-10' : ''}}"
-             id="input-classic"></div>
+        <div class="h-full flex items-center w-full pt-20">
+            <div class="h-full w-full" id="input-classic"></div>
+        </div>
     </body>
 
 </html>
