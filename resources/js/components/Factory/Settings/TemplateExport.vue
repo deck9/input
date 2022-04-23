@@ -27,11 +27,12 @@ import { ref } from "vue";
 const store = useForm();
 const template = ref<string | null>(null);
 
-callGetFormTemplate(store.form?.id).then((response) => {
+callGetFormTemplate(store.form?.uuid).then((response) => {
   template.value = JSON.stringify(response.data);
 });
 
 const isImporting = ref(false);
+
 const openImport = async () => {
   const template = window.prompt("Please insert your template");
 
@@ -39,7 +40,7 @@ const openImport = async () => {
     isImporting.value = true;
 
     try {
-      const response = await callImportFormTemplate(store.form?.id, template);
+      const response = await callImportFormTemplate(store.form?.uuid, template);
 
       if (response.status === 200) {
         await store.refreshForm();
