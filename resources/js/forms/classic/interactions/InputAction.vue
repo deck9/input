@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { ComputedRef, inject, onMounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
 
 const store = useConversation();
@@ -26,12 +26,15 @@ const props = defineProps<{
   block: PublicFormBlockModel;
   action: PublicFormBlockInteractionModel;
 }>();
+const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
 const storeValue = store.currentPayload?.[props.action.id]?.payload;
 const inputElement = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
-  inputElement.value?.focus();
+  if (!disableFocus?.value) {
+    inputElement.value?.focus();
+  }
 });
 
 const onInput = () => {

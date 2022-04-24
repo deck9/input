@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
+use App\Http\Controllers\Api\ShowFormController;
 use App\Http\Controllers\Api\FormBlockController;
 use App\Http\Controllers\Api\FormAvatarController;
 use App\Http\Controllers\Api\FormSubmitController;
@@ -35,6 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 $router->get('public/forms/{form}/storyboard', GetFormStoryboardController::class)->name('api.public.forms.storyboard');
 $router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
+$router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
 $router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
 
 $router->middleware(['auth:sanctum'])->group(function (Router $router) {
