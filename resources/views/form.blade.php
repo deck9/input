@@ -67,8 +67,8 @@
         @endif
         @endauth
 
-        <div class="h-full flex items-center w-full pt-20">
-            <div class="h-full w-full" id="input-classic"></div>
+        <div class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 px-4 md:px-0 flex w-full">
+            <div class="w-full" id="input-classic"></div>
         </div>
     </body>
 

@@ -2,25 +2,27 @@
   <div
     class="conversation-theme mx-auto flex min-h-full max-w-screen-sm flex-col justify-between"
   >
-    <Header :form="store.form" />
+    <div>
+      <Header :form="store.form" />
 
-    <div class="mx-auto h-full w-full max-w-screen-sm py-10">
-      <transition
-        mode="out-in"
-        enter-from-class="opacity-0 translate-y-4"
-        enter-active-class="transition duration-300 ease-out"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-active-class="transition duration-150 ease-in"
-        leave-to-class="opacity-0 -translate-y-10"
-      >
-        <Block
-          v-if="store.currentBlock && !store.isSubmitted"
-          :block="store.currentBlock"
-          :key="store.currentBlock.id"
-        />
-        <FormSubmitSettings v-else-if="store.isSubmitted" />
-      </transition>
+      <div class="mx-auto h-full w-full max-w-screen-sm py-10">
+        <transition
+          mode="out-in"
+          enter-from-class="opacity-0 translate-y-4"
+          enter-active-class="transition duration-300 ease-out"
+          enter-to-class="opacity-100 translate-y-0"
+          leave-from-class="opacity-100 translate-y-0"
+          leave-active-class="transition duration-150 ease-in"
+          leave-to-class="opacity-0 -translate-y-10"
+        >
+          <Block
+            v-if="store.currentBlock && !store.isSubmitted"
+            :block="store.currentBlock"
+            :key="store.currentBlock.id"
+          />
+          <FormSubmitSettings v-else-if="store.isSubmitted" />
+        </transition>
+      </div>
     </div>
 
     <footer class="flex justify-between text-center text-xs">
