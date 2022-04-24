@@ -1,6 +1,6 @@
 <template>
   <div
-    class="conversation-theme mx-auto flex min-h-full max-w-screen-sm flex-col justify-between py-6 px-2"
+    class="conversation-theme mx-auto flex min-h-full max-w-screen-sm flex-col justify-between"
   >
     <Header :form="store.form" />
 
