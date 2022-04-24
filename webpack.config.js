@@ -6,6 +6,7 @@ module.exports = {
     resolve: {
         alias: {
             "@": path.resolve("resources/js"),
+            "@css": path.resolve("resources/css"),
             "ziggy": path.resolve('vendor/tightenco/ziggy/dist')
         },
     },

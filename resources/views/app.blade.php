@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html class="ipt" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
     <head>
         <meta charset="utf-8">
@@ -37,13 +37,9 @@
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
         <meta name="twitter:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
         <!-- Scripts -->
         @routes
         <script src="{{ mix('js/app.js') }}" defer></script>
-        <script src="{{ mix('js/classic.js') }}" defer></script>
     </head>
 
     <body class="font-sans antialiased">
