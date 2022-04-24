@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-4">
-      <D9Textarea class="w-full" :value="embedCode" readonly />
+      <Code class="w-full" :code="embedCode" />
     </div>
 
     <form>
@@ -54,6 +54,16 @@
           offLabel="no"
         />
       </div>
+
+      <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
+        <D9Label label="Align Left" />
+        <D9Switch
+          label="Align Left"
+          v-model="alignLeft"
+          onLabel="yes"
+          offLabel="no"
+        />
+      </div>
     </form>
   </div>
 </template>
@@ -61,10 +71,10 @@
 <script setup lang="ts">
 /* eslint-disable no-useless-escape */
 
-// import { useForm } from "@/stores";
 import { useForm } from "@/stores/form";
-import { D9Label, D9Input, D9Textarea, D9Switch } from "@deck9/ui";
+import { D9Label, D9Input, D9Switch } from "@deck9/ui";
 import { computed, ref } from "vue";
+import Code from "@/components/Code.vue";
 
 const store = useForm();
 
@@ -73,6 +83,7 @@ const useFullheight = ref(false);
 const hideTitle = ref(false);
 const hideNavigation = ref(false);
 const focusOnMount = ref(false);
+const alignLeft = ref(false);
 
 const embedCode = computed(() => {
   return `
@@ -87,6 +98,7 @@ const embedCode = computed(() => {
   data-form="${store.form?.uuid}"
   data-hide-title="${hideTitle.value}"
   data-autofocus="${focusOnMount.value}"
+  data-alignleft="${alignLeft.value}"
   data-hide-navigation="${hideNavigation.value}"><\/script>
   `.trim();
 });
