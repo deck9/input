@@ -15,7 +15,7 @@ class PublicFormResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->uuid,
+            'uuid' => $this->uuid,
             'name' => $this->name,
             'description' => $this->description,
             'preview_image_path' => $this->preview_image_path,
