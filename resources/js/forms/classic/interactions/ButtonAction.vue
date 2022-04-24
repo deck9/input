@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "@vue/runtime-core";
+import { computed, ComputedRef, inject } from "@vue/runtime-core";
 import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
@@ -47,6 +47,7 @@ const props = defineProps<{
   block: PublicFormBlockModel;
   action: PublicFormBlockInteractionModel;
 }>();
+const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
 const buttonElement = ref<HTMLInputElement | null>(null);
 const inputType = props.block.type === "checkbox" ? "checkbox" : "radio";
@@ -65,7 +66,7 @@ const isChecked = computed<boolean>(() => {
 });
 
 onMounted(() => {
-  if (props.index === 0) {
+  if (!disableFocus?.value && props.index === 0) {
     buttonElement.value?.focus();
   }
 });

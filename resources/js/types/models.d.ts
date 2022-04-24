@@ -159,3 +159,9 @@ type FormBlockInteractionPayload = {
     payload: any;
     actionId: string;
 };
+
+type EmbedFlags = {
+    hideTitle: boolean;
+    hideNavigation: boolean;
+    focusOnMount: boolean;
+};

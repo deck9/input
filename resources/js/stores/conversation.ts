@@ -3,6 +3,7 @@ import {
     callCreateFormSession,
     callGetFormStoryboard,
     callSubmitForm,
+    callGetForm,
 } from "@/api/conversation";
 
 type ConversationStore = {
@@ -86,7 +87,8 @@ export const useConversation = defineStore("form", {
             if (typeof initialPayload !== "string") {
                 this.form = initialPayload as PublicFormModel;
             } else {
-                console.log("todo: get public form model from api");
+                const response = await callGetForm(id);
+                this.form = response.data;
             }
 
             const storyboardResponse = await callGetFormStoryboard(id);

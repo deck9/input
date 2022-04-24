@@ -30,12 +30,14 @@
 import FormButton from "./FormButton.vue";
 import { useConversation } from "@/stores/conversation";
 import { useActions } from "@/forms/classic/useActions";
-import { computed, onMounted } from "vue";
+import { computed, ComputedRef, inject, onMounted } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
 }>();
+
+const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const store = useConversation();
 
 const { actionComponent, actionValidator } = useActions(props.block);
@@ -47,7 +49,7 @@ const isValid = computed(() => {
 
 onMounted(() => {
   // we should focus submit button, if no action component is present
-  if (!actionComponent) {
+  if (!actionComponent && !disableFocus?.value) {
     submitButton.value?.focus();
   }
 });

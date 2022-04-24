@@ -1,5 +1,5 @@
 import "@css/app.css";
-import { createApp, h } from "vue";
+import { createApp, h, Suspense } from "vue";
 import { createPinia } from "pinia";
 import ClassicForm from "./classic/ClassicForm.vue";
 import { useRoutes } from "@/utils/useRoutes";
@@ -7,14 +7,35 @@ import { useRoutes } from "@/utils/useRoutes";
 const pinia = createPinia();
 const { route } = useRoutes();
 
+const formId = document.currentScript?.getAttribute("data-form");
+let mountElement: Element | string | null = document.querySelector(
+    `#${formId}-wrapper`
+);
+
+if (!mountElement) {
+    mountElement = "#input-classic";
+}
+
+const flags: EmbedFlags = {
+    hideTitle:
+        document.currentScript?.getAttribute("data-hide-title") === "true",
+    hideNavigation:
+        document.currentScript?.getAttribute("data-hide-navigation") === "true",
+    focusOnMount:
+        document.currentScript?.getAttribute("data-autofocus") === "true",
+};
+
 createApp({
     setup: () => {
         return () =>
-            h(ClassicForm, {
-                settings: window.iptSettings,
+            h(Suspense, null, {
+                default: h(ClassicForm, {
+                    settings: window.iptSettings ? window.iptSettings : formId,
+                    flags,
+                }),
             });
     },
 })
     .use(pinia)
     .mixin({ methods: { route } })
-    .mount("#input-classic");
+    .mount(mountElement);

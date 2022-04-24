@@ -19,6 +19,7 @@
             v-if="store.currentBlock && !store.isSubmitted"
             :block="store.currentBlock"
             :key="store.currentBlock.id"
+            :disableFocus="!props.flags.focusOnMount"
           />
           <FormSubmitSettings v-else-if="store.isSubmitted" />
         </transition>
@@ -40,13 +41,25 @@ import Navigator from "@/forms/classic/layout/Navigator.vue";
 import FooterNavigation from "@/forms/classic/layout/FooterNavigation.vue";
 import { useConversation } from "@/stores/conversation";
 import { useThemableColor } from "@/utils/useThemableColor";
+import { computed, onMounted, provide, ref } from "vue";
 
 const props = defineProps<{
   settings: PublicFormModel;
+  flags: EmbedFlags;
 }>();
 
+const isLoading = ref(true);
+const focusDisabled = computed(() => {
+  return isLoading.value && !props.flags.focusOnMount
+})
 const store = useConversation();
-store.initForm(props.settings);
+await store.initForm(props.settings);
+
+onMounted(() => {
+  isLoading.value = false;
+});
+
+provide("disableFocus", focusDisabled);
 
 const primaryColor = useThemableColor(store.form?.brand_color ?? "#1f2937");
 const contrastColor = useThemableColor(store.form?.contrast_color ?? "#f9fafb");
