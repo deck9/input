@@ -3,6 +3,29 @@ import { AxiosResponse } from "axios";
 import handler from "./handler";
 import { useRoutes } from "@/utils/useRoutes";
 
+export function callGetForm(
+    uuid: string
+): Promise<AxiosResponse<PublicFormModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { route } = useRoutes();
+
+            const resolvedRoute = route("api.public.forms.show", {
+                uuid,
+            });
+
+            if (resolvedRoute) {
+                const response = await handler.get(resolvedRoute);
+                resolve(response as AxiosResponse<PublicFormModel>);
+            } else {
+                reject("route not found");
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callGetFormStoryboard(
     uuid: string
 ): Promise<AxiosResponse<FormStoryboard>> {
