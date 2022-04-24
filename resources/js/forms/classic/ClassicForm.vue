@@ -1,11 +1,14 @@
 <template>
   <div
-    class="conversation-theme mx-auto flex min-h-full max-w-screen-sm flex-col justify-between"
+    class="conversation-theme flex min-h-full max-w-screen-sm flex-col justify-between"
+    :class="{
+      'mx-auto': !flags.alignLeft,
+    }"
   >
     <div>
-      <Header :form="store.form" />
+      <Header v-if="!flags.hideNavigation" :form="store.form" />
 
-      <div class="mx-auto h-full w-full max-w-screen-sm py-10">
+      <div class="h-full w-full max-w-screen-sm py-10">
         <transition
           mode="out-in"
           enter-from-class="opacity-0 translate-y-4"
@@ -19,7 +22,6 @@
             v-if="store.currentBlock && !store.isSubmitted"
             :block="store.currentBlock"
             :key="store.currentBlock.id"
-            :disableFocus="!props.flags.focusOnMount"
           />
           <FormSubmitSettings v-else-if="store.isSubmitted" />
         </transition>
@@ -27,7 +29,7 @@
     </div>
 
     <footer class="flex justify-between text-center text-xs">
-      <Navigator v-show="!store.isSubmitted" />
+      <Navigator v-show="!flags.hideNavigation && !store.isSubmitted" />
       <FooterNavigation :form="store.form" />
     </footer>
   </div>
@@ -50,16 +52,16 @@ const props = defineProps<{
 
 const isLoading = ref(true);
 const focusDisabled = computed(() => {
-  return isLoading.value && !props.flags.focusOnMount
-})
+  return isLoading.value && !props.flags.autofocus;
+});
+provide("disableFocus", focusDisabled);
+
 const store = useConversation();
 await store.initForm(props.settings);
 
 onMounted(() => {
   isLoading.value = false;
 });
-
-provide("disableFocus", focusDisabled);
 
 const primaryColor = useThemableColor(store.form?.brand_color ?? "#1f2937");
 const contrastColor = useThemableColor(store.form?.contrast_color ?? "#f9fafb");

@@ -78,7 +78,7 @@ import Code from "@/components/Code.vue";
 
 const store = useForm();
 
-const height = ref(360);
+const height = ref(520);
 const useFullheight = ref(false);
 const hideTitle = ref(false);
 const hideNavigation = ref(false);

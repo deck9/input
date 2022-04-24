@@ -21,8 +21,10 @@ const flags: EmbedFlags = {
         document.currentScript?.getAttribute("data-hide-title") === "true",
     hideNavigation:
         document.currentScript?.getAttribute("data-hide-navigation") === "true",
-    focusOnMount:
+    autofocus:
         document.currentScript?.getAttribute("data-autofocus") === "true",
+    alignLeft:
+        document.currentScript?.getAttribute("data-alignleft") === "true",
 };
 
 createApp({
