@@ -7,8 +7,8 @@
       {{ store.form?.eoc_text }}
     </p>
     <CallToActionButton
-      v-if="store.form?.cta_link"
-      :href="store.form?.cta_link"
+      v-if="store.callToActionUrl"
+      :href="store.callToActionUrl"
       :label="store.form?.cta_label ?? 'Close'"
     />
   </div>

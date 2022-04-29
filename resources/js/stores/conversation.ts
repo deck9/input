@@ -75,6 +75,23 @@ export const useConversation = defineStore("form", {
 
             return this.currentBlock.title || this.currentBlock.id;
         },
+
+        callToActionUrl(state): string | null {
+            if (!state.form || !state.session) {
+                return null;
+            }
+
+            let queryParams = "";
+
+            if (Object.keys(state.session.params).length > 0) {
+                const params = new URLSearchParams(
+                    state.session.params
+                ).toString();
+                queryParams = `?${params}`;
+            }
+
+            return state.form?.cta_link + queryParams;
+        },
     },
 
     actions: {
