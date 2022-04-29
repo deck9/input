@@ -99,7 +99,7 @@ const embedCode = computed(() => {
   data-hide-title="${hideTitle.value}"
   data-autofocus="${focusOnMount.value}"
   data-alignleft="${alignLeft.value}"
-  data-hide-navigation="${hideNavigation.value}"><\/script>
+  data-hide-navigation="${hideNavigation.value}" defer async><\/script>
   `.trim();
 });
 </script>
