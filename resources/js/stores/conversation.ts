@@ -78,7 +78,10 @@ export const useConversation = defineStore("form", {
     },
 
     actions: {
-        async initForm(initialPayload: string | PublicFormModel) {
+        async initForm(
+            initialPayload: string | PublicFormModel,
+            params: Record<string, string>
+        ) {
             const id =
                 typeof initialPayload === "string"
                     ? initialPayload
@@ -92,7 +95,7 @@ export const useConversation = defineStore("form", {
             }
 
             const storyboardResponse = await callGetFormStoryboard(id);
-            const formSessionResponse = await callCreateFormSession(id);
+            const formSessionResponse = await callCreateFormSession(id, params);
 
             this.session = formSessionResponse.data;
             this.storyboard = storyboardResponse.data.blocks;

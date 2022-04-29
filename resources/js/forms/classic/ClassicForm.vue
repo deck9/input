@@ -56,8 +56,13 @@ const focusDisabled = computed(() => {
 });
 provide("disableFocus", focusDisabled);
 
+const params = {};
+new URLSearchParams(window.location.search).forEach((value, key) => {
+  params[key] = value;
+});
+
 const store = useConversation();
-await store.initForm(props.settings);
+await store.initForm(props.settings, params);
 
 onMounted(() => {
   isLoading.value = false;
