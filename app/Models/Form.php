@@ -46,6 +46,7 @@ class Form extends Model
     protected $casts = [
         'is_notification_via_mail' => 'boolean',
         'show_cta_link' => 'boolean',
+        'cta_append_params' => 'boolean',
         'show_social_links' => 'boolean',
         'show_privacy_link' => 'boolean',
         'has_data_privacy' => 'boolean',

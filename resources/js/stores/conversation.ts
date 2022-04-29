@@ -75,10 +75,30 @@ export const useConversation = defineStore("form", {
 
             return this.currentBlock.title || this.currentBlock.id;
         },
+
+        callToActionUrl(state): string | null {
+            if (!state.form || !state.session) {
+                return null;
+            }
+
+            let queryParams = "";
+
+            if (Object.keys(state.session.params).length > 0) {
+                const params = new URLSearchParams(
+                    state.session.params
+                ).toString();
+                queryParams = `?${params}`;
+            }
+
+            return state.form?.cta_link + queryParams;
+        },
     },
 
     actions: {
-        async initForm(initialPayload: string | PublicFormModel) {
+        async initForm(
+            initialPayload: string | PublicFormModel,
+            params: Record<string, string>
+        ) {
             const id =
                 typeof initialPayload === "string"
                     ? initialPayload
@@ -92,7 +112,7 @@ export const useConversation = defineStore("form", {
             }
 
             const storyboardResponse = await callGetFormStoryboard(id);
-            const formSessionResponse = await callCreateFormSession(id);
+            const formSessionResponse = await callCreateFormSession(id, params);
 
             this.session = formSessionResponse.data;
             this.storyboard = storyboardResponse.data.blocks;

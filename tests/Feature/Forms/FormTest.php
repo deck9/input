@@ -118,6 +118,7 @@ class FormTest extends TestCase
             'cta_link' => 'https://philreinking.de',
             'cta_label' => 'Proceed',
             'show_cta_link' => true,
+            'cta_append_params' => true,
 
             // GDPR Related Information
             'has_data_privacy' => true,
@@ -163,7 +164,7 @@ class FormTest extends TestCase
         $this->assertEquals('https://philreinking.de', $form->cta_link);
         $this->assertEquals('Proceed', $form->cta_label);
         $this->assertTrue($form->show_cta_link);
-
+        $this->assertTrue($form->cta_append_params);
 
         $this->assertEquals('https://philreinking.de/privacy', $form->privacy_link);
         $this->assertEquals('https://philreinking.de/legal-notice', $form->legal_notice_link);

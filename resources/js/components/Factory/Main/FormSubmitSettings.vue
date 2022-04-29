@@ -57,6 +57,15 @@
           <D9Label label="Link" />
           <D9Input type="url" block :disabled="!isCtaOn" v-model="ctaLink" />
         </div>
+        <div class="mb-4 flex justify-between">
+          <D9Label label="Append Incoming Query Parameters" />
+          <D9Switch
+            label="Append Incoming Query Parameters"
+            v-model="ctaAppendParams"
+            onLabel="yes"
+            offLabel="no"
+          />
+        </div>
       </div>
     </div>
   </form>
@@ -88,14 +97,18 @@ const submitWebhook = ref(store.form?.submit_webhook);
 const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);
 const ctaLink = ref(store.form?.cta_link);
+const ctaAppendParams = ref(store.form?.cta_append_params);
 
 const saveFormSubmitSettings = debounce(async () => {
   await store.updateForm({
     eoc_headline: outroHeadline.value,
     eoc_text: outroMessage.value,
+
     show_cta_link: isCtaOn.value,
     cta_label: ctaLabel.value,
     cta_link: ctaLink.value,
+    cta_append_params: ctaAppendParams.value,
+
     submit_method: submitMethod.value?.value,
     submit_webhook: submitWebhook.value,
   });
@@ -108,6 +121,7 @@ watch(
     isCtaOn,
     ctaLabel,
     ctaLink,
+    ctaAppendParams,
     submitMethod,
     submitWebhook,
   ],

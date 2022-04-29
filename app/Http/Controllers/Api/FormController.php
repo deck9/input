@@ -50,6 +50,7 @@ class FormController extends Controller
                 'interaction_text_color',
                 'cta_link',
                 'cta_label',
+                'cta_append_params',
                 'eoc_headline',
                 'eoc_text',
                 'twitter',

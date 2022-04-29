@@ -4,7 +4,7 @@
       <Storyboard class="w-full max-w-sm xl:max-w-lg" />
       <div class="w-full overflow-y-auto">
         <Workbench v-if="workbench.block" :key="workbench.block.id" />
-        <FinalBlockSettings v-else-if="workbench.isEditingFinalBlock" />
+        <FormSubmitSettings v-else-if="workbench.isEditingFinalBlock" />
       </div>
     </div>
   </app-layout>
@@ -14,7 +14,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Storyboard from "@/components/Factory/Sidebar/Storyboard.vue";
 import Workbench from "@/components/Factory/Main/Workbench.vue";
-import FinalBlockSettings from "@/components/Factory/Main/FinalBlockSettings.vue";
+import FormSubmitSettings from "@/components/Factory/Main/FormSubmitSettings.vue";
 import { useForm, useWorkbench } from "@/stores";
 import { onUnmounted, onMounted } from "@vue/runtime-core";
 

@@ -27,6 +27,7 @@ class PublicFormResource extends JsonResource
             'eoc_headline' => $this->eoc_headline,
             'cta_label' => $this->cta_label,
             'cta_link' => $this->cta_link,
+            'cta_append_params' => $this->cta_append_params,
             'linkedin' => $this->linkedin,
             'github' => $this->github,
             'instagram' => $this->instagram,
