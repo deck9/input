@@ -9,14 +9,25 @@
       :options="types"
       icon="chevron-right"
     />
+
+    <AdvancedSettings>
+      <div>
+        <D9Label
+          label="Input Name"
+          description="This name is used when submitting your form through integrations and in the export."
+        />
+        <D9Input v-model="title" block />
+      </div>
+    </AdvancedSettings>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Select } from "@deck9/ui";
+import { D9Select, D9Label, D9Input } from "@deck9/ui";
 import { ref, Ref, watch } from "vue";
 import { useBlockTypes } from "../utils/useBlockTypes";
+import AdvancedSettings from "@/components/AdvancedSettings.vue";
 
 const workbench = useWorkbench();
 
@@ -34,6 +45,16 @@ watch(selected, (newValue) => {
   if (newValue?.value) {
     workbench.updateBlock({
       type: newValue.value,
+    });
+  }
+});
+
+const title = ref(workbench.block?.title || "");
+
+watch(title, (newValue) => {
+  if (newValue) {
+    workbench.updateBlock({
+      title: newValue,
     });
   }
 });
