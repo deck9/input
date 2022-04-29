@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Preview Page</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+
+    <body>
+        <div class="mx-auto max-w-screen-lg py-6">
+            <h1 class="text-gray-800 text-xl font-medium">A website</h1>
+            <div class="bg-gray-100 mt-4 h-12 rounded"></div>
+
+            <div class="mt-4 grid h-48 grid-cols-4 gap-4">
+                <div class="bg-gray-100 rounded"></div>
+                <div class="bg-gray-100 col-span-3 rounded"></div>
+            </div>
+
+            <!-- Place this wherever you want to embed your form -->
+            <div
+                id="jR-wrapper"
+                class="ipt"
+                style="height: 520px; width: 100%"
+            ></div>
+
+            <!-- Place this before the closing body tag -->
+            <script
+                src="http://localhost:8500/js/classic.js"
+                data-form="jR"
+                data-hide-title="true"
+                data-autofocus="false"
+                data-alignleft="true"
+                data-hide-navigation="true"
+            ></script>
+
+            <div class="mt-4 grid h-64 grid-cols-4 gap-4">
+                <div class="bg-gray-100 col-span-2 rounded"></div>
+                <div class="bg-gray-100 rounded"></div>
+                <div class="bg-gray-100 rounded"></div>
+            </div>
+
+            <div class="bg-gray-100 mt-4 h-24 rounded"></div>
+        </div>
+    </body>
+</html>

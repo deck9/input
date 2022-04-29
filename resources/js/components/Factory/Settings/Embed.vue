@@ -5,7 +5,13 @@
     </div>
 
     <form>
-      <h2 class="mb-4 text-base font-bold">Options</h2>
+      <h2 class="mb-6 text-base font-bold">
+        Options
+        <small class="ml-1"
+          ><a class="text-blue-400 underline hover:text-blue-500" href="#"
+            >Preview <D9Icon name="circle-play" /></a
+        ></small>
+      </h2>
 
       <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
         <D9Label label="Use full height" />
@@ -72,7 +78,7 @@
 /* eslint-disable no-useless-escape */
 
 import { useForm } from "@/stores/form";
-import { D9Label, D9Input, D9Switch } from "@deck9/ui";
+import { D9Label, D9Input, D9Switch, D9Icon } from "@deck9/ui";
 import { computed, ref } from "vue";
 import Code from "@/components/Code.vue";
 
