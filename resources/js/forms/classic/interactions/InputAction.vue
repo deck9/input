@@ -3,7 +3,7 @@
     <label class="sr-only block" :for="action.id"> {{ action.label }}</label>
     <input
       type="text"
-      class="block w-full max-w-xs rounded border border-grey-300 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+      class="block w-full max-w-xs rounded border border-grey-300 px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
       :name="block.id"
       :id="action.id"
       :placeholder="action.label || 'Enter text'"

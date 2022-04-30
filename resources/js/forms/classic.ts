@@ -1,4 +1,4 @@
-import "@css/app.css";
+import "@css/embed.css";
 import { createApp, h, Suspense } from "vue";
 import { createPinia } from "pinia";
 import ClassicForm from "./classic/ClassicForm.vue";

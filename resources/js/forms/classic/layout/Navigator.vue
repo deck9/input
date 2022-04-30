@@ -5,7 +5,7 @@
   >
     <button
       type="button"
-      class="border-r border-grey-100 py-1 hover:bg-grey-100"
+      class="inline-flex items-center justify-center border-r border-grey-100 py-1 hover:bg-grey-100"
       @click="store.back()"
     >
       <D9Icon icon="chevron-left" />
@@ -16,7 +16,7 @@
     </span>
     <button
       type="button"
-      class="border-l border-grey-100 py-1 hover:bg-grey-100"
+      class="inline-flex items-center justify-center border-l border-grey-100 py-1 hover:bg-grey-100"
       @click="!store.isLastBlock ? store.next() : false"
     >
       <D9Icon icon="chevron-right" />

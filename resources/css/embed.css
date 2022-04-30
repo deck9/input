@@ -1,5 +1,5 @@
 /* TAILWIND */
-@import "tailwindcss/src/css/preflight.css";
+@import "./_embedded-preflight.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
@@ -11,6 +11,7 @@
 @import "tailwindcss/utilities";
 
 .conversation-theme {
+    /* --color-primary: 236, 72, 153; */
     --color-primary: 0, 0, 0;
     --color-secondary: 2, 10, 5;
 }
