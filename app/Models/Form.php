@@ -97,11 +97,6 @@ class Form extends Model
         return 'uuid';
     }
 
-    public function scopeWithUuid($query, $value)
-    {
-        return $query->where('uuid', $value);
-    }
-
     public function scopePublished($query)
     {
         return $query->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());

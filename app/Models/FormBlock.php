@@ -63,11 +63,6 @@ class FormBlock extends Model
         });
     }
 
-    public function scopeWithUuid($query, $value)
-    {
-        return $query->where('uuid', $value);
-    }
-
     public function scopeOnlyInteractive($query)
     {
         return $query->whereNotIn('type', [
@@ -178,7 +173,7 @@ class FormBlock extends Model
             collect($data)->each(fn ($chunk) => $this->submit($session, $chunk));
         } else {
             $interaction = $this->formBlockInteractions()
-                ->where('uuid', $data['actionId'])
+                ->withUuid($data['actionId'])
                 ->firstOrFail();
 
             return $session->formSessionResponses()->create([

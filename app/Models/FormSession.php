@@ -60,7 +60,7 @@ class FormSession extends Model
     public function submit($payload)
     {
         foreach ($payload as $blockUuid => $blockPayload) {
-            $block = FormBlock::where('uuid', $blockUuid)->firstOrFail();
+            $block = FormBlock::withUuid($blockUuid)->firstOrFail();
             $block->submit($this, $blockPayload);
         }
 

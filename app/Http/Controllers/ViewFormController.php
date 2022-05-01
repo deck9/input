@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class ViewFormController extends Controller
 {
-    public function show(Request $request, $uuid)
+    public function show($uuid)
     {
-        $form = Form::where('uuid', $uuid)->firstOrFail();
+        $form = Form::withUuid($uuid)->firstOrFail();
 
         return response()->view('form', [
             'form' => $form,
