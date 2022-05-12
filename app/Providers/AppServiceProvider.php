@@ -29,7 +29,12 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         Builder::macro('withUuid', function ($id) {
-            return $this->where(DB::raw('BINARY `uuid`'), $id);
+            // if we are in a test environment using sqlite, we cannot use BINARY operator
+            if (config('database.default') === 'sqlite') {
+                return $this->where('uuid', '=', $id);
+            } else {
+                return $this->where(DB::raw('BINARY `uuid`'), $id);
+            }
         });
     }
 }

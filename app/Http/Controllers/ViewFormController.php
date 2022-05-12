@@ -11,6 +11,14 @@ class ViewFormController extends Controller
     {
         $form = Form::withUuid($uuid)->firstOrFail();
 
+        if (!$form->is_published && !$request->user()) {
+            abort(404);
+        }
+
+        if (!$form->is_published && $request->user()->id !== $form->user_id) {
+            abort(404);
+        }
+
         return response()->view('form', [
             'form' => $form,
             'flags' => [
