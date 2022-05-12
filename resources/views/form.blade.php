@@ -41,14 +41,33 @@
         <script lang="js">
             {!! $form->getJavascriptConfig() !!}
         </script>
-        <script src="{{ mix('js/classic.js') }}" defer></script>
+
+        <script src="{{ mix('js/classic.js') }}" data-hide-title="{{ $flags['hideTitle'] ? 'true' : 'false' }}"
+                data-autofocus="{{ $flags['focusOnMount'] ? 'true' : 'false' }}"
+                data-alignleft="{{ $flags['alignLeft'] ? 'true' : 'false' }}"
+                data-hide-navigation="{{ $flags['hideNavigation'] ? 'true' : 'false' }}" defer></script>
 
         <style>
+            *,
+            ::before,
+            ::after {
+                box-sizing: border-box;
+                border-width: 0;
+                border-style: solid;
+            }
+
+            ::before,
+            ::after {
+                --tw-content: '';
+            }
+
             html {
                 height: 100%;
             }
 
             body {
+                margin: 0;
+                line-height: inherit;
                 height: 100vh;
             }
         </style>
@@ -67,7 +86,8 @@
         @endif
         @endauth
 
-        <div class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 px-4 md:px-0 flex w-full">
+        <div
+             class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6  flex w-full {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}">
             <div class="w-full" id="input-classic"></div>
         </div>
     </body>

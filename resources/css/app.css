@@ -1,4 +1,7 @@
 /* TAILWIND */
+
+/** Preflight is disabled in tailwind.config to create different build for embed script.
+    Therefore we are importing it manually here */
 @import "tailwindcss/src/css/preflight.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";

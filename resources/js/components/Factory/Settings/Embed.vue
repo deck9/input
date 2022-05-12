@@ -1,5 +1,20 @@
 <template>
   <div>
+    <div class="mb-4 grid grid-cols-2 gap-x-4">
+      <EmbedTypeButton
+        label="Native"
+        :is-active="embedType === 'native'"
+        @click="embedType = 'native'"
+        icon="/images/embeds/native.svg"
+      />
+      <EmbedTypeButton
+        label="iFrame"
+        :is-active="embedType === 'iframe'"
+        @click="embedType = 'iframe'"
+        icon="/images/embeds/iframe.svg"
+      />
+    </div>
+
     <div class="mb-4">
       <Code class="w-full" :code="embedCode" />
     </div>
@@ -70,13 +85,17 @@
 
 <script setup lang="ts">
 /* eslint-disable no-useless-escape */
-
 import { useForm } from "@/stores/form";
 import { D9Label, D9Input, D9Switch } from "@deck9/ui";
 import { computed, ref } from "vue";
 import Code from "@/components/Code.vue";
+import EmbedTypeButton from "@/components/Factory/Settings/partials/EmbedTypeButton.vue";
 
 const store = useForm();
+
+type EmbedType = "native" | "iframe";
+
+const embedType = ref<EmbedType>("native");
 
 const height = ref(520);
 const useFullheight = ref(false);
@@ -86,11 +105,31 @@ const focusOnMount = ref(false);
 const alignLeft = ref(false);
 
 const embedCode = computed(() => {
-  return `
+  const embedParams = new URLSearchParams(
+    Object.fromEntries(
+      [
+        ["iframe", "1"],
+        ["hideTitle", hideTitle.value ? "1" : undefined],
+        ["hideNavigation", hideNavigation.value ? "1" : undefined],
+        ["focusOnMount", focusOnMount.value ? "1" : "0"],
+        ["alignLeft", alignLeft.value ? "1" : undefined],
+      ].filter((item) => item[1])
+    )
+  ).toString();
+
+  const embedUrl = new URL(
+    `${window.location.origin}/${store.form?.uuid}${
+      embedParams.length > 0 ? "?" + embedParams : ""
+    }`
+  );
+
+  switch (embedType.value) {
+    case "native":
+      return `
 <!-- Place this wherever you want to embed your form -->
 <div id="${store.form?.uuid}-wrapper" class="ipt" style="height: ${
-    useFullheight.value === true ? "100%" : height.value + "px"
-  }; width: 100%;">
+        useFullheight.value === true ? "100%" : height.value + "px"
+      }; width: 100%;">
 </div>
 
 <!-- Place this before the closing body tag -->
@@ -99,7 +138,22 @@ const embedCode = computed(() => {
   data-hide-title="${hideTitle.value}"
   data-autofocus="${focusOnMount.value}"
   data-alignleft="${alignLeft.value}"
-  data-hide-navigation="${hideNavigation.value}" defer async><\/script>
-  `.trim();
+  data-hide-navigation="${hideNavigation.value}" async><\/script>
+      `.trim();
+
+    case "iframe":
+      return `
+<!-- Place this wherever you want to embed your form -->
+<iframe src="${embedUrl}"
+  width="100%"
+  height="${useFullheight.value === true ? "100%" : height.value + "px"}"
+  frameborder="0"
+  marginheight="0"
+  marginwidth="0"></iframe>
+      `.trim();
+
+    default:
+      return "-";
+  }
 });
 </script>

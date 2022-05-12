@@ -6,7 +6,7 @@
     }"
   >
     <div>
-      <Header v-if="!flags.hideNavigation" :form="store.form" />
+      <Header v-if="!flags.hideTitle" :form="store.form" />
 
       <div class="h-full w-full max-w-screen-sm py-10">
         <transition
@@ -57,7 +57,18 @@ const focusDisabled = computed(() => {
 provide("disableFocus", focusDisabled);
 
 const params = {};
+const blacklist = [
+  "iframe",
+  "hideTitle",
+  "hideNavigation",
+  "focusOnMount",
+  "alignLeft",
+];
 new URLSearchParams(window.location.search).forEach((value, key) => {
+  if (blacklist.includes(key)) {
+    return;
+  }
+
   params[key] = value;
 });
 

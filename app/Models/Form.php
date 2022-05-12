@@ -6,15 +6,16 @@ use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
-use App\Models\Traits\TemplateImports;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\Traits\TemplateImports;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\PublicFormResource;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Form extends Model
@@ -291,7 +292,7 @@ class Form extends Model
 
     public function getJavascriptConfig()
     {
-        $settings = $this->toJson();
+        $settings = json_encode(PublicFormResource::make($this)->resolve());
 
         $output = "window.iptSettings = window.iptSettings || [];";
         $output .= "window.iptSettings = ${settings}";
