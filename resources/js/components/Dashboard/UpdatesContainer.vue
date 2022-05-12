@@ -5,7 +5,7 @@
     </div>
 
     <div
-      class="grid grid-cols-2 gap-y-4 space-x-2 md:grid-cols-3 lg:block lg:space-x-0 lg:space-y-4"
+      class="grid gap-y-4 space-x-2 sm:grid-cols-2 lg:block lg:space-x-0 lg:space-y-4"
     >
       <div class="rounded-lg bg-grey-200 p-4" v-if="posts.length === 0">
         <D9Skeleton class="text-grey-300" footer />
@@ -26,7 +26,7 @@ const posts = ref<PostOrPage[]>([]);
 
 onMounted(async () => {
   const response = await api.posts.browse({
-    limit: 3,
+    limit: 2,
     filter: "tag:input-dashboard",
   });
   setTimeout(() => {
