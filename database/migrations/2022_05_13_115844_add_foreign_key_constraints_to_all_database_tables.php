@@ -17,12 +17,12 @@ return new class extends Migration
 
         /** Change index keys to BIGINT */
         Schema::table('forms', function (Blueprint $table) {
-            $table->bigInteger('id')->unsigned()->change();
+            $table->bigIncrements('id')->unsigned()->change();
             $table->bigInteger('user_id')->unsigned()->change();
         });
 
         Schema::table('form_blocks', function (Blueprint $table) {
-            $table->bigInteger('id')->unsigned()->change();
+            $table->bigIncrements('id')->unsigned()->change();
             $table->bigInteger('form_id')->unsigned()->change();
         });
         Schema::table('form_sessions', function (Blueprint $table) {
@@ -30,7 +30,7 @@ return new class extends Migration
         });
 
         Schema::table('form_session_responses', function (Blueprint $table) {
-            $table->bigInteger('id')->unsigned()->change();
+            $table->bigIncrements('id')->unsigned()->change();
             $table->bigInteger('form_block_id')->unsigned()->change();
             $table->bigInteger('form_block_interaction_id')->unsigned()->change();
             $table->bigInteger('form_session_id')->unsigned()->change();
