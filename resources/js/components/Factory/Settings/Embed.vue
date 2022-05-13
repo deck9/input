@@ -2,16 +2,16 @@
   <div>
     <div class="mb-4 grid grid-cols-2 gap-x-4">
       <EmbedTypeButton
-        label="Native"
-        :is-active="embedType === 'native'"
-        @click="embedType = 'native'"
-        icon="/images/embeds/native.svg"
-      />
-      <EmbedTypeButton
         label="iFrame"
         :is-active="embedType === 'iframe'"
         @click="embedType = 'iframe'"
         icon="/images/embeds/iframe.svg"
+      />
+      <EmbedTypeButton
+        label="Native (Experimental)"
+        :is-active="embedType === 'native'"
+        @click="embedType = 'native'"
+        icon="/images/embeds/native.svg"
       />
     </div>
 
@@ -95,7 +95,7 @@ const store = useForm();
 
 type EmbedType = "native" | "iframe";
 
-const embedType = ref<EmbedType>("native");
+const embedType = ref<EmbedType>("iframe");
 
 const height = ref(520);
 const useFullheight = ref(false);
