@@ -1,6 +1,5 @@
 /* eslint-disable no-async-promise-executor */
 import { AxiosResponse } from "axios";
-import { request } from "http";
 import handler from "./handler";
 
 export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
@@ -210,6 +209,21 @@ export function callImportFormTemplate(
                         mapping: Record<string, string>;
                     }>
                 );
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callPurgeResults(form: FormModel): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.purge-results", { uuid: form.uuid })
+            );
+            if (response.status === 204) {
+                resolve(response as AxiosResponse);
             }
         } catch (error) {
             reject(error);

@@ -1,20 +1,31 @@
 <template>
   <app-layout title="Results">
     <div class="w-full max-w-5xl px-4 pb-8 text-left">
-      <div class="flex w-full items-end justify-between">
+      <div v-if="store.form" class="flex w-full items-end justify-between">
         <FormSummary
           class="mt-6"
-          v-bind="{ form, blocks: store.blocks || undefined }"
+          v-bind="{ form: store.form, blocks: store.blocks || undefined }"
         />
-        <D9Button
-          label="Download Results"
-          icon="cloud-download"
-          color="dark"
-          @click="downloadResultsExport"
-        />
+        <div class="space-x-2">
+          <D9Button
+            label="Purge Results"
+            icon="trash"
+            color="light"
+            @click="purgeResults"
+          />
+          <D9Button
+            label="Download Results"
+            icon="cloud-download"
+            color="dark"
+            @click="downloadResultsExport"
+          />
+        </div>
       </div>
 
-      <div class="mt-4 grid gap-2 md:grid-cols-2" v-if="form.total_sessions">
+      <div
+        class="mt-4 grid gap-2 md:grid-cols-2"
+        v-if="store.form?.total_sessions && store.form?.total_sessions > 0"
+      >
         <BlockResultItem
           :block="block"
           v-for="block in store.blocks"
@@ -40,6 +51,7 @@ import FormSummary from "@/components/Factory/FormSummary.vue";
 import BlockResultItem from "@/components/Factory/Results/BlockResultItem.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import { D9Button } from "@deck9/ui";
+import { callPurgeResults } from "@/api/forms";
 
 const props = defineProps<{
   form: FormModel;
@@ -61,6 +73,17 @@ const downloadResultsExport = () => {
       "_blank"
     )
     ?.focus();
+};
+
+const purgeResults = async () => {
+  let confirm = window.confirm(
+    "Are you sure you want to delete all collected data for this form? This actions is not reversible"
+  );
+
+  if (confirm) {
+    await callPurgeResults(props.form);
+    await store.refreshForm(true);
+  }
 };
 
 store.$patch({

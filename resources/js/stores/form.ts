@@ -52,14 +52,15 @@ export const useForm = defineStore("form", {
             this.blocks = null;
         },
 
-        async refreshForm() {
+        async refreshForm(includeResults = false) {
             if (this.form) {
                 const response = await callGetForm(this.form);
+                this.form = null;
                 this.form = response.data;
             }
 
             if (this.blocks) {
-                await this.getBlocks();
+                await this.getBlocks(includeResults);
             }
 
             return Promise.resolve(true);
