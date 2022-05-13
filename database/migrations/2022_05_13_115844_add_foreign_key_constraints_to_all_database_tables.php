@@ -38,11 +38,11 @@ return new class extends Migration
 
         /** Remove unused columns */
         Schema::table('form_block_interactions', function (Blueprint $table) {
-            // $table->dropColumn('has_validation');
+            $table->dropColumn('has_validation');
         });
 
         Schema::table('form_block_interactions', function (Blueprint $table) {
-            // $table->dropColumn('deleted_at');
+            $table->dropColumn('deleted_at');
         });
 
         /** Add FOREIGN KEYS */
