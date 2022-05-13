@@ -1,11 +1,17 @@
 <template>
   <div>
-    <div class="mb-4 grid grid-cols-2 gap-x-4">
+    <div class="mb-4 grid grid-cols-3 gap-x-4">
       <EmbedTypeButton
         label="iFrame"
         :is-active="embedType === 'iframe'"
         @click="embedType = 'iframe'"
         icon="/images/embeds/iframe.svg"
+      />
+      <EmbedTypeButton
+        label="Embed Link"
+        :is-active="embedType === 'link'"
+        @click="embedType = 'link'"
+        icon="/images/embeds/link.svg"
       />
       <EmbedTypeButton
         label="Native (Experimental)"
@@ -22,7 +28,10 @@
     <form>
       <h2 class="mb-4 text-base font-bold">Options</h2>
 
-      <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
+      <div
+        v-if="embedType !== 'link'"
+        class="mb-3 flex justify-between border-b border-grey-200 pb-3"
+      >
         <D9Label label="Use full height" />
         <D9Switch
           label=""
@@ -32,7 +41,10 @@
         />
       </div>
 
-      <div v-if="!useFullheight" class="mb-3 border-b border-grey-200 pb-3">
+      <div
+        v-if="!useFullheight && embedType !== 'link'"
+        class="mb-3 border-b border-grey-200 pb-3"
+      >
         <D9Label class="mb-1" label="Custom Height" /><br />
         <span class="relative inline-block">
           <D9Input v-model="height" />
@@ -93,7 +105,7 @@ import EmbedTypeButton from "@/components/Factory/Settings/partials/EmbedTypeBut
 
 const store = useForm();
 
-type EmbedType = "native" | "iframe";
+type EmbedType = "native" | "iframe" | "link";
 
 const embedType = ref<EmbedType>("iframe");
 
@@ -151,6 +163,9 @@ const embedCode = computed(() => {
   marginheight="0"
   marginwidth="0"></iframe>
       `.trim();
+
+    case "link":
+      return `${embedUrl}`.trim();
 
     default:
       return "-";
