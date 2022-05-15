@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Form;
-use App\NameFactory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -12,7 +11,7 @@ class FormController extends Controller
     public function create(Request $request)
     {
         $form = Form::create([
-            'name' => NameFactory::generate(),
+            'name' => 'A new form',
             'user_id' => $request->user()->id,
             'has_data_privacy' => false,
             'brand_color' => Form::DEFAULT_BRAND_COLOR,
