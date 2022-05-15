@@ -27,7 +27,7 @@ export const useConversation = defineStore("form", {
             current: 0,
             payload: {},
             isProcessing: false,
-            isSubmitted: true,
+            isSubmitted: false,
         };
     },
 
