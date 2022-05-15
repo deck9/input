@@ -199,7 +199,9 @@ export const useForm = defineStore("form", {
                         return item.id === block.id;
                     });
 
-                    if (index) this.blocks?.splice(index, 1);
+                    if (typeof index !== "undefined" && index !== -1) {
+                        this.blocks?.splice(index, 1);
+                    }
                 }
             } catch (error) {
                 console.warn(error);
