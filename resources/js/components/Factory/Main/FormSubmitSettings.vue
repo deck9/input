@@ -46,7 +46,7 @@
         :class="
           isCtaOn
             ? 'opacity-100'
-            : 'pointer-events-none scale-y-0 opacity-0 blur-sm'
+            : 'pointer-events-none h-0 scale-y-0 opacity-0 blur-sm'
         "
       >
         <div class="mb-4">
@@ -65,6 +65,58 @@
             onLabel="yes"
             offLabel="no"
           />
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-2 flex items-center text-base font-bold">
+        <span class="inline-block">Social Links</span>
+        <D9Switch class="ml-2" label="" v-model="isSocialOn"></D9Switch>
+      </h2>
+
+      <div
+        class="origin-top transition-all duration-200"
+        :class="
+          isSocialOn
+            ? 'opacity-100'
+            : 'pointer-events-none h-0 scale-y-0 opacity-0 blur-sm'
+        "
+      >
+        <div class="mb-4">
+          <D9Label label="Instagram" />
+          <D9Input
+            type="url"
+            block
+            :disabled="!isSocialOn"
+            v-model="instagram"
+          />
+        </div>
+        <div class="mb-4">
+          <D9Label label="Facebook" />
+          <D9Input
+            type="url"
+            block
+            :disabled="!isSocialOn"
+            v-model="facebook"
+          />
+        </div>
+        <div class="mb-4">
+          <D9Label label="Twitter" />
+          <D9Input type="url" block :disabled="!isSocialOn" v-model="twitter" />
+        </div>
+        <div class="mb-4">
+          <D9Label label="LinkedIn" />
+          <D9Input
+            type="url"
+            block
+            :disabled="!isSocialOn"
+            v-model="linkedin"
+          />
+        </div>
+        <div class="mb-4">
+          <D9Label label="Github" />
+          <D9Input type="url" block :disabled="!isSocialOn" v-model="github" />
         </div>
       </div>
     </div>
@@ -99,6 +151,13 @@ const ctaLabel = ref(store.form?.cta_label);
 const ctaLink = ref(store.form?.cta_link);
 const ctaAppendParams = ref(store.form?.cta_append_params);
 
+const isSocialOn = ref(store.form?.show_social_links ? true : false);
+const instagram = ref(store?.form?.instagram);
+const github = ref(store?.form?.github);
+const linkedin = ref(store?.form?.linkedin);
+const facebook = ref(store?.form?.facebook);
+const twitter = ref(store?.form?.twitter);
+
 const saveFormSubmitSettings = debounce(async () => {
   await store.updateForm({
     eoc_headline: outroHeadline.value,
@@ -108,6 +167,13 @@ const saveFormSubmitSettings = debounce(async () => {
     cta_label: ctaLabel.value,
     cta_link: ctaLink.value,
     cta_append_params: ctaAppendParams.value,
+
+    show_social_links: isSocialOn.value,
+    instagram: instagram.value,
+    github: github.value,
+    linkedin: linkedin.value,
+    facebook: facebook.value,
+    twitter: twitter.value,
 
     submit_method: submitMethod.value?.value,
     submit_webhook: submitWebhook.value,
@@ -124,6 +190,12 @@ watch(
     ctaAppendParams,
     submitMethod,
     submitWebhook,
+    isSocialOn,
+    instagram,
+    github,
+    linkedin,
+    facebook,
+    twitter,
   ],
   saveFormSubmitSettings
 );

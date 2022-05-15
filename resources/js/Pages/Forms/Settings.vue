@@ -67,7 +67,6 @@ import Delete from "@/components/Factory/Settings/Delete.vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
-import SocialAccounts from "@/components/Factory/Settings/SocialAccounts.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import Embed from "@/components/Factory/Settings/Embed.vue";
 import { useForm } from "@/stores";
@@ -88,7 +87,6 @@ const navigation: Array<{
   { name: "Options", component: Options, slug: "options" },
   { name: "Privacy", component: Privacy, slug: "privacy" },
   { name: "Appearance", component: Appearance, slug: "appearance" },
-  { name: "Social Accounts", component: SocialAccounts, slug: "accounts" },
   { name: "Embed", component: Embed, slug: "embeds" },
   {
     name: "Template Export / Import",
