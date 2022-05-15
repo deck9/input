@@ -10,6 +10,7 @@
 
     <a
       :href="href"
+      :target="target"
       class="block px-4 py-2 text-sm leading-5 text-grey-700 transition hover:bg-grey-100 focus:bg-grey-100 focus:outline-none"
       v-else-if="as == 'a'"
     >
@@ -34,6 +35,6 @@ export default defineComponent({
   components: {
     Link,
   },
-  props: ["href", "as"],
+  props: ["href", "as", "target"],
 });
 </script>

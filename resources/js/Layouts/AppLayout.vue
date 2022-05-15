@@ -79,6 +79,13 @@
                       >API Tokens</jet-dropdown-link
                     >
 
+                    <jet-dropdown-link
+                      as="a"
+                      href="https://help.getinput.co/"
+                      target="_blank"
+                      >Help Center</jet-dropdown-link
+                    >
+
                     <div class="border-t border-grey-100"></div>
 
                     <!-- Authentication -->
