@@ -11,12 +11,15 @@
       :href="store.callToActionUrl"
       :label="store.form?.cta_label ?? 'Close'"
     />
+
+    <SocialLinks v-if="store.form?.show_social_links" class="mt-8" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import CallToActionButton from "./CallToActionButton.vue";
 import { useConversation } from "@/stores/conversation";
+import SocialLinks from "@/forms/classic/layout/SocialLinks.vue";
 
 const store = useConversation();
 </script>
