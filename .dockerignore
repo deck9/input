@@ -13,6 +13,7 @@ Makefile
 node_modules
 vendor
 tests
+resources/js/ziggy.js
 storage/app/*
 storage/framework/cache/*
 storage/framework/sessions/*
