@@ -1,5 +1,7 @@
 FROM trafex/php-nginx as php_base
 
+LABEL Maintainer="Philipp Reinking <philipp@deck9.co>"
+
 USER root
 
 # Set DEFAULT ENV for app
