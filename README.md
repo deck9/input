@@ -73,3 +73,16 @@ sail artisan db:migrate # run database migrations
 sail artisan test # run phpunit
 sail composer {args} # use composer
 ```
+
+
+## Production Deployment
+
+```bash
+# Create the sqlite database on your host system
+touch ~/.input/database.sqlite
+
+docker run -d -p 8080:8080 \
+    -v ~/.input/docker-data:/var/www/html/storage/app \
+    -v ~/.input/database.sqlite:/var/www/html/storage/database.sqlite \
+    ghcr.io/deck9/input:main
+```

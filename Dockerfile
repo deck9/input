@@ -1,6 +1,7 @@
 FROM trafex/php-nginx as php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
+LABEL org.opencontainers.image.licenses="Business Source License 1.1"
 
 USER root
 
@@ -72,3 +73,10 @@ RUN php artisan storage:link
 
 RUN echo "APP_KEY=" > .env
 RUN php artisan key:generate
+
+USER root
+COPY --chown=nobody:nobody ./start-container.sh /opt/input/start-container.sh
+RUN chmod +x /opt/input/start-container.sh
+USER nobody
+
+ENTRYPOINT [ "/opt/input/start-container.sh" ]
