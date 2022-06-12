@@ -24,7 +24,6 @@ RUN apk add --no-cache \
     php81-bcmath \
     sqlite
 
-# RUN sed -i "s/var\/www\/html/var\/www\/html\/public/g" /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 USER nobody
@@ -45,15 +44,12 @@ USER nobody
 # ---
 
 FROM node:16-alpine as asset_builder
-WORKDIR /opt/input
+WORKDIR /var/www/html
 ENV NODE_ENV production
 
-COPY --from=php_base /var/www/html/resources/js/ziggy.js ./resources/js/ziggy.js
-COPY --from=php_base /var/www/html/vendor/tightenco/ziggy ./resources/vendor/tightenco/ziggy
-COPY package.json package-lock.json* ./
+COPY --from=php_base /var/www/html ./
 RUN npm ci && npm cache clean --force
 
-COPY . .
 RUN npm run production
 RUN rm -rf node_modules
 
@@ -62,8 +58,8 @@ RUN rm -rf node_modules
 FROM php_base as final_image
 WORKDIR /var/www/html
 
-COPY --from=asset_builder /opt/input/public/js ./public/js
-COPY --from=asset_builder /opt/input/public/mix-manifest.json ./public/mix-manifest.json
+COPY --from=asset_builder /var/www/html/public/js ./public/js
+COPY --from=asset_builder /var/www/html/public/mix-manifest.json ./public/mix-manifest.json
 
 RUN touch /var/www/html/storage/database.sqlite
 RUN php artisan migrate --force
