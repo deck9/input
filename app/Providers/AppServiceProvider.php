@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -36,5 +37,10 @@ class AppServiceProvider extends ServiceProvider
                 return $this->where(DB::raw('BINARY `uuid`'), $id);
             }
         });
+
+        // Force HTTPS if requested
+        if (env('USE_HTTPS', false)) {
+            URL::forceScheme('https');
+        }
     }
 }
