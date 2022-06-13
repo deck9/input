@@ -1,5 +1,6 @@
 <?php
 
+use Tightenco\Ziggy\Ziggy;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,8 @@ $router->get('public/forms/{form}/storyboard', GetFormStoryboardController::clas
 $router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
 $router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
 $router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
+
+$router->get('routes', fn () => response()->json(new Ziggy)->header('Cache-Control', 'max-age=360'));
 
 $router->middleware(['auth:sanctum'])->group(function (Router $router) {
 

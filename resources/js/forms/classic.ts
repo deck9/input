@@ -2,10 +2,8 @@ import "@css/embed.css";
 import { createApp, h, Suspense } from "vue";
 import { createPinia } from "pinia";
 import ClassicForm from "./classic/ClassicForm.vue";
-import { useRoutes } from "@/utils/useRoutes";
 
 const pinia = createPinia();
-const { route } = useRoutes();
 
 const formId = document.currentScript?.getAttribute("data-form");
 let mountElement: Element | string | null = document.querySelector(
@@ -39,5 +37,4 @@ createApp({
     },
 })
     .use(pinia)
-    .mixin({ methods: { route } })
     .mount(mountElement);

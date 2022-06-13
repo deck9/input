@@ -37,8 +37,6 @@ COPY --chown=nobody . .
 
 RUN composer install --optimize-autoloader --no-interaction --no-progress
 
-RUN php artisan ziggy:generate
-
 # Remove Composer Cache & Script since we do not need it any more
 USER root
 RUN rm -rf /root/.composer /usr/bin/composer

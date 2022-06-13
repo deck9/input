@@ -2,15 +2,17 @@
 // @ts-ignore
 import route from "ziggy";
 import { RouteParamsWithQueryOverload } from "ziggy-js";
-import { Ziggy } from "@/ziggy";
 
-export function useRoutes(): {
+export async function useRoutes(): Promise<{
     route: (
         name?: string,
         params?: RouteParamsWithQueryOverload,
         absolute?: boolean
     ) => string | undefined;
-} {
+}> {
+    const response = await fetch("/api/routes");
+    const Ziggy = await response.json();
+
     const routeWrapper = (
         name?: string,
         params?: RouteParamsWithQueryOverload,

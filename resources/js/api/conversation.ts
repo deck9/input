@@ -8,7 +8,7 @@ export function callGetForm(
 ): Promise<AxiosResponse<PublicFormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { route } = useRoutes();
+            const { route } = await useRoutes();
 
             const resolvedRoute = route("api.public.forms.show", {
                 uuid,
@@ -31,7 +31,7 @@ export function callGetFormStoryboard(
 ): Promise<AxiosResponse<FormStoryboard>> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { route } = useRoutes();
+            const { route } = await useRoutes();
 
             const resolvedRoute = route("api.public.forms.storyboard", {
                 uuid,
@@ -55,7 +55,7 @@ export function callCreateFormSession(
 ): Promise<AxiosResponse<FormSessionModel>> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { route } = useRoutes();
+            const { route } = await useRoutes();
 
             const resolvedRoute = route("api.public.forms.session.create", {
                 uuid,
@@ -82,7 +82,7 @@ export function callSubmitForm(
 ): Promise<AxiosResponse<null>> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { route } = useRoutes();
+            const { route } = await useRoutes();
 
             const resolvedRoute = route("api.public.forms.submit", {
                 uuid,
