@@ -77,12 +77,25 @@ sail composer {args} # use composer
 
 ## Production Deployment
 
-```bash
-# Create the sqlite database on your host system
-touch ~/.input/database.sqlite
+### Quick Start
 
-docker run -d -p 8080:8080 \
-    -v ~/.input/docker-data:/var/www/html/storage/app \
-    -v ~/.input/database.sqlite:/var/www/html/storage/database.sqlite \
+```bash
+# Create Docker Volume
+docker volume create input-data
+
+# Run the container using port 8080 on the host
+docker run -d -p 8080:8080 --name input \
+    -v input-data:/var/www/html/storage \
+    ghcr.io/deck9/input:main
+```
+
+### With MySQL
+```bash
+docker run -d -p 8080:8080 --name input \
+    -e DB_CONNECTION=mysql \
+    -e DB_DATABASE=input \
+    -e DB_HOST=<MySQL-Host> \
+    -e DB_USERNAME=<MySQL-User> \
+    -e DB_PASSWORD=<MySQL-Password> \
     ghcr.io/deck9/input:main
 ```
