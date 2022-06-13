@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\FormTemplateExportController;
 use App\Http\Controllers\Api\FormTemplateImportController;
 use App\Http\Controllers\Api\FormBlockInteractionController;
 use App\Http\Controllers\Api\FormBlockInteractionSequenceController;
+use App\Http\Controllers\Api\ZiggyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,8 @@ $router->get('public/forms/{form}/storyboard', GetFormStoryboardController::clas
 $router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
 $router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
 $router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
+
+$router->get('routes', ZiggyController::class);
 
 $router->middleware(['auth:sanctum'])->group(function (Router $router) {
 
