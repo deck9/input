@@ -6,7 +6,7 @@
       v-if="store?.form?.avatar"
       :src="store.form.avatar"
     />
-    <div class="text-grey-500 text-sm" v-else> max 4MB </div>
+    <div class="text-sm text-grey-500" v-else>max 4MB</div>
     <ValidationErrors
       v-if="uploadErrors.length > 0"
       class="mb-2"
@@ -41,7 +41,7 @@ import { useForm } from "@/stores";
 import { D9Button, D9Label } from "@deck9/ui";
 import ValidationErrors from "@/components/ValidationErrors.vue";
 import { Ref, ref } from "vue";
-import { AxiosError } from "axios";
+import { Axios, AxiosError } from "axios";
 
 const store = useForm();
 const uploadInput = ref(null) as unknown as Ref<HTMLElement>;
@@ -66,9 +66,9 @@ const selectFiles = async (payload: Event) => {
     try {
       await store.changeAvatar(file);
     } catch (error) {
-      uploadErrors.value = [
-        (error as AxiosError).response?.data?.message || "Unknown error",
-      ];
+      if (error instanceof AxiosError) {
+        uploadErrors.value = [error.response?.data?.message || "Unknown error"];
+      }
     }
   }
 };
