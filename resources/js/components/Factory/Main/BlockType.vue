@@ -13,7 +13,7 @@
     <AdvancedSettings>
       <div>
         <D9Label
-          label="Input Name"
+          label="Identifier"
           description="This name is used when submitting your form through integrations and in the export."
         />
         <D9Input v-model="title" block />
