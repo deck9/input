@@ -28,7 +28,8 @@ const props = defineProps<{
 }>();
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
-const storeValue = store.currentPayload?.[props.action.id]?.payload;
+const storeValue = (store.currentPayload as FormBlockInteractionPayload)
+  ?.payload;
 const inputElement = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
