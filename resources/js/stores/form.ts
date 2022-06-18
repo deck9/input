@@ -230,7 +230,7 @@ export const useForm = defineStore("form", {
 
             try {
                 await callUpdateBlockSequence(
-                    this.form.id,
+                    this.form.uuid,
                     saveSequenceRequestData
                 );
             } catch (error) {
