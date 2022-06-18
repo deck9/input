@@ -32,6 +32,7 @@ import { useConversation } from "@/stores/conversation";
 import { useActions } from "@/forms/classic/useActions";
 import { computed, ComputedRef, inject, onMounted } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
+import { registerRuntimeHelpers } from "@vue/compiler-core";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
@@ -63,6 +64,10 @@ const onSubmit = async () => {
 };
 
 onKeyStroke("Enter", (e) => {
+  if (store.isEnterDisabled) {
+    return;
+  }
+
   e.preventDefault();
   onSubmit();
 });

@@ -76,6 +76,7 @@ class FormBlockInteraction extends Model
         return [
             'id' => $this->uuid,
             'type' => $this->type->value,
+            'options' => $this->options,
             'label' => $this->label,
             'reply' => $this->reply,
         ];

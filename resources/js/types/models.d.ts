@@ -100,6 +100,7 @@ type InteractionOption = {
 type PublicFormBlockInteractionModel = {
     id: string;
     type: FormBlockInteractionType;
+    options: FormBlockInteractionSettings;
     label: string | null;
     reply: string | null;
 };

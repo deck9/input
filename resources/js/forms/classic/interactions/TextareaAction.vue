@@ -9,6 +9,7 @@
       :value="storeValue"
       ref="inputElement"
       autocomplete="off"
+      :rows="action?.options.rows ?? 5"
       @input="onInput"
       v-once
     >
@@ -17,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, inject, onMounted, ref } from "vue";
+import { ComputedRef, inject, onMounted, onUnmounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
 
 const store = useConversation();
@@ -33,17 +34,20 @@ const storeValue = (store.currentPayload as FormBlockInteractionPayload)
 
 const inputElement = ref<HTMLInputElement | null>(null);
 
-console.log("da isser ", store.currentPayload);
-
 onMounted(() => {
+  store.disableEnterKey();
+
   if (!disableFocus?.value) {
     inputElement.value?.focus();
   }
 });
 
+onUnmounted(() => {
+  store.enableEnterKey();
+});
+
 const onInput = () => {
   const input = inputElement.value?.value ?? null;
-  console.log("input", input);
   store.setResponse(props.action, input);
 };
 </script>
