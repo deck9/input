@@ -66,6 +66,7 @@ type FormBlockType =
     | "none"
     | "consent"
     | "input-short"
+    | "input-long"
     | "checkbox"
     | "radio"
     | "input-number"
@@ -73,7 +74,7 @@ type FormBlockType =
     | "input-link"
     | "input-phone";
 
-type FormBlockInteractionType = "button" | "input" | "consent";
+type FormBlockInteractionType = "button" | "input" | "textarea" | "consent";
 
 interface FormBlockInteractionModel extends BaseModel {
     type: FormBlockInteractionType;
