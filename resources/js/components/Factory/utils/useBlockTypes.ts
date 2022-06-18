@@ -8,7 +8,7 @@ export const useBlockTypes = (): {
         { label: "Multiple Choice", value: "radio", icon: "check-circle" },
         { label: "Checkboxes", value: "checkbox", icon: "check-square" },
         { label: "Short Answer", value: "input-short", icon: "pencil" },
-        { label: "Long Answer", value: "input-long", icon: "pencil" },
+        { label: "Long Answer", value: "input-long", icon: "message" },
         { label: "Number", value: "input-number", icon: "hashtag" },
         { label: "Email", value: "input-email", icon: "at" },
         { label: "Link", value: "input-link", icon: "link" },
