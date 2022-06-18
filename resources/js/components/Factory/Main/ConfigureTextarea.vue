@@ -10,7 +10,10 @@
       />
     </div>
     <div class="mb-4">
-      <D9Label label="Rows" />
+      <D9Label
+        label="Rows"
+        description="The max allowed number of rows is 10"
+      />
       <D9Input
         placeholder="The size of the textarea"
         type="number"
@@ -64,11 +67,17 @@ onMounted(async () => {
     }
 
     label.value = interaction.value.label;
+    rows.value = interaction.value.options.rows;
+    maxChars.value = interaction.value.options.max_chars;
 
-    watch([label], (newValues) => {
+    watch([label, rows, maxChars], (newValues: any[]) => {
       const update = {
         id: interaction.value.id,
         label: newValues[0],
+        options: {
+          rows: Math.max(1, Math.min(10, parseInt(newValues[1]))),
+          max_chars: parseInt(newValues[2]),
+        },
       };
 
       workbench.updateInteraction(update);

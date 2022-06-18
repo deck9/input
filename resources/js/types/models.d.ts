@@ -76,9 +76,15 @@ type FormBlockType =
 
 type FormBlockInteractionType = "button" | "input" | "textarea" | "consent";
 
+type FormBlockInteractionSettings = {
+    rows: number;
+    max_chars: number;
+};
+
 interface FormBlockInteractionModel extends BaseModel {
     type: FormBlockInteractionType;
     label: string | null;
+    options: FormBlockInteractionSettings;
     reply: string | null;
     form_block_id: number;
     deleted_at: string | null;

@@ -16,14 +16,16 @@ class FormBlockInteraction extends Model
         'type',
         'label',
         'reply',
-        'sequence'
+        'sequence',
+        'options'
     ];
 
     protected $guarded = [];
 
     protected $casts = [
         'form_block_id' => 'integer',
-        'type' => FormBlockInteractionType::class
+        'type' => FormBlockInteractionType::class,
+        'options' => 'array',
     ];
 
     protected static function boot()
