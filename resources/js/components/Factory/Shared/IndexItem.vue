@@ -41,7 +41,11 @@ const iconName = computed((): string | false => {
 
   switch (props.type) {
     case "input":
-      return found && found.icon ? found.icon : "envelope";
+      return found && found.icon ? found.icon : false;
+
+    case "textarea":
+      return found && found.icon ? found.icon : false;
+
     default:
       return false;
   }
