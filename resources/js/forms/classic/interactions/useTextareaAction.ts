@@ -8,8 +8,21 @@ export function useTextareaAction(block: PublicFormBlockModel) {
             return false;
         }
 
+        const action = block.interactions[0];
+
+        if (action && action.options.max_chars > 0) {
+            return input.payload.length <= action.options.max_chars;
+        }
+
         return true;
     };
 
-    return { useThis, component: TextareaAction, validator };
+    return {
+        useThis,
+        component: TextareaAction,
+        validator,
+        props: {
+            disableEnterKey: true,
+        },
+    };
 }

@@ -22,6 +22,7 @@
       :isProcessing="store.isProcessing"
       ref="submitButton"
       :label="store.isLastBlock ? 'Submit' : 'Next'"
+      v-bind="{ ...actionProps }"
     />
   </form>
 </template>
@@ -32,7 +33,6 @@ import { useConversation } from "@/stores/conversation";
 import { useActions } from "@/forms/classic/useActions";
 import { computed, ComputedRef, inject, onMounted } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
-import { registerRuntimeHelpers } from "@vue/compiler-core";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
@@ -41,7 +41,9 @@ const props = defineProps<{
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const store = useConversation();
 
-const { actionComponent, actionValidator } = useActions(props.block);
+const { actionComponent, actionValidator, actionProps } = useActions(
+  props.block
+);
 
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);
 const isValid = computed(() => {

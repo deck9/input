@@ -15,5 +15,6 @@ export function useActions(block: PublicFormBlockModel) {
     return {
         actionComponent: actionComponent?.component,
         actionValidator: actionComponent?.validator,
+        actionProps: actionComponent?.props,
     };
 }

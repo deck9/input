@@ -15,5 +15,5 @@ export function useButtonAction(block: PublicFormBlockModel) {
         return input.payload && input.actionId;
     };
 
-    return { useThis, component: ButtonAction, validator };
+    return { useThis, component: ButtonAction, validator, props: {} };
 }

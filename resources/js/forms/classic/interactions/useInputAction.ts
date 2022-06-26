@@ -33,5 +33,5 @@ export function useInputAction(block: PublicFormBlockModel) {
         }
     };
 
-    return { useThis, component: InputAction, validator };
+    return { useThis, component: InputAction, validator, props: {} };
 }
