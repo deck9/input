@@ -14,9 +14,16 @@ class FormSessionResponseResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'name' => $this->formBlock->title ?? $this->formBlock->uuid,
-            'value' => $this->value
-        ];
+        try {
+            return [
+                'name' => $this->formBlock->title ?? $this->formBlock->uuid,
+                'value' => $this->value
+            ];
+        } catch (\Exception $e) {
+            return [
+                'name' => '',
+                'value' => ''
+            ];
+        }
     }
 }
