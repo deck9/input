@@ -20,7 +20,7 @@
           :count="action.responses_count"
           :total="block.session_count"
         />
-        <div v-if="action.type === 'input'">
+        <div v-if="action.type === 'input' || action.type === 'textarea'">
           <ResponseList v-bind="{ action }" />
         </div>
       </div>
