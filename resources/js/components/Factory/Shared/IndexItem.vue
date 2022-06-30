@@ -40,14 +40,11 @@ const iconName = computed((): string | false => {
   });
 
   switch (props.type) {
-    case "input":
-      return found && found.icon ? found.icon : false;
-
-    case "textarea":
-      return found && found.icon ? found.icon : false;
+    case "button":
+      return false;
 
     default:
-      return false;
+      return found && found.icon ? found.icon : false;
   }
 });
 
