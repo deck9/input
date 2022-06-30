@@ -39,15 +39,15 @@ onMounted(async () => {
     }
 
     label.value = interaction.value.label;
-
-    watch([label], (newValues) => {
-      const update = {
-        id: interaction.value.id,
-        label: newValues[0],
-      };
-
-      workbench.updateInteraction(update);
-    });
   }
+});
+
+watch([label], (newValues) => {
+  const update = {
+    id: interaction.value.id,
+    label: newValues[0],
+  };
+
+  workbench.updateInteraction(update);
 });
 </script>
