@@ -67,8 +67,8 @@ onMounted(async () => {
     }
 
     label.value = interaction.value.label;
-    rows.value = interaction.value.options.rows;
-    maxChars.value = interaction.value.options.max_chars;
+    rows.value = interaction.value.options?.rows ?? 5;
+    maxChars.value = interaction.value.options?.max_chars ?? 500;
 
     watch([label, rows, maxChars], (newValues: any[]) => {
       const update = {
