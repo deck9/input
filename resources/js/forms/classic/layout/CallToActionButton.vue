@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts" setup>
-import { templateRef } from "@vueuse/core";
 import { D9Icon } from "@deck9/ui";
+import { ref } from "vue";
 
 defineProps<{
   isDisabled?: boolean;
@@ -29,7 +29,7 @@ defineProps<{
   href?: string;
 }>();
 
-const button = templateRef<HTMLElement | null>("button", null);
+const button = ref<HTMLElement | null>(null);
 
 const focus = () => {
   button.value?.focus();

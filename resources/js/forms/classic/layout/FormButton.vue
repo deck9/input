@@ -17,6 +17,7 @@
     </button>
 
     <span
+      v-if="!disableEnterKey"
       :class="{ 'pointer-events-none opacity-0': isDisabled }"
       class="ml-4 inline-flex items-center justify-center text-xs font-bold leading-none text-grey-700 transition duration-150"
     >
@@ -27,16 +28,17 @@
 </template>
 
 <script lang="ts" setup>
-import { templateRef } from "@vueuse/core";
 import { D9Icon } from "@deck9/ui";
+import { ref } from "vue";
 
 defineProps<{
   isDisabled?: boolean;
   isProcessing?: boolean;
   label: string;
+  disableEnterKey?: boolean;
 }>();
 
-const button = templateRef<HTMLElement | null>("button", null);
+const button = ref<HTMLElement | null>(null);
 
 const focus = () => {
   button.value?.focus();

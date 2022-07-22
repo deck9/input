@@ -40,10 +40,11 @@ const iconName = computed((): string | false => {
   });
 
   switch (props.type) {
-    case "input":
-      return found && found.icon ? found.icon : "envelope";
-    default:
+    case "button":
       return false;
+
+    default:
+      return found && found.icon ? found.icon : false;
   }
 });
 

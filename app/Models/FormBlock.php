@@ -121,6 +121,9 @@ class FormBlock extends Model
             case FormBlockType::number:
                 return FormBlockInteractionType::input;
 
+            case FormBlockType::long:
+                return FormBlockInteractionType::textarea;
+
             case FormBlockType::checkbox:
             case FormBlockType::radio:
                 return FormBlockInteractionType::button;

@@ -1,6 +1,6 @@
 <template>
   <a
-    class="transition-sm group relative mb-2 flex rounded bg-white px-8 py-4 text-grey-900 no-underline shadow-sm hover:cursor-default hover:no-underline"
+    class="transition-sm group relative mb-2 flex rounded bg-white px-8 py-4 text-grey-900 no-underline shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:no-underline"
     :href="route('forms.edit', form.uuid)"
   >
     <div class="flex w-1/2 shrink-0 items-center">

@@ -72,13 +72,13 @@ export function callDeleteFormBlock(id: number): Promise<AxiosResponse> {
 }
 
 export function callUpdateBlockSequence(
-    id: number,
+    uuid: string,
     sequence: number[]
 ): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.blocks.sequence", { form: id }),
+                window.route("api.blocks.sequence", { form: uuid }),
                 {
                     sequence,
                 }

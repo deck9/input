@@ -28,7 +28,8 @@ class FormBlockMappingTest extends TestCase
             "input-email" => "input",
             "input-link" => "input",
             "input-number" => "input",
-            "input-phone" => "input"
+            "input-phone" => "input",
+            "input-long" => "textarea",
         ]);
     }
 }
