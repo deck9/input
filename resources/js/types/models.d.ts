@@ -66,6 +66,7 @@ type FormBlockType =
     | "none"
     | "consent"
     | "input-short"
+    | "input-long"
     | "checkbox"
     | "radio"
     | "input-number"
@@ -73,11 +74,17 @@ type FormBlockType =
     | "input-link"
     | "input-phone";
 
-type FormBlockInteractionType = "button" | "input" | "consent";
+type FormBlockInteractionType = "button" | "input" | "textarea" | "consent";
+
+type FormBlockInteractionSettings = {
+    rows: number;
+    max_chars: number;
+};
 
 interface FormBlockInteractionModel extends BaseModel {
     type: FormBlockInteractionType;
     label: string | null;
+    options: FormBlockInteractionSettings;
     reply: string | null;
     form_block_id: number;
     deleted_at: string | null;
@@ -93,6 +100,7 @@ type InteractionOption = {
 type PublicFormBlockInteractionModel = {
     id: string;
     type: FormBlockInteractionType;
+    options: FormBlockInteractionSettings;
     label: string | null;
     reply: string | null;
 };

@@ -18,10 +18,6 @@ import { onMounted } from "@vue/runtime-core";
 
 const workbench = useWorkbench();
 
-interface ValidationOption {
-  label: string;
-}
-
 const label: Ref<FormBlockInteractionModel["label"]> = ref("");
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
@@ -43,15 +39,15 @@ onMounted(async () => {
     }
 
     label.value = interaction.value.label;
-
-    watch([label], (newValues) => {
-      const update = {
-        id: interaction.value.id,
-        label: newValues[0],
-      };
-
-      workbench.updateInteraction(update);
-    });
   }
+});
+
+watch([label], (newValues) => {
+  const update = {
+    id: interaction.value.id,
+    label: newValues[0],
+  };
+
+  workbench.updateInteraction(update);
 });
 </script>

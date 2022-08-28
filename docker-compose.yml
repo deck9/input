@@ -74,7 +74,7 @@ services:
             retries: 3
             timeout: 5s
     mailhog:
-        image: 'mailhog/mailhog:latest'
+        image: 'jcalonso/mailhog:latest'
         ports:
             - '${FORWARD_MAILHOG_PORT:-1025}:1025'
             - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'

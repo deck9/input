@@ -22,6 +22,7 @@
       :isProcessing="store.isProcessing"
       ref="submitButton"
       :label="store.isLastBlock ? 'Submit' : 'Next'"
+      v-bind="{ ...actionProps }"
     />
   </form>
 </template>
@@ -40,7 +41,9 @@ const props = defineProps<{
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const store = useConversation();
 
-const { actionComponent, actionValidator } = useActions(props.block);
+const { actionComponent, actionValidator, actionProps } = useActions(
+  props.block
+);
 
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);
 const isValid = computed(() => {
@@ -63,6 +66,10 @@ const onSubmit = async () => {
 };
 
 onKeyStroke("Enter", (e) => {
+  if (store.isEnterDisabled) {
+    return;
+  }
+
   e.preventDefault();
   onSubmit();
 });

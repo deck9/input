@@ -80,4 +80,27 @@ trait InteractionsTestingContract
 
         $this->assertNull($interaction->fresh());
     }
+
+    /** @test */
+    public function can_save_json_option_object_to_interaction()
+    {
+        $this->withoutExceptionHandling();
+        $interaction = FormBlockInteraction::factory()->create([
+            'type' => $this->getInteractionType(),
+        ]);
+
+        $this->actingAs($interaction->formBlock->form->user)
+            ->json('post', route('api.interactions.update', $interaction->id), [
+                'options' => [
+                    'rows' => 10,
+                    'max_chars' => 250,
+                ]
+            ])
+            ->assertSuccessful();
+
+        $this->assertEquals([
+            'rows' => 10,
+            'max_chars' => 250,
+        ], $interaction->fresh()->options);
+    }
 }

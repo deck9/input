@@ -43,7 +43,7 @@ class FormBlockInteractionController extends Controller
                 break;
         }
 
-        $interaction->fill($request->only(['label', 'reply', 'uuid']));
+        $interaction->fill($request->only(['label', 'reply', 'uuid', 'options']));
         $interaction->save();
 
         return response()->json($interaction, 200);
