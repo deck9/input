@@ -37,6 +37,7 @@ class PublicFormResource extends JsonResource
             'show_social_links' => $this->show_social_links,
             'is_published' => $this->is_published,
             'avatar' => $this->avatar,
+            'background' => $this->background,
             'company_name' => $this->company_name,
             'company_description' => $this->company_description,
         ];

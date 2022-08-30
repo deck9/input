@@ -117,8 +117,8 @@ type PublicFormModel = {
     uuid: string;
     name: string;
     description: string | null;
-    avatar_path: string | null;
     avatar: string | null;
+    background: string | null;
     preview_image_path: string | null;
     brand_color: string | null;
     contrast_color: string | null;

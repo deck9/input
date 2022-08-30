@@ -57,7 +57,7 @@ const focusDisabled = computed(() => {
 provide("disableFocus", focusDisabled);
 
 const params = {};
-const blacklist = [
+const paramsBlacklist = [
   "iframe",
   "hideTitle",
   "hideNavigation",
@@ -65,7 +65,7 @@ const blacklist = [
   "alignLeft",
 ];
 new URLSearchParams(window.location.search).forEach((value, key) => {
-  if (blacklist.includes(key)) {
+  if (paramsBlacklist.includes(key)) {
     return;
   }
 

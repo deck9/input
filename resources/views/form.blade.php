@@ -73,7 +73,7 @@
         </style>
     </head>
 
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased ">
 
         @auth
         @if(!$form->is_published && auth()->user()->id === $form->user_id)
@@ -86,8 +86,11 @@
         @endif
         @endauth
 
-        <div
-             class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6  flex w-full {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}">
+        <div @if($form->background)
+            style="background-image: url('{{ $form->background }}');"
+            @endif
+            class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 flex w-full bg-cover
+            {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}">
             <div class="w-full" id="input-classic"></div>
         </div>
     </body>
