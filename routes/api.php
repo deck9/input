@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormController;
 use App\Http\Controllers\Api\ShowFormController;
 use App\Http\Controllers\Api\FormBlockController;
-use App\Http\Controllers\Api\FormAvatarController;
+use App\Http\Controllers\Api\FormImagesController;
 use App\Http\Controllers\Api\FormSubmitController;
 use App\Http\Controllers\Api\PublishFormController;
 use App\Http\Controllers\Api\UnpublishFormController;
@@ -55,9 +55,9 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->post('forms/{form}/publish', PublishFormController::class)->name('api.forms.publish');
     $router->post('forms/{form}/unpublish', UnpublishFormController::class)->name('api.forms.unpublish');
 
-    // Form Avatar Routes
-    $router->post('forms/{form}/avatar', [FormAvatarController::class, 'store'])->name('api.forms.images.store');
-    $router->delete('forms/{form}/avatar', [FormAvatarController::class, 'delete'])->name('api.forms.images.delete');
+    // Form Image Routes
+    $router->post('forms/{form}/images', [FormImagesController::class, 'store'])->name('api.forms.images.store');
+    $router->delete('forms/{form}/images', [FormImagesController::class, 'delete'])->name('api.forms.images.delete');
 
     // Block API Routes
     $router->get('{form}/blocks', [FormBlockController::class, 'index'])->name('api.blocks.index');

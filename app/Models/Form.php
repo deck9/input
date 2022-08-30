@@ -157,18 +157,20 @@ class Form extends Model
         return $result ? $result->response_count : 0;
     }
 
-    public function hasAvatar()
+    public function hasImage($type)
     {
-        if (!$this->avatar_path) {
+        $fieldname = $type . '_path';
+
+        if (!$this->$fieldname) {
             return false;
         }
 
-        return Storage::exists($this->avatar_path);
+        return Storage::exists($this->$fieldname);
     }
 
     public function avatarImage()
     {
-        if ($this->hasAvatar()) {
+        if ($this->hasImage('avatar')) {
             return asset('images/' . $this->avatar_path);
         }
 
