@@ -5,6 +5,7 @@ import {
     callSubmitForm,
     callGetForm,
 } from "@/api/conversation";
+import { Ref, ref } from "vue";
 
 type ConversationStore = {
     form?: PublicFormModel;
@@ -68,6 +69,23 @@ export const useConversation = defineStore("form", {
             }
 
             return null;
+        },
+
+        /**
+         * This getter determines if the user has entered content that is not saved yet.
+         * For now that is the case once a user typed something in and is at least
+         * on a second block.
+         *
+         * @param state
+         * @returns true | false
+         */
+        hasUnsavedPayload(state): Ref<boolean> {
+            return ref(
+                !state.isSubmitted &&
+                    state.payload &&
+                    Object.keys(state.payload).length > 0 &&
+                    state.current > 0
+            );
         },
 
         currentBlockIdentifier(): string | null {

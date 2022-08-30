@@ -43,7 +43,9 @@ import Navigator from "@/forms/classic/layout/Navigator.vue";
 import FooterNavigation from "@/forms/classic/layout/FooterNavigation.vue";
 import { useConversation } from "@/stores/conversation";
 import { useThemableColor } from "@/utils/useThemableColor";
+import { useBeforeUnload } from "@/utils/useBeforeUnload";
 import { computed, onMounted, provide, ref } from "vue";
+import { storeToRefs } from "pinia";
 
 const props = defineProps<{
   settings: PublicFormModel;
@@ -75,8 +77,12 @@ new URLSearchParams(window.location.search).forEach((value, key) => {
 const store = useConversation();
 await store.initForm(props.settings, params);
 
+const { hasUnsavedPayload } = storeToRefs(store);
+
 onMounted(() => {
   isLoading.value = false;
+
+  useBeforeUnload(hasUnsavedPayload);
 });
 
 const primaryColor = useThemableColor(store.form?.brand_color ?? "#1f2937");
