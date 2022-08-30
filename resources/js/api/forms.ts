@@ -103,7 +103,7 @@ export function callUnpublishForm(
     });
 }
 
-export function callUploadAvatar(
+export function callUploadFormImage(
     form: FormModel,
     file: File,
     type: ImageType
@@ -127,7 +127,7 @@ export function callUploadAvatar(
     });
 }
 
-export function callDeleteAvatar(
+export function callDeleteFormImage(
     form: FormModel,
     type: ImageType
 ): Promise<AxiosResponse<FormModel>> {

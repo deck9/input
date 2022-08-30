@@ -81,7 +81,7 @@ const selectFiles = async (payload: Event) => {
   if (files && files.length > 0) {
     const file = files[0];
     try {
-      await store.changeAvatar(file, props.type);
+      await store.changeFormImage(file, props.type);
     } catch (error) {
       if (error instanceof AxiosError) {
         uploadErrors.value = [error.response?.data?.message || "Unknown error"];
@@ -93,7 +93,7 @@ const selectFiles = async (payload: Event) => {
 const deleteImage = async () => {
   isDeleting.value = true;
 
-  await store.removeAvatar(props.type);
+  await store.removeFormImage(props.type);
 
   isDeleting.value = false;
 };
