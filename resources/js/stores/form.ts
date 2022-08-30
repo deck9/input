@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import {
-    callDeleteAvatar,
+    callDeleteFormImage,
     callUpdateForm,
     callGetForm,
-    callUploadAvatar,
+    callUploadFormImage,
     callGetFormBlockMapping,
     callDeleteForm,
     callPublishForm,
@@ -85,22 +85,22 @@ export const useForm = defineStore("form", {
             this.blocks = response.data;
         },
 
-        async changeAvatar(file: File) {
+        async changeFormImage(file: File, type: ImageType) {
             if (!this.form) {
                 return;
             }
 
-            const response = await callUploadAvatar(this.form, file);
-            this.form.avatar = response.data.avatar;
+            const response = await callUploadFormImage(this.form, file, type);
+            this.form[type] = response.data[type];
         },
 
-        async removeAvatar() {
+        async removeFormImage(type: ImageType) {
             if (!this.form) {
                 return;
             }
 
-            await callDeleteAvatar(this.form);
-            this.form.avatar = null;
+            await callDeleteFormImage(this.form, type);
+            this.form[type] = null;
         },
 
         async updateForm(newValues: Partial<FormModel>) {

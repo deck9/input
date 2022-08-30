@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FormAvatarRequest extends FormRequest
+class FormImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,6 +25,7 @@ class FormAvatarRequest extends FormRequest
     {
         return [
             'image' => 'required|image|max:4096',
+            'type' => 'required|in:avatar,background',
         ];
     }
 
@@ -36,7 +37,7 @@ class FormAvatarRequest extends FormRequest
     public function attributes()
     {
         return [
-            'image' => 'avatar',
+            'image' => 'image',
         ];
     }
 }

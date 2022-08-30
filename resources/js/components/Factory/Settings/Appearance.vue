@@ -1,6 +1,7 @@
 <template>
   <div>
-    <AvatarUpload class="mb-4" />
+    <ImageUpload class="mb-6" label="Brand Image" type="avatar" />
+    <ImageUpload class="mb-6" label="Background Image" type="background" />
 
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
@@ -35,7 +36,7 @@ import { useForm } from "@/stores";
 import { D9Button, D9Label, D9Input, D9Icon } from "@deck9/ui";
 import { ref, watch } from "vue";
 import { useEyeDropper } from "@vueuse/core";
-import AvatarUpload from "./partials/AvatarUpload.vue";
+import ImageUpload from "./partials/ImageUpload.vue";
 
 const store = useForm();
 const isSaving = ref(false);

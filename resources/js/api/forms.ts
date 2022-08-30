@@ -103,12 +103,14 @@ export function callUnpublishForm(
     });
 }
 
-export function callUploadAvatar(
+export function callUploadFormImage(
     form: FormModel,
-    file: File
+    file: File,
+    type: ImageType
 ): Promise<AxiosResponse<FormModel>> {
     const requestData = new FormData();
     requestData.append("image", file);
+    requestData.append("type", type);
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -125,13 +127,15 @@ export function callUploadAvatar(
     });
 }
 
-export function callDeleteAvatar(
-    form: FormModel
+export function callDeleteFormImage(
+    form: FormModel,
+    type: ImageType
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.delete(
-                window.route("api.forms.images.delete", { uuid: form.uuid })
+                window.route("api.forms.images.delete", { uuid: form.uuid }),
+                { data: { type } }
             );
             if (response.status === 200) {
                 resolve(response as AxiosResponse<FormModel>);

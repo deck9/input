@@ -3,6 +3,7 @@
     <a
       class="text-grey-400 transition hover:text-grey-100 focus:text-grey-200"
       :href="store.formUrl"
+      target="_blank"
     >
       <D9Icon class="mr-1" name="play-circle"></D9Icon>View Form
     </a>

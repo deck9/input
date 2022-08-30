@@ -59,11 +59,13 @@ class Form extends Model
         'user_id',
         'deleted_at',
         'avatar_path',
+        'background_path',
         'user',
     ];
 
     protected $appends = [
         'avatar',
+        'background',
         'contrast_color',
         'company_name',
         'company_description',
@@ -157,27 +159,33 @@ class Form extends Model
         return $result ? $result->response_count : 0;
     }
 
-    public function hasAvatar()
+    public function hasImage($type)
     {
-        if (!$this->avatar_path) {
+        $fieldname = $type . '_path';
+
+        if (!$this->$fieldname) {
             return false;
         }
 
-        return Storage::exists($this->avatar_path);
+        return Storage::exists($this->$fieldname);
     }
 
-    public function avatarImage()
+    public function getAvatarAttribute()
     {
-        if ($this->hasAvatar()) {
+        if ($this->hasImage('avatar')) {
             return asset('images/' . $this->avatar_path);
         }
 
         return false;
     }
 
-    public function getAvatarAttribute()
+    public function getBackgroundAttribute()
     {
-        return $this->avatarImage();
+        if ($this->hasImage('background')) {
+            return asset('images/' . $this->background_path);
+        }
+
+        return false;
     }
 
     public function getIsPublishedAttribute()
