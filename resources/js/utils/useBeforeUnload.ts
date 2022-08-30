@@ -11,15 +11,11 @@ export function useBeforeUnload(
         return confirmationMessage;
     };
 
-    watch(
-        isUnloadActive,
-        (isActive: Ref<boolean>) => {
-            if (isActive.value) {
-                window.addEventListener("beforeunload", onBeforeUnload);
-            } else {
-                window.removeEventListener("beforeunload", onBeforeUnload);
-            }
-        },
-        { immediate: true }
-    );
+    watch(isUnloadActive, (isActive: Ref<boolean>) => {
+        if (isActive.value) {
+            window.addEventListener("beforeunload", onBeforeUnload);
+        } else {
+            window.removeEventListener("beforeunload", onBeforeUnload);
+        }
+    });
 }
