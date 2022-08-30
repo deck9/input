@@ -104,13 +104,13 @@ class FormModelTest extends TestCase
         Storage::fake();
         $form = Form::factory()->create();
 
-        $this->assertFalse($form->avatarImage());
+        $this->assertFalse($form->avatar);
 
         Storage::put($form->uuid . '/avatar.png', UploadedFile::fake()->image('avatar.png'));
         Storage::put($form->uuid . '/avatar.png', UploadedFile::fake()->image('avatar.png'));
         $form->avatar_path = $form->uuid . '/avatar.png';
 
-        $this->assertEquals(asset('images/' . $form->avatar_path), $form->avatarImage());
+        $this->assertEquals(asset('images/' . $form->avatar_path), $form->avatar);
     }
 
     /** @test */

@@ -85,22 +85,22 @@ export const useForm = defineStore("form", {
             this.blocks = response.data;
         },
 
-        async changeAvatar(file: File) {
+        async changeAvatar(file: File, type: ImageType) {
             if (!this.form) {
                 return;
             }
 
-            const response = await callUploadAvatar(this.form, file);
-            this.form.avatar = response.data.avatar;
+            const response = await callUploadAvatar(this.form, file, type);
+            this.form[type] = response.data[type];
         },
 
-        async removeAvatar() {
+        async removeAvatar(type: ImageType) {
             if (!this.form) {
                 return;
             }
 
-            await callDeleteAvatar(this.form);
-            this.form.avatar = null;
+            await callDeleteAvatar(this.form, type);
+            this.form[type] = null;
         },
 
         async updateForm(newValues: Partial<FormModel>) {

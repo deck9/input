@@ -174,3 +174,5 @@ type EmbedFlags = {
     autofocus?: boolean;
     alignLeft?: boolean;
 };
+
+type ImageType = "avatar" | "background";
