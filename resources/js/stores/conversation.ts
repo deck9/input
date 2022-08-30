@@ -81,7 +81,8 @@ export const useConversation = defineStore("form", {
          */
         hasUnsavedPayload(state): Ref<boolean> {
             return ref(
-                state.payload &&
+                !state.isSubmitted &&
+                    state.payload &&
                     Object.keys(state.payload).length > 0 &&
                     state.current > 0
             );
