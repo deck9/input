@@ -1,6 +1,6 @@
 <template>
   <div class="relative ml-[3px] flex items-center py-1">
-    <IndexItem :type="interaction.type" :index="index" />
+    <IndexItem class="shrink-0" :type="interaction.type" :index="index" />
     <div class="ml-3 text-sm">{{ interaction.label ?? "-" }}</div>
   </div>
 </template>

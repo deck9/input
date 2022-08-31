@@ -18,10 +18,10 @@
       >
     </div>
 
-    <span class="pl-4"> {{ action.label }}</span>
+    <span class="inline-block pl-4 pr-6"> {{ action.label }}</span>
     <div class="absolute inset-y-0 right-4 flex items-center">
       <input
-        class="border-grey-300 bg-transparent checked:bg-primary checked:hover:bg-primary focus:ring-primary focus:checked:bg-primary focus:checked:outline-none focus:checked:ring-0 focus:checked:ring-offset-0"
+        class="border-grey-300 bg-transparent checked:border-primary checked:bg-primary checked:hover:bg-primary focus:ring-primary focus:checked:bg-primary focus:checked:outline-none focus:checked:ring-0 focus:checked:ring-offset-0"
         :type="inputType"
         :name="block.id"
         :id="action.id"
