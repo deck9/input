@@ -63,7 +63,11 @@ const uploadErrors = ref<string[]>([]);
 const imageUrl = computed(() => {
   if (!store.form) return false;
 
-  return store.form[props.type] ?? false;
+  const params = new URLSearchParams();
+  params.set("w", "256");
+  params.set("q", "75");
+
+  return `${store.form[props.type]}?${params.toString()}` ?? false;
 });
 
 const initUpload = () => {
