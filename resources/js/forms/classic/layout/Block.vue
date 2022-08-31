@@ -17,11 +17,15 @@
       </div>
     </div>
 
+    <div v-if="showValidationMessage" class="text-sm text-red-500">
+      {{ t(validator.message ?? "Something went wrong validating your input") }}
+    </div>
+
     <FormButton
-      :isDisabled="!isValid"
+      :isDisabled="!validator.valid"
       :isProcessing="store.isProcessing"
       ref="submitButton"
-      :label="store.isLastBlock ? 'Submit' : 'Next'"
+      :label="store.isLastBlock ? t('Submit') : t('Next')"
       v-bind="{ ...actionProps }"
     />
   </form>
@@ -31,12 +35,15 @@
 import FormButton from "./FormButton.vue";
 import { useConversation } from "@/stores/conversation";
 import { useActions } from "@/forms/classic/useActions";
-import { computed, ComputedRef, inject, onMounted } from "vue";
+import { computed, ComputedRef, inject, onMounted, ref } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   block: PublicFormBlockModel;
 }>();
+
+const { t } = useI18n();
 
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const store = useConversation();
@@ -46,8 +53,10 @@ const { actionComponent, actionValidator, actionProps } = useActions(
 );
 
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);
-const isValid = computed(() => {
-  return actionValidator ? actionValidator(store.currentPayload) : true;
+const validator = computed(() => {
+  return actionValidator
+    ? actionValidator(store.currentPayload)
+    : { valid: true };
 });
 
 onMounted(() => {
@@ -57,10 +66,15 @@ onMounted(() => {
   }
 });
 
+const showValidationMessage = ref(false);
+
 const onSubmit = async () => {
-  if (!isValid.value) {
+  if (!validator.value.valid) {
+    showValidationMessage.value = true;
     return;
   }
+
+  showValidationMessage.value = false;
 
   await store.next();
 };
@@ -74,5 +88,5 @@ onKeyStroke("Enter", (e) => {
   onSubmit();
 });
 
-defineExpose({ isValid, onSubmit });
+defineExpose({ validator, onSubmit });
 </script>

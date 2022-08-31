@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-grey-600">Find us here</h3>
+    <h3 class="text-grey-600">{{ t("Find us here") }}</h3>
     <ul class="flex space-x-2">
       <li v-for="provider in socialLinkProviders" :key="provider">
         <a
@@ -19,6 +19,9 @@
 import { useConversation } from "@/stores/conversation";
 import { D9Icon } from "@deck9/ui";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useConversation();
 const socialLinkProviders = ref([

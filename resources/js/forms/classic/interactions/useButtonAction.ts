@@ -4,15 +4,26 @@ export function useButtonAction(block: PublicFormBlockModel) {
     const useThis = ["radio", "checkbox"].includes(block.type);
 
     const validator = (input: any) => {
+        const validationMessage = "Please select an option.";
+
         if (!input) {
-            return false;
+            return {
+                message: validationMessage,
+                valid: false,
+            };
         }
 
         if (Array.isArray(input)) {
-            return input.length > 0;
+            return {
+                message: validationMessage,
+                valid: input.length > 0,
+            };
         }
 
-        return input.payload && input.actionId;
+        return {
+            valid: input.payload && input.actionId,
+            message: validationMessage,
+        };
     };
 
     return { useThis, component: ButtonAction, validator, props: {} };
