@@ -18,6 +18,7 @@ class PublicFormResource extends JsonResource
             'uuid' => $this->uuid,
             'name' => $this->name,
             'description' => $this->description,
+            'language' => $this->language ?? 'en',
             'preview_image_path' => $this->preview_image_path,
             'brand_color' => $this->brand_color,
             'contrast_color' => $this->contrast_color,
