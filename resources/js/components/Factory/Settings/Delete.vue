@@ -3,7 +3,7 @@
     <form @submit.prevent="deleteForm">
       <D9Button
         type="submit"
-        color="dark"
+        color="danger"
         label="Delete Form"
         :is-loading="isSaving"
       />
