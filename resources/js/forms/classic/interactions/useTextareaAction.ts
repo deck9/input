@@ -5,16 +5,24 @@ export function useTextareaAction(block: PublicFormBlockModel) {
 
     const validator = (input: any) => {
         if (!input) {
-            return false;
+            return { valid: false, message: "This field is required" };
         }
 
         const action = block.interactions[0];
 
         if (action && action.options.max_chars > 0) {
-            return input.payload.length <= action.options.max_chars;
+            if (input.payload.length <= action.options.max_chars) {
+                return { valid: true };
+            } else {
+                return {
+                    valid: false,
+                    message:
+                        "You have exceeded the maximum number of characters allowed.",
+                };
+            }
         }
 
-        return true;
+        return { valid: true };
     };
 
     return {

@@ -6,17 +6,19 @@
     <button
       type="button"
       class="inline-flex items-center justify-center border-r border-grey-100 py-1 hover:bg-grey-100"
+      :aria-label="t('Previous')"
       @click="store.back()"
     >
       <D9Icon icon="chevron-left" />
     </button>
     <span class="col-span-2 inline-block whitespace-nowrap py-1 font-medium">
       <span>{{ currentPage }}</span>
-      <span v-if="totalPages"> / {{ totalPages }}</span>
+      <span v-if="totalPages"> / {{ totalPages }} </span>
     </span>
     <button
       type="button"
       class="inline-flex items-center justify-center border-l border-grey-100 py-1 hover:bg-grey-100"
+      :aria-label="t('Next')"
       @click="!store.isLastBlock ? store.next() : false"
     >
       <D9Icon icon="chevron-right" />
@@ -28,6 +30,9 @@
 import { D9Icon } from "@deck9/ui";
 import { useConversation } from "@/stores/conversation";
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useConversation();
 

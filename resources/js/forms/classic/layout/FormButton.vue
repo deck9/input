@@ -21,7 +21,7 @@
       :class="{ 'pointer-events-none opacity-0': isDisabled }"
       class="ml-4 inline-flex items-center justify-center text-xs font-bold leading-none text-grey-700 transition duration-150"
     >
-      Enter
+      {{ t("Enter") }}
       <D9Icon class="ml-1 rotate-90" icon="turn-down" />
     </span>
   </div>
@@ -30,6 +30,7 @@
 <script lang="ts" setup>
 import { D9Icon } from "@deck9/ui";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 defineProps<{
   isDisabled?: boolean;
@@ -37,6 +38,8 @@ defineProps<{
   label: string;
   disableEnterKey?: boolean;
 }>();
+
+const { t } = useI18n();
 
 const button = ref<HTMLElement | null>(null);
 

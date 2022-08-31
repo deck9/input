@@ -46,6 +46,8 @@ import { useThemableColor } from "@/utils/useThemableColor";
 import { useBeforeUnload } from "@/utils/useBeforeUnload";
 import { computed, onMounted, provide, ref } from "vue";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
+import { useRouteParams } from "@/utils/useRouteParams";
 
 const props = defineProps<{
   settings: PublicFormModel;
@@ -58,24 +60,20 @@ const focusDisabled = computed(() => {
 });
 provide("disableFocus", focusDisabled);
 
-const params = {};
-const paramsBlacklist = [
-  "iframe",
-  "hideTitle",
-  "hideNavigation",
-  "focusOnMount",
-  "alignLeft",
-];
-new URLSearchParams(window.location.search).forEach((value, key) => {
-  if (paramsBlacklist.includes(key)) {
-    return;
-  }
-
-  params[key] = value;
-});
-
 const store = useConversation();
-await store.initForm(props.settings, params);
+await store.initForm(
+  props.settings,
+  useRouteParams([
+    "iframe",
+    "hideTitle",
+    "hideNavigation",
+    "focusOnMount",
+    "alignLeft",
+  ])
+);
+
+const { locale } = useI18n({ useScope: "global" });
+locale.value = store.form?.language ?? "en";
 
 const { hasUnsavedPayload } = storeToRefs(store);
 

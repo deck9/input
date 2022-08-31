@@ -39,6 +39,7 @@ class FormController extends Controller
             $request->only(
                 'name',
                 'description',
+                'language',
                 'is_notification_via_mail',
                 'brand_color',
                 'message_background_color',

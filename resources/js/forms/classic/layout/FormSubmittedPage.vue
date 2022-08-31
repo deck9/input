@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="text-lg font-medium">
-      {{ store.form?.eoc_headline || "Form Submitted" }}
+      {{ store.form?.eoc_headline || t("Form Submitted") }}
     </h2>
     <p v-if="store.form?.eoc_text" class="mt-2 text-base leading-6">
       {{ store.form?.eoc_text }}
@@ -9,7 +9,7 @@
     <CallToActionButton
       v-if="store.form?.show_cta_link && store.callToActionUrl"
       :href="store.callToActionUrl"
-      :label="store.form?.cta_label ?? 'Close'"
+      :label="store.form?.cta_label ?? t('Close')"
     />
 
     <SocialLinks v-if="store.form?.show_social_links" class="mt-8" />
@@ -20,6 +20,9 @@
 import CallToActionButton from "./CallToActionButton.vue";
 import { useConversation } from "@/stores/conversation";
 import SocialLinks from "@/forms/classic/layout/SocialLinks.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useConversation();
 </script>

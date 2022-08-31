@@ -21,15 +21,27 @@ export function useInputAction(block: PublicFormBlockModel) {
 
         switch (block.type) {
             case "input-email":
-                return emailValidator.isValidSync(input?.payload);
+                return {
+                    valid: emailValidator.isValidSync(input?.payload),
+                    message: "Please enter a valid email.",
+                };
             case "input-number":
-                return numberValidator.isValidSync(input?.payload);
+                return {
+                    valid: numberValidator.isValidSync(input?.payload),
+                    message: "Please enter a valid number.",
+                };
             case "input-link":
-                return linkValidator.isValidSync(input?.payload);
+                return {
+                    valid: linkValidator.isValidSync(input?.payload),
+                    message: "Please enter a valid link.",
+                };
             case "input-phone":
-                return phoneValidator.isValidSync(input?.payload);
+                return {
+                    valid: phoneValidator.isValidSync(input?.payload),
+                    message: "Please enter a valid phone number.",
+                };
             default:
-                return true;
+                return { valid: true, message: "" };
         }
     };
 

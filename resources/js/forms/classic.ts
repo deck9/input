@@ -1,9 +1,23 @@
 import "@css/embed.css";
 import { createApp, h, Suspense } from "vue";
 import { createPinia } from "pinia";
+import { createI18n } from "vue-i18n";
 import ClassicForm from "./classic/ClassicForm.vue";
 
+import localeDE from "./locales/de.json";
+import localeEN from "./locales/en.json";
+
 const pinia = createPinia();
+
+const i18n = createI18n({
+    legacy: false,
+    locale: "de", // set locale
+    fallbackLocale: "en", // set fallback locale
+    messages: {
+        en: localeEN,
+        de: localeDE,
+    },
+});
 
 const formId = document.currentScript?.getAttribute("data-form");
 let mountElement: Element | string | null = document.querySelector(
@@ -37,4 +51,5 @@ createApp({
     },
 })
     .use(pinia)
+    .use(i18n)
     .mount(mountElement);

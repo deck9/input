@@ -96,6 +96,7 @@ class FormTest extends TestCase
         $updateRequest = [
             'name' => 'New Name',
             'description' => 'better description',
+            'language' => 'de',
 
             // Theme Options
             'brand_color' => '#ffffff',
