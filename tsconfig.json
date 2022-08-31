@@ -13,6 +13,7 @@
         "allowSyntheticDefaultImports": true,
         "allowJs": false,
         "sourceMap": true,
+        "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
             "@/*": ["resources/js/*"]
