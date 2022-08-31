@@ -67,7 +67,9 @@ const imageUrl = computed(() => {
   params.set("w", "256");
   params.set("q", "75");
 
-  return `${store.form[props.type]}?${params.toString()}` ?? false;
+  return store.form[props.type]
+    ? `${store.form[props.type]}?${params.toString()}`
+    : false;
 });
 
 const initUpload = () => {
