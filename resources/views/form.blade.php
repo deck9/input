@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ $form->name }} - a form by {{ $form->user->name }}</title>
+        <title>{{ $ogProperties['title'] ?? config('app.name', 'Input')}}</title>
 
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
@@ -21,21 +21,21 @@
         <meta itemprop="name" content="{{ $ogProperties['title'] ?? config('app.name', 'Input')}}">
         <meta itemprop="description"
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
-        <meta itemprop="image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
+        {{-- <meta itemprop="image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}"> --}}
 
         <!-- Facebook Meta Tags -->
         <meta property="og:title" content="{{ $ogProperties['title'] ?? config('app.name', 'Input')}}">
         <meta property="og:type" content="website">
         <meta property="og:description"
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
-        <meta property="og:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
+        {{-- <meta property="og:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}"> --}}
 
         <!-- Twitter Meta Tags -->
         <meta name="twitter:title" content="{{ $ogProperties['title'] ?? config('app.name', 'Input')}}">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:description"
               content="{{ $ogProperties['description'] ?? 'The survey tool, that lets you create outstanding conversational survey experiences in just a few minutes.'}}">
-        <meta name="twitter:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}">
+        {{-- <meta name="twitter:image" content="{{ $ogProperties['image'] ?? '/images/meta-image.png'}}"> --}}
 
         <!-- Scripts -->
         <script lang="js">
