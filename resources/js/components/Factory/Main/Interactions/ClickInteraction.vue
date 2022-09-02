@@ -77,7 +77,7 @@ const emit = defineEmits<{
   (e: "next", index: number): void;
   (e: "nextSoft", index: number): void;
   (e: "previous", index: number): void;
-  (e: "delete", index: number): void;
+  (e: "onDelete", index: number): void;
 }>();
 
 const labelElement = ref(null) as unknown as Ref<HTMLElement>;
@@ -107,8 +107,8 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 
     case "Backspace":
       if (event.metaKey) {
+        emit("onDelete", props.index);
         await workbench.deleteInteraction(props.item);
-        emit("delete", props.index);
       }
       break;
 

@@ -20,7 +20,7 @@ import { useWorkbench } from ".";
 interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
-    mapping: Record<string, string> | null;
+    mapping: Record<FormBlockType, FormBlockInteractionType> | null;
 }
 
 export const useForm = defineStore("form", {

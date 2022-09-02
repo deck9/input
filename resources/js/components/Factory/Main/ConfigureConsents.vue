@@ -1,7 +1,7 @@
 <template>
   <div>
     <EmptyState
-      v-if="currentInteractions?.length === 0"
+      v-if="workbench.currentInteractions?.length === 0"
       title="Nothing here yet."
       description="Add your first option by clicking on the button below."
     />
@@ -13,7 +13,10 @@
       orientation="vertical"
       @drop="onDrop"
     >
-      <Draggable v-for="(item, index) in currentInteractions" :key="item.id">
+      <Draggable
+        v-for="(item, index) in workbench.currentInteractions"
+        :key="item.id"
+      >
         <ClickInteraction
           v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
           :key="`${item.id}-${index}`"
@@ -21,7 +24,7 @@
           @next="focusNextItem"
           @nextSoft="focusNextItemSoft"
           @previous="focusPreviousItem"
-          @onDelete="focusNeighborItem"
+          @delete="focusNeighborItem"
         />
       </Draggable>
     </Container>
@@ -46,12 +49,11 @@ import { ref, nextTick } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
-import { storeToRefs } from "pinia";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
+import { storeToRefs } from "pinia";
 
 const workbench = useWorkbench();
 const { currentInteractions } = storeToRefs(workbench);
-
 const isCreatingInteraction = ref(false);
 
 const onDrop = ({ removedIndex, addedIndex }: any): void => {

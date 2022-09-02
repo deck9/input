@@ -37,7 +37,7 @@ export const useWorkbench = defineStore("workbench", {
             return typeof store.mapping[state.block.type] !== "undefined";
         },
 
-        usesInteractionType: (state): string | undefined => {
+        usesInteractionType: (state): FormBlockInteractionType | undefined => {
             const store = useForm();
 
             if (!store.mapping || !state.block) {
