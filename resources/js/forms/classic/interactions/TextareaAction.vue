@@ -68,7 +68,7 @@ onUnmounted(() => {
 });
 
 const hasMaxChars = computed(() => {
-  return props.action.options?.max_chars > 0;
+  return props.action.options?.max_chars && props.action.options?.max_chars > 0;
 });
 
 const updateCharCount = () => {

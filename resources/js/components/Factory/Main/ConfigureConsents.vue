@@ -18,7 +18,7 @@
         :key="item.id"
       >
         <ConsentInteraction
-          v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
+          v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
           @next="focusNextItem"
@@ -29,9 +29,9 @@
       </Draggable>
     </Container>
 
-    <div class="mt-4">
+    <div class="mt-8">
       <D9Button
-        label="Add new option"
+        label="Add new policy"
         icon="plus"
         icon-position="left"
         color="dark"

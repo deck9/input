@@ -10,7 +10,11 @@ export function useTextareaAction(block: PublicFormBlockModel) {
 
         const action = block.interactions[0];
 
-        if (action && action.options.max_chars > 0) {
+        if (
+            action &&
+            action.options?.max_chars &&
+            action.options?.max_chars > 0
+        ) {
             if (input.payload.length <= action.options.max_chars) {
                 return { valid: true };
             } else {
