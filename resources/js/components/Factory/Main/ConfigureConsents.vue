@@ -21,10 +21,6 @@
           v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
-          @next="focusNextItem"
-          @nextSoft="focusNextItemSoft"
-          @previous="focusPreviousItem"
-          @delete="focusNeighborItem"
         />
       </Draggable>
     </Container>
@@ -82,14 +78,8 @@ const createConsentPolicy = async () => {
   }
 };
 
-const {
-  bindTemplateRefsForTraversables,
-  focusNextItem,
-  focusNextItemSoft,
-  focusPreviousItem,
-  focusLastItem,
-  focusNeighborItem,
-} = useKeyboardNavigation(currentInteractions, async () => {
-  await createConsentPolicy();
-});
+const { bindTemplateRefsForTraversables, focusLastItem } =
+  useKeyboardNavigation(currentInteractions, () => {
+    return;
+  });
 </script>

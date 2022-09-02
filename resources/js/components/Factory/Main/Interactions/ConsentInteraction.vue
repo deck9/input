@@ -18,10 +18,6 @@
             v-model="label"
             block
             placeholder="Label"
-            @keyup.enter="keyboardCommands"
-            @keyup.up="keyboardCommands"
-            @keyup.down="keyboardCommands"
-            @keydown.meta.delete.prevent="keyboardCommands"
           />
         </div>
         <div>
@@ -31,8 +27,7 @@
             type="text"
             v-model="message"
             block
-            placeholder="Reply"
-            @keyup.enter="keyboardCommands"
+            placeholder="Message"
           />
         </div>
         <div class="flex items-center">
@@ -66,17 +61,10 @@ const props = defineProps<{
   item: FormBlockInteractionModel;
 }>();
 
-const emit = defineEmits<{
-  (e: "next", index: number): void;
-  (e: "nextSoft", index: number): void;
-  (e: "previous", index: number): void;
-  (e: "onDelete", index: number): void;
-}>();
-
 const labelElement = ref(null) as unknown as Ref<HTMLElement>;
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
-const description: Ref<FormBlockInteractionModel["label"]> = ref(
+const message: Ref<FormBlockInteractionModel["label"]> = ref(
   props.item.message
 );
 const options: Ref<FormBlockInteractionModel["options"]> = ref(
@@ -86,41 +74,17 @@ const options: Ref<FormBlockInteractionModel["options"]> = ref(
 const isRequired = ref<boolean>(options.value?.required ?? false);
 
 watch([label, message, isRequired], (newValues) => {
-  console.log("newValues", newValues);
-
   const update = {
     id: props.item.id,
     label: newValues[0],
     message: newValues[1],
+    options: {
+      required: newValues[2],
+    },
   };
 
   workbench.updateInteraction(update);
 });
-
-const keyboardCommands = async (event: KeyboardEvent) => {
-  switch (event.key) {
-    case "Enter":
-      // check for modifier
-      if (event.shiftKey) {
-        return emit("previous", props.index);
-      }
-
-      return emit("next", props.index);
-
-    case "Backspace":
-      if (event.metaKey) {
-        emit("onDelete", props.index);
-        await workbench.deleteInteraction(props.item);
-      }
-      break;
-
-    case "ArrowUp":
-      return emit("previous", props.index);
-
-    case "ArrowDown":
-      return emit("nextSoft", props.index);
-  }
-};
 
 const focus = () => {
   labelElement.value.focus();
