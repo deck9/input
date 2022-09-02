@@ -17,7 +17,7 @@
         v-for="(item, index) in workbench.currentInteractions"
         :key="item.id"
       >
-        <ClickInteraction
+        <ConsentInteraction
           v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
@@ -36,7 +36,7 @@
         icon-position="left"
         color="dark"
         :isLoading="isCreatingInteraction"
-        @click="createClickInteraction"
+        @click="createConsentPolicy"
       />
     </div>
   </div>
@@ -46,7 +46,7 @@
 import { useWorkbench } from "@/stores";
 import { D9Button } from "@deck9/ui";
 import { ref, nextTick } from "vue";
-import ClickInteraction from "./Interactions/ClickInteraction.vue";
+import ConsentInteraction from "./Interactions/ConsentInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
@@ -64,11 +64,11 @@ const onDrop = ({ removedIndex, addedIndex }: any): void => {
   workbench.changeInteractionSequence(removedIndex, addedIndex);
 };
 
-const createClickInteraction = async () => {
+const createConsentPolicy = async () => {
   isCreatingInteraction.value = true;
 
   try {
-    await workbench.createInteraction("button");
+    await workbench.createInteraction("consent");
 
     nextTick(() => {
       focusLastItem();
@@ -90,6 +90,6 @@ const {
   focusLastItem,
   focusNeighborItem,
 } = useKeyboardNavigation(currentInteractions, async () => {
-  await createClickInteraction();
+  await createConsentPolicy();
 });
 </script>

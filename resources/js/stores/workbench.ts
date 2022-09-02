@@ -205,7 +205,7 @@ export const useWorkbench = defineStore("workbench", {
                 );
 
                 if (response.status === 200) {
-                    console.log("saving interaction success");
+                    console.info("saving interaction success");
                 }
             } catch (error) {
                 console.warn(error);
