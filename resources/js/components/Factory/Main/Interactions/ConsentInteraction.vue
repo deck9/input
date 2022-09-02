@@ -26,10 +26,10 @@
         </div>
         <div>
           <D9Textarea
-            :id="item.id + '_reply'"
-            name="reply"
+            :id="item.id + '_message'"
+            name="message"
             type="text"
-            v-model="reply"
+            v-model="message"
             block
             placeholder="Reply"
             @keyup.enter="keyboardCommands"
@@ -76,18 +76,22 @@ const emit = defineEmits<{
 const labelElement = ref(null) as unknown as Ref<HTMLElement>;
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
-const reply: Ref<FormBlockInteractionModel["label"]> = ref(props.item.reply);
+const description: Ref<FormBlockInteractionModel["label"]> = ref(
+  props.item.message
+);
 const options: Ref<FormBlockInteractionModel["options"]> = ref(
   props.item.options
 );
 
 const isRequired = ref<boolean>(options.value?.required ?? false);
 
-watch([label, reply], (newValues) => {
+watch([label, message, isRequired], (newValues) => {
+  console.log("newValues", newValues);
+
   const update = {
     id: props.item.id,
     label: newValues[0],
-    reply: newValues[1],
+    message: newValues[1],
   };
 
   workbench.updateInteraction(update);

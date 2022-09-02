@@ -15,7 +15,7 @@ class FormBlockInteraction extends Model
     public const TEMPLATE_ATTRIBUTES = [
         'type',
         'label',
-        'reply',
+        'message',
         'sequence',
         'options'
     ];
@@ -78,7 +78,7 @@ class FormBlockInteraction extends Model
             'type' => $this->type->value,
             'options' => $this->options,
             'label' => $this->label,
-            'reply' => $this->reply,
+            'message' => $this->message,
         ];
     }
 

@@ -31,7 +31,7 @@
                 {
                     "type": "input",
                     "label": "Your name",
-                    "reply": null,
+                    "message": null,
                     "sequence": 0
                 }
             ]
@@ -46,13 +46,13 @@
                 {
                     "type": "button",
                     "label": "Planes",
-                    "reply": null,
+                    "message": null,
                     "sequence": 0
                 },
                 {
                     "type": "button",
                     "label": "Trains",
-                    "reply": null,
+                    "message": null,
                     "sequence": 1
                 }
             ]
