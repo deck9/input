@@ -64,7 +64,11 @@ onMounted(() => {
 
 const onInput = () => {
   buttonElement.value?.focus();
-  store.toggleResponse(props.action, true);
+  store.toggleResponse(props.action, {
+    accepted: true,
+    consent: props.action.label,
+    consented_to: props.action.message,
+  });
 };
 
 onKeyStroke(shortcutKey, onInput, { target: document });

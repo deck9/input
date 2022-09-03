@@ -161,7 +161,11 @@ export const useConversation = defineStore("form", {
 
         toggleResponse(
             action: PublicFormBlockInteractionModel,
-            value: string | boolean | null
+            value:
+                | Record<string, string | boolean | null>
+                | string
+                | boolean
+                | null
         ) {
             if (!this.currentBlock) return;
 
