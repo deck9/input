@@ -13,6 +13,13 @@
     </div>
     <div class="px-4 py-5 sm:p-6">
       <div v-for="action in activeInteractions" :key="action.id">
+        <Counter
+          v-if="action.type === 'consent'"
+          class="mb-2"
+          :label="action.label ?? 'No label'"
+          :count="action.responses_count"
+        />
+
         <PercentageBar
           v-if="action.type === 'button'"
           class="mb-2"
@@ -33,6 +40,7 @@
 
 <script lang="ts" setup>
 import PercentageBar from "@/components/Factory/Results/PercentageBar.vue";
+import Counter from "@/components/Factory/Results/Counter.vue";
 import ResponseList from "@/components/Factory/Results/ResponseList.vue";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
 
