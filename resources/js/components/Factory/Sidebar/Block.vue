@@ -17,7 +17,12 @@
         class="absolute right-3 top-4 hover:opacity-100"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
-        <D9Menu class="text-grey-400" position="right" :use-portal="true">
+        <D9Menu
+          class="text-grey-400"
+          position="right"
+          :use-portal="true"
+          :key="`${block.sequence}-position-menu`"
+        >
           <D9MenuLink
             as="button"
             class="block w-full text-left"
