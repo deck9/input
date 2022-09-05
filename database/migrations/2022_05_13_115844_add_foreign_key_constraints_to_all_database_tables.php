@@ -66,10 +66,12 @@ return new class extends Migration
 
         Schema::table('form_session_responses', function (Blueprint $table) {
             $table->foreign('form_block_id')
-                ->references('id')->on('form_blocks');
+                ->references('id')->on('form_blocks')
+                ->onDelete('CASCADE');
 
             $table->foreign('form_block_interaction_id')
-                ->references('id')->on('form_block_interactions');
+                ->references('id')->on('form_block_interactions')
+                ->onDelete('CASCADE');
 
             $table->foreign('form_session_id')
                 ->references('id')->on('form_sessions')
