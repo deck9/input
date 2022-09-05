@@ -45,11 +45,11 @@ trait InteractionsTestingContract
         $response = $this->actingAs($interaction->formBlock->form->user)
             ->json('post', route('api.interactions.update', $interaction->id), [
                 'label' => 'Click me',
-                'reply' => 'This is my reply',
+                'message' => 'This is my message',
             ]);
 
         $this->assertEquals('Click me', $response->json('label'));
-        $this->assertEquals('This is my reply', $response->json('reply'));
+        $this->assertEquals('This is my message', $response->json('message'));
     }
 
     /** @test */

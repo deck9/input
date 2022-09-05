@@ -21,6 +21,10 @@ class ViewFormController extends Controller
 
         return response()->view('form', [
             'form' => $form,
+            'ogProperties' => [
+                'title' => $form->name,
+                'description' => $form->description,
+            ],
             'flags' => [
                 'iframe' => $request->input('iframe', false),
                 'hideNavigation' => $request->input('hideNavigation', false),

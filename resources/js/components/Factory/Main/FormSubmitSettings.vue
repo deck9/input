@@ -72,7 +72,11 @@
     <div>
       <h2 class="mb-2 flex items-center text-base font-bold">
         <span class="inline-block">Social Links</span>
-        <D9Switch class="ml-2" label="" v-model="isSocialOn"></D9Switch>
+        <D9Switch
+          class="ml-2"
+          label="Social Links"
+          v-model="isSocialOn"
+        ></D9Switch>
       </h2>
 
       <div

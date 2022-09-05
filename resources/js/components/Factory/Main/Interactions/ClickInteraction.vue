@@ -25,10 +25,10 @@
         </div>
         <div v-if="!multiple">
           <D9Input
-            :id="item.id + '_reply'"
-            name="reply"
+            :id="item.id + '_message'"
+            name="message"
             type="text"
-            v-model="reply"
+            v-model="message"
             block
             placeholder="Reply"
             @keyup.enter="keyboardCommands"
@@ -37,25 +37,13 @@
       </section>
     </div>
 
-    <div
-      class="absolute inset-y-2 -left-24 flex w-24 items-center justify-end space-x-2 pr-2 text-grey-400 opacity-0 transition duration-200 group-hover:opacity-100"
-    >
-      <button
-        tabindex="-1"
-        class="hover:text-grey-600"
-        @click="workbench.deleteInteraction(item)"
-      >
-        <D9Icon name="trash" />
-      </button>
-      <button tabindex="-1" class="handle hover:text-grey-600">
-        <D9Icon name="grip-vertical" />
-      </button>
-    </div>
+    <InteractionHoverActions @onDelete="workbench.deleteInteraction(item)" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { D9Input, D9Icon } from "@deck9/ui";
+import { D9Input } from "@deck9/ui";
+import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch, withDefaults } from "vue";
@@ -77,19 +65,21 @@ const emit = defineEmits<{
   (e: "next", index: number): void;
   (e: "nextSoft", index: number): void;
   (e: "previous", index: number): void;
-  (e: "delete", index: number): void;
+  (e: "onDelete", index: number): void;
 }>();
 
 const labelElement = ref(null) as unknown as Ref<HTMLElement>;
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
-const reply: Ref<FormBlockInteractionModel["label"]> = ref(props.item.reply);
+const message: Ref<FormBlockInteractionModel["label"]> = ref(
+  props.item.message
+);
 
-watch([label, reply], (newValues) => {
+watch([label, message], (newValues) => {
   const update = {
     id: props.item.id,
     label: newValues[0],
-    reply: newValues[1],
+    message: newValues[1],
   };
 
   workbench.updateInteraction(update);
@@ -107,8 +97,8 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 
     case "Backspace":
       if (event.metaKey) {
+        emit("onDelete", props.index);
         await workbench.deleteInteraction(props.item);
-        emit("delete", props.index);
       }
       break;
 

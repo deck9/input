@@ -1,10 +1,12 @@
 import { useInputAction } from "./interactions/useInputAction";
 import { useButtonAction } from "./interactions/useButtonAction";
+import { useConsentAction } from "./interactions/useConsentAction";
 import { useTextareaAction } from "./interactions/useTextareaAction";
 
 export function useActions(block: PublicFormBlockModel) {
     const actionTypes = [
         useButtonAction(block),
+        useConsentAction(block),
         useInputAction(block),
         useTextareaAction(block),
     ];

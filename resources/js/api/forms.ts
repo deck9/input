@@ -147,7 +147,7 @@ export function callDeleteFormImage(
 }
 
 export function callGetFormBlockMapping(): Promise<
-    AxiosResponse<{ mapping: Record<string, string> }>
+    AxiosResponse<{ mapping: Record<FormBlockType, FormBlockInteractionType> }>
 > {
     return new Promise(async (resolve, reject) => {
         try {
@@ -157,7 +157,10 @@ export function callGetFormBlockMapping(): Promise<
             if (response.status === 200) {
                 resolve(
                     response as AxiosResponse<{
-                        mapping: Record<string, string>;
+                        mapping: Record<
+                            FormBlockType,
+                            FormBlockInteractionType
+                        >;
                     }>
                 );
             }

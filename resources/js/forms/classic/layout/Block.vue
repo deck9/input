@@ -25,7 +25,7 @@
       :isDisabled="!validator.valid"
       :isProcessing="store.isProcessing"
       ref="submitButton"
-      :label="store.isLastBlock ? t('Submit') : t('Next')"
+      :label="submitButtonLabel"
       v-bind="{ ...actionProps }"
     />
   </form>
@@ -67,6 +67,14 @@ onMounted(() => {
 });
 
 const showValidationMessage = ref(false);
+
+const submitButtonLabel = computed(() => {
+  if (store.currentBlock?.type === "consent") {
+    return store.isLastBlock ? t("Accept & Submit") : t("Accept");
+  } else {
+    return store.isLastBlock ? t("Submit") : t("Next");
+  }
+});
 
 const onSubmit = async () => {
   if (!validator.value.valid) {
