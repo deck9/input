@@ -9,14 +9,13 @@ class MergeResponsesIntoSession
     public function __invoke($content, Closure $next)
     {
         $responses = $content['responses']
-            ->mapWithKeys(function ($response) {
-                return [
-                    $response['name'] => $response['value'],
-                ];
+            ->groupBy('name')
+            ->map(function ($response) {
+                return join(', ', $response->pluck('value')->sortBy('value')->all());
             })->toArray();
 
-        unset($content['responses']);
         $content = array_merge($content, $responses);
+        $content['responses'] = json_encode($content['responses']->groupBy('name')->toArray());
 
         return $next($content);
     }

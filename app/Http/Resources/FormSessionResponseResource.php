@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\FormBlockType;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FormSessionResponseResource extends JsonResource
@@ -17,13 +18,29 @@ class FormSessionResponseResource extends JsonResource
         try {
             return [
                 'name' => $this->formBlock->title ?? $this->formBlock->uuid,
-                'value' => $this->value
+                'value' => $this->formatValue($this->value),
+                'original' => $this->value,
             ];
         } catch (\Exception $e) {
             return [
                 'name' => '',
-                'value' => ''
+                'value' => '',
+                'original' => ''
             ];
         }
+    }
+
+    protected function formatValue($value)
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if ($this->formBlock->type === FormBlockType::consent) {
+            $accepted = $value['accepted'] ? 'yes' : 'no';
+            return $value['consent'] . ': ' . $accepted;
+        }
+
+        return 'Unsupported value type';
     }
 }
