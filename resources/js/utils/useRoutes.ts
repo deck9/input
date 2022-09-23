@@ -10,7 +10,11 @@ export async function useRoutes(): Promise<{
         absolute?: boolean
     ) => string | undefined;
 }> {
-    const response = await fetch("/api/routes");
+    const response = await fetch(
+        process.env.MIX_APP_URL
+            ? process.env.MIX_APP_URL + "/api/routes"
+            : "/api/routes"
+    );
     const Ziggy = await response.json();
 
     const routeWrapper = (
