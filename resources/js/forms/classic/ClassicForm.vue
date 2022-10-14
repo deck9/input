@@ -28,8 +28,14 @@
       </div>
     </div>
 
-    <footer class="flex justify-between text-center text-xs">
-      <Navigator v-show="!flags.hideNavigation && !store.isSubmitted" />
+    <footer class="flex items-center justify-between text-center text-xs">
+      <Navigator
+        :class="{
+          'pointer-events-none opacity-0':
+            flags.hideNavigation || store.isSubmitted,
+        }"
+      />
+
       <FooterNavigation :form="store.form" />
     </footer>
   </div>
