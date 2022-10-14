@@ -22,6 +22,7 @@ interface FormModel extends BaseModel {
     user_message_background_color: string | null;
     user_message_text_color: string | null;
     user_message_background_color: string | null;
+    show_form_progress: boolean | null;
     eoc_text: string | null;
     eoc_headline: string | null;
     data_retention_days: number | null;
@@ -144,6 +145,7 @@ type PublicFormModel = {
     twitter: string | null;
     show_cta_link: boolean;
     show_social_links: boolean;
+    show_form_progress: boolean;
     is_published: boolean;
 };
 

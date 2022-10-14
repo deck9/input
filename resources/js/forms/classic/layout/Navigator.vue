@@ -24,7 +24,11 @@
         <D9Icon icon="chevron-right" />
       </button>
     </div>
-    <ProgressIndicator class="ml-2" :progress="progress" />
+    <ProgressIndicator
+      v-if="store.form?.show_form_progress"
+      class="ml-2"
+      :progress="progress"
+    />
   </div>
 </template>
 

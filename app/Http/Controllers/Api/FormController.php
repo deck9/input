@@ -48,6 +48,7 @@ class FormController extends Controller
                 'user_message_text_color',
                 'interaction_background_color',
                 'interaction_text_color',
+                'show_form_progress',
                 'cta_link',
                 'cta_label',
                 'cta_append_params',

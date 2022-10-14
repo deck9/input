@@ -26,14 +26,26 @@
         </div>
       </div>
 
-      <D9Button type="submit" label="Save Colors" :is-loading="isSaving" />
+      <hr class="mb-4 border-grey-200" />
+
+      <div class="mb-4 flex justify-between pb-3">
+        <D9Label label="Show Progress Indicator" />
+        <D9Switch
+          label="Show Progress Indicator"
+          v-model="showFormProgress"
+          onLabel="yes"
+          offLabel="no"
+        />
+      </div>
+
+      <D9Button type="submit" label="Save" :is-loading="isSaving" />
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
-import { D9Button, D9Label, D9Input, D9Icon } from "@deck9/ui";
+import { D9Button, D9Label, D9Input, D9Icon, D9Switch } from "@deck9/ui";
 import { ref, watch } from "vue";
 import { useEyeDropper } from "@vueuse/core";
 import ImageUpload from "./partials/ImageUpload.vue";
@@ -43,6 +55,8 @@ const isSaving = ref(false);
 
 const brandColor = ref(store?.form?.brand_color);
 const { isSupported, open, sRGBHex } = useEyeDropper();
+
+const showFormProgress = ref(store?.form?.show_form_progress);
 
 const openPicker = () => {
   open();
@@ -57,6 +71,7 @@ const saveOptions = async () => {
 
   await store.updateForm({
     brand_color: brandColor.value,
+    show_form_progress: showFormProgress.value,
   });
 
   isSaving.value = false;

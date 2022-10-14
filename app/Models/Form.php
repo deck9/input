@@ -38,6 +38,7 @@ class Form extends Model
         'twitter',
         'show_cta_link',
         'show_social_links',
+        'show_form_progress',
     ];
 
     protected $guarded = [];
@@ -47,6 +48,7 @@ class Form extends Model
     protected $casts = [
         'is_notification_via_mail' => 'boolean',
         'show_cta_link' => 'boolean',
+        'show_form_progress' => 'boolean',
         'cta_append_params' => 'boolean',
         'show_social_links' => 'boolean',
         'show_privacy_link' => 'boolean',

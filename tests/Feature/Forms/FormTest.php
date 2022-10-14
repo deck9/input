@@ -106,6 +106,7 @@ class FormTest extends TestCase
             'user_message_text_color' => '#ffffff',
             'interaction_background_color' => '#ffffff',
             'interaction_text_color' => '#ffffff',
+            'show_form_progress' => true,
 
             // Social Settings
             'twitter' => 'philreinking',
@@ -154,6 +155,7 @@ class FormTest extends TestCase
         $this->assertEquals('#ffffff', $form->user_message_text_color);
         $this->assertEquals('#ffffff', $form->interaction_background_color);
         $this->assertEquals('#ffffff', $form->interaction_text_color);
+        $this->assertTrue($form->show_form_progress);
 
         $this->assertTrue($form->show_social_links);
         $this->assertEquals('philreinking', $form->twitter);
