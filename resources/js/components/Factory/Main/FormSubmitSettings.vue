@@ -16,9 +16,18 @@
     </div>
 
     <div>
-      <h2 class="mb-2 text-base font-bold">External Webhook</h2>
+      <h2 class="mb-2 text-base font-bold">Integrations / Data Transmission</h2>
 
       <div>
+        <div class="mb-4">
+          <D9Label label="Integration" />
+          <D9Select
+            block
+            :options="integrationTypes"
+            disabledBadge="Planned"
+            v-model="integrationMethod"
+          />
+        </div>
         <div class="mb-4">
           <D9Label label="Submit Method" />
           <D9Select block :options="submitTypes" v-model="submitMethod" />
@@ -137,6 +146,14 @@ const store = useForm();
 
 const outroHeadline = ref(store.form?.eoc_headline);
 const outroMessage = ref(store.form?.eoc_text);
+
+const integrationTypes = ref([
+  { label: "Webhook", value: "webhook" },
+  { label: "Make", value: "make", disabled: true },
+  { label: "Zapier", value: "zapier", disabled: true },
+]);
+
+const integrationMethod = ref(integrationTypes.value[0]);
 
 const submitTypes = ref([
   { label: "GET", value: "GET" },
