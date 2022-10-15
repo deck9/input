@@ -113,6 +113,7 @@ type PublicFormBlockModel = {
     message: string | null;
     title: string | null;
     type: FormBlockType;
+    is_required: boolean | null;
     interactions: Array<PublicFormBlockInteractionModel>;
 };
 

@@ -8,7 +8,7 @@ export function useConsentAction(block: PublicFormBlockModel) {
     const validator = (input: any) => {
         const validationMessage = t("validation.consent_required");
 
-        // get all required interacitons
+        // get all required interactions
         const required = block.interactions.filter((item) => {
             return item.options?.required;
         });
@@ -30,6 +30,14 @@ export function useConsentAction(block: PublicFormBlockModel) {
                         isValid = false;
                     }
                 });
+            }
+        }
+
+        if (block.is_required) {
+            if (!input) {
+                isValid = false;
+            } else if (input.length === 0) {
+                isValid = false;
             }
         }
 

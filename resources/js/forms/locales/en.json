@@ -1,6 +1,6 @@
 {
-    "Accept": "Accept",
     "Accept & Submit": "Accept & Submit",
+    "Accept": "Accept",
     "Close": "Close",
     "Enter": "Enter",
     "Find us here": "Find us here",
@@ -14,6 +14,7 @@
     "Please select an option.": "Please select an option.",
     "Previous": "Previous",
     "Privacy Policy": "Privacy Policy",
+    "required": "required",
     "Something went wrong validating your input": "Something went wrong validating your input",
     "Submit": "Submit",
     "This field is required.": "This field is required.",

@@ -22,26 +22,37 @@ export function useInputAction(block: PublicFormBlockModel) {
         switch (block.type) {
             case "input-email":
                 return {
-                    valid: emailValidator.isValidSync(input?.payload),
+                    valid:
+                        (!block.is_required && !input?.payload) ||
+                        emailValidator.isValidSync(input?.payload),
                     message: "Please enter a valid email.",
                 };
             case "input-number":
                 return {
-                    valid: numberValidator.isValidSync(input?.payload),
+                    valid:
+                        (!block.is_required && !input?.payload) ||
+                        numberValidator.isValidSync(input?.payload),
                     message: "Please enter a valid number.",
                 };
             case "input-link":
                 return {
-                    valid: linkValidator.isValidSync(input?.payload),
+                    valid:
+                        (!block.is_required && !input?.payload) ||
+                        linkValidator.isValidSync(input?.payload),
                     message: "Please enter a valid link.",
                 };
             case "input-phone":
                 return {
-                    valid: phoneValidator.isValidSync(input?.payload),
+                    valid:
+                        (!block.is_required && !input?.payload) ||
+                        phoneValidator.isValidSync(input?.payload),
                     message: "Please enter a valid phone number.",
                 };
             default:
-                return { valid: true, message: "" };
+                return {
+                    valid: block.is_required ? input?.payload.length > 0 : true,
+                    message: "This field is required",
+                };
         }
     };
 

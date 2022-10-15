@@ -71,6 +71,31 @@ export const useConversation = defineStore("form", {
             return null;
         },
 
+        countCurrentSelections(): number {
+            if (!this.currentPayload) return 0;
+
+            if (Array.isArray(this.currentPayload)) {
+                return this.currentPayload.length;
+            }
+
+            return 1;
+        },
+
+        hasRequiredFields(): boolean {
+            if (!this.currentBlock) return false;
+
+            if (this.currentBlock.is_required) {
+                return true;
+            }
+            this.currentBlock.interactions.forEach((interaction) => {
+                if (interaction.options?.required) {
+                    return true;
+                }
+            });
+
+            return false;
+        },
+
         /**
          * This getter determines if the user has entered content that is not saved yet.
          * For now that is the case once a user typed something in and is at least

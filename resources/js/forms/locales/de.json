@@ -1,6 +1,6 @@
 {
-    "Accept": "Akzeptieren",
     "Accept & Submit": "Akzeptieren & Absenden",
+    "Accept": "Akzeptieren",
     "Close": "Schliessen",
     "Enter": "Enter",
     "Find us here": "Finde uns hier",
@@ -14,6 +14,7 @@
     "Please select an option.": "Bitte wähle eine Option aus.",
     "Previous": "Zurück",
     "Privacy Policy": "Datenschutzerklärung",
+    "required": "Pflichtfeld",
     "Something went wrong validating your input": "Beim Validieren deiner Eingabe ist etwas schief gelaufen.",
     "Submit": "Absenden",
     "This field is required.": "Dieses Feld ist erforderlich.",

@@ -3,9 +3,7 @@
     <div class="inline-block pl-10">
       <span class="block font-medium">
         {{ action.label }}
-        <sup v-if="action.options?.required" class="text-red-600"
-          >*required</sup
-        >
+        <RequiredMark v-if="action.options?.required" />
       </span>
 
       <p v-html="action.message"></p>
@@ -31,6 +29,7 @@ import { computed, ComputedRef, inject } from "@vue/runtime-core";
 import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
+import RequiredMark from "@/forms/classic/layout/RequiredMark.vue";
 
 const store = useConversation();
 
