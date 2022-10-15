@@ -23,7 +23,7 @@
       </div>
 
       <div
-        class="mt-4 grid gap-2 md:grid-cols-2"
+        class="mx-auto mt-4 grid max-w-screen-sm gap-6 lg:max-w-none lg:grid-cols-2"
         v-if="store.form?.total_sessions && store.form?.total_sessions > 0"
       >
         <BlockResultItem
