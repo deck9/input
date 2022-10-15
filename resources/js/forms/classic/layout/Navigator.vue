@@ -19,6 +19,8 @@
       <button
         type="button"
         class="inline-flex items-center justify-center border-l border-grey-100 py-1 hover:bg-grey-100"
+        :class="[{ 'pointer-events-none opacity-25': !validator.valid }]"
+        :disabled="!validator.valid"
         :aria-label="t('Next')"
         @click="!store.isLastBlock ? store.next() : false"
       >
@@ -38,15 +40,31 @@ import { D9Icon } from "@deck9/ui";
 import { useConversation } from "@/stores/conversation";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { useActions } from "@/forms/classic/useActions";
 import ProgressIndicator from "@/forms/classic/layout/ProgressIndicator.vue";
+
+const store = useConversation();
 
 const { t } = useI18n();
 
-defineProps<{
+const props = defineProps<{
   hideNavigation?: boolean;
+  block?: PublicFormBlockModel | null;
 }>();
 
-const store = useConversation();
+const { actionValidator } = props.block
+  ? useActions(props.block)
+  : {
+      actionValidator: () => {
+        return { valid: true };
+      },
+    };
+
+const validator = computed(() => {
+  return actionValidator
+    ? actionValidator(store.currentPayload)
+    : { valid: true };
+});
 
 const totalPages = computed(() => {
   return store.queue?.length ?? 0;

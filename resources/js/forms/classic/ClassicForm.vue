@@ -30,7 +30,11 @@
 
     <footer class="flex items-center justify-between text-center text-xs">
       <Navigator
-        v-bind="{ hideNavigation: flags.hideNavigation }"
+        v-bind="{
+          hideNavigation: flags.hideNavigation,
+          block: store.currentBlock,
+        }"
+        :key="store.currentBlock?.id ?? 'navigator'"
         :class="{
           'pointer-events-none opacity-0': store.isSubmitted,
         }"
