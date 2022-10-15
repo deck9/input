@@ -70,7 +70,11 @@ const showValidationMessage = ref(false);
 
 const submitButtonLabel = computed(() => {
   if (store.currentBlock?.type === "consent") {
-    return store.isLastBlock ? t("Accept & Submit") : t("Accept");
+    if (!store.hasRequiredFields && store.countCurrentSelections === 0) {
+      return store.isLastBlock ? t("Submit") : t("Continue");
+    } else {
+      return store.isLastBlock ? t("Accept & Submit") : t("Accept");
+    }
   } else {
     return store.isLastBlock ? t("Submit") : t("Next");
   }

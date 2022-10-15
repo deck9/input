@@ -57,6 +57,7 @@ interface FormBlockModel extends BaseModel {
     options: string | null;
     responses: string | null;
     has_parent_interaction: number | null;
+    is_required: boolean | null;
     webhook_url: string;
     sequence: number;
     form_id: number;
@@ -112,6 +113,7 @@ type PublicFormBlockModel = {
     message: string | null;
     title: string | null;
     type: FormBlockType;
+    is_required: boolean | null;
     interactions: Array<PublicFormBlockInteractionModel>;
 };
 

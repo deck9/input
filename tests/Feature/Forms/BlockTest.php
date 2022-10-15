@@ -215,6 +215,22 @@ class BlockTest extends TestCase
     }
 
     /** @test */
+    public function can_make_a_block_required_for_form_user()
+    {
+        $block = FormBlock::factory()->create();
+
+        $this->actingAs($block->form->user)
+            ->json('POST', route('api.blocks.update', $block->id), ['is_required' => true]);
+
+        $this->assertTrue($block->fresh()->is_required);
+
+        $this->actingAs($block->form->user)
+            ->json('POST', route('api.blocks.update', $block->id), ['is_required' => false]);
+
+        $this->assertFalse($block->fresh()->is_required);
+    }
+
+    /** @test */
     public function can_save_information_in_an_options_field()
     {
         $block = FormBlock::factory()->create();

@@ -30,9 +30,8 @@ class FormBlock extends Model
     protected $with = ['formBlockInteractions'];
 
     protected $casts = [
-        'responses' => 'array',
-        'is_skippable' => 'boolean',
-        'is_child' => 'boolean',
+        'has_parent_interaction' => 'boolean',
+        'is_required' => 'boolean',
         'form_id' => 'integer',
         'options' => 'array',
         'type' => FormBlockType::class,
@@ -142,19 +141,6 @@ class FormBlock extends Model
             $interaction = $this->formBlockInteractions->firstWhere('id', $id);
             $interaction->update(['sequence' => $pos]);
         }
-    }
-
-    public function getPublicJson()
-    {
-        return [
-            'id' => $this->uuid,
-            'type' => $this->type->value,
-            'title' => $this->title,
-            'message' => $this->message,
-            'interactions' => $this->activeInteractions->map(function ($interaction) {
-                return $interaction->getPublicJson();
-            })->toArray(),
-        ];
     }
 
     public function toTemplate()

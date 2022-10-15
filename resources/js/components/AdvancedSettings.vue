@@ -1,7 +1,7 @@
 <template>
   <div>
     <button class="text-xs text-grey-400" @click="open = !open">
-      More Settings
+      {{ title }}
       <D9Icon size="xs" :name="open ? 'chevron-down' : 'chevron-right'" />
     </button>
 
@@ -14,6 +14,10 @@
 <script setup lang="ts">
 import { D9Icon } from "@deck9/ui";
 import { ref } from "vue";
+
+defineProps<{
+  title: string;
+}>();
 
 const open = ref(false);
 </script>

@@ -1,13 +1,14 @@
 import ButtonAction from "@/forms/classic/interactions/ConsentAction.vue";
+import { useI18n } from "vue-i18n";
 
 export function useConsentAction(block: PublicFormBlockModel) {
+    const { t } = useI18n();
     const useThis = ["consent"].includes(block.type);
 
     const validator = (input: any) => {
-        const validationMessage =
-            "To continue, you must agree to the terms and conditions.";
+        const validationMessage = t("validation.consent_required");
 
-        // get all required interacitons
+        // get all required interactions
         const required = block.interactions.filter((item) => {
             return item.options?.required;
         });
@@ -29,6 +30,14 @@ export function useConsentAction(block: PublicFormBlockModel) {
                         isValid = false;
                     }
                 });
+            }
+        }
+
+        if (block.is_required) {
+            if (!input) {
+                isValid = false;
+            } else if (input.length === 0) {
+                isValid = false;
             }
         }
 

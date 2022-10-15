@@ -10,7 +10,7 @@
       icon="chevron-right"
     />
 
-    <AdvancedSettings>
+    <AdvancedSettings title="Block Settings">
       <div>
         <D9Label
           label="Identifier"
@@ -18,13 +18,22 @@
         />
         <D9Input v-model="title" block />
       </div>
+      <div class="mt-4">
+        <D9Label
+          label="Required"
+          description="If you make this block required, it cannot be skipped by the form user."
+        />
+        <div class="mt-1">
+          <D9Switch v-model="isRequired" />
+        </div>
+      </div>
     </AdvancedSettings>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Select, D9Label, D9Input } from "@deck9/ui";
+import { D9Select, D9Label, D9Input, D9Switch } from "@deck9/ui";
 import { ref, Ref, watch } from "vue";
 import { useBlockTypes } from "../utils/useBlockTypes";
 import AdvancedSettings from "@/components/AdvancedSettings.vue";
@@ -50,11 +59,13 @@ watch(selected, (newValue) => {
 });
 
 const title = ref(workbench.block?.title || "");
+const isRequired = ref(workbench.block?.is_required || false);
 
-watch(title, (newValue) => {
+watch([title, isRequired], (newValue) => {
   if (newValue) {
     workbench.updateBlock({
-      title: newValue,
+      title: newValue[0],
+      is_required: newValue[1],
     });
   }
 });

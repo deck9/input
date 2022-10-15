@@ -1,6 +1,6 @@
 {
-    "Accept": "Akzeptieren",
     "Accept & Submit": "Akzeptieren & Absenden",
+    "Accept": "Akzeptieren",
     "Close": "Schliessen",
     "Enter": "Enter",
     "Find us here": "Finde uns hier",
@@ -14,8 +14,12 @@
     "Please select an option.": "Bitte wähle eine Option aus.",
     "Previous": "Zurück",
     "Privacy Policy": "Datenschutzerklärung",
-    "Something went wrong validating your input": "Es ist etwas schief gelaufen beim Validieren deiner Eingabe.",
+    "required": "Pflichtfeld",
+    "Something went wrong validating your input": "Beim Validieren deiner Eingabe ist etwas schief gelaufen.",
     "Submit": "Absenden",
     "This field is required.": "Dieses Feld ist erforderlich.",
-    "You have exceeded the maximum number of characters allowed.": "Du hast die maximale Anzahl von Zeichen überschritten."
+    "You have exceeded the maximum number of characters allowed.": "Du hast die maximale Anzahl von Zeichen überschritten.",
+    "validation": {
+        "consent_required": "Um fortzufahren, musst Du den Bedingungen zustimmen."
+    }
 }

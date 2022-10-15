@@ -6,23 +6,29 @@ export function useButtonAction(block: PublicFormBlockModel) {
     const validator = (input: any) => {
         const validationMessage = "Please select an option.";
 
-        if (!input) {
-            return {
-                message: validationMessage,
-                valid: false,
-            };
-        }
+        if (block.is_required) {
+            if (!input) {
+                return {
+                    message: validationMessage,
+                    valid: false,
+                };
+            }
 
-        if (Array.isArray(input)) {
+            if (Array.isArray(input)) {
+                return {
+                    message: validationMessage,
+                    valid: input.length > 0,
+                };
+            }
+
             return {
+                valid: input?.payload && input.actionId,
                 message: validationMessage,
-                valid: input.length > 0,
             };
         }
 
         return {
-            valid: input.payload && input.actionId,
-            message: validationMessage,
+            valid: true,
         };
     };
 

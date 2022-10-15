@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="mb-2 text-base font-bold">Settings</h2>
+    <h2 class="mb-2 text-base font-bold">Input Settings</h2>
 
     <ConfigureInput v-if="workbench.usesInteractionType === 'input'" />
     <ConfigureTextarea v-if="workbench.usesInteractionType === 'textarea'" />

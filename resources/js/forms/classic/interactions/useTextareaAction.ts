@@ -4,7 +4,10 @@ export function useTextareaAction(block: PublicFormBlockModel) {
     const useThis = ["input-long"].includes(block.type);
 
     const validator = (input: any) => {
-        if (!input) {
+        if (
+            block.is_required &&
+            (!input || input?.payload?.trim().length === 0)
+        ) {
             return { valid: false, message: "This field is required" };
         }
 
@@ -15,9 +18,7 @@ export function useTextareaAction(block: PublicFormBlockModel) {
             action.options?.max_chars &&
             action.options?.max_chars > 0
         ) {
-            if (input.payload.length <= action.options.max_chars) {
-                return { valid: true };
-            } else {
+            if (input?.payload.length >= action.options.max_chars) {
                 return {
                     valid: false,
                     message:
