@@ -32,6 +32,7 @@ class FormBlockUpdateRequest extends FormRequest
             'webhook_url' => 'url|nullable',
             'options' => 'array|nullable',
             'title' => 'string|nullable',
+            'is_required' => 'boolean|nullable',
             'type' => [new Enum(FormBlockType::class)]
         ];
     }

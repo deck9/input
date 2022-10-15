@@ -30,9 +30,8 @@ class FormBlock extends Model
     protected $with = ['formBlockInteractions'];
 
     protected $casts = [
-        'responses' => 'array',
-        'is_skippable' => 'boolean',
-        'is_child' => 'boolean',
+        'has_parent_interaction' => 'boolean',
+        'is_required' => 'boolean',
         'form_id' => 'integer',
         'options' => 'array',
         'type' => FormBlockType::class,
