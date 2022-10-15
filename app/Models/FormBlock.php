@@ -143,19 +143,6 @@ class FormBlock extends Model
         }
     }
 
-    public function getPublicJson()
-    {
-        return [
-            'id' => $this->uuid,
-            'type' => $this->type->value,
-            'title' => $this->title,
-            'message' => $this->message,
-            'interactions' => $this->activeInteractions->map(function ($interaction) {
-                return $interaction->getPublicJson();
-            })->toArray(),
-        ];
-    }
-
     public function toTemplate()
     {
         $blocks = $this->only(self::TEMPLATE_ATTRIBUTES);

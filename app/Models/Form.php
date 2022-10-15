@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PublicFormResource;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Http\Resources\PublicFormBlockResource;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -314,13 +315,9 @@ class Form extends Model
     {
         $blockCount = $this->blocksCount();
 
-        $blocks = $this->formBlocks->map(function ($block) {
-            return $block->getPublicJson();
-        });
-
         return [
             'count' => $blockCount,
-            'blocks' => $blocks,
+            'blocks' => PublicFormBlockResource::collection($this->formBlocks),
         ];
     }
 }

@@ -71,17 +71,6 @@ class FormBlockInteraction extends Model
         return $this->formSessionResponses->count();
     }
 
-    public function getPublicJson()
-    {
-        return [
-            'id' => $this->uuid,
-            'type' => $this->type->value,
-            'options' => $this->options,
-            'label' => $this->label,
-            'message' => $this->message,
-        ];
-    }
-
     public function toTemplate()
     {
         return $this->only(self::TEMPLATE_ATTRIBUTES);
