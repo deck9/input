@@ -1,6 +1,7 @@
 <template>
   <div class="flex items-center">
     <div
+      v-show="!hideNavigation"
       class="grid w-24 grid-cols-4 rounded border border-grey-200 text-grey-800"
       :class="{ 'pointer-events-none opacity-50': store.isSubmitted }"
     >
@@ -40,6 +41,10 @@ import { useI18n } from "vue-i18n";
 import ProgressIndicator from "@/forms/classic/layout/ProgressIndicator.vue";
 
 const { t } = useI18n();
+
+defineProps<{
+  hideNavigation?: boolean;
+}>();
 
 const store = useConversation();
 

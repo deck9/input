@@ -30,9 +30,9 @@
 
     <footer class="flex items-center justify-between text-center text-xs">
       <Navigator
+        v-bind="{ hideNavigation: flags.hideNavigation }"
         :class="{
-          'pointer-events-none opacity-0':
-            flags.hideNavigation || store.isSubmitted,
+          'pointer-events-none opacity-0': store.isSubmitted,
         }"
       />
 
