@@ -11,9 +11,9 @@ class ShowFormController extends Controller
 {
     public function __invoke(Form $form)
     {
-        // if (!$form->is_published) {
-        //     abort(404);
-        // }
+        if (!$form->is_published) {
+            abort(404);
+        }
 
         return new PublicFormResource($form);;
     }
