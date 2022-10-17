@@ -33,7 +33,6 @@
           <D9MenuLink
             as="button"
             class="block w-full text-left"
-            :disabled="block.type === 'consent'"
             label="Delete"
             @click.stop="deleteBlock"
           />

@@ -34,7 +34,6 @@
           hideNavigation: flags.hideNavigation,
           block: store.currentBlock,
         }"
-        :key="store.currentBlock?.id ?? 'navigator'"
         :class="{
           'pointer-events-none opacity-0': store.isSubmitted,
         }"
