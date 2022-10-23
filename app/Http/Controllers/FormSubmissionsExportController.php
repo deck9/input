@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Pipes\MergeResponsesIntoSession;
 use App\Http\Resources\FormSessionResource;
 
-class FormResultsExportController extends Controller
+class FormSubmissionsExportController extends Controller
 {
     public function __invoke(Form $form)
     {

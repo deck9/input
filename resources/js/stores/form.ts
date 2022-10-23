@@ -52,7 +52,7 @@ export const useForm = defineStore("form", {
             this.blocks = null;
         },
 
-        async refreshForm(includeResults = false) {
+        async refreshForm(includeSubmissions = false) {
             if (this.form) {
                 const response = await callGetForm(this.form);
                 this.form = null;
@@ -60,7 +60,7 @@ export const useForm = defineStore("form", {
             }
 
             if (this.blocks) {
-                await this.getBlocks(includeResults);
+                await this.getBlocks(includeSubmissions);
             }
 
             return Promise.resolve(true);
@@ -72,14 +72,14 @@ export const useForm = defineStore("form", {
             this.mapping = response.data.mapping;
         },
 
-        async getBlocks(includeResults = false) {
+        async getBlocks(includeSubmissions = false) {
             if (!this.form) {
                 return;
             }
 
             const response = await callGetFormBlocks(
                 this.form.uuid,
-                includeResults
+                includeSubmissions
             );
 
             this.blocks = response.data;

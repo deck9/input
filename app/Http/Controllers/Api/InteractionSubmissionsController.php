@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FormBlockInteraction;
 use Illuminate\Http\Request;
 
-class InteractionResultsController extends Controller
+class InteractionSubmissionsController extends Controller
 {
     public function show(FormBlockInteraction $interaction)
     {

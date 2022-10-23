@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class FormResultsController extends Controller
+class FormSubmissionsController extends Controller
 {
     public function show(Request $request, string $uuid)
     {

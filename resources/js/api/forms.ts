@@ -223,7 +223,7 @@ export function callImportFormTemplate(
     });
 }
 
-export function callPurgeResults(form: FormModel): Promise<AxiosResponse> {
+export function callPurgeSubmissions(form: FormModel): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(

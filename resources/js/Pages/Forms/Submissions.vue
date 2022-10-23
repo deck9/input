@@ -1,5 +1,5 @@
 <template>
-  <app-layout title="Results">
+  <app-layout title="Submissions">
     <div class="w-full max-w-5xl px-4 pb-8 text-left">
       <div v-if="store.form" class="flex w-full items-end justify-between">
         <FormSummary
@@ -8,16 +8,16 @@
         />
         <div class="space-x-2">
           <D9Button
-            label="Purge Results"
+            label="Purge Submissions"
             icon="trash"
             color="light"
-            @click="purgeResults"
+            @click="purgeSubmissions"
           />
           <D9Button
-            label="Download Results"
+            label="Download Submissions"
             icon="cloud-download"
             color="dark"
-            @click="downloadResultsExport"
+            @click="downloadSubmissionsExport"
           />
         </div>
       </div>
@@ -26,7 +26,7 @@
         class="mx-auto mt-4 grid max-w-screen-sm gap-6 lg:max-w-none lg:grid-cols-2"
         v-if="store.form?.total_sessions && store.form?.total_sessions > 0"
       >
-        <BlockResultItem
+        <BlockSubmissionItem
           :block="block"
           v-for="block in store.blocks"
           :key="block.id"
@@ -48,10 +48,10 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@/stores";
 import { onMounted, onUnmounted } from "vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
-import BlockResultItem from "@/components/Factory/Results/BlockResultItem.vue";
+import BlockSubmissionItem from "@/components/Factory/Submissions/BlockSubmissionItem.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import { D9Button } from "@deck9/ui";
-import { callPurgeResults } from "@/api/forms";
+import { callPurgeSubmissions } from "@/api/forms";
 
 const props = defineProps<{
   form: FormModel;
@@ -66,7 +66,7 @@ onMounted(async () => {
   await Promise.all([store.getBlocks(true), store.getFormBlockMapping()]);
 });
 
-const downloadResultsExport = () => {
+const downloadSubmissionsExport = () => {
   window
     .open(
       window.route("forms.results-export", { form: props.form.uuid }),
@@ -75,13 +75,13 @@ const downloadResultsExport = () => {
     ?.focus();
 };
 
-const purgeResults = async () => {
+const purgeSubmissions = async () => {
   let confirm = window.confirm(
     "Are you sure you want to delete all collected data for this form? This actions is not reversible"
   );
 
   if (confirm) {
-    await callPurgeResults(props.form);
+    await callPurgeSubmissions(props.form);
     await store.refreshForm(true);
   }
 };

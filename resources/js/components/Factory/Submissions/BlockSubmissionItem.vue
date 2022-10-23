@@ -39,9 +39,9 @@
 </template>
 
 <script lang="ts" setup>
-import PercentageBar from "@/components/Factory/Results/PercentageBar.vue";
-import Counter from "@/components/Factory/Results/Counter.vue";
-import ResponseList from "@/components/Factory/Results/ResponseList.vue";
+import PercentageBar from "@/components/Factory/Submissions/PercentageBar.vue";
+import Counter from "@/components/Factory/Submissions/Counter.vue";
+import ResponseList from "@/components/Factory/Submissions/ResponseList.vue";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
 
 const props = defineProps<{

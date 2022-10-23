@@ -1,7 +1,7 @@
 <template>
   <div
     class="group relative flex cursor-pointer justify-between rounded bg-blue-200 py-1 pl-4 pr-6"
-    @click="copyResult"
+    @click="copySubmission"
   >
     <span class="pointer-events-none relative font-medium">{{ label }}</span>
     <span class="relative font-medium">{{ count }}</span>
@@ -16,7 +16,7 @@ const props = defineProps<{
   count: number;
 }>();
 
-const copyResult = () => {
+const copySubmission = () => {
   copy(`${props.label}: ${props.count}`);
 };
 </script>

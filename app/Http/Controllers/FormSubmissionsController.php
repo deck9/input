@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
-class FormResultsController extends Controller
+class FormSubmissionsController extends Controller
 {
     public function show(Request $request, string $uuid)
     {
@@ -14,7 +14,7 @@ class FormResultsController extends Controller
             ->withUuid($uuid)
             ->firstOrFail();
 
-        return Inertia::render('Forms/Results', [
+        return Inertia::render('Forms/Submissions', [
             'form' => $form,
         ]);
     }

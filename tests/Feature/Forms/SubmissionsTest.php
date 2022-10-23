@@ -12,7 +12,7 @@ use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ResultsTest extends TestCase
+class SubmissionsTest extends TestCase
 {
     use RefreshDatabase;
 

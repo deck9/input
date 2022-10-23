@@ -5,10 +5,10 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FormEditController;
 use App\Http\Controllers\ViewFormController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FormResultsController;
+use App\Http\Controllers\FormSubmissionsController;
 use App\Http\Controllers\MetaPreviewController;
 use App\Http\Controllers\FormSettingsController;
-use App\Http\Controllers\FormResultsExportController;
+use App\Http\Controllers\FormSubmissionsExportController;
 use App\Http\Controllers\FormDownloadTemplateController;
 
 $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $router) {
@@ -16,13 +16,13 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
 
     $router->get('forms/{uuid}/edit', [FormEditController::class, 'show'])->name('forms.edit');
     $router->get('forms/{uuid}/settings', [FormSettingsController::class, 'show'])->name('forms.settings');
-    $router->get('forms/{uuid}/results', [FormResultsController::class, 'show'])->name('forms.results');
+    $router->get('forms/{uuid}/results', [FormSubmissionsController::class, 'show'])->name('forms.results');
 
     // Form Template Download
     $router->get('forms/{form}/template-export', FormDownloadTemplateController::class)->name('forms.template-download');
 
-    // Form Results Export Routes
-    $router->get('forms/{form}/results-export', FormResultsExportController::class)->name('forms.results-export');
+    // Form Submissions Export Routes
+    $router->get('forms/{form}/results-export', FormSubmissionsExportController::class)->name('forms.results-export');
 });
 
 $router->get('/images/{path}', [ImageController::class, 'show'])->where('path', '.*')->name('images.show');

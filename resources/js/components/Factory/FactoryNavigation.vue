@@ -6,8 +6,8 @@
     <NavigationButton icon="cog" route-name="forms.settings"
       >Settings</NavigationButton
     >
-    <NavigationButton icon="chart-pie" route-name="forms.results"
-      >Results</NavigationButton
+    <NavigationButton icon="file-text" route-name="forms.results"
+      >Submissions</NavigationButton
     >
   </section>
 </template>

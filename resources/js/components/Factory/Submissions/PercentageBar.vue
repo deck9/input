@@ -1,7 +1,7 @@
 <template>
   <div
     class="group relative flex w-full cursor-pointer justify-between overflow-hidden rounded px-2 py-1"
-    @click="copyResult"
+    @click="copySubmission"
   >
     <div
       class="absolute inset-y-0 left-0 bg-blue-300 transition-colors duration-150 group-hover:bg-blue-200"
@@ -27,7 +27,7 @@ const { formatted, value } = useFormattedNumber(
   navigator.language
 );
 
-const copyResult = () => {
+const copySubmission = () => {
   copy(`${props.label}: ${formatted.value}%`);
 };
 </script>

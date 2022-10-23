@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Form;
 use App\Http\Controllers\Controller;
 
-class PurgeFormResultsController extends Controller
+class PurgeFormSubmissionsController extends Controller
 {
     public function __invoke(Form $form)
     {

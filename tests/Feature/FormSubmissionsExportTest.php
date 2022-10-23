@@ -11,7 +11,7 @@ use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class FormResultsExportTest extends TestCase
+class FormSubmissionsExportTest extends TestCase
 {
     use RefreshDatabase;
 

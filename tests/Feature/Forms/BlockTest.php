@@ -69,7 +69,7 @@ class BlockTest extends TestCase
 
         $response = $this->actingAs($form->user)
             ->json('get', route('api.blocks.index', $form->uuid), [
-                'includeResults' => 'true',
+                'includeSubmissions' => 'true',
             ]);
 
         $this->assertEquals(5, $response->json('1.session_count'));

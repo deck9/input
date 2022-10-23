@@ -18,7 +18,7 @@ class FormBlockController extends Controller
 
         $blocks = $form->formBlocks->sortBy('sequence');
 
-        if ($request->has('includeResults') && $request->input('includeResults') === 'true') {
+        if ($request->has('includeSubmissions') && $request->input('includeSubmissions') === 'true') {
             $blocks->each(function ($block) {
                 $block->setAppends(['session_count', 'interactions']);
                 $block->formBlockInteractions->each->setAppends(['responses_count']);
