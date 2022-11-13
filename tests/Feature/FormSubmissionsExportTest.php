@@ -47,7 +47,7 @@ class FormSubmissionsExportTest extends TestCase
             ]);
 
         $response = $this->actingAs($form->user)
-            ->json('GET', route('forms.results-export', $form))
+            ->json('GET', route('forms.submissions-export', $form))
             ->assertOk();
 
         $response->assertDownload('test-form.results.csv');

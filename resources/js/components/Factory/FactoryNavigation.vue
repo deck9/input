@@ -6,8 +6,11 @@
     <NavigationButton icon="cog" route-name="forms.settings"
       >Settings</NavigationButton
     >
-    <NavigationButton icon="file-text" route-name="forms.results"
+    <NavigationButton icon="file-text" route-name="forms.submissions"
       >Submissions</NavigationButton
+    >
+    <NavigationButton icon="file-text" route-name="forms.summary"
+      >Summary</NavigationButton
     >
   </section>
 </template>

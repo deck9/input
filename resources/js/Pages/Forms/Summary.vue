@@ -6,27 +6,17 @@
           class="mt-6"
           v-bind="{ form: store.form, blocks: store.blocks || undefined }"
         />
-        <div class="space-x-2">
-          <D9Button
-            label="Purge Submissions"
-            icon="trash"
-            color="light"
-            @click="purgeSubmissions"
-          />
-          <D9Button
-            label="Download Submissions"
-            icon="cloud-download"
-            color="dark"
-            @click="downloadSubmissionsExport"
-          />
-        </div>
       </div>
 
       <div
         class="mx-auto mt-4 grid max-w-screen-sm gap-6 lg:max-w-none lg:grid-cols-2"
         v-if="store.form?.total_sessions && store.form?.total_sessions > 0"
       >
-        show submissions table
+        <BlockSubmissionItem
+          :block="block"
+          v-for="block in store.blocks"
+          :key="block.id"
+        />
       </div>
 
       <EmptyState
@@ -44,9 +34,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@/stores";
 import { onMounted, onUnmounted } from "vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
+import BlockSubmissionItem from "@/components/Factory/Submissions/BlockSubmissionItem.vue";
 import EmptyState from "@/components/EmptyState.vue";
-import { D9Button } from "@deck9/ui";
-import { callPurgeSubmissions } from "@/api/forms";
 
 const props = defineProps<{
   form: FormModel;
@@ -60,26 +49,6 @@ onUnmounted(() => {
 onMounted(async () => {
   await Promise.all([store.getBlocks(true), store.getFormBlockMapping()]);
 });
-
-const downloadSubmissionsExport = () => {
-  window
-    .open(
-      window.route("forms.submissions-export", { form: props.form.uuid }),
-      "_blank"
-    )
-    ?.focus();
-};
-
-const purgeSubmissions = async () => {
-  let confirm = window.confirm(
-    "Are you sure you want to delete all collected data for this form? This actions is not reversible"
-  );
-
-  if (confirm) {
-    await callPurgeSubmissions(props.form);
-    await store.refreshForm(true);
-  }
-};
 
 store.$patch({
   form: props.form,
