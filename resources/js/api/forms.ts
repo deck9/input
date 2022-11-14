@@ -223,6 +223,24 @@ export function callImportFormTemplate(
     });
 }
 
+export function callGetFormSubmissions(
+    form: FormModel
+): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.submissions.index", { uuid: form.uuid })
+            );
+
+            if (response.status === 200) {
+                resolve(response as AxiosResponse);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callPurgeSubmissions(form: FormModel): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
