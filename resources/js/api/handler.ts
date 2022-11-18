@@ -5,6 +5,7 @@ const handler = axios.create({
     withCredentials: true,
     headers: {
         "X-Requested-With": "XMLHttpRequest",
+        Accept: "application/json",
     },
 });
 
