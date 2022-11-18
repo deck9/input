@@ -34,15 +34,7 @@ onMounted(async () => {
       posts.value = strapi.data;
     }, 300);
   } catch (e) {
-    console.warn(e);
+    console.warn("Could not fetch changelog", e);
   }
-
-  // const response = await api.posts.browse({
-  //   limit: 2,
-  //   filter: "tag:input-dashboard",
-  // });
-  // setTimeout(() => {
-  //   posts.value = response;
-  // }, 300);
 });
 </script>
