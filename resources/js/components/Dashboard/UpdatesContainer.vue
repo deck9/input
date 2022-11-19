@@ -29,7 +29,9 @@ const posts = ref<any[]>([]);
 
 onMounted(async () => {
   try {
+    // Fetches data from Strapi
     const strapi = await callChangelog(2, "PublishedDate:desc");
+    // Sets posts.value after a delay to simulate a loading state
     setTimeout(() => {
       posts.value = strapi.data;
     }, 300);
