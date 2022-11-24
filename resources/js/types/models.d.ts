@@ -43,6 +43,7 @@ interface FormModel extends BaseModel {
     submit_url: string;
     user_id: number;
     total_sessions: number;
+    completed_sessions: number;
     completion_rate: number;
     is_published: boolean;
     initials: string | null;

@@ -224,16 +224,24 @@ export function callImportFormTemplate(
 }
 
 export function callGetFormSubmissions(
-    form: FormModel
-): Promise<AxiosResponse> {
+    form: FormModel,
+    page = 1
+): Promise<PaginatedResponse<Record<string, any>>> {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await handler.post(
-                window.route("api.forms.submissions.index", { uuid: form.uuid })
+            const response = await handler.get(
+                window.route("api.forms.submissions", { form: form.uuid }),
+                {
+                    params: {
+                        page,
+                    },
+                }
             );
 
             if (response.status === 200) {
-                resolve(response as AxiosResponse);
+                resolve(
+                    response.data as PaginatedResponse<Record<string, any>>
+                );
             }
         } catch (error) {
             reject(error);
