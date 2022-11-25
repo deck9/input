@@ -8,8 +8,8 @@
     <td class="whitespace-nowrap p-4 text-sm text-grey-500">
       {{ submission.id }}
     </td>
-    <td class="whitespace-nowrap p-4 text-sm text-grey-500">
-      {{ submission.params ?? "-" }}
+    <td class="max-w-[200px] p-4 text-sm text-grey-500">
+      <SubmissionParams v-bind="{ params: submission.params }" />
     </td>
     <td
       class="min-w-[200px] max-w-xs p-4 text-sm text-grey-500"
@@ -31,6 +31,7 @@
 
 <script lang="ts" setup>
 import FormattedDate from "@/forms/common/LocaleDate.vue";
+import SubmissionParams from "@/components/Factory/Submissions/SubmissionParams.vue";
 
 defineProps<{
   submission: Record<string, any>;
