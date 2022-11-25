@@ -6,20 +6,7 @@
           class="mt-6"
           v-bind="{ form: store.form, blocks: store.blocks || undefined }"
         />
-        <div class="space-x-2">
-          <D9Button
-            label="Delete All"
-            icon="trash"
-            color="light"
-            @click="purgeSubmissions"
-          />
-          <D9Button
-            label="Download CSV"
-            icon="cloud-download"
-            color="dark"
-            @click="downloadSubmissionsExport"
-          />
-        </div>
+        <SubmissionActions v-bind="{ form }" />
       </div>
 
       <div
@@ -40,15 +27,15 @@
                   <tr class="divide-x divide-grey-200">
                     <th
                       scope="col"
-                      class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
-                    >
-                      ID
-                    </th>
-                    <th
-                      scope="col"
                       class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
                     >
                       Submitted
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
+                    >
+                      ID
                     </th>
                     <th
                       scope="col"
@@ -67,38 +54,12 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-grey-200 bg-white">
-                  <tr
+                  <SubmissionTableItem
                     v-for="item in submissions?.data"
                     :key="item.id"
-                    class="divide-x divide-grey-200"
-                  >
-                    <td
-                      class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-grey-900 sm:pl-6"
-                    >
-                      {{ item.id }}
-                    </td>
-                    <td class="whitespace-nowrap p-4 text-sm text-grey-500">
-                      <FormattedDate :date="item.completed_at" />
-                    </td>
-                    <td class="whitespace-nowrap p-4 text-sm text-grey-500">
-                      {{ item.params ?? "-" }}
-                    </td>
-                    <td
-                      class="min-w-[200px] max-w-xs p-4 text-sm text-grey-500"
-                      v-for="header in submissionTableHeaders"
-                      :key="item.id + header.id"
-                    >
-                      <span
-                        class="block"
-                        v-for="response in item.responses.filter(
-                          (r) => r.name === header.id
-                        )"
-                        :key="response.value"
-                      >
-                        {{ response.value }}
-                      </span>
-                    </td>
-                  </tr>
+                    :submission="item"
+                    :headers="submissionTableHeaders"
+                  />
                 </tbody>
               </table>
             </div>
@@ -128,11 +89,11 @@ import { useForm } from "@/stores";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import EmptyState from "@/components/EmptyState.vue";
-import { D9Button } from "@deck9/ui";
-import { callGetFormSubmissions, callPurgeSubmissions } from "@/api/forms";
+import { callGetFormSubmissions } from "@/api/forms";
 import striptags from "striptags";
 import Pagination from "@/components/Pagination.vue";
-import FormattedDate from "@/forms/common/LocaleDate.vue";
+import SubmissionTableItem from "@/components/Factory/Submissions/SubmissionTableItem.vue";
+import SubmissionActions from "@/components/Factory/Submissions/SubmissionActions.vue";
 
 const props = defineProps<{
   form: FormModel;
@@ -178,26 +139,6 @@ const submissionTableHeaders = computed(() => {
 
   return headers;
 });
-
-const downloadSubmissionsExport = () => {
-  window
-    .open(
-      window.route("forms.submissions-export", { form: props.form.uuid }),
-      "_blank"
-    )
-    ?.focus();
-};
-
-const purgeSubmissions = async () => {
-  let confirm = window.confirm(
-    "Are you sure you want to delete all collected data for this form? This actions is not reversible"
-  );
-
-  if (confirm) {
-    await callPurgeSubmissions(props.form);
-    await store.refreshForm(true);
-  }
-};
 
 store.$patch({
   form: props.form,
