@@ -20,7 +20,10 @@
         results
       </p>
     </div>
-    <div class="flex flex-1 justify-between gap-2 sm:justify-end">
+    <div
+      v-if="meta.last_page > 1"
+      class="flex flex-1 justify-between gap-2 sm:justify-end"
+    >
       <D9Button
         label="Previous"
         @click="emit('previous')"
