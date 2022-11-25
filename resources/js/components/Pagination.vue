@@ -15,7 +15,7 @@
       </p>
     </div>
     <div
-      v-if="meta.total > 1"
+      v-if="meta.last_page > 1"
       class="flex flex-1 justify-between gap-2 sm:justify-end"
     >
       <D9Button

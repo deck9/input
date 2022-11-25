@@ -8,13 +8,13 @@
         />
         <div class="space-x-2">
           <D9Button
-            label="Purge Submissions"
+            label="Delete All"
             icon="trash"
             color="light"
             @click="purgeSubmissions"
           />
           <D9Button
-            label="Download Submissions"
+            label="Download CSV"
             icon="cloud-download"
             color="dark"
             @click="downloadSubmissionsExport"
@@ -28,78 +28,89 @@
           store.form?.completed_sessions && store.form?.completed_sessions > 0
         "
       >
-        <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
-        >
-          <table class="min-w-full divide-y divide-grey-300">
-            <thead class="bg-grey-100">
-              <tr class="divide-x divide-grey-200">
-                <th
-                  scope="col"
-                  class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
-                >
-                  ID
-                </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-                >
-                  Submitted
-                </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-                >
-                  Params
-                </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-                  v-for="header in submissionTableHeaders"
-                  :key="header.id"
-                >
-                  {{ header.label }}
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-grey-200 bg-white">
-              <tr
-                v-for="item in submissions?.data"
-                :key="item.id"
-                class="divide-x divide-grey-200"
-              >
-                <td
-                  class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-grey-900 sm:pl-6"
-                >
-                  {{ item.id }}
-                </td>
-                <td class="whitespace-nowrap p-4 text-sm text-grey-500">
-                  {{ item.completed_at }}
-                </td>
-                <td class="whitespace-nowrap p-4 text-sm text-grey-500">
-                  {{ item.params ?? "-" }}
-                </td>
-                <td
-                  class="whitespace-nowrap p-4 text-sm text-grey-500"
-                  v-for="header in submissionTableHeaders"
-                  :key="item.id + header.id"
-                >
-                  {{
-                    item.responses.find((r) => r.name === header.id)?.value ??
-                    "-"
-                  }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div
+            class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
+          >
+            <div
+              class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+            >
+              <table class="min-w-full divide-y divide-grey-300">
+                <thead class="bg-grey-100">
+                  <tr class="divide-x divide-grey-200">
+                    <th
+                      scope="col"
+                      class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
+                    >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
+                    >
+                      Submitted
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
+                    >
+                      Params
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
+                      v-for="header in submissionTableHeaders"
+                      :key="header.id"
+                    >
+                      {{ header.label }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-grey-200 bg-white">
+                  <tr
+                    v-for="item in submissions?.data"
+                    :key="item.id"
+                    class="divide-x divide-grey-200"
+                  >
+                    <td
+                      class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-grey-900 sm:pl-6"
+                    >
+                      {{ item.id }}
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-grey-500">
+                      <FormattedDate :date="item.completed_at" />
+                    </td>
+                    <td class="whitespace-nowrap p-4 text-sm text-grey-500">
+                      {{ item.params ?? "-" }}
+                    </td>
+                    <td
+                      class="min-w-[200px] max-w-xs p-4 text-sm text-grey-500"
+                      v-for="header in submissionTableHeaders"
+                      :key="item.id + header.id"
+                    >
+                      <span
+                        class="block"
+                        v-for="response in item.responses.filter(
+                          (r) => r.name === header.id
+                        )"
+                        :key="response.value"
+                      >
+                        {{ response.value }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <Pagination
-          v-if="submissions && submissions.meta"
-          :meta="submissions.meta"
-          @next="nextPage"
-          @previous="previousPage"
-        />
       </div>
+      <Pagination
+        v-if="submissions && submissions.meta"
+        :meta="submissions.meta"
+        @next="nextPage"
+        @previous="previousPage"
+      />
 
       <EmptyState
         class="mt-6"
@@ -121,6 +132,7 @@ import { D9Button } from "@deck9/ui";
 import { callGetFormSubmissions, callPurgeSubmissions } from "@/api/forms";
 import striptags from "striptags";
 import Pagination from "@/components/Pagination.vue";
+import FormattedDate from "@/forms/common/LocaleDate.vue";
 
 const props = defineProps<{
   form: FormModel;

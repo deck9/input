@@ -1,9 +1,9 @@
 <template>
-  <div class="text-grey-400 flex justify-between font-mono text-xs">
+  <div class="flex justify-between font-mono text-xs text-grey-400">
     <div>
       <span class="mr-1 text-xs">ID</span>
       <span
-        class="text-grey-400 inline-block rounded px-2 italic leading-normal"
+        class="inline-block rounded px-2 italic leading-normal text-grey-400"
       >
         {{ block.uuid }}
       </span>
@@ -11,7 +11,7 @@
     <div>
       <span class="mr-1 text-xs">Last Change</span>
       <span
-        class="text-grey-400 inline-block rounded px-2 italic leading-normal"
+        class="inline-block rounded px-2 italic leading-normal text-grey-400"
         >{{ formattedUpdatedAt }}</span
       >
     </div>
@@ -26,6 +26,9 @@ const props = defineProps<{
 }>();
 
 const formattedUpdatedAt = computed(() => {
-  return new Date(props.block?.updated_at).toLocaleString();
+  return new Date(props.block?.updated_at).toLocaleString(navigator.language, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 });
 </script>
