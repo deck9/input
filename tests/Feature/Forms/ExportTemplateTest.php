@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Forms;
 
 use Tests\TestCase;
 use App\Models\Form;
@@ -11,7 +11,7 @@ use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class FormExportTemplateTest extends TestCase
+class ExportTemplateTest extends TestCase
 {
     use RefreshDatabase;
 

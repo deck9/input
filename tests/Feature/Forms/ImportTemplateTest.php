@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Forms;
 
 use Tests\TestCase;
 use App\Models\Form;
@@ -9,7 +9,7 @@ use App\Enums\FormBlockType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class FormImportTemplateTest extends TestCase
+class ImportTemplateTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Forms;
 
 use Tests\TestCase;
 use App\Models\Form;
@@ -10,7 +10,7 @@ use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class FormStoryboardTest extends TestCase
+class StoryboardTest extends TestCase
 {
     use RefreshDatabase;
 
