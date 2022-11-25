@@ -18,7 +18,7 @@ export function useTextareaAction(block: PublicFormBlockModel) {
             action.options?.max_chars &&
             action.options?.max_chars > 0
         ) {
-            if (input?.payload.length >= action.options.max_chars) {
+            if (input?.payload?.length >= action.options.max_chars) {
                 return {
                     valid: false,
                     message:

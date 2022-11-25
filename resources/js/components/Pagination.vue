@@ -6,22 +6,16 @@
     <div class="hidden sm:block">
       <p class="text-sm text-grey-700">
         Showing
-        {{ " " }}
         <span class="font-medium">{{ meta.from }}</span>
-        {{ " " }}
         to
-        {{ " " }}
         <span class="font-medium">{{ meta.to }}</span>
-        {{ " " }}
         of
-        {{ " " }}
         <span class="font-medium">{{ meta.total }}</span>
-        {{ " " }}
         results
       </p>
     </div>
     <div
-      v-if="meta.last_page > 1"
+      v-if="meta.total > 1"
       class="flex flex-1 justify-between gap-2 sm:justify-end"
     >
       <D9Button
@@ -61,4 +55,3 @@ const emit = defineEmits<{
   (event: "previous"): void;
 }>();
 </script>
->
