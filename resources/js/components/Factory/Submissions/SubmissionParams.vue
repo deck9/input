@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap gap-1">
     <span
-      class="whitespace-no-wrap inline-block rounded bg-grey-600 px-1 py-1 text-grey-100"
+      class="whitespace-no-wrap inline-block rounded bg-grey-100 px-1 py-1 text-grey-800"
       v-for="item in paramsMap"
       :key="item.key"
     >
