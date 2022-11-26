@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Jetstream;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +14,7 @@ class DeleteApiTokenTest extends TestCase
 
     public function test_api_tokens_can_be_deleted()
     {
-        if (! Features::hasApiFeatures()) {
+        if (!Features::hasApiFeatures()) {
             return $this->markTestSkipped('API support is not enabled.');
         }
 
@@ -30,7 +30,7 @@ class DeleteApiTokenTest extends TestCase
             'abilities' => ['create', 'read'],
         ]);
 
-        $response = $this->delete('/user/api-tokens/'.$token->id);
+        $response = $this->delete('/user/api-tokens/' . $token->id);
 
         $this->assertCount(0, $user->fresh()->tokens);
     }

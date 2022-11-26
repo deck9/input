@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Jetstream;
 
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -15,7 +15,7 @@ class PasswordResetTest extends TestCase
 
     public function test_reset_password_link_screen_can_be_rendered()
     {
-        if (! Features::enabled(Features::resetPasswords())) {
+        if (!Features::enabled(Features::resetPasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');
         }
 
@@ -26,7 +26,7 @@ class PasswordResetTest extends TestCase
 
     public function test_reset_password_link_can_be_requested()
     {
-        if (! Features::enabled(Features::resetPasswords())) {
+        if (!Features::enabled(Features::resetPasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');
         }
 
@@ -43,7 +43,7 @@ class PasswordResetTest extends TestCase
 
     public function test_reset_password_screen_can_be_rendered()
     {
-        if (! Features::enabled(Features::resetPasswords())) {
+        if (!Features::enabled(Features::resetPasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');
         }
 
@@ -56,7 +56,7 @@ class PasswordResetTest extends TestCase
         ]);
 
         Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-            $response = $this->get('/reset-password/'.$notification->token);
+            $response = $this->get('/reset-password/' . $notification->token);
 
             $response->assertStatus(200);
 
@@ -66,7 +66,7 @@ class PasswordResetTest extends TestCase
 
     public function test_password_can_be_reset_with_valid_token()
     {
-        if (! Features::enabled(Features::resetPasswords())) {
+        if (!Features::enabled(Features::resetPasswords())) {
             return $this->markTestSkipped('Password updates are not enabled.');
         }
 

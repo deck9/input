@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Jetstream;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,7 +13,7 @@ class DeleteAccountTest extends TestCase
 
     public function test_user_accounts_can_be_deleted()
     {
-        if (! Features::hasAccountDeletionFeatures()) {
+        if (!Features::hasAccountDeletionFeatures()) {
             return $this->markTestSkipped('Account deletion is not enabled.');
         }
 
@@ -28,7 +28,7 @@ class DeleteAccountTest extends TestCase
 
     public function test_correct_password_must_be_provided_before_account_can_be_deleted()
     {
-        if (! Features::hasAccountDeletionFeatures()) {
+        if (!Features::hasAccountDeletionFeatures()) {
             return $this->markTestSkipped('Account deletion is not enabled.');
         }
 

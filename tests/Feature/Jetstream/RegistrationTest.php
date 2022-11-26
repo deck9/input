@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Jetstream;
 
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +14,7 @@ class RegistrationTest extends TestCase
 
     public function test_registration_screen_can_be_rendered()
     {
-        if (! Features::enabled(Features::registration())) {
+        if (!Features::enabled(Features::registration())) {
             return $this->markTestSkipped('Registration support is not enabled.');
         }
 
@@ -36,7 +36,7 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register()
     {
-        if (! Features::enabled(Features::registration())) {
+        if (!Features::enabled(Features::registration())) {
             return $this->markTestSkipped('Registration support is not enabled.');
         }
 
