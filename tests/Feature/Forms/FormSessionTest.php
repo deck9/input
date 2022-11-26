@@ -50,7 +50,7 @@ EOD;
     }
 
     /** @test */
-    public function create_session_only_return_whitelisted_attributes()
+    public function create_session_only_return_whitelisted_attributes_in_response()
     {
         $form = Form::factory()->create();
 
@@ -73,7 +73,7 @@ EOD;
     }
 
     /** @test */
-    public function can_submit_a_form()
+    public function can_submit_a_form_through_a_session_token()
     {
         $form = Form::factory()->create();
         $form->applyTemplate($this->importTemplateString);
@@ -103,6 +103,32 @@ EOD;
         );
         $this->assertCount(4, $form->formSessionResponses);
         $this->assertTrue($submitted->json('is_completed'));
+    }
+
+    /** @test */
+    public function a_session_token_must_be_valid()
+    {
+        $form = Form::factory()->create();
+
+        $this->json('POST', route('api.public.forms.submit', [
+            'form' => $form->uuid
+        ]), [
+            'token' => 'invalid-token',
+            'payload' => []
+        ])
+            ->assertStatus(404);
+    }
+
+    /** @test */
+    public function can_not_submit_a_form_without_a_session_token()
+    {
+        $form = Form::factory()->create();
+
+        $this->json('POST', route('api.public.forms.submit', [
+            'form' => $form->uuid
+        ]), [])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('token');
     }
 
     /** @test */
