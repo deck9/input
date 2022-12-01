@@ -8,9 +8,9 @@
     </div>
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
-      <div class="absolute inset-0 overflow-auto px-4 py-4">
-        <BlockContainer />
-      </div>
+      <ScrollShadow class="absolute inset-0">
+        <BlockContainer class="py-4 px-4" />
+      </ScrollShadow>
     </div>
 
     <div v-else class="flex flex-grow items-center px-4">
@@ -41,6 +41,7 @@ import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
 import BlockContainer from "./BlockContainer.vue";
 import EmptyState from "@/components/EmptyState.vue";
+import ScrollShadow from "@/components/ScrollShadow.vue";
 
 const isLoaded = ref(false);
 const store = useForm();

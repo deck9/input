@@ -15,10 +15,8 @@
           store.form?.completed_sessions && store.form?.completed_sessions > 0
         "
       >
-        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div
-            class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
-          >
+        <ScrollShadow direction="horizontal" class="relative overflow-x-auto">
+          <div class="inline-block min-w-full py-4 align-middle">
             <div
               class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
             >
@@ -64,7 +62,7 @@
               </table>
             </div>
           </div>
-        </div>
+        </ScrollShadow>
       </div>
       <Pagination
         v-if="submissions && submissions.meta"
@@ -94,6 +92,7 @@ import striptags from "striptags";
 import Pagination from "@/components/Pagination.vue";
 import SubmissionTableItem from "@/components/Factory/Submissions/SubmissionTableItem.vue";
 import SubmissionActions from "@/components/Factory/Submissions/SubmissionActions.vue";
+import ScrollShadow from "@/components/ScrollShadow.vue";
 
 const props = defineProps<{
   form: FormModel;
