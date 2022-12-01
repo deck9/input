@@ -1,11 +1,11 @@
 <template>
   <a
-    class="rounded px-4 py-2 font-medium text-grey-300"
+    class="rounded px-3 py-2 text-center font-medium text-grey-300"
     :class="isActive ? 'bg-grey-900' : 'hover:bg-grey-700'"
     :href="resolvedRoute"
   >
-    <D9Icon class="md:mr-2" :name="icon" />
-    <span class="hidden md:inline">
+    <D9Icon :name="icon" />
+    <span class="mt-px block text-center text-xs">
       <slot></slot>
     </span>
   </a>
