@@ -223,7 +223,33 @@ export function callImportFormTemplate(
     });
 }
 
-export function callPurgeResults(form: FormModel): Promise<AxiosResponse> {
+export function callGetFormSubmissions(
+    form: FormModel,
+    page = 1
+): Promise<PaginatedResponse<Record<string, any>>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.get(
+                window.route("api.forms.submissions", { form: form.uuid }),
+                {
+                    params: {
+                        page,
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                resolve(
+                    response.data as PaginatedResponse<Record<string, any>>
+                );
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callPurgeSubmissions(form: FormModel): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(

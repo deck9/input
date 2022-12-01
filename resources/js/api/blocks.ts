@@ -4,7 +4,7 @@ import handler from "./handler";
 
 export function callGetFormBlocks(
     uuid: string,
-    includeResults = false
+    includeSubmissions = false
 ): Promise<AxiosResponse<FormBlockModel[]>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -12,7 +12,7 @@ export function callGetFormBlocks(
                 window.route("api.blocks.index", { form: uuid }),
                 {
                     params: {
-                        includeResults,
+                        includeSubmissions,
                     },
                 }
             );

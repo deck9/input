@@ -10,10 +10,10 @@
         <D9Icon class="mr-2" name="user" />
         <span class="font-semibold">{{ form.total_sessions }}</span> sessions
       </div>
-      <div v-show="form.total_sessions > 0">
-        <D9Icon class="mr-2" name="chart-pie" />
-        <span class="font-semibold">{{ form.completion_rate }}%</span>
-        completions
+      <div>
+        <D9Icon class="mr-2" name="trophy" />
+        <span class="font-semibold">{{ form.completed_sessions }}</span>
+        submitted ({{ form.completion_rate }}%)
       </div>
     </div>
   </div>

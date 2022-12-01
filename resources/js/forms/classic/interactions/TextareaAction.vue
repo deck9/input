@@ -16,6 +16,7 @@
     </textarea>
 
     <span
+      v-if="action.options?.max_chars"
       class="text-xs"
       :class="[
         hasMaxChars && charCount > action.options?.max_chars

@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { callGetFormTemplate, callImportFormTemplate } from "@/api/forms";
 import { useForm } from "@/stores";
-import { D9Label, D9Button, D9Textarea } from "@deck9/ui";
+import { D9Label, D9Button } from "@deck9/ui";
 import { ref } from "vue";
 
 const store = useForm();
@@ -54,7 +54,6 @@ const downloadTemplate = () => {
 };
 
 const uploadInput = ref<HTMLInputElement | null>(null);
-const uploadErrors = ref<string[]>([]);
 
 const initUpload = () => {
   isImporting.value = true;

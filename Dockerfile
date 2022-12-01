@@ -44,7 +44,7 @@ USER nobody
 
 # ---
 
-FROM node:16-alpine as asset_builder
+FROM node:18-alpine as asset_builder
 WORKDIR /var/www/html
 ENV NODE_ENV production
 
