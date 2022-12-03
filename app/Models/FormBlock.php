@@ -130,6 +130,9 @@ class FormBlock extends Model
             case FormBlockType::consent:
                 return FormBlockInteractionType::consent;
 
+            case FormBlockType::rating:
+                return FormBlockInteractionType::range;
+
             default:
                 return null;
         }

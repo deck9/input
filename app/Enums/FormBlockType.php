@@ -17,4 +17,6 @@ enum FormBlockType: string
     case link = "input-link";
     case number = "input-number";
     case phone = "input-phone";
+
+    case rating = "rating";
 }
