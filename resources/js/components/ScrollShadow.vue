@@ -45,7 +45,7 @@ import { useIntersectionObserver } from "@vueuse/core";
 
 withDefaults(
   defineProps<{
-    direction: "vertical" | "horizontal";
+    direction?: "vertical" | "horizontal";
   }>(),
   {
     direction: "vertical",
