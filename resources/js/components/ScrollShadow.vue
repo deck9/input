@@ -4,13 +4,13 @@
       ref="container"
       class="flex overflow-auto"
       :class="{
+        'h-full w-full flex-row': direction === 'horizontal',
         'w-full flex-col': direction === 'vertical',
-        'h-full flex-row': direction === 'vertical',
       }"
     >
       <!-- Start Detector -->
       <div ref="start" class="block shrink-0 basis-1 opacity-0"></div>
-      <div class="grow-1">
+      <div class="grow-1" :class="{ 'w-full': direction === 'horizontal' }">
         <slot></slot>
       </div>
       <!-- End Detector -->

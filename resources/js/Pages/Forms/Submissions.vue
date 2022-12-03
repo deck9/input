@@ -1,6 +1,6 @@
 <template>
   <app-layout title="Submissions">
-    <div class="w-full max-w-5xl px-4 pb-8 text-left">
+    <div class="w-full px-4 pb-8 text-left sm:px-6 lg:px-8">
       <div v-if="store.form" class="flex w-full items-end justify-between">
         <FormSummary
           class="mt-6"

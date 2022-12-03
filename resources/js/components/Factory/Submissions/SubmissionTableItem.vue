@@ -19,7 +19,7 @@
       <span
         class="block"
         v-for="response in submission.responses.filter(
-          (r) => r.name === header.id
+          (r) => r.id === header.id
         )"
         :key="response.value"
       >
