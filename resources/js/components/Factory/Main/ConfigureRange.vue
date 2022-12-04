@@ -33,9 +33,11 @@ const endValue = ref(5);
 
 const iconOptions = ref([
   { label: "Star", value: "star", icon: "star" },
-  { label: "Globe", value: "globe", icon: "globe" },
-  { label: "Hashtag", value: "hashtag", icon: "hashtag" },
-  { label: "Shield", value: "shield", icon: "shield" },
+  { label: "Heart", value: "heart", icon: "heart" },
+  { label: "Poo", value: "poo", icon: "poo" },
+  { label: "Bolt", value: "bolt", icon: "bolt" },
+  { label: "Tree", value: "tree", icon: "tree" },
+  { label: "Crown", value: "crown", icon: "crown" },
   { label: "Trophy", value: "trophy", icon: "trophy" },
 ]);
 const icon = ref<{
