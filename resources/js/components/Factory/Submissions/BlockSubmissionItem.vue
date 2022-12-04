@@ -20,6 +20,12 @@
           :count="action.responses_count"
         />
 
+        <AverageValue
+          v-if="action.type === 'range'"
+          class="mb-2"
+          :responses="action.form_session_responses"
+        />
+
         <PercentageBar
           v-if="action.type === 'button'"
           class="mb-2"
@@ -39,6 +45,7 @@
 </template>
 
 <script lang="ts" setup>
+import AverageValue from "@/components/Factory/Submissions/AverageValue.vue";
 import PercentageBar from "@/components/Factory/Submissions/PercentageBar.vue";
 import Counter from "@/components/Factory/Submissions/Counter.vue";
 import ResponseList from "@/components/Factory/Submissions/ResponseList.vue";
