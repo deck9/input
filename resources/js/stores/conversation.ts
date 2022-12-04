@@ -174,7 +174,7 @@ export const useConversation = defineStore("form", {
 
         setResponse(
             action: PublicFormBlockInteractionModel,
-            value: string | boolean | null
+            value: string | boolean | number | null
         ) {
             if (!this.currentBlock) return;
 

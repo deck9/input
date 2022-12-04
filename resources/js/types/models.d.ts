@@ -75,14 +75,23 @@ type FormBlockType =
     | "input-number"
     | "input-email"
     | "input-link"
-    | "input-phone";
+    | "input-phone"
+    | "rating";
 
-type FormBlockInteractionType = "button" | "input" | "textarea" | "consent";
+type FormBlockInteractionType =
+    | "button"
+    | "input"
+    | "textarea"
+    | "consent"
+    | "range";
 
 type FormBlockInteractionSettings = {
     rows?: number;
     max_chars?: number;
     required?: boolean;
+    start?: number;
+    end?: number;
+    icon?: string;
 };
 
 interface FormBlockInteractionModel extends BaseModel {

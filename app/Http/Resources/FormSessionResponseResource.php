@@ -17,6 +17,7 @@ class FormSessionResponseResource extends JsonResource
     {
         try {
             return [
+                'id' => $this->formBlock->uuid,
                 'name' => $this->formBlock->title ?? $this->formBlock->uuid,
                 'value' => $this->formatValue($this->value),
                 'original' => $this->value,
@@ -39,6 +40,10 @@ class FormSessionResponseResource extends JsonResource
         if ($this->formBlock->type === FormBlockType::consent) {
             $accepted = $value['accepted'] ? 'yes' : 'no';
             return $value['consent'] . ': ' . $accepted;
+        }
+
+        if ($this->formBlock->type === FormBlockType::rating) {
+            return $value;
         }
 
         return 'Unsupported value type';

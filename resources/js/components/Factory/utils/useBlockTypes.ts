@@ -13,6 +13,7 @@ export const useBlockTypes = (): {
         { label: "Email", value: "input-email", icon: "at" },
         { label: "Link", value: "input-link", icon: "link" },
         { label: "Phone Number", value: "input-phone", icon: "phone" },
+        { label: "Rating", value: "rating", icon: "star" },
         { label: "Consent", value: "consent", icon: "user-shield" },
     ];
 

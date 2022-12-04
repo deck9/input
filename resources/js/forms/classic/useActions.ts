@@ -2,6 +2,7 @@ import { useInputAction } from "./interactions/useInputAction";
 import { useButtonAction } from "./interactions/useButtonAction";
 import { useConsentAction } from "./interactions/useConsentAction";
 import { useTextareaAction } from "./interactions/useTextareaAction";
+import { useRangeAction } from "./interactions/useRangeAction";
 
 export function useActions(block: PublicFormBlockModel) {
     const actionTypes = [
@@ -9,6 +10,7 @@ export function useActions(block: PublicFormBlockModel) {
         useConsentAction(block),
         useInputAction(block),
         useTextareaAction(block),
+        useRangeAction(block),
     ];
 
     // return the component which is required based on type
