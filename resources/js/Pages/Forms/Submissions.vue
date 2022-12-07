@@ -62,7 +62,7 @@
           </ScrollShadow>
         </div>
 
-        <RouterLink
+        <Pagination
           v-if="submissions && submissions.meta"
           :meta="submissions.meta"
           @next="nextPage"
