@@ -1,15 +1,10 @@
 <template>
   <app-layout title="Form Settings">
     <div class="mx-auto w-full max-w-5xl px-4">
-      <FormSummary
-        class="mt-6"
-        v-bind="{ form, blocks: store.blocks || undefined }"
-      />
-
       <TabGroup
         :vertical="true"
         as="div"
-        class="mx-auto mt-4 grid w-full grid-cols-12 gap-x-6"
+        class="mx-auto mt-8 grid w-full grid-cols-12 gap-x-6"
         :selectedIndex="selectedTabIndex"
         @change="tabChanged"
       >
@@ -64,7 +59,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import Appearance from "@/components/Factory/Settings/Appearance.vue";
 import Delete from "@/components/Factory/Settings/Delete.vue";
-import FormSummary from "@/components/Factory/FormSummary.vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";

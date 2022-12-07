@@ -1,75 +1,74 @@
 <template>
   <app-layout title="Submissions">
     <div class="w-full px-4 pb-8 text-left sm:px-6 lg:px-8">
-      <div v-if="store.form" class="flex w-full items-end justify-between">
-        <FormSummary
-          class="mt-6"
-          v-bind="{ form: store.form, blocks: store.blocks || undefined }"
-        />
+      <div v-if="store.form" class="mt-8 flex w-full items-end justify-between">
+        <div></div>
         <SubmissionActions v-bind="{ form }" />
       </div>
 
-      <div
-        class="mx-auto mt-4"
+      <template
         v-if="
           store.form?.completed_sessions && store.form?.completed_sessions > 0
         "
       >
-        <ScrollShadow direction="horizontal" class="relative overflow-x-auto">
-          <div class="inline-block min-w-full py-4 align-middle">
-            <div
-              class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
-            >
-              <table class="min-w-full divide-y divide-grey-300">
-                <thead class="bg-grey-100">
-                  <tr class="divide-x divide-grey-200">
-                    <th
-                      scope="col"
-                      class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-                    >
-                      Submitted
-                    </th>
-                    <th
-                      scope="col"
-                      class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
-                    >
-                      ID
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-                    >
-                      Params
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-                      v-for="header in submissionTableHeaders"
-                      :key="header.id"
-                    >
-                      {{ header.label }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-grey-200 bg-white">
-                  <SubmissionTableItem
-                    v-for="item in submissions?.data"
-                    :key="item.id"
-                    :submission="item"
-                    :headers="submissionTableHeaders"
-                  />
-                </tbody>
-              </table>
+        <div class="mx-auto mt-4">
+          <ScrollShadow direction="horizontal" class="relative overflow-x-auto">
+            <div class="inline-block min-w-full py-4 align-middle">
+              <div
+                class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+              >
+                <table class="min-w-full divide-y divide-grey-300">
+                  <thead class="bg-grey-100">
+                    <tr class="divide-x divide-grey-200">
+                      <th
+                        scope="col"
+                        class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
+                      >
+                        Submitted
+                      </th>
+                      <th
+                        scope="col"
+                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
+                      >
+                        ID
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
+                      >
+                        Params
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
+                        v-for="header in submissionTableHeaders"
+                        :key="header.id"
+                      >
+                        {{ header.label }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-grey-200 bg-white">
+                    <SubmissionTableItem
+                      v-for="item in submissions?.data"
+                      :key="item.id"
+                      :submission="item"
+                      :headers="submissionTableHeaders"
+                    />
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </ScrollShadow>
-      </div>
-      <Pagination
-        v-if="submissions && submissions.meta"
-        :meta="submissions.meta"
-        @next="nextPage"
-        @previous="previousPage"
-      />
+          </ScrollShadow>
+        </div>
+
+        <RouterLink
+          v-if="submissions && submissions.meta"
+          :meta="submissions.meta"
+          @next="nextPage"
+          @previous="previousPage"
+        />
+      </template>
 
       <EmptyState
         class="mt-6"
@@ -85,7 +84,6 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@/stores";
 import { computed, onMounted, onBeforeUnmount, ref } from "vue";
-import FormSummary from "@/components/Factory/FormSummary.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import { callGetFormSubmissions } from "@/api/forms";
 import striptags from "striptags";

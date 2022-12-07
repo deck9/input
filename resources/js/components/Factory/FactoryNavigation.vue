@@ -1,16 +1,17 @@
 <template>
-  <section
-    v-if="store.formId"
-    class="flex w-full space-x-1 text-center text-sm"
-  >
+  <section v-if="store.formId" class="flex w-full gap-2 text-center text-sm">
     <NavigationButton icon="chevron-left" :href="route('dashboard')"
       >Dashboard</NavigationButton
     >
+
     <NavigationSpacer />
+
+    <FactoryFormDropdown />
+
     <NavigationButton
       icon="pencil-alt"
       :href="route('forms.edit', { uuid: store.formId })"
-      >Edit</NavigationButton
+      >Editor</NavigationButton
     >
     <NavigationButton
       icon="cog"
@@ -18,27 +19,28 @@
       >Settings</NavigationButton
     >
     <NavigationButton
-      icon="file-text"
+      icon="chart-pie"
       :href="route('forms.submissions', { uuid: store.formId })"
-      >Submissions</NavigationButton
+      >Results</NavigationButton
     >
-    <NavigationButton
+    <!-- <NavigationButton
       icon="chart-pie"
       :href="route('forms.summary', { uuid: store.formId })"
       >Summary</NavigationButton
-    >
+    > -->
+
     <NavigationSpacer />
+
     <NavigationButton icon="play-circle" :href="store.formUrl" target="_blank"
       >Preview</NavigationButton
     >
-    <PublishToggle />
   </section>
 </template>
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
 import NavigationButton from "./NavigationButton.vue";
-import PublishToggle from "./PublishToggle.vue";
+import FactoryFormDropdown from "./FactoryFormDropdown.vue";
 import NavigationSpacer from "./NavigationSpacer.vue";
 
 const store = useForm();
