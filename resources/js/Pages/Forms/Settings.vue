@@ -70,7 +70,7 @@ import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import Embed from "@/components/Factory/Settings/Embed.vue";
 import { useForm } from "@/stores";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
   form: FormModel;
@@ -116,7 +116,7 @@ if (foundIndex !== -1) {
   tabChanged(0);
 }
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   store.clearForm();
 });
 

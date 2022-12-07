@@ -16,15 +16,6 @@
                   <jet-application-logo class="block h-8 w-auto text-white" />
                 </Link>
               </div>
-
-              <!-- Navigation Links -->
-              <div class="md -my-px ml-10 hidden space-x-8 md:flex">
-                <jet-nav-link
-                  :href="route('dashboard')"
-                  :active="route().current('dashboard')"
-                  >Dashboard</jet-nav-link
-                >
-              </div>
             </div>
 
             <div class="mx-4 flex items-center">
@@ -32,8 +23,6 @@
             </div>
 
             <div class="ml-6 flex items-center">
-              <FormMenuActions class="mr-3" />
-
               <!-- Settings Dropdown -->
               <div class="relative ml-3">
                 <jet-dropdown align="right" width="48">
@@ -117,8 +106,6 @@ import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 import JetBanner from "@/Jetstream/Banner.vue";
 import JetDropdown from "@/Jetstream/Dropdown.vue";
 import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
-import JetNavLink from "@/Jetstream/NavLink.vue";
-import FormMenuActions from "@/components/Factory/FormMenuActions.vue";
 import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
 import { D9Icon } from "@deck9/ui";
 import { Head, Link } from "@inertiajs/inertia-vue3";
@@ -135,9 +122,7 @@ export default defineComponent({
     JetBanner,
     JetDropdown,
     JetDropdownLink,
-    JetNavLink,
     Link,
-    FormMenuActions,
     FactoryNavigation,
     D9Icon,
   },

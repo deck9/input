@@ -84,7 +84,7 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@/stores";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref } from "vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import { callGetFormSubmissions } from "@/api/forms";
@@ -100,7 +100,7 @@ const props = defineProps<{
 const store = useForm();
 const submissions = ref<null | PaginatedResponse<Record<string, any>>>(null);
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   store.clearForm();
 });
 

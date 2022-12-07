@@ -18,7 +18,7 @@ import Workbench from "@/components/Factory/Main/Workbench.vue";
 import WorkbenchEmpty from "@/components/Factory/Main/WorkbenchEmpty.vue";
 import FormSubmitSettings from "@/components/Factory/Main/FormSubmitSettings.vue";
 import { useForm, useWorkbench } from "@/stores";
-import { onUnmounted, onMounted } from "@vue/runtime-core";
+import { onBeforeUnmount, onMounted } from "vue";
 
 const props = defineProps<{
   form: FormModel;
@@ -27,7 +27,7 @@ const props = defineProps<{
 const store = useForm();
 const workbench = useWorkbench();
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   store.clearForm();
 });
 

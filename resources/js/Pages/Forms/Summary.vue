@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@/stores";
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onBeforeUnmount } from "vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
 import BlockSubmissionItem from "@/components/Factory/Submissions/BlockSubmissionItem.vue";
 import EmptyState from "@/components/EmptyState.vue";
@@ -42,7 +42,7 @@ const props = defineProps<{
 }>();
 const store = useForm();
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   store.clearForm();
 });
 
