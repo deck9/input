@@ -1,5 +1,5 @@
 <template>
-  <section v-if="store.formId" class="flex w-full gap-2 text-center text-sm">
+  <section v-if="store.formId" class="flex gap-2 text-center text-sm">
     <NavigationButton icon="chevron-left" :href="route('dashboard')"
       >Dashboard</NavigationButton
     >

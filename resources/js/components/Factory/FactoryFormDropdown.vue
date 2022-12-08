@@ -1,14 +1,14 @@
 <template>
   <Popover class="relative" v-slot="{ open }">
     <PopoverButton
-      class="flex h-full items-center gap-x-8 rounded bg-grey-700 px-4 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus:ring-2 focus:ring-grey-600"
+      class="flex h-full items-center gap-x-8 rounded bg-grey-700 px-4 py-1 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus:ring-2 focus:ring-grey-600"
     >
       <div class="text-left">
-        <div class="w-screen max-w-[150px] truncate font-bold">
+        <div class="w-screen max-w-[80px] truncate font-bold md:max-w-[150px]">
           {{ store.form?.name ?? "-" }}
         </div>
         <div
-          class="inline-block rounded border border-green-300 bg-green-50 px-2 py-px text-xs"
+          class="inline-block whitespace-nowrap rounded border border-green-300 bg-green-50 px-2 py-px text-xs"
           :class="{
             'border-green-300 bg-green-50 text-green-700':
               store.form?.is_published,
