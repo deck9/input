@@ -18,7 +18,6 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
     $router->get('forms/{uuid}/edit', [FormEditController::class, 'show'])->name('forms.edit');
     $router->get('forms/{uuid}/settings', [FormSettingsController::class, 'show'])->name('forms.settings');
     $router->get('forms/{uuid}/submissions', [FormSubmissionsController::class, 'show'])->name('forms.submissions');
-    $router->get('forms/{uuid}/summary', [FormSummaryController::class, 'show'])->name('forms.summary');
 
     // Form Template Download
     $router->get('forms/{form}/template-export', FormDownloadTemplateController::class)->name('forms.template-download');
