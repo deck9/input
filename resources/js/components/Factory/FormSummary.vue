@@ -1,17 +1,14 @@
 <template>
   <div>
-    <h1 class="text-slate-900 text-xl font-bold">{{ form.name }}</h1>
-    <div class="flex space-x-5 text-sm text-grey-400">
+    <h2 class="text-slate-900 mb-2 text-lg font-bold">{{ form.name }}</h2>
+    <div class="grid grid-cols-2 gap-2 text-sm text-grey-400">
       <div>
-        <D9Icon class="mr-2" name="envelope" />
-        <span class="font-semibold">{{ blocks?.length ?? 0 }}</span> blocks
+        <div><D9Icon name="user" /></div>
+        <span class="font-semibold">{{ form.total_sessions }}</span>
+        sessions
       </div>
       <div>
-        <D9Icon class="mr-2" name="user" />
-        <span class="font-semibold">{{ form.total_sessions }}</span> sessions
-      </div>
-      <div>
-        <D9Icon class="mr-2" name="trophy" />
+        <div><D9Icon name="trophy" /></div>
         <span class="font-semibold">{{ form.completed_sessions }}</span>
         submitted ({{ form.completion_rate }}%)
       </div>

@@ -77,8 +77,8 @@
 
         @auth
         @if(!$form->is_published && auth()->user()->id === $form->user_id)
-        <div class="bg-grey-700 py-2 absolute inset-x-0 top-0 px-4">
-            <div class="max-w-screen-lg mx-auto text-indigo-50 text-sm flex justify-center">
+        <div class="bg-orange-600 py-2 absolute inset-x-0 top-0 px-4">
+            <div class="max-w-screen-lg mx-auto text-orange-50 text-sm flex justify-center">
                 <span class="font-bold">You are viewing a preview of your form.</span>
             </div>
         </div>
