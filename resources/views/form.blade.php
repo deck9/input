@@ -90,7 +90,9 @@
             @endif
             class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 flex w-full bg-cover
             {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}">
-            <div class="w-full" id="input-classic"></div>
+            <div class="w-full" id="input-classic">
+                @include('_loading')
+            </div>
         </div>
     </body>
 
