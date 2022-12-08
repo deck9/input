@@ -1,7 +1,7 @@
 <template>
   <Popover class="relative" v-slot="{ open }">
     <PopoverButton
-      class="flex h-full items-center gap-x-8 rounded bg-grey-700 px-4 text-grey-100"
+      class="flex h-full items-center gap-x-8 rounded bg-grey-700 px-4 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus:ring-2 focus:ring-grey-600"
     >
       <div class="text-left">
         <div class="w-screen max-w-[150px] truncate font-bold">
@@ -25,12 +25,12 @@
       </div>
     </PopoverButton>
     <transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="translate-y-1 opacity-0"
+      enter-active-class="transition duration-150 ease-out"
+      enter-from-class="-translate-y-2 opacity-0"
       enter-to-class="translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
+      leave-active-class="transition duration-100 ease-in"
       leave-from-class="translate-y-0 opacity-100"
-      leave-to-class="translate-y-1 opacity-0"
+      leave-to-class="-translate-y-2 opacity-0"
     >
       <PopoverPanel
         class="absolute left-0 z-10 mt-3 w-screen max-w-xs px-4 sm:px-0"
