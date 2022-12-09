@@ -1,20 +1,34 @@
 <template>
-  <div class="mb-4">
-    <D9Label label="Min Rating" />
-    <D9Input
-      placeholder="Min Rating"
-      type="number"
-      block
-      v-model="startValue"
-    />
-  </div>
-  <div class="mb-4">
-    <D9Label label="Max Rating" />
-    <D9Input placeholder="Max Rating" type="number" block v-model="endValue" />
-  </div>
-  <div class="mb-4" v-if="icon">
-    <D9Label label="Icon" />
-    <D9Select :options="iconOptions" v-model="icon" :icon="icon.icon" />
+  <div v-if="isInitialized">
+    <div class="mb-4">
+      <D9Label label="Min Rating" />
+      <D9Input
+        placeholder="Min Rating"
+        type="number"
+        block
+        v-model="startValue"
+      />
+    </div>
+    <div class="mb-4">
+      <D9Label label="Max Rating" />
+      <D9Input
+        placeholder="Max Rating"
+        type="number"
+        block
+        v-model="endValue"
+      />
+    </div>
+    <div class="mb-4" v-if="icon">
+      <D9Label label="Icon" />
+      <D9Select :options="iconOptions" v-model="icon" :icon="icon.icon" />
+    </div>
+    <div class="mb-4">
+      <D9Label label="Color" />
+      <D9Input type="color" v-model="color" block show-color-picker />
+      <button type="button" class="text-xs text-blue-600" @click="resetColor">
+        Use default
+      </button>
+    </div>
   </div>
 </template>
 
@@ -28,8 +42,10 @@ const workbench = useWorkbench();
 
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
+const isInitialized = ref(false);
 const startValue = ref(1);
 const endValue = ref(5);
+const color = ref("");
 
 const iconOptions = ref([
   { label: "Star", value: "star", icon: "star" },
@@ -66,20 +82,30 @@ onMounted(async () => {
     // init settings
     startValue.value = interaction.value.options?.start ?? 1;
     endValue.value = interaction.value.options?.end ?? 5;
+    color.value = interaction.value.options?.color ?? "";
 
     icon.value =
       iconOptions.value.find((i) => {
         return i.value === interaction.value.options?.icon;
       }) ?? iconOptions.value[0];
+
+    isInitialized.value = true;
   }
 });
 
-watch([startValue, endValue, icon], (newValues) => {
+const resetColor = () => {
+  isInitialized.value = false;
+  color.value = "";
+  isInitialized.value = true;
+};
+
+watch([startValue, endValue, icon, color], (newValues) => {
   const update: { id: number } & Partial<FormBlockInteractionModel> = {
     id: interaction.value.id,
     options: {
       start: Number(newValues[0]),
       end: Number(newValues[1]),
+      color: newValues[3] ?? undefined,
     },
   };
 

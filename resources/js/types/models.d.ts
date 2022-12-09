@@ -92,6 +92,7 @@ type FormBlockInteractionSettings = {
     start?: number;
     end?: number;
     icon?: string;
+    color?: string;
 };
 
 interface FormBlockInteractionModel extends BaseModel {

@@ -16,7 +16,8 @@
         "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["resources/js/*"]
+            "@/*": ["resources/js/*"],
+            "@i18n/*": ["resources/locales/*"]
         },
         "typeRoots": ["node_modules/@types", "resources/js/types"],
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]

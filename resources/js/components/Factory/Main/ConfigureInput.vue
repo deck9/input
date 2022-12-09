@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4">
+  <div v-if="isInitialized" class="mb-4">
     <D9Label label="Placeholder Text" />
     <D9Input
       placeholder="Your placeholder text"
@@ -21,6 +21,8 @@ const workbench = useWorkbench();
 const label: Ref<FormBlockInteractionModel["label"]> = ref("");
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
+const isInitialized = ref(false);
+
 onMounted(async () => {
   // find or create interaction
   if (workbench.block?.interactions) {
@@ -39,6 +41,7 @@ onMounted(async () => {
     }
 
     label.value = interaction.value.label;
+    isInitialized.value = true;
   }
 });
 
