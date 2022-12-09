@@ -14,6 +14,7 @@ export const useBlockTypes = (): {
         { label: "Link", value: "input-link", icon: "link" },
         { label: "Phone Number", value: "input-phone", icon: "phone" },
         { label: "Rating", value: "rating", icon: "star" },
+        { label: "Scale", value: "scale", icon: "signal" },
         { label: "Consent", value: "consent", icon: "user-shield" },
     ];
 

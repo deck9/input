@@ -28,7 +28,7 @@
         "tailwind-config-viewer": "^1.7.2"
     },
     "dependencies": {
-        "@deck9/ui": "^0.12.3",
+        "@deck9/ui": "^0.12.4",
         "@headlessui/vue": "^1.7.4",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@inertiajs/inertia": "^0.11.1",

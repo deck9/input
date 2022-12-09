@@ -18,17 +18,41 @@
         v-model="endValue"
       />
     </div>
-    <div class="mb-4" v-if="icon">
-      <D9Label label="Icon" />
-      <D9Select :options="iconOptions" v-model="icon" :icon="icon.icon" />
-    </div>
-    <div class="mb-4">
-      <D9Label label="Color" />
-      <D9Input type="color" v-model="color" block show-color-picker />
-      <button type="button" class="text-xs text-blue-600" @click="resetColor">
-        Use default
-      </button>
-    </div>
+
+    <template v-if="workbench.block?.type === 'scale'">
+      <div class="mb-4">
+        <D9Label label="Left Label" />
+        <D9Input
+          placeholder="Left Label"
+          type="text"
+          block
+          v-model="labelLeft"
+        />
+      </div>
+      <div class="mb-4">
+        <D9Label label="Right Label" />
+        <D9Input
+          placeholder="Right Label"
+          type="text"
+          block
+          v-model="labelRight"
+        />
+      </div>
+    </template>
+
+    <template v-if="workbench.block?.type === 'rating'">
+      <div class="mb-4" v-if="icon">
+        <D9Label label="Icon" />
+        <D9Select :options="iconOptions" v-model="icon" :icon="icon.icon" />
+      </div>
+      <div class="mb-4">
+        <D9Label label="Color" />
+        <D9Input type="color" v-model="color" block show-color-picker />
+        <button type="button" class="text-xs text-blue-600" @click="resetColor">
+          Use default
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -46,6 +70,8 @@ const isInitialized = ref(false);
 const startValue = ref(1);
 const endValue = ref(5);
 const color = ref("");
+const labelLeft = ref("");
+const labelRight = ref("");
 
 const iconOptions = ref([
   { label: "Star", value: "star", icon: "star" },
@@ -56,6 +82,7 @@ const iconOptions = ref([
   { label: "Crown", value: "crown", icon: "crown" },
   { label: "Trophy", value: "trophy", icon: "trophy" },
 ]);
+
 const icon = ref<{
   label: string;
   value: string;
@@ -83,6 +110,8 @@ onMounted(async () => {
     startValue.value = interaction.value.options?.start ?? 1;
     endValue.value = interaction.value.options?.end ?? 5;
     color.value = interaction.value.options?.color ?? "";
+    labelLeft.value = interaction.value.options?.labelLeft ?? "";
+    labelRight.value = interaction.value.options?.labelRight ?? "";
 
     icon.value =
       iconOptions.value.find((i) => {
@@ -99,23 +128,28 @@ const resetColor = () => {
   isInitialized.value = true;
 };
 
-watch([startValue, endValue, icon, color], (newValues) => {
-  const update: { id: number } & Partial<FormBlockInteractionModel> = {
-    id: interaction.value.id,
-    options: {
-      start: Number(newValues[0]),
-      end: Number(newValues[1]),
-      color: newValues[3] ?? undefined,
-    },
-  };
-
-  if (newValues[2]) {
-    update.options = {
-      ...update.options,
-      icon: newValues[2].value,
+watch(
+  [startValue, endValue, icon, color, labelLeft, labelRight],
+  (newValues) => {
+    const update: { id: number } & Partial<FormBlockInteractionModel> = {
+      id: interaction.value.id,
+      options: {
+        start: Number(newValues[0]),
+        end: Number(newValues[1]),
+        color: newValues[3] ?? undefined,
+        labelLeft: newValues[4] ?? undefined,
+        labelRight: newValues[5] ?? undefined,
+      },
     };
-  }
 
-  workbench.updateInteraction(update);
-});
+    if (newValues[2]) {
+      update.options = {
+        ...update.options,
+        icon: newValues[2].value,
+      };
+    }
+
+    workbench.updateInteraction(update);
+  }
+);
 </script>
