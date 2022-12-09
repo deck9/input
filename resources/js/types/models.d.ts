@@ -76,6 +76,7 @@ type FormBlockType =
     | "input-email"
     | "input-link"
     | "input-phone"
+    | "scale"
     | "rating";
 
 type FormBlockInteractionType =
@@ -93,6 +94,8 @@ type FormBlockInteractionSettings = {
     end?: number;
     icon?: string;
     color?: string;
+    labelLeft?: string;
+    labelRight?: string;
 };
 
 interface FormBlockInteractionModel extends BaseModel {

@@ -42,7 +42,7 @@ class FormSessionResponseResource extends JsonResource
             return $value['consent'] . ': ' . $accepted;
         }
 
-        if ($this->formBlock->type === FormBlockType::rating) {
+        if ($this->formBlock->type === FormBlockType::rating || $this->formBlock->type === FormBlockType::scale) {
             return $value;
         }
 
