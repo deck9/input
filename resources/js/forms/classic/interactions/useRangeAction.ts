@@ -1,7 +1,7 @@
 import RangeAction from "@/forms/classic/interactions/RangeAction.vue";
 
 export function useRangeAction(block: PublicFormBlockModel) {
-    const useThis = ["rating"].includes(block.type);
+    const useThis = ["rating", "scale"].includes(block.type);
 
     const validator = (input: any) => {
         const validationMessage = "Please choose a rating.";

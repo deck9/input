@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="inline-block">
     <div class="flex gap-1" @mouseleave="hoverValue = false">
       <button
         v-for="(option, index) in ratingOptions"
@@ -10,7 +10,18 @@
         @click="onInput(index)"
         @dblclick="onInput(false)"
       >
+        <span
+          v-if="block.type === 'scale'"
+          class="flex h-10 w-10 items-center justify-center rounded border"
+          :class="[
+            selectedValue === index
+              ? 'border-primary bg-primary font-bold text-contrast'
+              : 'border-grey-300',
+          ]"
+          >{{ option.value }}</span
+        >
         <D9Icon
+          v-if="block.type === 'rating'"
           :name="action.options.icon ?? 'star'"
           size="xl"
           class="custom-range-theme"
@@ -27,6 +38,13 @@
         />
         <span class="sr-only">{{ option.value }}</span>
       </button>
+    </div>
+    <div
+      v-if="action.options.labelLeft || action.options.labelRight"
+      class="mt-1 flex justify-between text-sm text-grey-600"
+    >
+      <label for="">{{ action.options.labelLeft }}</label>
+      <label for="">{{ action.options.labelRight }}</label>
     </div>
   </div>
 </template>
