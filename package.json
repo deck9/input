@@ -28,13 +28,13 @@
         "tailwind-config-viewer": "^1.7.2"
     },
     "dependencies": {
-        "@intlify/unplugin-vue-i18n": "^0.8.0",
-        "@deck9/ui": "^0.12.2",
+        "@deck9/ui": "^0.12.3",
         "@headlessui/vue": "^1.7.4",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@inertiajs/progress": "^0.2.7",
+        "@intlify/unplugin-vue-i18n": "^0.8.0",
         "@pinia/plugin-debounce": "^0.1.0",
         "@tailwindcss/forms": "^0.5.3",
         "@tailwindcss/typography": "^0.5.8",
