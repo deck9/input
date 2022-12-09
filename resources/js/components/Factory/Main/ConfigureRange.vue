@@ -19,26 +19,19 @@
       />
     </div>
 
-    <template v-if="workbench.block?.type === 'scale'">
-      <div class="mb-4">
-        <D9Label label="Left Label" />
-        <D9Input
-          placeholder="Left Label"
-          type="text"
-          block
-          v-model="labelLeft"
-        />
-      </div>
-      <div class="mb-4">
-        <D9Label label="Right Label" />
-        <D9Input
-          placeholder="Right Label"
-          type="text"
-          block
-          v-model="labelRight"
-        />
-      </div>
-    </template>
+    <div class="mb-4">
+      <D9Label label="Left Label" />
+      <D9Input placeholder="Left Label" type="text" block v-model="labelLeft" />
+    </div>
+    <div class="mb-4">
+      <D9Label label="Right Label" />
+      <D9Input
+        placeholder="Right Label"
+        type="text"
+        block
+        v-model="labelRight"
+      />
+    </div>
 
     <template v-if="workbench.block?.type === 'rating'">
       <div class="mb-4" v-if="icon">
