@@ -1,6 +1,5 @@
 <template>
   <div>
-    <pre>{{ action.options.color }}</pre>
     <div class="flex gap-1" @mouseleave="hoverValue = false">
       <button
         v-for="(option, index) in ratingOptions"
