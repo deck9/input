@@ -33,6 +33,7 @@ module.exports = {
                 grey: colors.slate,
                 primary: withOpacityValue('--color-primary'),
                 contrast: withOpacityValue('--color-contrast'),
+                range: withOpacityValue('--color-range'),
             },
             borderColor: {
                 DEFAULT: colors.slate[300],

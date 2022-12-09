@@ -4,8 +4,8 @@ import { createPinia } from "pinia";
 import { createI18n } from "vue-i18n";
 import ClassicForm from "./classic/ClassicForm.vue";
 
-import localeDE from "./locales/de.json";
-import localeEN from "./locales/en.json";
+import localeDE from "@i18n/de.json";
+import localeEN from "@i18n/en.json";
 
 const pinia = createPinia();
 

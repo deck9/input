@@ -26,7 +26,8 @@ class RatingTest extends TestCase
                 'options' => [
                     'start' => 5,
                     'end' => 10,
-                    'icon' => 'globe'
+                    'icon' => 'globe',
+                    'color' => "#223344",
                 ]
             ])
             ->assertStatus(200);
@@ -34,7 +35,8 @@ class RatingTest extends TestCase
         $response->assertJsonFragment([
             'start' => 5,
             'end' => 10,
-            'icon' => 'globe'
+            'icon' => 'globe',
+            'color' => "#223344",
         ]);
     }
 }

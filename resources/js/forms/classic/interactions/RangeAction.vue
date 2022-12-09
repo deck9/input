@@ -1,5 +1,6 @@
 <template>
   <div>
+    <pre>{{ action.options.color }}</pre>
     <div class="flex gap-1" @mouseleave="hoverValue = false">
       <button
         v-for="(option, index) in ratingOptions"
@@ -13,15 +14,17 @@
         <D9Icon
           :name="action.options.icon ?? 'star'"
           size="xl"
-          :class="
+          class="custom-range-theme"
+          :class="[
+            action.options.color ? 'text-range' : 'text-primary',
             hoverValue !== false && hoverValue >= index
-              ? 'text-primary'
+              ? 'opacity-100'
               : hoverValue === false &&
                 selectedValue !== false &&
                 selectedValue >= index
-              ? 'text-primary'
-              : 'text-grey-200'
-          "
+              ? 'opacity-100'
+              : 'opacity-10',
+          ]"
         />
         <span class="sr-only">{{ option.value }}</span>
       </button>
@@ -34,7 +37,7 @@ import { ref, computed } from "vue";
 import { onKeyStroke } from "@vueuse/core";
 import { useConversation } from "@/stores/conversation";
 import { D9Icon } from "@deck9/ui";
-import { blockStatement } from "@babel/types";
+import { useThemableColor } from "@/utils/useThemableColor";
 
 const store = useConversation();
 
@@ -109,4 +112,12 @@ onKeyStroke(
     target: document,
   }
 );
+
+const rangeColor = useThemableColor(props.action?.options.color ?? "#000000");
 </script>
+
+<style>
+.custom-range-theme {
+  --color-range: v-bind(rangeColor);
+}
+</style>
