@@ -11,7 +11,7 @@ class FormController extends Controller
     public function create(Request $request)
     {
         $form = Form::create([
-            'name' => 'A new form',
+            'name' => 'Untitled Form',
             'user_id' => $request->user()->id,
             'has_data_privacy' => false,
             'brand_color' => Form::DEFAULT_BRAND_COLOR,
