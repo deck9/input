@@ -34,7 +34,10 @@
         </div>
       </div>
 
-      <footer class="flex items-center justify-between text-center text-xs">
+      <footer
+        aria-label="Navigation for form and progress indicator"
+        class="flex items-center justify-between text-center text-xs"
+      >
         <Navigator
           v-bind="{
             hideNavigation: flags.hideNavigation,

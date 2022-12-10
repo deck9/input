@@ -8,7 +8,10 @@
       <button
         type="button"
         class="inline-flex items-center justify-center border-r border-grey-100 py-1 hover:bg-grey-100"
-        :aria-label="t('Previous')"
+        :class="[{ 'pointer-events-none opacity-25': store.isFirstBlock }]"
+        :aria-label="t('Go to previous Question')"
+        :aria-disabled="store.isFirstBlock"
+        :disabled="store.isFirstBlock"
         @click="store.back()"
       >
         <D9Icon icon="chevron-left" />
@@ -19,9 +22,14 @@
       <button
         type="button"
         class="inline-flex items-center justify-center border-l border-grey-100 py-1 hover:bg-grey-100"
-        :class="[{ 'pointer-events-none opacity-25': !validator.valid }]"
-        :disabled="!validator.valid"
-        :aria-label="t('Next')"
+        :class="[
+          {
+            'pointer-events-none opacity-25':
+              !validator.valid || store.isLastBlock,
+          },
+        ]"
+        :disabled="!validator.valid || store.isLastBlock"
+        :aria-label="t('Go to next Question')"
         @click="!store.isLastBlock ? store.next() : false"
       >
         <D9Icon icon="chevron-right" />
