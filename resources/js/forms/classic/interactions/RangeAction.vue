@@ -1,6 +1,15 @@
 <template>
   <div class="inline-block">
-    <div class="flex gap-1" @mouseleave="hoverValue = false">
+    <input
+      class="sr-only"
+      type="range"
+      min="0"
+      step="1"
+      :max="ratingOptions.length - 1"
+      v-model="rangeValue"
+    />
+
+    <div class="flex gap-1" @mouseleave="hoverValue = false" aria-hidden="true">
       <button
         v-for="(option, index) in ratingOptions"
         :key="'rate-' + index"
@@ -33,7 +42,7 @@
                 selectedValue !== false &&
                 selectedValue >= index
               ? 'opacity-100'
-              : 'opacity-10',
+              : 'opacity-20',
           ]"
         />
         <span class="sr-only">{{ option.value }}</span>
@@ -43,8 +52,12 @@
       v-if="action.options.labelLeft || action.options.labelRight"
       class="mt-1 flex justify-between text-sm text-grey-600"
     >
-      <label for="">{{ action.options.labelLeft }}</label>
-      <label for="">{{ action.options.labelRight }}</label>
+      <label :aria-label="action.options.labelLeft">{{
+        action.options.labelLeft
+      }}</label>
+      <label :aria-label="action.options.labelRight">{{
+        action.options.labelRight
+      }}</label>
     </div>
   </div>
 </template>
@@ -55,6 +68,7 @@ import { onKeyStroke } from "@vueuse/core";
 import { useConversation } from "@/stores/conversation";
 import { D9Icon } from "@deck9/ui";
 import { useThemableColor } from "@/utils/useThemableColor";
+import { watch } from "vue";
 
 const store = useConversation();
 
@@ -92,6 +106,7 @@ const selectedValue = computed(() => {
   });
 });
 
+const rangeValue = ref<number | false>(false);
 const hoverValue = ref<number | false>(false);
 
 const onInput = (index) => {
@@ -109,9 +124,14 @@ const onInput = (index) => {
       adjustedIndex = ratingOptions.value.length - 1;
     }
 
+    rangeValue.value = adjustedIndex;
     store.setResponse(props.action, ratingOptions.value[adjustedIndex].value);
   }
 };
+
+watch(rangeValue, (value) => {
+  onInput(Number(value));
+});
 
 const tempInput = ref("");
 
