@@ -100,6 +100,8 @@ class FormTest extends TestCase
 
             // Theme Options
             'brand_color' => '#ffffff',
+            'background_color' => '#000000',
+            'text_color' => '#ffffff',
             'message_background_color' => '#ffffff',
             'message_text_color' => '#ffffff',
             'user_message_background_color' => '#ffffff',
@@ -149,6 +151,8 @@ class FormTest extends TestCase
         $this->assertEquals('better description', $form->description);
 
         $this->assertEquals('#ffffff', $form->brand_color);
+        $this->assertEquals('#000000', $form->background_color);
+        $this->assertEquals('#ffffff', $form->text_color);
         $this->assertEquals('#ffffff', $form->message_background_color);
         $this->assertEquals('#ffffff', $form->message_text_color);
         $this->assertEquals('#ffffff', $form->user_message_background_color);

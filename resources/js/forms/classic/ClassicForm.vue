@@ -6,7 +6,7 @@
     appear-to-class="opacity-100"
   >
     <div
-      class="conversation-theme flex min-h-full max-w-screen-sm flex-col justify-between"
+      class="conversation-theme flex min-h-full max-w-screen-sm flex-col justify-between text-content"
       :class="{
         'mx-auto': !flags.alignLeft,
       }"
@@ -104,11 +104,17 @@ onMounted(() => {
 
 const primaryColor = useThemableColor(store.form?.brand_color ?? "#1f2937");
 const contrastColor = useThemableColor(store.form?.contrast_color ?? "#f9fafb");
+const backgroundColor = useThemableColor(
+  store.form?.background_color ?? "#ffffff"
+);
+const textColor = useThemableColor(store.form?.text_color ?? "#000000");
 </script>
 
 <style>
 .conversation-theme {
   --color-primary: v-bind(primaryColor);
   --color-contrast: v-bind(contrastColor);
+  --color-background: v-bind(backgroundColor);
+  --color-content: v-bind(textColor);
 }
 </style>

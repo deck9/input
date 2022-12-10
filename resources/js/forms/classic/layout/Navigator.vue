@@ -2,12 +2,12 @@
   <div class="flex items-center">
     <div
       v-show="!hideNavigation"
-      class="grid w-24 grid-cols-4 rounded border border-grey-200 text-grey-800"
+      class="grid w-24 grid-cols-4 rounded border border-content/20 text-content"
       :class="{ 'pointer-events-none opacity-50': store.isSubmitted }"
     >
       <button
         type="button"
-        class="inline-flex items-center justify-center border-r border-grey-100 py-1 hover:bg-grey-100"
+        class="inline-flex items-center justify-center border-r border-content/10 py-1 hover:bg-content/10"
         :class="[{ 'pointer-events-none opacity-25': store.isFirstBlock }]"
         :aria-label="t('Go to previous Question')"
         :aria-disabled="store.isFirstBlock"
@@ -21,7 +21,7 @@
       </span>
       <button
         type="button"
-        class="inline-flex items-center justify-center border-l border-grey-100 py-1 hover:bg-grey-100"
+        class="inline-flex items-center justify-center border-l border-content/10 py-1 hover:bg-content/10"
         :class="[
           {
             'pointer-events-none opacity-25':

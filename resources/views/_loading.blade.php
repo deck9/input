@@ -97,10 +97,18 @@
     }
 </style>
 
+@if ($form->text_color)
+<style>
+    .text-content {
+        color: {{ $form->text_color ?? '#222' }};
+    }
+</style>
+@endif
+
 <div class="min-h-screen flex items-center justify-center">
-    <svg class="h-12 text-grey-800 animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <svg class="h-12 text-content animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <path d="M260.002 50.038 260 .032 256 0c141.385 0 256 114.615 256 256 0 69.254-27.5 132.085-72.174 178.169l-35.36-35.361C440.094 361.776 462 311.446 462 256c0-112.434-90.075-203.83-201.998-205.962Z"
-              fill="#000" fill-rule="evenodd" />
+              fill="currentColor" fill-rule="evenodd" />
     </svg>
     <span class="sr-only">The form is loading</span>
 </div>

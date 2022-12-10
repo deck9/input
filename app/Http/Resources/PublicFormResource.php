@@ -21,6 +21,8 @@ class PublicFormResource extends JsonResource
             'language' => $this->language ?? 'en',
             'preview_image_path' => $this->preview_image_path,
             'brand_color' => $this->brand_color,
+            'background_color' => $this->background_color,
+            'text_color' => $this->text_color,
             'contrast_color' => $this->contrast_color,
             'privacy_link' => $this->privacy_link,
             'legal_notice_link' => $this->legal_notice_link,

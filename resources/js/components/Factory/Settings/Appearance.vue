@@ -9,6 +9,21 @@
         <D9Input type="color" v-model="brandColor" block show-color-picker />
       </div>
 
+      <div class="mb-4">
+        <D9Label label="Background Color" />
+        <D9Input
+          type="color"
+          v-model="backgroundColor"
+          block
+          show-color-picker
+        />
+      </div>
+
+      <div class="mb-4">
+        <D9Label label="Text Color" />
+        <D9Input type="color" v-model="textColor" block show-color-picker />
+      </div>
+
       <hr class="mb-4 border-grey-200" />
 
       <div class="mb-4 flex justify-between pb-3">
@@ -36,6 +51,8 @@ const store = useForm();
 const isSaving = ref(false);
 
 const brandColor = ref(store?.form?.brand_color);
+const backgroundColor = ref(store?.form?.background_color);
+const textColor = ref(store?.form?.text_color);
 
 const showFormProgress = ref(store?.form?.show_form_progress);
 
@@ -44,6 +61,8 @@ const saveOptions = async () => {
 
   await store.updateForm({
     brand_color: brandColor.value,
+    background_color: backgroundColor.value,
+    text_color: textColor.value,
     show_form_progress: showFormProgress.value,
   });
 

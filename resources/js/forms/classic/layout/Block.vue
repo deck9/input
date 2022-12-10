@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit" :title="`Form for section ${block.id}`">
-    <div class="prose" v-html="block.message"></div>
+    <div class="text-content" v-html="block.message"></div>
 
     <div class="mt-6">
       <div

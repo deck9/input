@@ -42,6 +42,8 @@ class FormController extends Controller
                 'language',
                 'is_notification_via_mail',
                 'brand_color',
+                'background_color',
+                'text_color',
                 'message_background_color',
                 'message_text_color',
                 'user_message_background_color',

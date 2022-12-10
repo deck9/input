@@ -22,7 +22,7 @@
       <span
         v-if="!disableEnterKey"
         :class="{ 'pointer-events-none opacity-0': isDisabled }"
-        class="ml-4 inline-flex items-center justify-center text-xs font-bold leading-none text-grey-700 transition duration-150"
+        class="ml-4 inline-flex items-center justify-center text-xs font-bold leading-none text-content/80 transition duration-150"
       >
         {{ t("Enter") }}
         <D9Icon class="ml-1 rotate-90" icon="turn-down" />

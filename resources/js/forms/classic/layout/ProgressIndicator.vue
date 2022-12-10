@@ -1,5 +1,5 @@
 <template>
-  <div class="items-centertext-grey-700 flex items-center text-grey-700">
+  <div class="flex items-center">
     <div class="h-6 w-6">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
         <circle
@@ -9,7 +9,7 @@
           fill="transparent"
           :stroke-width="width"
           stroke="currentColor"
-          class="text-grey-200"
+          class="text-content/20"
         />
         <circle
           :r="radius"
@@ -20,11 +20,13 @@
           stroke="currentColor"
           :stroke-dasharray="circumference"
           :stroke-dashoffset="offset"
-          class="transition-all duration-300"
+          class="text-primary transition-all duration-300"
         />
       </svg>
     </div>
-    <span class="ml-1 w-10 text-left text-sm font-medium">{{ progress }}%</span>
+    <span class="ml-1 w-10 text-left text-sm font-medium text-content"
+      >{{ progress }}%</span
+    >
   </div>
 </template>
 
