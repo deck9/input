@@ -6,7 +6,8 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                ,
+                "resources/js/app.ts",
+                "resources/js/forms/classic.ts"
             ],
             refresh: true,
         }),
@@ -19,4 +20,11 @@ export default defineConfig({
             },
         }),
     ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+            "@i18n": "/resources/locales",
+            "@css": "/resources/css",
+        }
+    }
 });
