@@ -39,7 +39,8 @@
 
         <!-- Scripts -->
         @routes
-        @vite('resources/js/app.ts')
+
+        @vite('resources/js/app.ts', 'build/app')
     </head>
 
     <body class="font-sans antialiased">

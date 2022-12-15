@@ -42,7 +42,7 @@
             {!! $form->getJavascriptConfig() !!}
         </script>
 
-        @vite('resources/js/forms/classic.ts')
+        @vite('resources/js/forms/classic.ts', 'js')
 
         <style>
             *,
