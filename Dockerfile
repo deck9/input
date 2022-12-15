@@ -51,7 +51,7 @@ ENV NODE_ENV production
 COPY --from=php_base /var/www/html ./
 RUN npm ci && npm cache clean --force
 
-RUN npm run production
+RUN npm run build
 RUN rm -rf node_modules
 
 # ---

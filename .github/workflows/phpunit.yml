@@ -28,7 +28,7 @@ jobs:
     - run: php artisan ziggy:generate
     - name: Install NPM Dependencies
       run: npm ci
-    - run: npm run prod
+    - run: npm run build
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
