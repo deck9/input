@@ -94,8 +94,6 @@ const copyFormUrl = () => {
   copy(store.formUrl);
 };
 
-const publishedState = ref(store.form?.is_published ?? false);
-
 const togglePublish = async () => {
   isPublishing.value = true;
 

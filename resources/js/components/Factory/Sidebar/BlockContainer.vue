@@ -13,9 +13,8 @@
 import Block from "./Block.vue";
 import FinalBlock from "./FinalBlock.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import { useForm } from "@/stores";
-import { nextTick } from "process";
 
 const store = useForm();
 const enableCssTransition = ref(true);
