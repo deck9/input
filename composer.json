@@ -13,7 +13,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "hashids/hashids": "^4.1",
         "inertiajs/inertia-laravel": "^0.5.4",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.4",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
