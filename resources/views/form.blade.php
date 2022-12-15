@@ -42,10 +42,7 @@
             {!! $form->getJavascriptConfig() !!}
         </script>
 
-        <script src="{{ mix('js/classic.js') }}" data-hide-title="{{ $flags['hideTitle'] ? 'true' : 'false' }}"
-                data-autofocus="{{ $flags['focusOnMount'] ? 'true' : 'false' }}"
-                data-alignleft="{{ $flags['alignLeft'] ? 'true' : 'false' }}"
-                data-hide-navigation="{{ $flags['hideNavigation'] ? 'true' : 'false' }}" defer></script>
+        @vite('resources/js/classic.js')
 
         <style>
             *,
