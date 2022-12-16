@@ -15,6 +15,8 @@ interface FormModel extends BaseModel {
     avatar: string | null;
     preview_image_path: string | null;
     brand_color: string | null;
+    background_color: string | null;
+    text_color: string | null;
     contrast_color: string | null;
     interaction_text_color: string | null;
     interaction_background_color: string | null;
@@ -140,6 +142,8 @@ type PublicFormModel = {
     background: string | null;
     preview_image_path: string | null;
     brand_color: string | null;
+    background_color: string | null;
+    text_color: string | null;
     contrast_color: string | null;
     interaction_text_color: string | null;
     interaction_background_color: string | null;

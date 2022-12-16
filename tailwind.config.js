@@ -31,8 +31,12 @@ module.exports = {
                 gray: null,
                 slate: null,
                 grey: colors.slate,
+
+                // Custom colors used for user overrides
                 primary: withOpacityValue('--color-primary'),
                 contrast: withOpacityValue('--color-contrast'),
+                background: withOpacityValue('--color-background'),
+                content: withOpacityValue('--color-content'),
                 range: withOpacityValue('--color-range'),
             },
             borderColor: {

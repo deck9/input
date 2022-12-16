@@ -4,7 +4,7 @@
     class="relative block cursor-pointer rounded border py-2 pl-6 pr-3"
     :class="{
       'border-primary ring-1 ring-primary': isChecked,
-      'border-grey-300': !isChecked,
+      'border-content/80': !isChecked,
     }"
   >
     <div class="absolute inset-y-0 left-2 flex items-center">
@@ -12,7 +12,7 @@
         class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium"
         :class="{
           'bg-primary text-contrast': isChecked,
-          'bg-grey-300': !isChecked,
+          'bg-content/80 text-background': !isChecked,
         }"
         >{{ index + 1 }}</span
       >

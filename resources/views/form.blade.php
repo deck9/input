@@ -85,15 +85,19 @@
         @endif
         @endauth
 
-        <div @if($form->background)
-            style="background-image: url('{{ $form->background }}');"
+        <div style="
+            @if($form->background)
+                background-image: url('{{ $form->background }}');
             @endif
-            class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 flex w-full bg-cover
+            @if($form->background_color)
+                background-color: {{ $form->background_color }};
+            @endif" class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 flex w-full bg-cover
             {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}">
             <div class="w-full" id="input-classic">
                 @include('_loading')
             </div>
         </div>
+
     </body>
 
 </html>
