@@ -59,8 +59,8 @@ RUN rm -rf node_modules
 FROM php_base as final_image
 WORKDIR /var/www/html
 
+COPY --from=asset_builder /var/www/html/public/build ./public/build
 COPY --from=asset_builder /var/www/html/public/js ./public/js
-COPY --from=asset_builder /var/www/html/public/mix-manifest.json ./public/mix-manifest.json
 
 RUN touch /var/www/html/storage/database.sqlite
 RUN php artisan migrate --force
