@@ -17,7 +17,6 @@
     },
     "devDependencies": {
         "browser-sync": "^2.27.10",
-        "laravel-vite-plugin": "^0.7.2",
         "prettier": "^2.7.1",
         "prettier-eslint": "^13.0.0",
         "prettier-plugin-tailwindcss": "^0.2.0",
@@ -52,6 +51,7 @@
         "eslint": "^8.28.0",
         "eslint-plugin-vue": "^8.7.1",
         "highlight.js": "^11.6.0",
+        "laravel-vite-plugin": "^0.7.2",
         "lodash": "^4.17.19",
         "pinia": "^2.0.27",
         "postcss": "^8.4.19",
