@@ -11,7 +11,7 @@
 import { computed } from "vue";
 
 const props = defineProps<{
-  color: "green" | "yellow" | "grey" | "black";
+  color: "green" | "yellow" | "grey" | "black" | "red";
 }>();
 
 const colorClasses = computed(() => {
@@ -20,6 +20,7 @@ const colorClasses = computed(() => {
     "border-yellow-300 bg-yellow-50 text-yellow-700": props.color === "yellow",
     "border-grey-400 bg-grey-200 text-grey-800": props.color === "grey",
     "border-black bg-grey-900 text-white": props.color === "black",
+    "border-red-300 bg-red-100 text-red-700": props.color === "red",
   };
 });
 </script>

@@ -56,6 +56,10 @@
         v-bind="{ interaction, index }"
         :key="interaction.id"
       />
+
+      <div class="mt-2" v-if="block.is_required">
+        <Label color="red">required</Label>
+      </div>
     </button>
   </div>
 </template>
@@ -64,6 +68,7 @@
 import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
+import Label from "@/components/Label.vue";
 import { useWorkbench, useForm } from "@/stores";
 import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
