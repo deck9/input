@@ -51,9 +51,9 @@ To compile the frontend assets, we use Laravel Mix. You can use watch mode to re
 We also have a hot-reload enabled mode. Please note that this mode currently has a bug since we have defined multiple entry files for Webpack.
 
 ```bash
-npm run watch
+npm run dev
 # or
-npm run hot # hot reload enabled
+npm run dev # hot reload enabled
 ```
 
 ### Sail Bash Alias

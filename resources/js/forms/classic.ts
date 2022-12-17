@@ -1,4 +1,5 @@
 import "@css/embed.css";
+
 import { createApp, h, Suspense } from "vue";
 import { createPinia } from "pinia";
 import { createI18n } from "vue-i18n";

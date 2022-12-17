@@ -1,7 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import route from "ziggy";
-import { RouteParamsWithQueryOverload } from "ziggy-js";
+import route, { RouteParamsWithQueryOverload } from "ziggy-js";
 
 export async function useRoutes(): Promise<{
     route: (
@@ -11,8 +8,8 @@ export async function useRoutes(): Promise<{
     ) => string | undefined;
 }> {
     const response = await fetch(
-        process.env.MIX_APP_URL
-            ? process.env.MIX_APP_URL + "/api/routes"
+        import.meta.env.VITE_APP_URL
+            ? import.meta.env.VITE_APP_URL + "/api/routes"
             : "/api/routes"
     );
     const Ziggy = await response.json();
