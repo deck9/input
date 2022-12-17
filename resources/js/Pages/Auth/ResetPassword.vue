@@ -20,6 +20,7 @@
           type="email"
           class="mt-1 block w-full"
           v-model="form.email"
+          block
           required
           autofocus
         />
@@ -32,6 +33,7 @@
           type="password"
           class="mt-1 block w-full"
           v-model="form.password"
+          block
           required
           autocomplete="new-password"
         />
@@ -44,6 +46,7 @@
           type="password"
           class="mt-1 block w-full"
           v-model="form.password_confirmation"
+          block
           required
           autocomplete="new-password"
         />
