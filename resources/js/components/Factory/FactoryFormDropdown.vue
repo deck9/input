@@ -7,18 +7,11 @@
         <div class="w-screen max-w-[80px] truncate font-bold md:max-w-[150px]">
           {{ store.form?.name ?? "-" }}
         </div>
-        <div
-          class="inline-block whitespace-nowrap rounded border border-green-300 bg-green-50 px-2 py-px text-xs"
-          :class="{
-            'border-green-300 bg-green-50 text-green-700':
-              store.form?.is_published,
-            'border-yellow-300 bg-yellow-50 text-yellow-700':
-              !store.form?.is_published,
-          }"
-        >
+
+        <Label :color="store.form?.is_published ? 'green' : 'yellow'">
           <D9Icon name="globe" />
           {{ store.form?.is_published ? "Published" : "Draft" }}
-        </div>
+        </Label>
       </div>
       <div>
         <D9Icon :name="open ? 'chevron-up' : 'chevron-down'" />
@@ -81,6 +74,7 @@ import { ref } from "vue";
 import { D9Icon, D9Input, D9Button, D9Label } from "@deck9/ui";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import FormSummary from "@/components/Factory/FormSummary.vue";
+import Label from "@/components/Label.vue";
 import { useClipboard } from "@vueuse/core";
 
 const store = useForm();
