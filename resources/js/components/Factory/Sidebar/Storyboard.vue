@@ -22,14 +22,22 @@
 
     <div
       v-if="isLoaded"
-      class="flex items-center justify-center border-t border-grey-200 bg-white px-4 py-3"
+      class="flex items-center justify-center gap-x-2 border-t border-grey-200 bg-white px-4 py-3"
     >
       <D9Button
-        label="Add block"
+        label="Create Block"
         color="dark"
         icon="plus"
         icon-position="right"
         @click="store.createFormBlock()"
+      />
+
+      <D9Button
+        label="Submit Config"
+        color="primary"
+        icon="cog"
+        icon-position="right"
+        @click="workbench.editFinalBlock()"
       />
     </div>
   </div>

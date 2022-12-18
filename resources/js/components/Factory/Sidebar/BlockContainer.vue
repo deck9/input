@@ -4,14 +4,12 @@
       <Draggable v-for="block in store.blocks" :key="block.uuid">
         <Block :block="block" :key="`${block.sequence}-${block.uuid}`" />
       </Draggable>
-      <FinalBlock key="final-block" />
     </TransitionGroup>
   </Container>
 </template>
 
 <script setup lang="ts">
 import Block from "./Block.vue";
-import FinalBlock from "./FinalBlock.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import { ref, computed, nextTick } from "vue";
 import { useForm } from "@/stores";
