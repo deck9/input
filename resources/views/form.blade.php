@@ -88,8 +88,14 @@
             @endif
             @if($form->background_color)
                 background-color: {{ $form->background_color }};
-            @endif" class="min-h-full pb-4 pt-10 md:pt-20 md:pb-6 flex w-full bg-cover
-            {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}">
+            @endif
+            @if($flags['spacing'])
+                padding-top: {{ $flags['spacing'] }}px;
+            @endif" class="
+                min-h-full pb-4 md:pb-6 flex w-full bg-cover
+                {{ $flags['spacing'] ? '' : 'pt-10 md:pt-20'}}
+                {{ $flags['iframe'] ? 'px-2' : 'px-4 md:px-0' }}
+            ">
             <div class="w-full" id="input-classic">
                 @include('_loading')
             </div>

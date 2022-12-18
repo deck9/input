@@ -31,6 +31,7 @@ class ViewFormController extends Controller
                 'hideTitle' => $request->input('hideTitle', false),
                 'focusOnMount' => $request->input('focusOnMount', true),
                 'alignLeft' => $request->input('alignLeft', false),
+                'spacing' => $request->input('spacing', false),
             ]
         ]);
     }

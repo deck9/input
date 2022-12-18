@@ -52,6 +52,21 @@
         </span>
       </div>
 
+      <div
+        v-if="embedType !== 'native'"
+        class="mb-3 border-b border-grey-200 pb-3"
+      >
+        <D9Label
+          class="mb-1"
+          label="Spacing Top"
+          description="If value is 0, we use a default setting."
+        /><br />
+        <span class="relative inline-block">
+          <D9Input v-model="spacing" />
+          <span class="absolute inset-y-0 right-4 flex items-center">px</span>
+        </span>
+      </div>
+
       <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
         <D9Label label="Hide Title" />
         <D9Switch
@@ -110,6 +125,7 @@ type EmbedType = "native" | "iframe" | "link";
 const embedType = ref<EmbedType>("iframe");
 
 const height = ref(520);
+const spacing = ref(0);
 const useFullheight = ref(false);
 const hideTitle = ref(false);
 const hideNavigation = ref(false);
@@ -125,6 +141,7 @@ const embedCode = computed(() => {
         ["hideNavigation", hideNavigation.value ? "1" : undefined],
         ["focusOnMount", focusOnMount.value ? "1" : "0"],
         ["alignLeft", alignLeft.value ? "1" : undefined],
+        ["spacing", spacing.value ?? undefined],
       ].filter((item) => item[1])
     )
   ).toString();
