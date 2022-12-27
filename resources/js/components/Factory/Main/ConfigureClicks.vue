@@ -15,7 +15,7 @@
     >
       <Draggable v-for="(item, index) in currentInteractions" :key="item.id">
         <ClickInteraction
-          v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
+          v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
           @next="focusNextItem"
