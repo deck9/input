@@ -4,7 +4,8 @@ import handler from "./handler";
 
 export function callCreateFormBlockInteraction(
     id: number,
-    type: FormBlockInteractionModel["type"]
+    type: FormBlockInteractionModel["type"],
+    attributes?: Partial<FormBlockInteractionModel>
 ): Promise<AxiosResponse<FormBlockInteractionModel>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -12,6 +13,7 @@ export function callCreateFormBlockInteraction(
                 window.route("api.interactions.create", { block: id }),
                 {
                     type,
+                    ...attributes,
                 }
             );
 

@@ -26,6 +26,8 @@ class FormBlockInteraction extends Model
         'form_block_id' => 'integer',
         'type' => FormBlockInteractionType::class,
         'options' => 'array',
+        'is_editable' => 'boolean',
+        'is_disabled' => 'boolean',
     ];
 
     protected static function boot()

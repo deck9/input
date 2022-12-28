@@ -22,9 +22,7 @@ class FormBlockInteractionController extends Controller
             ))],
         ]);
 
-        $interaction = new FormBlockInteraction([
-            'type' => $request->input('type'),
-        ]);
+        $interaction = new FormBlockInteraction($request->only('type', 'name', 'is_editable', 'is_disabled'));
 
         $block->formBlockInteractions()->save($interaction);
 
@@ -38,12 +36,12 @@ class FormBlockInteractionController extends Controller
         switch ($interaction->type) {
             case FormBlockInteractionType::button:
                 $request->validate([
-                    'label' => 'min:1',
+                    'label' => 'exclude_if:is_editable,false|min:1',
                 ]);
                 break;
         }
 
-        $interaction->fill($request->only(['label', 'message', 'uuid', 'options']));
+        $interaction->fill($request->only(['label', 'message', 'uuid', 'options', 'is_editable', 'is_disabled', 'name']));
         $interaction->save();
 
         return response()->json($interaction, 200);

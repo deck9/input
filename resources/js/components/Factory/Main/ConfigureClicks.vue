@@ -1,7 +1,7 @@
 <template>
   <div>
     <EmptyState
-      v-if="currentInteractions?.length === 0"
+      v-if="editableInteractions?.length === 0"
       title="Nothing here yet."
       description="Add your first option by clicking on the button below."
     />
@@ -13,7 +13,7 @@
       orientation="vertical"
       @drop="onDrop"
     >
-      <Draggable v-for="(item, index) in currentInteractions" :key="item.id">
+      <Draggable v-for="(item, index) in editableInteractions" :key="item.id">
         <ClickInteraction
           v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
@@ -25,6 +25,17 @@
         />
       </Draggable>
     </Container>
+
+    <div class="mb-3 flex justify-between pt-3">
+      <D9Label label="Allow Custom Response" />
+      <D9Switch
+        label=""
+        v-model="useCustomResponse"
+        onLabel="yes"
+        offLabel="no"
+        @change="updateCustomResponseSetting"
+      />
+    </div>
 
     <div class="mt-4">
       <D9Button
@@ -41,16 +52,30 @@
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Button } from "@deck9/ui";
-import { ref, nextTick } from "vue";
+import { D9Button, D9Label, D9Switch } from "@deck9/ui";
+import { ref, nextTick, computed } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
-import { storeToRefs } from "pinia";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
+import useActiveInteractions from "../Shared/useActiveInteractions";
 
 const workbench = useWorkbench();
-const { currentInteractions } = storeToRefs(workbench);
+const { activeInteractions, editableInteractions } = useActiveInteractions(
+  workbench.block
+);
+
+const otherOptionInteractionName = "other_response";
+
+const otherOptionInteraction = computed(() => {
+  return activeInteractions.value?.find((interaction) => {
+    return interaction.name === otherOptionInteractionName;
+  });
+});
+
+const useCustomResponse = ref(
+  otherOptionInteraction.value?.is_disabled === false
+);
 
 const isCreatingInteraction = ref(false);
 
@@ -80,6 +105,24 @@ const createClickInteraction = async () => {
   }
 };
 
+const updateCustomResponseSetting = async () => {
+  // check if we have already created the interaction used for other option
+  if (!otherOptionInteraction.value) {
+    // create the interaction
+    await workbench.createInteraction("button", {
+      name: otherOptionInteractionName,
+      is_editable: false,
+      is_disabled: !useCustomResponse.value,
+    });
+  } else {
+    // update the interaction
+    await workbench.updateInteraction({
+      id: otherOptionInteraction.value.id,
+      is_disabled: !useCustomResponse.value,
+    });
+  }
+};
+
 const {
   bindTemplateRefsForTraversables,
   focusNextItem,
@@ -87,7 +130,7 @@ const {
   focusPreviousItem,
   focusLastItem,
   focusNeighborItem,
-} = useKeyboardNavigation(currentInteractions, async () => {
+} = useKeyboardNavigation(activeInteractions, async () => {
   await createClickInteraction();
 });
 </script>

@@ -84,7 +84,6 @@ trait InteractionsTestingContract
     /** @test */
     public function can_save_json_option_object_to_interaction()
     {
-        $this->withoutExceptionHandling();
         $interaction = FormBlockInteraction::factory()->create([
             'type' => $this->getInteractionType(),
         ]);
@@ -102,5 +101,73 @@ trait InteractionsTestingContract
             'rows' => 10,
             'max_chars' => 250,
         ], $interaction->fresh()->options);
+    }
+
+    /** @test */
+    public function an_interaction_can_be_made_not_editable()
+    {
+        $interaction = FormBlockInteraction::factory()->create([
+            'type' => $this->getInteractionType(),
+        ]);
+
+        $this->assertTrue($interaction->fresh()->is_editable);
+
+        $this->actingAs($interaction->formBlock->form->user)
+            ->json('post', route('api.interactions.update', $interaction->id), [
+                'is_editable' => false,
+            ])
+            ->assertSuccessful();
+
+        $this->assertFalse($interaction->fresh()->is_editable);
+    }
+
+    /** @test */
+    public function an_interaction_can_be_made_disabled()
+    {
+        $interaction = FormBlockInteraction::factory()->create([
+            'type' => $this->getInteractionType(),
+        ]);
+
+        $this->assertFalse($interaction->fresh()->is_disabled);
+
+        $this->actingAs($interaction->formBlock->form->user)
+            ->json('post', route('api.interactions.update', $interaction->id), [
+                'is_disabled' => true,
+            ])
+            ->assertSuccessful();
+
+        $this->assertTrue($interaction->fresh()->is_disabled);
+    }
+
+    /** @test */
+    public function an_interaction_can_be_named()
+    {
+        $interaction = FormBlockInteraction::factory()->create([
+            'type' => $this->getInteractionType(),
+        ]);
+
+        $this->actingAs($interaction->formBlock->form->user)
+            ->json('post', route('api.interactions.update', $interaction->id), [
+                'name' => 'other_option',
+            ])
+            ->assertSuccessful();
+
+        $this->assertEquals('other_option', $interaction->fresh()->name);
+    }
+
+    /** @test */
+    public function label_can_be_null_when_interaction_is_not_editable()
+    {
+        $interaction = FormBlockInteraction::factory()->create([
+            'type' => $this->getInteractionType(),
+            'is_editable' => false,
+        ]);
+
+        $this->actingAs($interaction->formBlock->form->user)
+            ->json('post', route('api.interactions.update', $interaction->id), [
+                'label' => null,
+                'is_editable' => false,
+            ])
+            ->assertSuccessful();
     }
 }

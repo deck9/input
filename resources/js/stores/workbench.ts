@@ -116,7 +116,8 @@ export const useWorkbench = defineStore("workbench", {
         },
 
         async createInteraction(
-            type: FormBlockInteractionModel["type"]
+            type: FormBlockInteractionModel["type"],
+            attributes?: Partial<FormBlockInteractionModel>
         ): Promise<FormBlockInteractionModel | undefined> {
             if (!this.block) {
                 return;
@@ -125,7 +126,8 @@ export const useWorkbench = defineStore("workbench", {
             try {
                 const response = await callCreateFormBlockInteraction(
                     this.block?.id,
-                    type
+                    type,
+                    attributes
                 );
 
                 if (response.status === 201) {

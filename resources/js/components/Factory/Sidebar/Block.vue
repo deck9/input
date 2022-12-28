@@ -52,7 +52,7 @@
       </div>
 
       <BlockInteraction
-        v-for="(interaction, index) in activeInteractions"
+        v-for="(interaction, index) in editableInteractions"
         v-bind="{ interaction, index }"
         :key="interaction.id"
       />
@@ -84,7 +84,7 @@ const props = defineProps<{
 
 provide("block", props.block);
 
-const { activeInteractions } = useActiveInteractions(props.block);
+const { editableInteractions } = useActiveInteractions(props.block);
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id
