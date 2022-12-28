@@ -26,7 +26,10 @@
       </Draggable>
     </Container>
 
-    <div class="mb-3 flex justify-between pt-3">
+    <div
+      v-if="workbench.block?.type === 'radio'"
+      class="mb-3 flex justify-between pt-3"
+    >
       <D9Label label="Allow Custom Response" />
       <D9Switch
         label=""
