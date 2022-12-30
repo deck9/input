@@ -1,5 +1,6 @@
 <template>
   <label
+    v-if="isVisible"
     :for="action.id"
     class="relative block cursor-pointer rounded border py-2 pl-6 pr-3"
     :class="{
@@ -18,7 +19,22 @@
       >
     </div>
 
-    <span class="inline-block pl-4 pr-6"> {{ action.label }}</span>
+    <span class="block w-full pl-4 pr-6">
+      <input
+        v-if="isOtherOption"
+        ref="otherInput"
+        @focus="store.enableInputMode"
+        @blur="store.disableInputMode"
+        @keyup.enter="stopEditing"
+        @keyup.esc="otherInput?.blur()"
+        type="text"
+        placeholder="Other"
+        class="block w-full border-0 focus:ring-0"
+        :class="{ 'pointer-events-none': !isChecked }"
+      />
+      <span v-else class="inline-block">{{ action.label }}</span>
+    </span>
+
     <div class="absolute inset-y-0 right-4 flex items-center">
       <input
         class="border-grey-300 bg-transparent checked:border-primary checked:bg-primary checked:hover:bg-primary focus:ring-primary focus:checked:bg-primary focus:checked:outline-none focus:checked:ring-0 focus:checked:ring-offset-0"
@@ -47,9 +63,14 @@ const props = defineProps<{
   block: PublicFormBlockModel;
   action: PublicFormBlockInteractionModel;
 }>();
-const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
+const emits = defineEmits<{
+  (event: "pressedEnterWhileInput"): void;
+}>();
+
+const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const buttonElement = ref<HTMLInputElement | null>(null);
+const otherInput = ref<HTMLInputElement | null>(null);
 const inputType = props.block.type === "checkbox" ? "checkbox" : "radio";
 const shortcutKey = (props.index + 1).toString();
 
@@ -65,20 +86,47 @@ const isChecked = computed<boolean>(() => {
   }
 });
 
+const isOtherOption = computed<boolean>(() => {
+  return props.action.name === "other_response";
+});
+
+const isVisible = computed<boolean>(() => {
+  return (
+    !isOtherOption.value ||
+    (isOtherOption.value && props.block.type === "radio")
+  );
+});
+
 onMounted(() => {
   if (!disableFocus?.value && props.index === 0) {
     buttonElement.value?.focus();
   }
 });
 
-const onInput = () => {
+const stopEditing = () => {
+  emits("pressedEnterWhileInput");
+};
+
+const onInput = (event) => {
+  if (store.isInputMode) {
+    return;
+  }
+
+  event.preventDefault();
+
   buttonElement.value?.focus();
   if (inputType === "checkbox") {
     store.toggleResponse(props.action, props.action.label);
   } else {
     store.setResponse(props.action, props.action.label);
   }
+
+  if (isOtherOption.value) {
+    otherInput.value?.focus();
+  }
 };
 
-onKeyStroke(shortcutKey, onInput, { target: document });
+if (isVisible.value) {
+  onKeyStroke(shortcutKey, onInput, { target: document });
+}
 </script>

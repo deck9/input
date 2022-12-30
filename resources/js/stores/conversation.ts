@@ -16,7 +16,7 @@ type ConversationStore = {
     payload: FormSubmitPayload;
     isProcessing: boolean;
     isSubmitted: boolean;
-    isEnterDisabled: boolean;
+    isInputMode: boolean;
 };
 
 export const useConversation = defineStore("form", {
@@ -30,7 +30,7 @@ export const useConversation = defineStore("form", {
             payload: {},
             isProcessing: false,
             isSubmitted: false,
-            isEnterDisabled: false,
+            isInputMode: false,
         };
     },
 
@@ -164,12 +164,12 @@ export const useConversation = defineStore("form", {
             this.queue = storyboardResponse.data.blocks;
         },
 
-        disableEnterKey() {
-            this.isEnterDisabled = true;
+        enableInputMode() {
+            this.isInputMode = true;
         },
 
-        enableEnterKey() {
-            this.isEnterDisabled = false;
+        disableInputMode() {
+            this.isInputMode = false;
         },
 
         setResponse(

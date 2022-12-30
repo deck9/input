@@ -125,6 +125,9 @@ type PublicFormBlockInteractionModel = {
     options: FormBlockInteractionSettings;
     label: string | null;
     message: string | null;
+    name: string | null;
+    is_editable: boolean | null;
+    is_disabled: boolean | null;
 };
 
 type PublicFormBlockModel = {

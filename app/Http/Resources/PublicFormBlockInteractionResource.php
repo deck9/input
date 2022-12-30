@@ -18,8 +18,11 @@ class PublicFormBlockInteractionResource extends JsonResource
             'id' => $this->uuid,
             'type' => $this->type->value,
             'options' => $this->options,
+            'name' => $this->name,
             'label' => $this->label,
             'message' => $this->message,
+            'is_editable' => $this->is_editable,
+            'is_disabled' => $this->is_disabled,
         ];
     }
 }
