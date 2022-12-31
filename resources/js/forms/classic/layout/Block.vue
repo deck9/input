@@ -13,7 +13,6 @@
           :block="block"
           :index="index"
           :action="action"
-          @pressedEnterWhileInput="focusSubmitButton"
         ></component>
       </div>
     </div>

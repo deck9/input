@@ -79,10 +79,6 @@ const props = defineProps<{
   action: PublicFormBlockInteractionModel;
 }>();
 
-const emits = defineEmits<{
-  (event: "pressedEnterWhileInput"): void;
-}>();
-
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const buttonElement = ref<HTMLInputElement | null>(null);
 const otherInput = ref<HTMLInputElement | null>(null);
@@ -102,7 +98,7 @@ const isChecked = computed<boolean>(() => {
 });
 
 const isOtherOption = computed<boolean>(() => {
-  return props.action.name === "other_response";
+  return props.action.name === "alt_response";
 });
 
 const otherValue = ref<string>("");
@@ -155,7 +151,7 @@ const onInput = (event: Event | null = null) => {
 const stopEditing = () => {
   store.disableInputMode();
   onInput();
-  emits("pressedEnterWhileInput");
+  buttonElement.value?.focus();
 };
 
 if (isVisible.value) {

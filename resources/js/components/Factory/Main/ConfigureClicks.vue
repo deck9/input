@@ -68,7 +68,7 @@ const { activeInteractions, editableInteractions } = useActiveInteractions(
   workbench.block
 );
 
-const otherOptionInteractionName = "other_response";
+const otherOptionInteractionName = "alt_response";
 
 const otherOptionInteraction = computed(() => {
   return activeInteractions.value?.find((interaction) => {
