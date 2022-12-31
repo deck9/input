@@ -23,16 +23,31 @@
       <input
         v-if="isOtherOption"
         ref="otherInput"
-        @focus="store.enableInputMode"
-        @blur="store.disableInputMode"
+        @blur="stopEditing"
         @keyup.enter="stopEditing"
         @keyup.esc="otherInput?.blur()"
         type="text"
         placeholder="Other"
+        v-model="otherValue"
         class="block w-full border-0 focus:ring-0"
         :class="{ 'pointer-events-none': !isChecked }"
       />
       <span v-else class="inline-block">{{ action.label }}</span>
+      <div
+        v-if="isOtherOption"
+        class="absolute inset-y-0 right-12 flex items-center whitespace-nowrap"
+      >
+        <span v-if="isChecked && !store.isInputMode" class="text-sm"
+          >Press <code class="rounded bg-content/10 px-1 py-px">e</code> to
+          edit</span
+        >
+        <span
+          v-else-if="isChecked && otherValue !== '' && store.isInputMode"
+          class="text-sm"
+          >Press <code class="rounded bg-content/10 px-1 py-px">Enter</code> to
+          confirm</span
+        >
+      </div>
     </span>
 
     <div class="absolute inset-y-0 right-4 flex items-center">
@@ -90,6 +105,8 @@ const isOtherOption = computed<boolean>(() => {
   return props.action.name === "other_response";
 });
 
+const otherValue = ref<string>("");
+
 const isVisible = computed<boolean>(() => {
   return (
     !isOtherOption.value ||
@@ -103,30 +120,67 @@ onMounted(() => {
   }
 });
 
-const stopEditing = () => {
-  emits("pressedEnterWhileInput");
-};
-
-const onInput = (event) => {
-  if (store.isInputMode) {
-    return;
-  }
-
-  event.preventDefault();
-
-  buttonElement.value?.focus();
-  if (inputType === "checkbox") {
-    store.toggleResponse(props.action, props.action.label);
-  } else {
-    store.setResponse(props.action, props.action.label);
-  }
-
-  if (isOtherOption.value) {
+const startEditing = (force = false) => {
+  if (force || otherValue.value === "") {
+    store.enableInputMode();
     otherInput.value?.focus();
   }
 };
 
+const onInput = (event: Event | null = null) => {
+  if (store.isInputMode) {
+    return;
+  }
+
+  if (event) {
+    event.preventDefault();
+  }
+
+  const responseValue = isOtherOption.value
+    ? otherValue.value
+    : props.action.label;
+
+  buttonElement.value?.focus();
+  if (inputType === "checkbox") {
+    store.toggleResponse(props.action, responseValue);
+  } else {
+    store.setResponse(props.action, responseValue);
+  }
+
+  if (isOtherOption.value && otherValue.value === "") {
+    startEditing();
+  }
+};
+
+const stopEditing = () => {
+  store.disableInputMode();
+  onInput();
+  emits("pressedEnterWhileInput");
+};
+
 if (isVisible.value) {
   onKeyStroke(shortcutKey, onInput, { target: document });
+
+  // add shortcut to edit the value
+  if (isOtherOption.value) {
+    onKeyStroke(
+      "e",
+      (e) => {
+        if (store.isInputMode) {
+          return;
+        }
+
+        e.preventDefault();
+        startEditing(true);
+      },
+      { target: document }
+    );
+  }
+}
+
+if (isOtherOption.value) {
+  if (!Array.isArray(store.currentPayload)) {
+    otherValue.value = store.currentPayload?.payload ?? "";
+  }
 }
 </script>
