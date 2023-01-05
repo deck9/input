@@ -5,7 +5,7 @@
     class="relative block cursor-pointer rounded border py-2 pl-6 pr-3"
     :class="{
       'border-primary ring-1 ring-primary': isChecked,
-      'border-content/80': !isChecked,
+      'border-content/20': !isChecked,
     }"
   >
     <div class="absolute inset-y-0 left-2 flex items-center">
@@ -23,11 +23,11 @@
       <input
         v-if="isOtherOption"
         ref="otherInput"
-        @blur="stopEditing"
-        @keyup.enter="stopEditing"
-        @keyup.esc="otherInput?.blur()"
+        @click="startEditing(true)"
+        @blur="stopEditing()"
+        @keyup.enter="stopEditing(true)"
         type="text"
-        placeholder="Other"
+        :placeholder="isChecked && !otherValue ? 'Type your answer' : 'Other'"
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0"
         :class="{ 'pointer-events-none': !isChecked }"
@@ -35,18 +35,19 @@
       <span v-else class="inline-block">{{ action.label }}</span>
       <div
         v-if="isOtherOption"
-        class="absolute inset-y-0 right-12 flex items-center whitespace-nowrap"
+        class="absolute inset-y-0 right-12 flex items-center whitespace-nowrap text-sm"
       >
-        <span v-if="isChecked && !store.isInputMode" class="text-sm"
-          >Press <code class="rounded bg-content/10 px-1 py-px">e</code> to
-          edit</span
-        >
-        <span
-          v-else-if="isChecked && otherValue !== '' && store.isInputMode"
-          class="text-sm"
-          >Press <code class="rounded bg-content/10 px-1 py-px">Enter</code> to
-          confirm</span
-        >
+        <template v-if="otherValue !== '' && isChecked && !isMobileDevice">
+          <span v-if="!store.isInputMode"
+            >Press <code class="rounded bg-content/10 px-1 py-px">e</code> to
+            edit</span
+          >
+          <span v-else
+            >Press
+            <code class="rounded bg-content/10 px-1 py-px">Enter</code> to
+            confirm</span
+          >
+        </template>
       </div>
     </span>
 
@@ -70,6 +71,7 @@ import { computed, ComputedRef, inject } from "@vue/runtime-core";
 import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
+import { useMobileDetection } from "@/utils/useMobileDetection";
 
 const store = useConversation();
 
@@ -84,6 +86,8 @@ const buttonElement = ref<HTMLInputElement | null>(null);
 const otherInput = ref<HTMLInputElement | null>(null);
 const inputType = props.block.type === "checkbox" ? "checkbox" : "radio";
 const shortcutKey = (props.index + 1).toString();
+
+const { isMobileDevice } = useMobileDetection();
 
 const isChecked = computed<boolean>(() => {
   if (Array.isArray(store.currentPayload)) {
@@ -118,20 +122,15 @@ onMounted(() => {
 
 const startEditing = (force = false) => {
   if (force || otherValue.value === "") {
-    store.enableInputMode();
+    // focus the input field
     otherInput.value?.focus();
+
+    // switch into editing mode
+    store.enableInputMode();
   }
 };
 
-const onInput = (event: Event | null = null) => {
-  if (store.isInputMode) {
-    return;
-  }
-
-  if (event) {
-    event.preventDefault();
-  }
-
+const saveInput = () => {
   const responseValue = isOtherOption.value
     ? otherValue.value
     : props.action.label;
@@ -142,16 +141,41 @@ const onInput = (event: Event | null = null) => {
   } else {
     store.setResponse(props.action, responseValue);
   }
+};
 
-  if (isOtherOption.value && otherValue.value === "") {
+// On Input is called when user clicks on the button and the response is selected
+const onInput = (event: Event | null = null) => {
+  if (store.isInputMode) {
+    return;
+  }
+
+  if (event && isOtherOption.value) {
+    event.preventDefault();
+  }
+
+  saveInput();
+
+  if (isOtherOption.value && !store.isInputMode && otherValue.value === "") {
     startEditing();
   }
 };
 
-const stopEditing = () => {
+const stopEditing = (focusButton = false) => {
+  // only stop if input mode was on
+  if (!store.isInputMode) {
+    return;
+  }
+
+  // disable input mode
   store.disableInputMode();
-  onInput();
-  buttonElement.value?.focus();
+
+  // update the value stored for the action
+  saveInput();
+
+  if (focusButton) {
+    // focus the checkbox input, so navigation is possible
+    buttonElement.value?.focus();
+  }
 };
 
 if (isVisible.value) {
