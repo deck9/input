@@ -26,19 +26,10 @@
       </Draggable>
     </Container>
 
-    <div
+    <CustomResponseSettings
       v-if="workbench.block?.type === 'radio'"
-      class="mb-3 flex justify-between pt-3"
-    >
-      <D9Label label="Allow Custom Response" />
-      <D9Switch
-        label=""
-        v-model="useCustomResponse"
-        onLabel="yes"
-        offLabel="no"
-        @change="updateCustomResponseSetting"
-      />
-    </div>
+      class="mb-3 pt-3"
+    />
 
     <div class="mt-4">
       <D9Button
@@ -55,29 +46,18 @@
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Button, D9Label, D9Switch } from "@deck9/ui";
-import { ref, nextTick, computed } from "vue";
+import { D9Button } from "@deck9/ui";
+import { ref, nextTick } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
 import useActiveInteractions from "../Shared/useActiveInteractions";
+import CustomResponseSettings from "./Interactions/CustomResponseSettings.vue";
 
 const workbench = useWorkbench();
 const { activeInteractions, editableInteractions } = useActiveInteractions(
   workbench.block
-);
-
-const otherOptionInteractionName = "alt_response";
-
-const otherOptionInteraction = computed(() => {
-  return activeInteractions.value?.find((interaction) => {
-    return interaction.name === otherOptionInteractionName;
-  });
-});
-
-const useCustomResponse = ref(
-  otherOptionInteraction.value?.is_disabled === false
 );
 
 const isCreatingInteraction = ref(false);
@@ -105,24 +85,6 @@ const createClickInteraction = async () => {
     return Promise.reject(error);
   } finally {
     isCreatingInteraction.value = false;
-  }
-};
-
-const updateCustomResponseSetting = async () => {
-  // check if we have already created the interaction used for other option
-  if (!otherOptionInteraction.value) {
-    // create the interaction
-    await workbench.createInteraction("button", {
-      name: otherOptionInteractionName,
-      is_editable: false,
-      is_disabled: !useCustomResponse.value,
-    });
-  } else {
-    // update the interaction
-    await workbench.updateInteraction({
-      id: otherOptionInteraction.value.id,
-      is_disabled: !useCustomResponse.value,
-    });
   }
 };
 

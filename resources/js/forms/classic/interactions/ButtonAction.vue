@@ -27,7 +27,11 @@
         @blur="stopEditing()"
         @keyup.enter="stopEditing(true)"
         type="text"
-        :placeholder="isChecked && !otherValue ? 'Type your answer' : 'Other'"
+        :placeholder="
+          isChecked && !otherValue
+            ? t('Type your answer')
+            : action.label ?? t('Other')
+        "
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0"
         :class="{ 'pointer-events-none': !isChecked }"
@@ -38,15 +42,17 @@
         class="absolute inset-y-0 right-12 flex items-center whitespace-nowrap text-sm"
       >
         <template v-if="otherValue !== '' && isChecked && !isMobileDevice">
-          <span v-if="!store.isInputMode"
-            >Press <code class="rounded bg-content/10 px-1 py-px">e</code> to
-            edit</span
+          <i18n-t
+            v-if="!store.isInputMode"
+            keypath="hints.edit"
+            tag="span"
+            scope="global"
           >
-          <span v-else
-            >Press
-            <code class="rounded bg-content/10 px-1 py-px">Enter</code> to
-            confirm</span
-          >
+            <code class="rounded bg-content/10 px-1 py-px">e</code>
+          </i18n-t>
+          <i18n-t v-else keypath="hints.confirm" tag="span" scope="global">
+            <code class="rounded bg-content/10 px-1 py-px">Enter</code>
+          </i18n-t>
         </template>
       </div>
     </span>
@@ -72,7 +78,9 @@ import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
 import { useMobileDetection } from "@/utils/useMobileDetection";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const store = useConversation();
 
 const props = defineProps<{
