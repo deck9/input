@@ -56,7 +56,7 @@ const charCount = ref<number>(0);
 const inputElement = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
-  store.disableEnterKey();
+  store.enableInputMode();
   updateCharCount();
 
   if (!disableFocus?.value) {
@@ -65,7 +65,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  store.enableEnterKey();
+  store.disableInputMode();
 });
 
 const hasMaxChars = computed(() => {

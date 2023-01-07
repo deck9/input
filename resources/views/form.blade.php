@@ -65,7 +65,7 @@
             body {
                 margin: 0;
                 line-height: inherit;
-                height: 100vh;
+                height: 100%;
             }
         </style>
     </head>

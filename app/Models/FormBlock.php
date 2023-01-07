@@ -97,7 +97,8 @@ class FormBlock extends Model
     public function activeInteractions()
     {
         return $this->hasMany(FormBlockInteraction::class, 'form_block_id')
-            ->where('type', $this->getInteractionType());
+            ->where('type', $this->getInteractionType())
+            ->where('is_disabled', false);
     }
 
     public function getInteractionsAttribute()

@@ -20,7 +20,7 @@
       </button>
 
       <span
-        v-if="!disableEnterKey"
+        v-if="!enableInputMode"
         :class="{ 'pointer-events-none opacity-0': isDisabled }"
         class="ml-4 inline-flex items-center justify-center text-xs font-bold leading-none text-content/80 transition duration-150"
       >
@@ -40,7 +40,7 @@ defineProps<{
   isDisabled?: boolean;
   isProcessing?: boolean;
   label: string;
-  disableEnterKey?: boolean;
+  enableInputMode?: boolean;
 }>();
 
 const { t } = useI18n();

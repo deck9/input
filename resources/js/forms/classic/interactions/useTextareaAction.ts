@@ -35,7 +35,7 @@ export function useTextareaAction(block: PublicFormBlockModel) {
         component: TextareaAction,
         validator,
         props: {
-            disableEnterKey: true,
+            enableInputMode: true,
         },
     };
 }

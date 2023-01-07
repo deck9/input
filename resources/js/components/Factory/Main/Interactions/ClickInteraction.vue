@@ -2,7 +2,7 @@
   <div class="group relative py-1 transition duration-200">
     <div class="flex items-center">
       <section class="grid w-full grid-cols-2 gap-x-2">
-        <div :class="{ 'col-span-2': multiple }">
+        <div :class="{ 'col-span-2': !showReply }">
           <div class="relative">
             <D9Input
               :id="item.id + '_label'"
@@ -23,7 +23,7 @@
             </span>
           </div>
         </div>
-        <div v-if="!multiple">
+        <div v-if="showReply">
           <D9Input
             :id="item.id + '_message'"
             name="message"
@@ -53,11 +53,11 @@ const workbench = useWorkbench();
 const props = withDefaults(
   defineProps<{
     index: number;
-    multiple?: boolean;
+    showReply?: boolean;
     item: FormBlockInteractionModel;
   }>(),
   {
-    multiple: false,
+    showReply: false,
   }
 );
 

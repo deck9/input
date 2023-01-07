@@ -9,7 +9,11 @@
       v-model="rangeValue"
     />
 
-    <div class="flex gap-1" @mouseleave="hoverValue = false" aria-hidden="true">
+    <div
+      class="flex flex-wrap gap-1"
+      @mouseleave="hoverValue = false"
+      aria-hidden="true"
+    >
       <button
         v-for="(option, index) in ratingOptions"
         :key="'rate-' + index"

@@ -5,20 +5,27 @@
     "Enter": "Enter",
     "Find us here": "Find us here",
     "Form Submitted": "Form Submitted",
+    "Go to next Page": "Go to next Page",
+    "Go to previous Page": "Go to previous Page",
     "Legal Notice": "Legal Notice",
     "Next": "Next",
+    "Other": "Other",
     "Please enter a valid email.": "Please enter a valid email.",
     "Please enter a valid link.": "Please enter a valid link.",
     "Please enter a valid number.": "Please enter a valid number.",
     "Please enter a valid phone number.": "Please enter a valid phone number.",
     "Please select an option.": "Please select an option.",
-    "Previous": "Previous",
     "Privacy Policy": "Privacy Policy",
     "required": "required",
     "Something went wrong validating your input": "Something went wrong validating your input",
     "Submit": "Submit",
     "This field is required.": "This field is required.",
+    "Type your answer": "Type your answer",
     "You have exceeded the maximum number of characters allowed.": "You have exceeded the maximum number of characters allowed.",
+    "hints": {
+        "edit": "Press {0} to edit",
+        "confirm": "{0} to confirm"
+    },
     "validation": {
         "consent_required": "To continue, you must agree to the terms and conditions."
     }

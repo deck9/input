@@ -59,10 +59,14 @@ const validator = computed(() => {
     : { valid: true };
 });
 
+const focusSubmitButton = () => {
+  submitButton.value?.focus();
+};
+
 onMounted(() => {
   // we should focus submit button, if no action component is present
   if (!actionComponent && !disableFocus?.value) {
-    submitButton.value?.focus();
+    focusSubmitButton();
   }
 });
 
@@ -92,11 +96,12 @@ const onSubmit = async () => {
 };
 
 onKeyStroke("Enter", (e) => {
-  if (store.isEnterDisabled) {
+  e.preventDefault();
+
+  if (store.isInputMode) {
     return;
   }
 
-  e.preventDefault();
   onSubmit();
 });
 

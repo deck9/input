@@ -1,7 +1,7 @@
 <template>
   <div>
     <EmptyState
-      v-if="currentInteractions?.length === 0"
+      v-if="editableInteractions?.length === 0"
       title="Nothing here yet."
       description="Add your first option by clicking on the button below."
     />
@@ -13,9 +13,9 @@
       orientation="vertical"
       @drop="onDrop"
     >
-      <Draggable v-for="(item, index) in currentInteractions" :key="item.id">
+      <Draggable v-for="(item, index) in editableInteractions" :key="item.id">
         <ClickInteraction
-          v-bind="{ item, index, multiple: workbench.isCheckboxInput }"
+          v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
           @next="focusNextItem"
@@ -25,6 +25,11 @@
         />
       </Draggable>
     </Container>
+
+    <CustomResponseSettings
+      v-if="workbench.block?.type === 'radio'"
+      class="mb-3 pt-3"
+    />
 
     <div class="mt-4">
       <D9Button
@@ -46,11 +51,14 @@ import { ref, nextTick } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
-import { storeToRefs } from "pinia";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
+import useActiveInteractions from "../Shared/useActiveInteractions";
+import CustomResponseSettings from "./Interactions/CustomResponseSettings.vue";
 
 const workbench = useWorkbench();
-const { currentInteractions } = storeToRefs(workbench);
+const { activeInteractions, editableInteractions } = useActiveInteractions(
+  workbench.block
+);
 
 const isCreatingInteraction = ref(false);
 
@@ -87,7 +95,7 @@ const {
   focusPreviousItem,
   focusLastItem,
   focusNeighborItem,
-} = useKeyboardNavigation(currentInteractions, async () => {
+} = useKeyboardNavigation(activeInteractions, async () => {
   await createClickInteraction();
 });
 </script>

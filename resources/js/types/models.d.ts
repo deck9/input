@@ -102,6 +102,9 @@ type FormBlockInteractionSettings = {
 
 interface FormBlockInteractionModel extends BaseModel {
     type: FormBlockInteractionType;
+    name: string | null;
+    is_editable: boolean | null;
+    is_disabled: boolean | null;
     label: string | null;
     options: FormBlockInteractionSettings;
     message: string | null;
@@ -122,6 +125,9 @@ type PublicFormBlockInteractionModel = {
     options: FormBlockInteractionSettings;
     label: string | null;
     message: string | null;
+    name: string | null;
+    is_editable: boolean | null;
+    is_disabled: boolean | null;
 };
 
 type PublicFormBlockModel = {

@@ -4,6 +4,7 @@ import { useForm } from "@/stores/form";
 
 export default function (block: FormBlockModel | null): {
     activeInteractions: ComputedRef<FormBlockInteractionModel[] | undefined>;
+    editableInteractions: ComputedRef<FormBlockInteractionModel[] | undefined>;
 } {
     const activeInteractions = computed(() => {
         const store = useForm();
@@ -21,7 +22,14 @@ export default function (block: FormBlockModel | null): {
         return sortBy(interactions, ["sequence"]);
     });
 
+    const editableInteractions = computed(() => {
+        return activeInteractions.value?.filter((interaction) => {
+            return interaction.is_editable;
+        });
+    });
+
     return {
         activeInteractions,
+        editableInteractions,
     };
 }
