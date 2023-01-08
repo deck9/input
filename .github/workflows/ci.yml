@@ -69,3 +69,5 @@ jobs:
 
       - name: "Run Test Suite with Coverage Report"
         run: npm run coverage
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: 1
