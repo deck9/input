@@ -181,7 +181,8 @@ type FormStoryboard = {
 };
 
 type FormSessionModel = {
-    token: string;
+    id: number;
+    uid: string;
     params: string;
     is_completed: boolean;
     has_data_privacy: boolean;
