@@ -8,7 +8,7 @@
     },
     "scripts": {
         "lint": "eslint --ext .js,.ts,.vue resources/js",
-        "vue-tsc": "vue-tsc --noEmit",
+        "vue-tsc": "vue-tsc --noEmit -p tsconfig.build.json",
         "tw-config": "tailwind-config-viewer -o",
         "dev": "vite",
         "build-app": "vite build -c vite.prod-app.config.js",
