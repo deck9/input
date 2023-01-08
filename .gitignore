@@ -19,3 +19,4 @@ yarn-error.log
 /resources/js/ziggy.js
 /.idea
 /.vscode
+coverage

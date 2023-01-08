@@ -19,6 +19,7 @@
     },
     "devDependencies": {
         "@pinia/testing": "^0.0.14",
+        "@vitest/coverage-c8": "^0.26.3",
         "@vue/test-utils": "^2.2.7",
         "browser-sync": "^2.27.10",
         "jsdom": "^20.0.3",

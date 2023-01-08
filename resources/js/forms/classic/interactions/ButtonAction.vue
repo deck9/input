@@ -10,6 +10,7 @@
   >
     <div class="absolute inset-y-0 left-2 flex items-center">
       <span
+        data-testid="button-action-index"
         class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium"
         :class="{
           'bg-primary text-contrast': isChecked,
@@ -36,7 +37,9 @@
         class="block w-full border-0 focus:ring-0"
         :class="{ 'pointer-events-none': !isChecked }"
       />
-      <span v-else class="inline-block">{{ action.label }}</span>
+      <span data-testid="button-label" v-else class="inline-block">{{
+        action.label
+      }}</span>
       <div
         v-if="isOtherOption"
         class="absolute inset-y-0 right-12 flex items-center whitespace-nowrap text-sm"
