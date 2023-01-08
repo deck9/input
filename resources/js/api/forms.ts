@@ -263,3 +263,24 @@ export function callPurgeSubmissions(form: FormModel): Promise<AxiosResponse> {
         }
     });
 }
+
+export function callDeleteFormSubmission(
+    form: FormModel,
+    session: FormSessionModel
+): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.delete(
+                window.route("api.forms.submissions.delete", {
+                    form: form.uuid,
+                    session: session.id,
+                })
+            );
+            if (response.status === 204) {
+                resolve(response as AxiosResponse);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

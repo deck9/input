@@ -7,6 +7,7 @@
         <table class="min-w-full divide-y divide-grey-300">
           <thead class="bg-grey-100">
             <tr class="divide-x divide-grey-200">
+              <th scope="col" class="px-2"></th>
               <th
                 scope="col"
                 class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
@@ -41,6 +42,7 @@
               :key="item.id"
               :submission="item"
               :headers="submissionTableHeaders"
+              @deleted="removeItem"
             />
           </tbody>
         </table>
@@ -74,6 +76,15 @@ const props = defineProps<{
 const submissions = ref<null | PaginatedResponse<Record<string, any>>>(null);
 const getSubmissions = async (page) => {
   submissions.value = await callGetFormSubmissions(props.form, page);
+};
+
+const removeItem = (sessionId) => {
+  // modify the submissions array to remove the deleted item
+  if (submissions.value) {
+    submissions.value.data = submissions.value.data.filter(
+      (item) => item.id !== sessionId
+    );
+  }
 };
 
 onMounted(async () => {

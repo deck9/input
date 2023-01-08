@@ -33,6 +33,31 @@ class SubmissionsTest extends TestCase
     }
 
     /** @test */
+    public function can_delete_a_single_form_submission()
+    {
+        $form = Form::factory()->create();
+
+        FormSession::factory()
+            ->times(2)
+            ->completed()
+            ->for($form)
+            ->create();
+
+        $session = FormSession::factory()
+            ->completed()
+            ->for($form)
+            ->create();
+
+        $this->assertCount(3, $form->fresh()->formSessions);
+
+        $this->actingAs($form->user)
+            ->json('delete', route('api.forms.submissions.delete', ['form' => $form->uuid, 'session' => $session->id]))
+            ->assertSuccessful();
+
+        $this->assertCount(2, $form->fresh()->formSessions);
+    }
+
+    /** @test */
     public function can_get_all_submissions_for_a_form_via_api()
     {
         $form = Form::factory()->create();

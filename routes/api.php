@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\FormBlockSequenceController;
 use App\Http\Controllers\Api\GetFormStoryboardController;
 use App\Http\Controllers\Api\FormTemplateExportController;
 use App\Http\Controllers\Api\FormTemplateImportController;
+use App\Http\Controllers\Api\DeleteFormSubmissionController;
 use App\Http\Controllers\Api\FormBlockInteractionController;
 use App\Http\Controllers\Api\PurgeFormSubmissionsController;
 use App\Http\Controllers\Api\FormBlockInteractionSequenceController;
@@ -81,6 +82,7 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
 
     // Form Submissions API Routes
     $router->get('forms/{form}/submissions', FormSubmissionsController::class)->name('api.forms.submissions');
+    $router->delete('forms/{form}/submissions/{session}', DeleteFormSubmissionController::class)->name('api.forms.submissions.delete');
     $router->post('forms/{form}/purge-results', PurgeFormSubmissionsController::class)->name('api.forms.purge-results');
 
     // Form Block Mapping is just a helper to discover block & interaction type matches
