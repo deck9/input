@@ -182,7 +182,7 @@ type FormStoryboard = {
 
 type FormSessionModel = {
     id: number;
-    uid: string;
+    token: string;
     params: string;
     is_completed: boolean;
     has_data_privacy: boolean;
