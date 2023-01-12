@@ -135,6 +135,9 @@ class FormBlock extends Model
             case FormBlockType::scale:
                 return FormBlockInteractionType::range;
 
+            case FormBlockType::date:
+                return FormBlockInteractionType::date;
+
             default:
                 return null;
         }
