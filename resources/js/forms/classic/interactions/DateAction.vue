@@ -8,6 +8,8 @@
       :id="action.id"
       :placeholder="action.label || t('Choose a date')"
       :value="storeValue"
+      :min="action.options?.noPastDates ? todayDate : action.options?.minDate"
+      :max="action.options?.maxDate"
       ref="inputElement"
       autocomplete="off"
       @input="onInput"
@@ -44,6 +46,8 @@ onMounted(() => {
     inputElement.value?.focus();
   }
 });
+
+const todayDate = new Date().toISOString().substring(0, 10);
 
 const onInput = () => {
   const input = inputElement.value?.value ?? null;
