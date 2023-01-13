@@ -54,8 +54,10 @@ import { useWorkbench } from "@/stores";
 import { D9Label, D9Input, D9Select } from "@deck9/ui";
 import { watch, Ref, ref } from "vue";
 import { onMounted } from "@vue/runtime-core";
+import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();
+const { findOrCreate } = useInteractionsUtils();
 
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
@@ -85,19 +87,7 @@ const icon = ref<{
 onMounted(async () => {
   // find or create interaction
   if (workbench.block?.interactions) {
-    let foundExisting = workbench.block.interactions.findIndex((item) => {
-      return item.type === "range";
-    });
-
-    if (foundExisting === -1) {
-      let response = await workbench.createInteraction("range");
-
-      if (response) {
-        interaction.value = response;
-      }
-    } else {
-      interaction.value = workbench.block.interactions[foundExisting];
-    }
+    interaction.value = await findOrCreate("range", workbench);
 
     // init settings
     startValue.value = interaction.value.options?.start ?? 1;

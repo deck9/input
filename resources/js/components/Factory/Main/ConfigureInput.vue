@@ -15,8 +15,10 @@ import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
 import { watch, Ref, ref } from "vue";
 import { onMounted } from "@vue/runtime-core";
+import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();
+const { findOrCreate } = useInteractionsUtils();
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref("");
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
@@ -24,25 +26,10 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 const isInitialized = ref(false);
 
 onMounted(async () => {
-  // find or create interaction
-  if (workbench.block?.interactions) {
-    let foundExisting = workbench.block.interactions.findIndex((item) => {
-      return item.type === "input";
-    });
+  interaction.value = await findOrCreate("input", workbench);
 
-    if (foundExisting === -1) {
-      let response = await workbench.createInteraction("input");
-
-      if (response) {
-        interaction.value = response;
-      }
-    } else {
-      interaction.value = workbench.block.interactions[foundExisting];
-    }
-
-    label.value = interaction.value.label;
-    isInitialized.value = true;
-  }
+  label.value = interaction.value.label;
+  isInitialized.value = true;
 });
 
 watch([label], (newValues) => {

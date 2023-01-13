@@ -31,7 +31,8 @@ class FormBlockMappingTest extends TestCase
             "input-phone" => "input",
             "input-long" => "textarea",
             "rating" => "range",
-            "scale" => "range"
+            "scale" => "range",
+            "date" => "date"
         ]);
     }
 }

@@ -41,8 +41,10 @@ import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
 import { watch, Ref, ref } from "vue";
 import { onMounted } from "@vue/runtime-core";
+import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();
+const { findOrCreate } = useInteractionsUtils();
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref("");
 const rows = <Ref<number>>ref(5);
@@ -52,19 +54,7 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 onMounted(async () => {
   // find or create interaction
   if (workbench.block?.interactions) {
-    let foundExisting = workbench.block.interactions.findIndex((item) => {
-      return item.type === "textarea";
-    });
-
-    if (foundExisting === -1) {
-      let response = await workbench.createInteraction("textarea");
-
-      if (response) {
-        interaction.value = response;
-      }
-    } else {
-      interaction.value = workbench.block.interactions[foundExisting];
-    }
+    interaction.value = await findOrCreate("textarea", workbench);
 
     label.value = interaction.value.label;
     rows.value = interaction.value.options?.rows ?? 5;

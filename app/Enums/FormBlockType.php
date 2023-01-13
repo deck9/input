@@ -20,4 +20,6 @@ enum FormBlockType: string
 
     case rating = "rating";
     case scale = "scale";
+
+    case date = "date";
 }

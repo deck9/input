@@ -10,4 +10,6 @@ enum FormBlockInteractionType: string
     case consent = "consent";
 
     case range = "range";
+
+    case date = "date";
 }

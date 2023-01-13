@@ -79,18 +79,23 @@ type FormBlockType =
     | "input-link"
     | "input-phone"
     | "scale"
-    | "rating";
+    | "rating"
+    | "date";
 
 type FormBlockInteractionType =
     | "button"
     | "input"
     | "textarea"
     | "consent"
-    | "range";
+    | "range"
+    | "date";
 
 type FormBlockInteractionSettings = {
     rows?: number;
     max_chars?: number;
+    minDate?: string;
+    maxDate?: string;
+    noPastDates?: boolean;
     required?: boolean;
     start?: number;
     end?: number;

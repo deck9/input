@@ -15,6 +15,7 @@ export const useBlockTypes = (): {
         { label: "Phone Number", value: "input-phone", icon: "phone" },
         { label: "Rating", value: "rating", icon: "star" },
         { label: "Scale", value: "scale", icon: "signal" },
+        { label: "Date", value: "date", icon: "calendar" },
         { label: "Consent", value: "consent", icon: "user-shield" },
     ];
 
