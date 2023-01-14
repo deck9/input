@@ -7,9 +7,14 @@
     <div
       class="grid gap-y-4 space-x-2 sm:grid-cols-2 lg:block lg:space-x-0 lg:space-y-4"
     >
-      <div class="rounded-lg bg-grey-200 p-4" v-if="posts.length === 0">
-        <D9Skeleton class="text-grey-300" footer />
-      </div>
+      <template v-if="posts.length === 0">
+        <div class="rounded-lg bg-grey-200 p-4">
+          <D9Skeleton class="text-grey-300" footer :lines="4" />
+        </div>
+        <div class="rounded-lg bg-grey-200 p-4">
+          <D9Skeleton class="text-grey-300" footer :lines="4" />
+        </div>
+      </template>
       <UpdatePost
         v-for="post in posts"
         v-bind="{ post: post.attributes }"
