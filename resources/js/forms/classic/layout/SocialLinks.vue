@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h3 class="text-grey-600">{{ t("Find us here") }}</h3>
-    <ul class="flex space-x-2">
+    <h3 class="font-bold">{{ t("Find us here") }}:</h3>
+    <ul class="mt-1 flex space-x-3">
       <li v-for="provider in socialLinkProviders" :key="provider">
         <a
           v-if="store.form && store.form[provider]"
-          class="flex items-center text-lg text-grey-400 transition duration-150 hover:text-primary"
+          class="flex items-center text-2xl text-content/70 transition duration-150 hover:text-primary"
           :href="store.form[provider]"
-          ><D9Icon :name="provider" />
+          ><D9Icon :name="provider" size="1x" />
           <span class="sr-only ml-1">{{ provider }}</span>
         </a>
       </li>
