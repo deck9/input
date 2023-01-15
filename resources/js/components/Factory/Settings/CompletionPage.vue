@@ -1,5 +1,5 @@
 <template>
-  <form class="relative mx-12 max-w-xl space-y-16 px-4 pt-8 xl:mx-24">
+  <form @submit="saveFormSubmitSettings">
     <div>
       <h2 class="mb-2 text-base font-bold">General</h2>
 
@@ -15,36 +15,7 @@
       </div>
     </div>
 
-    <div>
-      <h2 class="mb-2 text-base font-bold">Integrations / Data Transmission</h2>
-
-      <div>
-        <div class="mb-4">
-          <D9Label label="Integration" />
-          <D9Select
-            block
-            :options="integrationTypes"
-            disabledBadge="Planned"
-            v-model="integrationMethod"
-          />
-        </div>
-        <div class="mb-4">
-          <D9Label label="Submit Method" />
-          <D9Select block :options="submitTypes" v-model="submitMethod" />
-        </div>
-        <div class="mb-4">
-          <D9Label label="Webhook / Submit URL" />
-          <D9Input
-            icon="external-link"
-            type="url"
-            block
-            v-model="submitWebhook"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div>
+    <div class="mt-8">
       <h2 class="mb-2 flex items-center text-base font-bold">
         <span class="inline-block">CTA Link</span>
         <D9Switch class="ml-2" label="" v-model="isCtaOn"></D9Switch>
@@ -78,7 +49,7 @@
       </div>
     </div>
 
-    <div>
+    <div class="mt-8">
       <h2 class="mb-2 flex items-center text-base font-bold">
         <span class="inline-block">Social Links</span>
         <D9Switch
@@ -133,39 +104,26 @@
         </div>
       </div>
     </div>
+
+    <D9Button
+      class="mt-8"
+      type="submit"
+      label="Save Completion Page"
+      :is-loading="isSaving"
+    />
   </form>
 </template>
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
-import { D9Label, D9Input, D9Select, D9Switch } from "@deck9/ui";
-import { onBeforeUnmount, ref, watch } from "vue";
-import debounce from "lodash/debounce";
+import { D9Label, D9Input, D9Switch, D9Button } from "@deck9/ui";
+import { ref } from "vue";
 
 const store = useForm();
+const isSaving = ref(false);
 
 const outroHeadline = ref(store.form?.eoc_headline);
 const outroMessage = ref(store.form?.eoc_text);
-
-const integrationTypes = ref([
-  { label: "Webhook", value: "webhook" },
-  { label: "Make", value: "make", disabled: true },
-  { label: "Zapier", value: "zapier", disabled: true },
-]);
-
-const integrationMethod = ref(integrationTypes.value[0]);
-
-const submitTypes = ref([
-  { label: "GET", value: "GET" },
-  { label: "POST", value: "POST" },
-]);
-
-const submitMethod = ref(
-  store.form?.submit_method
-    ? submitTypes.value.find((i) => i.value === store.form?.submit_method)
-    : submitTypes.value[0]
-);
-const submitWebhook = ref(store.form?.submit_webhook);
 
 const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);
@@ -179,49 +137,29 @@ const linkedin = ref(store?.form?.linkedin);
 const facebook = ref(store?.form?.facebook);
 const twitter = ref(store?.form?.twitter);
 
-const saveFormSubmitSettings = debounce(async () => {
-  await store.updateForm({
-    eoc_headline: outroHeadline.value,
-    eoc_text: outroMessage.value,
+const saveFormSubmitSettings = async () => {
+  isSaving.value = true;
+  try {
+    await store.updateForm({
+      eoc_headline: outroHeadline.value,
+      eoc_text: outroMessage.value,
 
-    show_cta_link: isCtaOn.value,
-    cta_label: ctaLabel.value,
-    cta_link: ctaLink.value,
-    cta_append_params: ctaAppendParams.value,
+      show_cta_link: isCtaOn.value,
+      cta_label: ctaLabel.value,
+      cta_link: ctaLink.value,
+      cta_append_params: ctaAppendParams.value,
 
-    show_social_links: isSocialOn.value,
-    instagram: instagram.value,
-    github: github.value,
-    linkedin: linkedin.value,
-    facebook: facebook.value,
-    twitter: twitter.value,
-
-    submit_method: submitMethod.value?.value,
-    submit_webhook: submitWebhook.value,
-  });
-}, 400);
-
-watch(
-  [
-    outroHeadline,
-    outroMessage,
-    isCtaOn,
-    ctaLabel,
-    ctaLink,
-    ctaAppendParams,
-    submitMethod,
-    submitWebhook,
-    isSocialOn,
-    instagram,
-    github,
-    linkedin,
-    facebook,
-    twitter,
-  ],
-  saveFormSubmitSettings
-);
-
-onBeforeUnmount(async () => {
-  await saveFormSubmitSettings.flush();
-});
+      show_social_links: isSocialOn.value,
+      instagram: instagram.value,
+      github: github.value,
+      linkedin: linkedin.value,
+      facebook: facebook.value,
+      twitter: twitter.value,
+    });
+  } catch (e) {
+    console.error(e);
+  } finally {
+    isSaving.value = false;
+  }
+};
 </script>

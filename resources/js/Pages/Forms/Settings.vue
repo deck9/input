@@ -58,11 +58,13 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import Appearance from "@/components/Factory/Settings/Appearance.vue";
+import CompletionPage from "@/components/Factory/Settings/CompletionPage.vue";
+import Integrations from "@/components/Factory/Settings/Integrations.vue";
 import Delete from "@/components/Factory/Settings/Delete.vue";
+import Embed from "@/components/Factory/Settings/Embed.vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
-import Embed from "@/components/Factory/Settings/Embed.vue";
 import { useForm } from "@/stores";
 import { onMounted, onBeforeUnmount, ref } from "vue";
 
@@ -80,6 +82,16 @@ const navigation: Array<{
 }> = [
   { name: "Options", component: Options, slug: "options" },
   { name: "Privacy", component: Privacy, slug: "privacy" },
+  {
+    name: "Completion Page",
+    component: CompletionPage,
+    slug: "completion-page",
+  },
+  {
+    name: "Integrations",
+    component: Integrations,
+    slug: "integrations",
+  },
   { name: "Appearance", component: Appearance, slug: "appearance" },
   { name: "Embed", component: Embed, slug: "embeds" },
   {

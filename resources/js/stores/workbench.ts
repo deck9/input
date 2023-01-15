@@ -14,7 +14,6 @@ import useActiveInteractions from "@/components/Factory/Shared/useActiveInteract
 interface WorkbenchStore {
     block: FormBlockModel | null;
     isSavingInteraction: number | null;
-    isEditingFinalBlock: boolean;
 }
 
 export const useWorkbench = defineStore("workbench", {
@@ -22,7 +21,6 @@ export const useWorkbench = defineStore("workbench", {
         return {
             block: null,
             isSavingInteraction: null,
-            isEditingFinalBlock: false,
         };
     },
 
@@ -65,13 +63,6 @@ export const useWorkbench = defineStore("workbench", {
     actions: {
         clearWorkbench() {
             this.block = null;
-            this.isEditingFinalBlock = false;
-        },
-
-        editFinalBlock() {
-            this.clearWorkbench();
-            this.isEditingFinalBlock = true;
-            replaceRouteQuery({ block: "final" });
         },
 
         putOnWorkbench(block: FormBlockModel) {
@@ -80,8 +71,6 @@ export const useWorkbench = defineStore("workbench", {
 
             replaceRouteQuery({ block: block.uuid });
 
-            // change block content
-            this.isEditingFinalBlock = false;
             this.block = block;
         },
 

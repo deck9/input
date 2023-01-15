@@ -31,14 +31,6 @@
         icon-position="right"
         @click="store.createFormBlock()"
       />
-
-      <D9Button
-        label="Submit Config"
-        color="primary"
-        icon="cog"
-        icon-position="right"
-        @click="workbench.editFinalBlock()"
-      />
     </div>
   </div>
 </template>
@@ -63,9 +55,7 @@ onMounted(async () => {
     const values = Object.fromEntries(params.entries());
     const found = store.blocks.find((i) => i.uuid === values["block"]);
 
-    if (values["block"] === "final") {
-      workbench.editFinalBlock();
-    } else if (found) {
+    if (found) {
       workbench.putOnWorkbench(found);
     } else {
       workbench.putOnWorkbench(store.blocks[0]);
