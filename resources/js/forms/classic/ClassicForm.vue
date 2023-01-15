@@ -36,7 +36,7 @@
 
       <footer
         aria-label="Navigation for form and progress indicator"
-        class="flex items-center justify-between text-center text-xs"
+        class="items-center justify-between text-xs sm:flex sm:text-center"
       >
         <Navigator
           v-bind="{
@@ -48,7 +48,7 @@
           }"
         />
 
-        <FooterNavigation :form="store.form" />
+        <FooterNavigation class="mt-5 sm:mt-0" :form="store.form" />
       </footer>
     </div>
   </transition>

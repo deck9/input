@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center text-center">
     <div
       v-show="!hideNavigation"
       class="grid w-24 grid-cols-4 rounded border border-content/20 text-content"
