@@ -84,7 +84,15 @@
 
         <div style="
             @if($form->background)
-                background-image: url('{{ $form->background }}?w=2880&fm=webp');
+                background-image: url('{{ $form->background }}?w=1920&fm=webp');
+                background-image: -webkit-image-set(
+                    url('{{ $form->background }}?w=1600&fm=webp') 1x,
+                    url('{{ $form->background }}?w=2880&fm=webp') 2x
+                );
+                background-image: image-set(
+                    url('{{ $form->background }}?w=1600&fm=webp') 1x,
+                    url('{{ $form->background }}?w=2880&fm=webp') 2x
+                );
             @endif
             @if($form->background_color)
                 background-color: {{ $form->background_color }};
