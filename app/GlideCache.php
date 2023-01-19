@@ -23,6 +23,7 @@ class GlideCache
             'cache' => config('filesystems.default') === 'minio' ? new Filesystem($adapter) : Storage::getDriver(),
             'cache_path_prefix' => '.cache',
             'base_url' => 'images',
+            'max_image_size' => 2880 * 2880,
         ]);
     }
 
