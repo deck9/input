@@ -220,31 +220,22 @@ export const useForm = defineStore("form", {
 
         async changeBlockSequence(
             scope: string | false,
-            from: number | null,
             to: number | null,
             payload: FormBlockModel
         ) {
-            if (!this.blocks || !this.form) {
+            if (!this.blocks || !this.form || to === null) {
                 return;
             }
 
-            // check if we need to remove payload
-            if (from !== null) {
-                // real index of payload can be different than what we get, since nested scopes
-                const removedIndex = this.blocks.findIndex((item) => {
-                    return item.id === payload.id;
-                });
-
-                this.blocks.splice(removedIndex, 1);
-            }
+            console.log(
+                `Adding block ${payload.uuid} to position ${to} in scope ${scope}`
+            );
 
             // check if we add payload to position
             if (to !== null) {
                 payload.has_parent_interaction = scope || null;
 
                 let targetIndex = 0;
-
-                // filter all items that are in scope
 
                 const blocksInScope = this.blocks.filter((item) => {
                     if (scope && item.has_parent_interaction === scope) {
@@ -254,31 +245,27 @@ export const useForm = defineStore("form", {
                     return !scope && !item.has_parent_interaction;
                 });
 
-                console.log("blocks in scope", blocksInScope, to);
-
-                if (blocksInScope.length > to) {
+                if (blocksInScope.length > 0) {
                     const targetBlock = blocksInScope[to];
-
-                    console.log("targetBlock", targetBlock);
-
                     targetIndex = this.blocks.findIndex((item) => {
                         return item.id === targetBlock.id;
                     });
-                } else if (blocksInScope.length === to) {
-                    targetIndex = this.blocks.length;
+                } else {
+                    targetIndex =
+                        this.blocks.findIndex((i) => i.uuid === scope) + 1;
                 }
 
-                console.log("targetIndex", targetIndex, this.blocks);
+                const removedIndex = this.blocks.findIndex((item) => {
+                    return item.id === payload.id;
+                });
 
+                this.blocks.splice(removedIndex, 1);
                 this.blocks.splice(targetIndex, 0, payload);
             }
 
-            // move item to target position
-            // this.blocks.splice(to, 0, this.blocks.splice(from, 1)[0]);
-
             // set new sequence numbers to blocks
-            this.blocks = this.blocks.map((item, key) => {
-                return { ...item, sequence: key };
+            this.blocks = this.blocks.map((item, index) => {
+                return { ...item, sequence: index };
             });
 
             // generate an array of ids to update sequence on server
@@ -286,6 +273,16 @@ export const useForm = defineStore("form", {
                 (item) => {
                     return item.id;
                 }
+            );
+
+            console.table(
+                this.blocks.map((i) => {
+                    return {
+                        id: i.uuid,
+                        message: i.message?.substring(0, 32),
+                        has_parent_interaction: i.has_parent_interaction,
+                    };
+                })
             );
 
             try {

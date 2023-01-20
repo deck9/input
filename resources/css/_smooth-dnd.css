@@ -14,5 +14,5 @@
 }
 
 .cards-drop-preview {
-    @apply bg-grey-100 border border-grey-400 border-dashed rounded mb-6;
+    @apply bg-grey-100 border border-grey-400 border-dashed rounded mt-4 mb-6;
 }

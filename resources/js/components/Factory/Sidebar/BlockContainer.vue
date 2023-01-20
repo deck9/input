@@ -73,18 +73,11 @@ const getChildPayload = (index: number) => {
 };
 
 const onDrop = (dropResult: any): void => {
-  const { removedIndex, addedIndex, payload } = dropResult;
-
-  // console.log("onDrop", props.groupId ?? "root", dropResult);
+  const { addedIndex, payload } = dropResult;
 
   enableCssTransition.value = false;
 
-  store.changeBlockSequence(
-    props.groupId ?? false,
-    removedIndex,
-    addedIndex,
-    payload
-  );
+  store.changeBlockSequence(props.groupId ?? false, addedIndex, payload);
 
   nextTick(() => {
     enableCssTransition.value = true;
