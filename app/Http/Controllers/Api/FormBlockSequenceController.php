@@ -16,9 +16,10 @@ class FormBlockSequenceController extends Controller
             'sequence' => 'required|array',
         ]);
 
-        foreach ($request->sequence as $pos => $id) {
-            $snippet = $form->formBlocks->firstWhere('id', $id);
-            $snippet->update(['sequence' => $pos]);
+        foreach ($request->sequence as $pos => $item) {
+            $block = $form->formBlocks->firstWhere('id', $item["id"]);
+
+            $block->update(['sequence' => $pos, 'parent_block' => $item['scope']]);
         }
 
         return response()->json(null, 204);

@@ -17,7 +17,7 @@
             "message": "<p>This is the first message</p>",
             "type": "none",
             "title": null,
-            "has_parent_interaction": null,
+            "parent_block": null,
             "sequence": 0,
             "formBlockInteractions": []
         },
@@ -25,7 +25,7 @@
             "message": "<p>What is your name?</p>",
             "type": "input-short",
             "title": null,
-            "has_parent_interaction": null,
+            "parent_block": null,
             "sequence": 1,
             "formBlockInteractions": [
                 {
@@ -40,7 +40,7 @@
             "message": "<p>Planes or Trains?</p>",
             "type": "radio",
             "title": null,
-            "has_parent_interaction": null,
+            "parent_block": null,
             "sequence": 2,
             "formBlockInteractions": [
                 {

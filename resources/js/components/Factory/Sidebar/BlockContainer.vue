@@ -51,15 +51,12 @@ const transitionClasses = computed((): Record<string, string> => {
 const groupBlocks = computed(() => {
   if (props.groupId) {
     return store.blocks?.filter((block) => {
-      return (
-        block.has_parent_interaction &&
-        block.has_parent_interaction === props.groupId
-      );
+      return block.parent_block && block.parent_block === props.groupId;
     });
   }
 
   return store.blocks?.filter((block) => {
-    return !block.has_parent_interaction;
+    return !block.parent_block;
   });
 });
 

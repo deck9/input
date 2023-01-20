@@ -59,7 +59,7 @@ interface FormBlockModel extends BaseModel {
     title: string | null;
     options: string | null;
     responses: string | null;
-    has_parent_interaction: string | null;
+    parent_block: string | null;
     is_required: boolean | null;
     webhook_url: string;
     sequence: number;

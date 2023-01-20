@@ -225,7 +225,7 @@ export const useForm = defineStore("form", {
         },
 
         async changeBlockSequence(
-            scope: string | false,
+            parentBlock: string | false,
             to: number,
             payload: FormBlockModel
         ) {
@@ -233,7 +233,7 @@ export const useForm = defineStore("form", {
                 return;
             }
 
-            payload.has_parent_interaction = scope || null;
+            payload.parent_block = parentBlock || null;
 
             // removed index is easy, we just find the index of the block
             const removedIndex = this.blocks.findIndex((item) => {
@@ -246,11 +246,11 @@ export const useForm = defineStore("form", {
             // if we have a scope, we need to get all blocks in that scope
             // the "to" value is relative to the scope
             const blocksInScope = this.blocks.filter((item) => {
-                if (scope && item.has_parent_interaction === scope) {
+                if (parentBlock && item.parent_block === parentBlock) {
                     return true;
                 }
 
-                return !scope && !item.has_parent_interaction;
+                return !parentBlock && !item.parent_block;
             });
 
             // if we have blocks in scope, and the "to" value is less than the length of the blocks in scope
@@ -262,6 +262,7 @@ export const useForm = defineStore("form", {
             }
 
             this.blocks.splice(removedIndex, 1); // remove from old position
+
             if (targetIndex !== -1) {
                 this.blocks.splice(targetIndex, 0, payload); // add to new position
             } else {
@@ -275,11 +276,13 @@ export const useForm = defineStore("form", {
             });
 
             // generate an array of ids to update sequence on server
-            const saveSequenceRequestData: Array<number> = this.blocks.map(
+            const saveSequenceRequestData: Array<any> = this.blocks.map(
                 (item) => {
-                    return item.id;
+                    return { id: item.id, scope: item.parent_block };
                 }
             );
+
+            console.log(saveSequenceRequestData);
 
             try {
                 await callUpdateBlockSequence(
