@@ -4,6 +4,11 @@
     lock-axis="y"
     orientation="vertical"
     :get-child-payload="getChildPayload"
+    :drop-placeholder="{
+      animationDuration: 150,
+      showOnTop: false,
+      className: 'cards-drop-preview',
+    }"
     @drop="onDrop"
   >
     <TransitionGroup v-bind="transitionClasses">

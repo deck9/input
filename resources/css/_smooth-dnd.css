@@ -1,7 +1,17 @@
 .smooth-dnd-ghost {
-    @apply opacity-90;
+    @apply opacity-90 rotate-2;
 }
 
-.smooth-dnd-container > .smooth-dnd-draggable-wrapper {
+.smooth-dnd-container>.smooth-dnd-draggable-wrapper {
     overflow: visible !important;
+}
+
+.smooth-dnd-container.vertical>.smooth-dnd-drop-preview-constant-class {
+    right: 16px;
+    left: 16px;
+    width: auto !important;
+}
+
+.cards-drop-preview {
+    @apply bg-grey-100 border border-grey-400 border-dashed rounded mt-4;
 }

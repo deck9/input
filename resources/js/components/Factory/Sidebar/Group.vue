@@ -1,7 +1,10 @@
 <template>
   <div class="relative my-6 text-sm first-of-type:mt-0">
     <div class="rounded-md border-dashed px-6 py-4" :class="cardStyle">
-      <BlockContainer :groupId="block.uuid" class="bg-green-300 py-4 px-4" />
+      <BlockContainer
+        :groupId="block.uuid"
+        class="bg-green-300 py-4 px-4 transition duration-200"
+      />
     </div>
   </div>
 </template>
