@@ -31,6 +31,13 @@
         icon-position="right"
         @click="store.createFormBlock()"
       />
+      <D9Button
+        label="Create Group"
+        color="light"
+        icon="file-lines"
+        icon-position="right"
+        @click="store.createFormBlock(null, 'group')"
+      />
     </div>
   </div>
 </template>

@@ -25,12 +25,16 @@ export function callGetFormBlocks(
 }
 
 export function callCreateFormBlock(
-    uuid: string
+    uuid: string,
+    type: FormBlockType | null = null
 ): Promise<AxiosResponse<FormBlockModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.blocks.create", { form: uuid })
+                window.route("api.blocks.create", { form: uuid }),
+                {
+                    type,
+                }
             );
 
             resolve(response as AxiosResponse<FormBlockModel>);

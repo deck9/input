@@ -1,8 +1,18 @@
 <template>
-  <Container lock-axis="y" orientation="vertical" @drop="onDrop">
+  <Container
+    group-name="storyboard"
+    lock-axis="y"
+    orientation="vertical"
+    :get-child-payload="getChildPayload"
+    @drop="onDrop"
+  >
     <TransitionGroup v-bind="transitionClasses">
-      <Draggable v-for="block in store.blocks" :key="block.uuid">
-        <Block :block="block" :key="`${block.sequence}-${block.uuid}`" />
+      <Draggable v-for="block in groupBlocks" :key="block.uuid">
+        <component
+          :is="block.type === 'group' ? Group : Block"
+          :block="block"
+          :key="`${block.sequence}-${block.uuid}`"
+        />
       </Draggable>
     </TransitionGroup>
   </Container>
@@ -10,9 +20,14 @@
 
 <script setup lang="ts">
 import Block from "./Block.vue";
+import Group from "./Group.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import { ref, computed, nextTick } from "vue";
 import { useForm } from "@/stores";
+
+const props = defineProps<{
+  groupId?: string;
+}>();
 
 const store = useForm();
 const enableCssTransition = ref(true);
@@ -29,7 +44,27 @@ const transitionClasses = computed((): Record<string, string> => {
   return {};
 });
 
-const onDrop = ({ removedIndex, addedIndex }: any): void => {
+const groupBlocks = computed(() => {
+  if (props.groupId) {
+    return [];
+  }
+
+  return store.blocks;
+});
+
+const getChildPayload = (index: number) => {
+  if (!groupBlocks.value) {
+    return false;
+  }
+
+  return groupBlocks.value[index];
+};
+
+const onDrop = (dropResult: any): void => {
+  const { removedIndex, addedIndex } = dropResult;
+
+  console.log("onDrop", props.groupId ?? "root", dropResult);
+
   enableCssTransition.value = false;
   if (removedIndex === null || addedIndex === null) {
     return;

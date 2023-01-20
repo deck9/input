@@ -164,13 +164,19 @@ export const useForm = defineStore("form", {
             return Promise.resolve();
         },
 
-        async createFormBlock(insertAfter: FormBlockModel | null = null) {
+        async createFormBlock(
+            insertAfter: FormBlockModel | null = null,
+            type: FormBlockType | null = null
+        ) {
             if (!this.form) {
                 return;
             }
 
             try {
-                const response = await callCreateFormBlock(this.form.uuid);
+                const response = await callCreateFormBlock(
+                    this.form.uuid,
+                    type
+                );
 
                 if (response.status === 201 && this.blocks) {
                     if (insertAfter !== null) {

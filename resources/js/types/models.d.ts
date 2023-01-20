@@ -69,6 +69,7 @@ interface FormBlockModel extends BaseModel {
 
 type FormBlockType =
     | "none"
+    | "group"
     | "consent"
     | "input-short"
     | "input-long"

@@ -6,7 +6,6 @@ use Tests\TestCase;
 use App\Models\Form;
 use App\Models\FormBlock;
 use App\Enums\FormBlockType;
-use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

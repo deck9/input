@@ -28,14 +28,18 @@ class FormBlockController extends Controller
         return response()->json($blocks->values()->toArray());
     }
 
-    public function create(Form $form)
+    public function create(Form $form, Request $request)
     {
         $this->authorize('update', $form);
+
+        $request->validate([
+            'type' => 'nullable|in:' . collect(FormBlockType::cases())->pluck('value')->join(','),
+        ]);
 
         $sequence = $form->formBlocks->count();
 
         $block = $form->formBlocks()->create([
-            'type' => FormBlockType::none,
+            'type' => $request->input('type') ?? FormBlockType::none,
             'sequence' => $sequence
         ]);
 

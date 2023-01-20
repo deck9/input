@@ -9,7 +9,7 @@
       </button>
     </div>
     <button
-      class="group relative block w-full cursor-pointer overflow-visible rounded-md px-6 py-4 text-left shadow-sm"
+      class="group relative block w-full cursor-pointer overflow-visible rounded-md px-6 py-4 text-left"
       :class="cardStyle"
       @click="workbench.putOnWorkbench(block)"
     >
