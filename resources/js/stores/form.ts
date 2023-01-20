@@ -21,6 +21,7 @@ interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
     mapping: Record<FormBlockType, FormBlockInteractionType> | null;
+    enableCssTransition: boolean;
 }
 
 export const useForm = defineStore("form", {
@@ -29,6 +30,7 @@ export const useForm = defineStore("form", {
             form: null,
             mapping: null,
             blocks: null,
+            enableCssTransition: true,
         };
     },
 
@@ -54,6 +56,10 @@ export const useForm = defineStore("form", {
         clearForm() {
             this.form = null;
             this.blocks = null;
+        },
+
+        setCssTransition(payload: boolean) {
+            this.enableCssTransition = payload;
         },
 
         async refreshForm(includeSubmissions = false) {
@@ -220,47 +226,47 @@ export const useForm = defineStore("form", {
 
         async changeBlockSequence(
             scope: string | false,
-            to: number | null,
+            to: number,
             payload: FormBlockModel
         ) {
-            if (!this.blocks || !this.form || to === null) {
+            if (!this.blocks || !this.form) {
                 return;
             }
 
-            console.log(
-                `Adding block ${payload.uuid} to position ${to} in scope ${scope}`
-            );
+            payload.has_parent_interaction = scope || null;
 
-            // check if we add payload to position
-            if (to !== null) {
-                payload.has_parent_interaction = scope || null;
+            // removed index is easy, we just find the index of the block
+            const removedIndex = this.blocks.findIndex((item) => {
+                return item.id === payload.id;
+            });
 
-                let targetIndex = 0;
+            // target index is a bit more complicated, lets set it to 0 for now
+            let targetIndex = -1;
 
-                const blocksInScope = this.blocks.filter((item) => {
-                    if (scope && item.has_parent_interaction === scope) {
-                        return true;
-                    }
-
-                    return !scope && !item.has_parent_interaction;
-                });
-
-                if (blocksInScope.length > 0) {
-                    const targetBlock = blocksInScope[to];
-                    targetIndex = this.blocks.findIndex((item) => {
-                        return item.id === targetBlock.id;
-                    });
-                } else {
-                    targetIndex =
-                        this.blocks.findIndex((i) => i.uuid === scope) + 1;
+            // if we have a scope, we need to get all blocks in that scope
+            // the "to" value is relative to the scope
+            const blocksInScope = this.blocks.filter((item) => {
+                if (scope && item.has_parent_interaction === scope) {
+                    return true;
                 }
 
-                const removedIndex = this.blocks.findIndex((item) => {
-                    return item.id === payload.id;
-                });
+                return !scope && !item.has_parent_interaction;
+            });
 
-                this.blocks.splice(removedIndex, 1);
-                this.blocks.splice(targetIndex, 0, payload);
+            // if we have blocks in scope, and the "to" value is less than the length of the blocks in scope
+            if (blocksInScope.length > 0 && blocksInScope.length > to) {
+                const targetBlock = blocksInScope[to];
+                targetIndex = this.blocks.findIndex((item) => {
+                    return item.id === targetBlock.id;
+                });
+            }
+
+            this.blocks.splice(removedIndex, 1); // remove from old position
+            if (targetIndex !== -1) {
+                this.blocks.splice(targetIndex, 0, payload); // add to new position
+            } else {
+                // if we don't have a target index, we just push it to the end
+                this.blocks.push(payload);
             }
 
             // set new sequence numbers to blocks
@@ -273,16 +279,6 @@ export const useForm = defineStore("form", {
                 (item) => {
                     return item.id;
                 }
-            );
-
-            console.table(
-                this.blocks.map((i) => {
-                    return {
-                        id: i.uuid,
-                        message: i.message?.substring(0, 32),
-                        has_parent_interaction: i.has_parent_interaction,
-                    };
-                })
             );
 
             try {

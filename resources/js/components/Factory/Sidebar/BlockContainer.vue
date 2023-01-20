@@ -27,7 +27,7 @@
 import Block from "./Block.vue";
 import Group from "./Group.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
-import { ref, computed, nextTick } from "vue";
+import { computed, nextTick } from "vue";
 import { useForm } from "@/stores";
 
 const props = defineProps<{
@@ -35,10 +35,9 @@ const props = defineProps<{
 }>();
 
 const store = useForm();
-const enableCssTransition = ref(true);
 
 const transitionClasses = computed((): Record<string, string> => {
-  if (enableCssTransition.value) {
+  if (store.enableCssTransition) {
     return {
       moveClass: "transition duration-200",
       leaveToClass: "opacity-0 -translate-y-2",
@@ -75,12 +74,14 @@ const getChildPayload = (index: number) => {
 const onDrop = (dropResult: any): void => {
   const { addedIndex, payload } = dropResult;
 
-  enableCssTransition.value = false;
+  if (addedIndex !== null) {
+    store.setCssTransition(false);
 
-  store.changeBlockSequence(props.groupId ?? false, addedIndex, payload);
+    store.changeBlockSequence(props.groupId ?? false, addedIndex, payload);
 
-  nextTick(() => {
-    enableCssTransition.value = true;
-  });
+    nextTick(() => {
+      store.setCssTransition(true);
+    });
+  }
 };
 </script>
