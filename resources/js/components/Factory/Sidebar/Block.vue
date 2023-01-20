@@ -1,5 +1,5 @@
 <template>
-  <div class="relative my-6 text-sm first-of-type:mt-0">
+  <div class="relative pb-6 text-sm">
     <div class="absolute inset-x-0 -bottom-6 top-0 flex justify-center">
       <button
         class="absolute inset-x-0 bottom-[4px] rounded-full leading-none opacity-0 transition-opacity duration-150 hover:opacity-100"

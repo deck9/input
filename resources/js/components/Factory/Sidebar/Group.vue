@@ -1,10 +1,8 @@
 <template>
-  <div class="relative my-6 text-sm first-of-type:mt-0">
-    <div class="rounded-md border-dashed px-6 py-4" :class="cardStyle">
-      <BlockContainer
-        :groupId="block.uuid"
-        class="bg-green-300 py-4 px-4 transition duration-200"
-      />
+  <div class="relative pb-6 text-sm">
+    <div class="rounded-md border-dashed px-4 py-3" :class="cardStyle">
+      <h1 class="mb-3 font-bold text-grey-400">Group {{ block.uuid }}</h1>
+      <BlockContainer :groupId="block.uuid" class="transition duration-200" />
     </div>
   </div>
 </template>

@@ -51,10 +51,17 @@ const transitionClasses = computed((): Record<string, string> => {
 
 const groupBlocks = computed(() => {
   if (props.groupId) {
-    return [];
+    return store.blocks?.filter((block) => {
+      return (
+        block.has_parent_interaction &&
+        block.has_parent_interaction === props.groupId
+      );
+    });
   }
 
-  return store.blocks;
+  return store.blocks?.filter((block) => {
+    return !block.has_parent_interaction;
+  });
 });
 
 const getChildPayload = (index: number) => {
@@ -66,16 +73,19 @@ const getChildPayload = (index: number) => {
 };
 
 const onDrop = (dropResult: any): void => {
-  const { removedIndex, addedIndex } = dropResult;
+  const { removedIndex, addedIndex, payload } = dropResult;
 
-  console.log("onDrop", props.groupId ?? "root", dropResult);
+  // console.log("onDrop", props.groupId ?? "root", dropResult);
 
   enableCssTransition.value = false;
-  if (removedIndex === null || addedIndex === null) {
-    return;
-  }
 
-  store.changeBlockSequence(removedIndex, addedIndex);
+  store.changeBlockSequence(
+    props.groupId ?? false,
+    removedIndex,
+    addedIndex,
+    payload
+  );
+
   nextTick(() => {
     enableCssTransition.value = true;
   });
