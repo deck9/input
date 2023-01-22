@@ -4,7 +4,9 @@
     class="relative mx-12 flex h-full max-w-xl flex-col justify-between px-4 pt-8 xl:mx-24"
   >
     <div class="space-y-8 pb-24">
-      <template v-if="workbench.block.type === 'group'"> </template>
+      <template v-if="workbench.block.type === 'group'">
+        <div>Group Settings</div>
+      </template>
       <template v-else>
         <BlockMessage />
         <BlockType />
