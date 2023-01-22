@@ -9,7 +9,7 @@
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
       <ScrollShadow class="absolute inset-0">
-        <BlockContainer class="py-4 px-4" />
+        <BlockContainer id="smooth-dnd-container" class="py-4 px-4" />
       </ScrollShadow>
     </div>
 

@@ -4,6 +4,7 @@
     lock-axis="y"
     orientation="vertical"
     :get-child-payload="getChildPayload"
+    :get-ghost-parent="getGhostParent"
     :drop-placeholder="{
       animationDuration: 150,
       showOnTop: false,
@@ -66,6 +67,10 @@ const getChildPayload = (index: number) => {
   }
 
   return groupBlocks.value[index];
+};
+
+const getGhostParent = () => {
+  return document.getElementById("smooth-dnd-container");
 };
 
 const onDrop = (dropResult: any): void => {
