@@ -184,18 +184,25 @@ export const useForm = defineStore("form", {
                     type
                 );
 
+                const newBlock = response.data;
+
                 if (response.status === 201 && this.blocks) {
                     if (insertAfter !== null) {
                         const index = this.blocks.indexOf(insertAfter);
-                        this.blocks.splice(index + 1, 0, response.data);
+
+                        newBlock.parent_block = insertAfter.parent_block;
+
+                        this.blocks.splice(index + 1, 0, newBlock);
+
+                        this.saveBlockSequence();
                     } else {
-                        this.blocks.push(response.data);
+                        this.blocks.push(newBlock);
                     }
 
                     // if new block has been created, we should select it for editing
                     const workbench = useWorkbench();
 
-                    workbench.putOnWorkbench(response.data);
+                    workbench.putOnWorkbench(newBlock);
                 }
             } catch (error) {
                 console.warn(error);
@@ -227,17 +234,17 @@ export const useForm = defineStore("form", {
         async changeBlockSequence(
             parentBlock: string | false,
             to: number,
-            payload: FormBlockModel
+            block: FormBlockModel
         ) {
             if (!this.blocks || !this.form) {
                 return;
             }
 
-            payload.parent_block = parentBlock || null;
+            block.parent_block = parentBlock || null;
 
             // removed index is easy, we just find the index of the block
             const removedIndex = this.blocks.findIndex((item) => {
-                return item.id === payload.id;
+                return item.id === block.id;
             });
 
             // target index is a bit more complicated, lets set it to 0 for now
@@ -264,14 +271,22 @@ export const useForm = defineStore("form", {
             this.blocks.splice(removedIndex, 1); // remove from old position
 
             if (targetIndex !== -1) {
-                this.blocks.splice(targetIndex, 0, payload); // add to new position
+                this.blocks.splice(targetIndex, 0, block); // add to new position
             } else {
                 // if we don't have a target index, we just push it to the end
-                this.blocks.push(payload);
+                this.blocks.push(block);
+            }
+
+            await this.saveBlockSequence();
+        },
+
+        async saveBlockSequence() {
+            if (!this.blocks || !this.form) {
+                return;
             }
 
             // set new sequence numbers to blocks
-            this.blocks = this.blocks.map((item, index) => {
+            this.blocks.map((item, index) => {
                 return { ...item, sequence: index };
             });
 
@@ -281,8 +296,6 @@ export const useForm = defineStore("form", {
                     return { id: item.id, scope: item.parent_block };
                 }
             );
-
-            console.log(saveSequenceRequestData);
 
             try {
                 await callUpdateBlockSequence(
