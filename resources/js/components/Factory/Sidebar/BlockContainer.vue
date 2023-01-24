@@ -1,10 +1,12 @@
 <template>
   <Container
+    :data-group="groupId"
     group-name="storyboard"
     lock-axis="y"
     orientation="vertical"
     :get-child-payload="getChildPayload"
     :get-ghost-parent="getGhostParent"
+    :should-accept-drop="shouldAcceptDrop"
     :drop-placeholder="{
       animationDuration: 150,
       showOnTop: false,
@@ -71,6 +73,15 @@ const getChildPayload = (index: number) => {
 
 const getGhostParent = () => {
   return document.getElementById("smooth-dnd-container");
+};
+
+const shouldAcceptDrop = (sourceContainerOptions: any, payload: any) => {
+  if (props.groupId) {
+    // do not allow groups to be dropped into groups
+    return payload.type !== "group";
+  }
+
+  return true;
 };
 
 const onDrop = (dropResult: any): void => {
