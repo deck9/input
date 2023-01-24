@@ -190,7 +190,11 @@ export const useForm = defineStore("form", {
                     if (insertAfter !== null) {
                         const index = this.blocks.indexOf(insertAfter);
 
-                        newBlock.parent_block = insertAfter.parent_block;
+                        if (insertAfter.type === "group") {
+                            newBlock.parent_block = insertAfter.uuid;
+                        } else {
+                            newBlock.parent_block = insertAfter.parent_block;
+                        }
 
                         this.blocks.splice(index + 1, 0, newBlock);
 
