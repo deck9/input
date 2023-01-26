@@ -1,13 +1,6 @@
 <template>
   <div class="relative pb-6 text-sm">
-    <div class="absolute inset-x-0 bottom-0 top-0 flex justify-center">
-      <button
-        class="absolute inset-x-0 bottom-[4px] rounded-full leading-none opacity-0 transition-opacity duration-150 hover:opacity-100"
-        @click="store.createFormBlock(block)"
-      >
-        <D9Icon class="bg-grey-50 text-grey-400" name="plus-circle" />
-      </button>
-    </div>
+    <InsertAfterButton v-bind="{ block }" />
     <button
       class="group relative block w-full cursor-pointer overflow-visible rounded-md px-6 py-4 text-left"
       :class="cardStyle"
@@ -70,10 +63,11 @@ import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
 import Label from "@/components/Label.vue";
 import { useWorkbench, useForm } from "@/stores";
-import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
+import { D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 import { useActiveCard } from "@/utils/useActiveCard";
+import InsertAfterButton from "./InsertAfterButton.vue";
 
 const workbench = useWorkbench();
 const store = useForm();

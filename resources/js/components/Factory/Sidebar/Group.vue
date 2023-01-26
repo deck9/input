@@ -1,5 +1,6 @@
 <template>
-  <div class="pb-6 text-sm">
+  <div class="relative pb-6 text-sm">
+    <InsertAfterButton v-bind="{ block }" />
     <div class="relative rounded-md border-dashed px-4 py-3" :class="cardStyle">
       <h1 class="mb-3 font-bold text-grey-400">Grouped Blocks</h1>
       <div
@@ -34,6 +35,7 @@
 
 <script lang="ts" setup>
 import BlockContainer from "@/components/Factory/Sidebar/BlockContainer.vue";
+import InsertAfterButton from "./InsertAfterButton.vue";
 import copy from "copy-text-to-clipboard";
 import { D9Menu, D9MenuLink } from "@deck9/ui";
 import { useActiveCard } from "@/utils/useActiveCard";
