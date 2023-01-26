@@ -1,5 +1,18 @@
 <template>
-  <div class="flex min-h-full flex-grow flex-col border-r border-grey-200">
+  <div
+    class="relative flex min-h-full shrink-0 flex-grow flex-col border-r border-grey-200 transition duration-100"
+    :class="isResizing ? 'pointer-events-none select-none' : ''"
+    :style="`width: ${sidebarWidth}px`"
+  >
+    <div
+      class="group absolute inset-y-0 left-full hidden items-center border-l-2 border-transparent transition duration-200 hover:border-grey-400 md:flex"
+    >
+      <div
+        @mousedown="enableResize"
+        class="-ml-[5px] h-9 w-2 cursor-[ew-resize] rounded border border-grey-300 bg-grey-200"
+      ></div>
+    </div>
+
     <div
       v-if="!isLoaded"
       class="flex w-full items-center justify-center px-4 py-12"
@@ -43,16 +56,42 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
 import BlockContainer from "./BlockContainer.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import ScrollShadow from "@/components/ScrollShadow.vue";
+import _throttle from "lodash/throttle";
 
 const isLoaded = ref(false);
 const store = useForm();
 const workbench = useWorkbench();
+
+const isResizing = ref(false);
+const sidebarWidth = ref(380);
+
+const resize = _throttle((event) => {
+  sidebarWidth.value = Math.max(380, event.screenX);
+}, 30);
+
+const disableResize = () => {
+  isResizing.value = false;
+
+  document.body.style.removeProperty("cursor");
+
+  document.removeEventListener("mousemove", resize);
+  document.removeEventListener("mouseup", disableResize);
+};
+
+const enableResize = () => {
+  isResizing.value = true;
+
+  document.body.style.cursor = "ew-resize";
+
+  document.addEventListener("mousemove", resize);
+  document.addEventListener("mouseup", disableResize);
+};
 
 onMounted(async () => {
   await store.getBlocks();
