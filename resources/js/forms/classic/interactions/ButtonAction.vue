@@ -25,8 +25,8 @@
         v-if="isOtherOption"
         ref="otherInput"
         @click="startEditing(true)"
-        @blur="stopEditing()"
-        @keyup.enter="stopEditing(true)"
+        @blur="stopEditing($event)"
+        @keydown.enter="stopEditing($event, true)"
         type="text"
         :placeholder="
           isChecked && !otherValue
@@ -171,7 +171,10 @@ const onInput = (event: Event | null = null) => {
   }
 };
 
-const stopEditing = (focusButton = false) => {
+const stopEditing = (event: Event, focusButton = false) => {
+  event.preventDefault();
+  event.stopPropagation();
+
   // only stop if input mode was on
   if (!store.isInputMode) {
     return;

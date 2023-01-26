@@ -96,11 +96,11 @@ const onSubmit = async () => {
 };
 
 onKeyStroke("Enter", (e) => {
-  e.preventDefault();
-
   if (store.isInputMode) {
     return;
   }
+
+  e.preventDefault();
 
   onSubmit();
 });
