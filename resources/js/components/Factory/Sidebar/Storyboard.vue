@@ -3,6 +3,7 @@
     class="relative flex min-h-full shrink-0 flex-grow flex-col border-r border-grey-200 transition duration-100"
     :class="isResizing ? 'pointer-events-none select-none' : ''"
     :style="`width: ${sidebarWidth}px`"
+    ref="sidebar"
   >
     <div
       class="group absolute inset-y-0 left-full hidden items-center border-l-2 border-transparent transition duration-200 hover:border-grey-400 md:flex"
@@ -56,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
 import BlockContainer from "./BlockContainer.vue";
@@ -70,9 +71,13 @@ const workbench = useWorkbench();
 
 const isResizing = ref(false);
 const sidebarWidth = ref(380);
+const sidebarWidthStart = ref(0);
+const mouseStart = ref(0);
 
 const resize = _throttle((event) => {
-  sidebarWidth.value = Math.max(380, event.screenX);
+  const delta = event.screenX - mouseStart.value;
+
+  sidebarWidth.value = Math.max(380, sidebarWidthStart.value + delta);
 }, 30);
 
 const disableResize = () => {
@@ -84,8 +89,11 @@ const disableResize = () => {
   document.removeEventListener("mouseup", disableResize);
 };
 
-const enableResize = () => {
+const enableResize = (event) => {
   isResizing.value = true;
+
+  mouseStart.value = event.screenX;
+  sidebarWidthStart.value = sidebarWidth.value;
 
   document.body.style.cursor = "ew-resize";
 
