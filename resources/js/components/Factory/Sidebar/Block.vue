@@ -40,7 +40,7 @@
             class="prose prose-sm mb-2"
             v-html="block.message"
           />
-          <div v-else class="mb-2 font-light text-grey-400">--no message--</div>
+          <div v-else class="mb-2 font-light text-grey-400">--empty--</div>
         </div>
       </div>
 
