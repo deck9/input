@@ -6,12 +6,22 @@
     ref="sidebar"
   >
     <div
-      class="group absolute inset-y-0 left-full hidden items-center border-l-2 border-transparent transition duration-200 hover:border-grey-400 md:flex"
+      class="group absolute inset-y-0 left-full hidden items-center border-l-2 border-transparent transition duration-200 md:flex"
     >
       <div
         @mousedown="enableResize"
-        class="-ml-[5px] h-9 w-2 cursor-[ew-resize] rounded border border-grey-300 bg-grey-200"
-      ></div>
+        class="-ml-[7px] flex h-9 w-3 cursor-[ew-resize] flex-col items-center justify-around rounded border border-grey-200 bg-grey-100 py-2"
+      >
+        <span
+          class="block h-1 w-1 rounded bg-grey-300 transition duration-200 group-hover:bg-blue-400"
+        ></span>
+        <span
+          class="block h-1 w-1 rounded bg-grey-300 transition duration-200 group-hover:bg-blue-400"
+        ></span>
+        <span
+          class="block h-1 w-1 rounded bg-grey-300 transition duration-200 group-hover:bg-blue-400"
+        ></span>
+      </div>
     </div>
 
     <div
