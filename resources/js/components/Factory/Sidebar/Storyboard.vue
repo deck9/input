@@ -70,6 +70,7 @@
 import { onMounted, ref } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { D9Spinner, D9Button } from "@deck9/ui";
+import { useStorage } from "@vueuse/core";
 import BlockContainer from "./BlockContainer.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import ScrollShadow from "@/components/ScrollShadow.vue";
@@ -80,7 +81,7 @@ const store = useForm();
 const workbench = useWorkbench();
 
 const isResizing = ref(false);
-const sidebarWidth = ref(380);
+const sidebarWidth = useStorage("sidebar-width", 380, localStorage);
 const sidebarWidthStart = ref(0);
 const mouseStart = ref(0);
 
