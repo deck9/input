@@ -161,7 +161,10 @@ export const useConversation = defineStore("form", {
 
             this.session = formSessionResponse.data;
             this.storyboard = storyboardResponse.data.blocks;
-            this.queue = storyboardResponse.data.blocks;
+
+            this.queue = this.storyboard.filter((block) => {
+                return block.parent_block === null;
+            });
         },
 
         enableInputMode() {
@@ -219,6 +222,11 @@ export const useConversation = defineStore("form", {
             }
 
             this.current -= 1;
+
+            // if we are on a group block, we need to go back again
+            if (this.currentBlock?.type === "group") {
+                this.back();
+            }
         },
 
         /**
@@ -246,6 +254,29 @@ export const useConversation = defineStore("form", {
                 }
             } else {
                 this.current += 1;
+
+                // need to check if the next block is a group block
+                if (this.currentBlock?.type === "group") {
+                    // we first should remove all blocks related to that group
+                    this.queue =
+                        this.queue?.filter((block) => {
+                            return block.parent_block !== this.currentBlock?.id;
+                        }) ?? [];
+
+                    // now we find all children from the storyboard
+                    const children = this.storyboard?.filter((block) => {
+                        return block.parent_block === this.currentBlock?.id;
+                    });
+
+                    // we add the children to the queue
+                    if (children && children?.length > 0) {
+                        this.queue?.splice(this.current + 1, 0, ...children);
+                    }
+
+                    // we call next, since the group block has no other action
+                    return this.next();
+                }
+
                 return Promise.resolve(false);
             }
         },
