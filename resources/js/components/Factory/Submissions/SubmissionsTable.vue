@@ -107,12 +107,14 @@ const previousPage = () => {
 };
 
 const submissionTableHeaders = computed(() => {
-  const headers = store.blocks?.map((block) => {
-    return {
-      id: block.uuid,
-      label: block.title ?? striptags(block.message ?? ""),
-    };
-  });
+  const headers = store.blocks
+    ?.filter((block) => !["group", "none"].includes(block.type))
+    .map((block) => {
+      return {
+        id: block.uuid,
+        label: block.title ?? striptags(block.message ?? ""),
+      };
+    });
 
   return headers;
 });
