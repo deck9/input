@@ -225,6 +225,17 @@ export const useForm = defineStore("form", {
                     if (typeof index !== "undefined" && index !== -1) {
                         this.blocks?.splice(index, 1);
                     }
+
+                    if (block.type === "group") {
+                        // if we deleted a group, we need to delete all blocks inside it
+                        this.blocks
+                            ?.filter((item) => {
+                                return item.parent_block === block.uuid;
+                            })
+                            .forEach((item) => {
+                                this.deleteFormBlock(item);
+                            });
+                    }
                 }
             } catch (error) {
                 console.warn(error);
