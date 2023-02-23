@@ -89,7 +89,7 @@ const isActive = computed((): boolean => {
 const { cardStyle } = useActiveCard(isActive);
 
 const deleteBlock = () => {
-  let result = window.confirm("Do you really want to delete this snippet?");
+  const result = window.confirm("Do you really want to delete this block?");
 
   if (result) {
     store.deleteFormBlock(props.block);

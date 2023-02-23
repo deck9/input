@@ -53,7 +53,9 @@ const isActive = ref(false);
 const { cardStyle } = useActiveCard(isActive);
 
 const deleteBlock = () => {
-  let result = window.confirm("Do you really want to delete this snippet?");
+  let result = window.confirm(
+    "Do you really want to delete this group? All blocks inside this group will be deleted as well."
+  );
 
   if (result) {
     store.deleteFormBlock(props.block);
