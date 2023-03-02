@@ -1,10 +1,29 @@
 <template>
   <div class="relative pb-6 text-sm">
     <InsertAfterButton v-bind="{ block }" />
-    <div class="relative rounded-md border-dashed px-4 py-3" :class="cardStyle">
-      <h1 class="mb-3 font-bold text-grey-400">Group</h1>
+    <button
+      class="relative block w-full rounded-md border-dashed px-4 py-3 text-left"
+      :class="cardStyle"
+      @click="workbench.putOnWorkbench(block)"
+    >
+      <h1
+        class="mr-4 -ml-2 rounded px-2 py-1 font-bold text-grey-400 hover:bg-grey-100"
+        :class="[{ 'mb-3': !isCollapsed }]"
+      >
+        <button
+          class="mr-1 cursor-pointer hover:text-blue-400"
+          @click.prevent="toggleGroup"
+        >
+          <D9Icon
+            class="transition-transform duration-150"
+            :class="[{ '-rotate-90': isCollapsed }]"
+            name="chevron-down"
+          />
+        </button>
+        Group
+      </h1>
       <div
-        class="absolute right-3 top-4 hover:opacity-100"
+        class="absolute right-3 top-2 hover:opacity-100"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
         <D9Menu
@@ -28,8 +47,12 @@
           />
         </D9Menu>
       </div>
-      <BlockContainer :groupId="block.uuid" class="transition duration-200" />
-    </div>
+      <BlockContainer
+        v-show="!isCollapsed"
+        :groupId="block.uuid"
+        class="transition duration-200"
+      />
+    </button>
   </div>
 </template>
 
@@ -37,7 +60,7 @@
 import BlockContainer from "@/components/Factory/Sidebar/BlockContainer.vue";
 import InsertAfterButton from "./InsertAfterButton.vue";
 import copy from "copy-text-to-clipboard";
-import { D9Menu, D9MenuLink } from "@deck9/ui";
+import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import { useActiveCard } from "@/utils/useActiveCard";
 import { useWorkbench, useForm } from "@/stores";
 import { ref } from "vue";
@@ -48,6 +71,8 @@ const props = defineProps<{
 
 const workbench = useWorkbench();
 const store = useForm();
+
+const isCollapsed = ref(false);
 
 const isActive = ref(false);
 const { cardStyle } = useActiveCard(isActive);
@@ -68,5 +93,10 @@ const deleteBlock = () => {
 
 const copyId = () => {
   copy(props.block.uuid);
+};
+
+const toggleGroup = () => {
+  isCollapsed.value = !isCollapsed.value;
+  console.log("toggle group now");
 };
 </script>

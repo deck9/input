@@ -2,12 +2,12 @@
   <div class="relative pb-6 text-sm">
     <InsertAfterButton v-bind="{ block }" />
     <button
-      class="group relative block w-full cursor-pointer overflow-visible rounded-md px-6 py-4 text-left"
+      class="group relative block w-full cursor-pointer overflow-visible rounded-md p-4 text-left"
       :class="cardStyle"
       @click="workbench.putOnWorkbench(block)"
     >
       <div
-        class="absolute right-3 top-4 hover:opacity-100"
+        class="absolute right-3 top-3 hover:opacity-100"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
         <D9Menu

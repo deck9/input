@@ -6,7 +6,7 @@
     ref="sidebar"
   >
     <div
-      class="group absolute inset-y-0 left-full hidden items-center border-l-2 border-transparent transition duration-200 md:flex"
+      class="group absolute inset-y-0 left-full hidden items-center border-l-2 border-transparent transition duration-200 sm:flex"
     >
       <div
         @mousedown="enableResize"
