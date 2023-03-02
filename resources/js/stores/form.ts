@@ -43,6 +43,30 @@ export const useForm = defineStore("form", {
             return state.blocks && state.blocks.length ? true : false;
         },
 
+        countGroups: (state): Record<string, number> => {
+            if (!state.blocks) {
+                return {};
+            }
+
+            const containers = { root: 0 };
+
+            state.blocks
+                .filter((i) => i.type === "group")
+                .forEach((i) => (containers[i.uuid] = 0));
+
+            return state.blocks
+                ?.map((i) => i.parent_block)
+                .reduce((acc, item) => {
+                    if (item) {
+                        acc[item] ? (acc[item] += 1) : (acc[item] = 1);
+                    } else {
+                        acc["root"] += 1;
+                    }
+
+                    return acc;
+                }, containers);
+        },
+
         formUrl: (state): string => {
             if (state.form) {
                 return window.route("forms.show", { uuid: state.form?.uuid });

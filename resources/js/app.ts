@@ -5,7 +5,19 @@ import { createInertiaApp } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
 import { createPinia } from "pinia";
 import { PiniaDebounce } from "@pinia/plugin-debounce";
+import { createI18n } from "vue-i18n";
 import debounce from "lodash/debounce";
+
+import localeEN from "@i18n/en.json";
+
+const i18n = createI18n({
+    legacy: false,
+    locale: "en", // set locale
+    fallbackLocale: "en", // set fallback locale
+    messages: {
+        en: localeEN,
+    },
+});
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Input";
@@ -28,6 +40,7 @@ createInertiaApp({
         vueApp
             .use(plugin)
             .use(pinia)
+            .use(i18n)
             .mixin({ methods: { route: window.route } })
             .mount(el);
     },
