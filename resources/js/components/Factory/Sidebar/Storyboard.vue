@@ -82,13 +82,17 @@ const workbench = useWorkbench();
 
 const isResizing = ref(false);
 const sidebarWidth = useStorage("sidebar-width", 380, localStorage);
+const maxSidebarWidth = 680;
 const sidebarWidthStart = ref(0);
 const mouseStart = ref(0);
 
 const resize = _throttle((event) => {
   const delta = event.screenX - mouseStart.value;
 
-  sidebarWidth.value = Math.max(380, sidebarWidthStart.value + delta);
+  sidebarWidth.value = Math.min(
+    maxSidebarWidth,
+    Math.max(380, sidebarWidthStart.value + delta)
+  );
 }, 30);
 
 const disableResize = () => {
