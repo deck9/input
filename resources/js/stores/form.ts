@@ -21,7 +21,8 @@ interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
     mapping: Record<FormBlockType, FormBlockInteractionType> | null;
-    enableCssTransition: boolean;
+    isCssTransitionEnabled: boolean;
+    isBlockMenuEnabled: boolean;
 }
 
 export const useForm = defineStore("form", {
@@ -30,7 +31,8 @@ export const useForm = defineStore("form", {
             form: null,
             mapping: null,
             blocks: null,
-            enableCssTransition: true,
+            isCssTransitionEnabled: true,
+            isBlockMenuEnabled: true,
         };
     },
 
@@ -74,6 +76,10 @@ export const useForm = defineStore("form", {
 
             return "";
         },
+
+        showBlockMenus: (state): boolean => {
+            return state.isBlockMenuEnabled;
+        },
     },
 
     actions: {
@@ -83,7 +89,15 @@ export const useForm = defineStore("form", {
         },
 
         setCssTransition(payload: boolean) {
-            this.enableCssTransition = payload;
+            this.isCssTransitionEnabled = payload;
+        },
+
+        enableBlockMenu() {
+            this.isBlockMenuEnabled = true;
+        },
+
+        disableBlockMenu() {
+            this.isBlockMenuEnabled = false;
         },
 
         async refreshForm(includeSubmissions = false) {

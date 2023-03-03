@@ -12,6 +12,8 @@
       showOnTop: false,
       className: 'cards-drop-preview',
     }"
+    @drag-start="store.disableBlockMenu"
+    @drag-end="store.enableBlockMenu"
     @drop="onDrop"
   >
     <TransitionGroup v-bind="transitionClasses">
@@ -40,7 +42,7 @@ const props = defineProps<{
 const store = useForm();
 
 const transitionClasses = computed((): Record<string, string> => {
-  if (store.enableCssTransition) {
+  if (store.isCssTransitionEnabled) {
     return {
       moveClass: "transition duration-200",
       leaveToClass: "opacity-0 -translate-y-2",

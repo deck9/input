@@ -7,6 +7,7 @@
       @click.stop="workbench.putOnWorkbench(block)"
     >
       <div
+        v-if="showBlockMenus"
         class="absolute right-3 top-3 hover:opacity-100"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
@@ -68,9 +69,12 @@ import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 import { useActiveCard } from "@/utils/useActiveCard";
 import InsertAfterButton from "./InsertAfterButton.vue";
+import { storeToRefs } from "pinia";
 
 const workbench = useWorkbench();
 const store = useForm();
+
+const { showBlockMenus } = storeToRefs(store);
 
 const props = defineProps<{
   block: FormBlockModel;

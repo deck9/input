@@ -26,6 +26,7 @@
         >
       </h1>
       <div
+        v-if="showBlockMenus"
         class="absolute right-3 top-2 hover:opacity-100"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
@@ -68,6 +69,7 @@ import { useActiveCard } from "@/utils/useActiveCard";
 import { useWorkbench, useForm } from "@/stores";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { storeToRefs } from "pinia";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -77,6 +79,8 @@ const { t } = useI18n();
 
 const workbench = useWorkbench();
 const store = useForm();
+
+const { showBlockMenus } = storeToRefs(store);
 
 const isCollapsed = ref(false);
 
