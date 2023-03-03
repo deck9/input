@@ -32,7 +32,14 @@
                   v-show="selected"
                   class="absolute inset-y-0 left-0 w-1 bg-blue-400"
                 />
-                <span class="truncate">{{ item.name }}</span>
+                <div class="flex items-center justify-between">
+                  <span class="truncate">{{ item.name }}</span>
+                  <D9Icon
+                    class="mr-1 text-grey-500"
+                    v-if="item.icon"
+                    :name="item.icon"
+                  />
+                </div>
               </button>
             </Tab>
           </TabList>
@@ -57,6 +64,7 @@
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
+import { D9Icon } from "@deck9/ui";
 import Appearance from "@/components/Factory/Settings/Appearance.vue";
 import CompletionPage from "@/components/Factory/Settings/CompletionPage.vue";
 import Integrations from "@/components/Factory/Settings/Integrations.vue";
@@ -79,18 +87,20 @@ const navigation: Array<{
   name: string;
   component: any;
   slug: string;
+  icon?: string;
 }> = [
   { name: "Options", component: Options, slug: "options" },
+  {
+    name: "Integrations",
+    component: Integrations,
+    slug: "integrations",
+    icon: "puzzle-piece",
+  },
   { name: "Privacy", component: Privacy, slug: "privacy" },
   {
     name: "Completion Page",
     component: CompletionPage,
     slug: "completion-page",
-  },
-  {
-    name: "Integrations",
-    component: Integrations,
-    slug: "integrations",
   },
   { name: "Appearance", component: Appearance, slug: "appearance" },
   { name: "Embed", component: Embed, slug: "embeds" },
