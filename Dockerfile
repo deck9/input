@@ -1,7 +1,7 @@
 FROM trafex/php-nginx as php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
-LABEL org.opencontainers.image.licenses="AGPL-3.0 license"
+LABEL org.opencontainers.image.licenses="GNU Affero General Public License v3.0"
 
 USER root
 

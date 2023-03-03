@@ -2,7 +2,7 @@
     "name": "@deck9/input",
     "version": "1.0.0",
     "private": true,
-    "license": "Business Source License 1.1",
+    "license": "GNU Affero General Public License v3.0",
     "engines": {
         "node": ">= 16 <=18"
     },
