@@ -6,7 +6,7 @@
           <div class="relative">
             <D9Input
               :id="item.id + '_label'"
-              class="pl-12"
+              class="!pl-12"
               name="label"
               ref="labelElement"
               type="text"
