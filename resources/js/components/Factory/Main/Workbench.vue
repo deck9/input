@@ -5,7 +5,7 @@
   >
     <div class="space-y-8 pb-24">
       <template v-if="workbench.block.type === 'group'">
-        <div>Group Settings</div>
+        <GroupSettings />
       </template>
       <template v-else>
         <BlockMessage />
@@ -24,6 +24,7 @@ import BlockMetaHeader from "./BlockMetaHeader.vue";
 import BlockMessage from "./BlockMessage.vue";
 import BlockType from "./BlockType.vue";
 import BlockInteractions from "./BlockInteractions.vue";
+import GroupSettings from "./GroupSettings.vue";
 import { provide } from "@vue/runtime-core";
 
 const workbench = useWorkbench();

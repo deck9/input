@@ -20,7 +20,7 @@
             name="chevron-down"
           />
         </button>
-        Group
+        {{ block.title ?? "Group" }}
         <span class="font-light italic" v-show="isCollapsed"
           >({{ t("admin.blocks", groupCount) }})</span
         >

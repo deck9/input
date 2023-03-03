@@ -8,7 +8,7 @@
             :class="[
               'rounded px-2 py-1 text-sm',
               editor?.isActive('bold')
-                ? 'text-grey-900 font-bold'
+                ? 'font-bold text-grey-900'
                 : 'text-grey-500 hover:text-grey-800',
             ]"
             @click="editor?.chain().focus().toggleBold().run()"
@@ -20,7 +20,7 @@
             :class="[
               'rounded px-2 py-1 text-sm',
               editor?.isActive('italic')
-                ? 'text-grey-900 font-bold'
+                ? 'font-bold text-grey-900'
                 : 'text-grey-500 hover:text-grey-800',
             ]"
             @click="editor?.chain().focus().toggleItalic().run()"
@@ -32,7 +32,7 @@
             :class="[
               'rounded px-2 py-1 text-sm',
               editor?.isActive('link')
-                ? 'text-grey-900 font-bold'
+                ? 'font-bold text-grey-900'
                 : 'text-grey-500 hover:text-grey-800',
             ]"
             @click="setLink()"
@@ -42,7 +42,7 @@
           </button>
         </div>
         <editor-content :editor="editor" />
-        <div class="text-grey-600 mt-1 text-xs">
+        <div class="mt-1 text-xs text-grey-600">
           {{ chars }} chars, {{ words }} words
         </div>
       </div>
