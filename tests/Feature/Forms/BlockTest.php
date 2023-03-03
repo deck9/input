@@ -31,6 +31,26 @@ class BlockTest extends TestCase
 
         $this->assertEquals($hashed, $response->json('uuid'));
         $this->assertEquals($form->id, $response->json('form_id'));
+        $this->assertEquals($block->type, FormBlockType::none);
+    }
+
+    /** @test */
+    public function can_create_a_new_block_of_type_group()
+    {
+        $form = Form::factory()->create();
+
+        $response = $this->actingAs($form->user)
+            ->json('post', route('api.blocks.create', $form->uuid), [
+                'type' => 'group'
+            ])
+            ->assertSuccessful();
+
+        $block = FormBlock::get()->last();
+        $hashed = (new Hashids())->encode($block->id);
+
+        $this->assertEquals($hashed, $response->json('uuid'));
+        $this->assertEquals($form->id, $response->json('form_id'));
+        $this->assertEquals($block->type, FormBlockType::group);
     }
 
     /** @test */

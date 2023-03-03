@@ -1,4 +1,7 @@
 {
+    "admin": {
+        "blocks": "no blocks | 1 block | {n} blocks"
+    },
     "Accept & Submit": "Accept & Submit",
     "Accept": "Accept",
     "Close": "Close",

@@ -21,7 +21,7 @@ class FormBlock extends Model
         'message',
         'type',
         'title',
-        'has_parent_interaction',
+        'parent_block',
         'sequence'
     ];
 
@@ -30,7 +30,6 @@ class FormBlock extends Model
     protected $with = ['formBlockInteractions'];
 
     protected $casts = [
-        'has_parent_interaction' => 'boolean',
         'is_required' => 'boolean',
         'form_id' => 'integer',
         'options' => 'array',

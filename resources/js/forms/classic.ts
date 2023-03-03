@@ -12,7 +12,7 @@ const pinia = createPinia();
 
 const i18n = createI18n({
     legacy: false,
-    locale: "de", // set locale
+    locale: "en", // set locale
     fallbackLocale: "en", // set fallback locale
     messages: {
         en: localeEN,

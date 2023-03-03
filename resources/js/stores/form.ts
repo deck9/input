@@ -21,6 +21,8 @@ interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
     mapping: Record<FormBlockType, FormBlockInteractionType> | null;
+    isCssTransitionEnabled: boolean;
+    isBlockMenuEnabled: boolean;
 }
 
 export const useForm = defineStore("form", {
@@ -29,6 +31,8 @@ export const useForm = defineStore("form", {
             form: null,
             mapping: null,
             blocks: null,
+            isCssTransitionEnabled: true,
+            isBlockMenuEnabled: true,
         };
     },
 
@@ -41,6 +45,30 @@ export const useForm = defineStore("form", {
             return state.blocks && state.blocks.length ? true : false;
         },
 
+        countGroups: (state): Record<string, number> => {
+            if (!state.blocks) {
+                return {};
+            }
+
+            const containers = { root: 0 };
+
+            state.blocks
+                .filter((i) => i.type === "group")
+                .forEach((i) => (containers[i.uuid] = 0));
+
+            return state.blocks
+                ?.map((i) => i.parent_block)
+                .reduce((acc, item) => {
+                    if (item) {
+                        acc[item] ? (acc[item] += 1) : (acc[item] = 1);
+                    } else {
+                        acc["root"] += 1;
+                    }
+
+                    return acc;
+                }, containers);
+        },
+
         formUrl: (state): string => {
             if (state.form) {
                 return window.route("forms.show", { uuid: state.form?.uuid });
@@ -48,12 +76,28 @@ export const useForm = defineStore("form", {
 
             return "";
         },
+
+        showBlockMenus: (state): boolean => {
+            return state.isBlockMenuEnabled;
+        },
     },
 
     actions: {
         clearForm() {
             this.form = null;
             this.blocks = null;
+        },
+
+        setCssTransition(payload: boolean) {
+            this.isCssTransitionEnabled = payload;
+        },
+
+        enableBlockMenu() {
+            this.isBlockMenuEnabled = true;
+        },
+
+        disableBlockMenu() {
+            this.isBlockMenuEnabled = false;
         },
 
         async refreshForm(includeSubmissions = false) {
@@ -164,26 +208,39 @@ export const useForm = defineStore("form", {
             return Promise.resolve();
         },
 
-        async createFormBlock(insertAfter: FormBlockModel | null = null) {
+        async createFormBlock(
+            insertAfter: FormBlockModel | null = null,
+            type: FormBlockType | null = null
+        ) {
             if (!this.form) {
                 return;
             }
 
             try {
-                const response = await callCreateFormBlock(this.form.uuid);
+                const response = await callCreateFormBlock(
+                    this.form.uuid,
+                    type
+                );
+
+                const newBlock = response.data;
 
                 if (response.status === 201 && this.blocks) {
                     if (insertAfter !== null) {
                         const index = this.blocks.indexOf(insertAfter);
-                        this.blocks.splice(index + 1, 0, response.data);
+
+                        newBlock.parent_block = insertAfter.parent_block;
+
+                        this.blocks.splice(index + 1, 0, newBlock);
+
+                        this.saveBlockSequence();
                     } else {
-                        this.blocks.push(response.data);
+                        this.blocks.push(newBlock);
                     }
 
                     // if new block has been created, we should select it for editing
                     const workbench = useWorkbench();
 
-                    workbench.putOnWorkbench(response.data);
+                    workbench.putOnWorkbench(newBlock);
                 }
             } catch (error) {
                 console.warn(error);
@@ -206,29 +263,86 @@ export const useForm = defineStore("form", {
                     if (typeof index !== "undefined" && index !== -1) {
                         this.blocks?.splice(index, 1);
                     }
+
+                    if (block.type === "group") {
+                        // if we deleted a group, we need to delete all blocks inside it
+                        this.blocks
+                            ?.filter((item) => {
+                                return item.parent_block === block.uuid;
+                            })
+                            .forEach((item) => {
+                                this.deleteFormBlock(item);
+                            });
+                    }
                 }
             } catch (error) {
                 console.warn(error);
             }
         },
 
-        async changeBlockSequence(from: number, to: number) {
+        async changeBlockSequence(
+            parentBlock: string | false,
+            to: number,
+            block: FormBlockModel
+        ) {
             if (!this.blocks || !this.form) {
                 return;
             }
 
-            // move item to target position
-            this.blocks.splice(to, 0, this.blocks.splice(from, 1)[0]);
+            block.parent_block = parentBlock || null;
+
+            // removed index is easy, we just find the index of the block
+            const removedIndex = this.blocks.findIndex((item) => {
+                return item.id === block.id;
+            });
+
+            // target index is a bit more complicated, lets set it to 0 for now
+            let targetIndex = -1;
+
+            // if we have a scope, we need to get all blocks in that scope
+            // the "to" value is relative to the scope
+            const blocksInScope = this.blocks.filter((item) => {
+                if (parentBlock && item.parent_block === parentBlock) {
+                    return true;
+                }
+
+                return !parentBlock && !item.parent_block;
+            });
+
+            // if we have blocks in scope, and the "to" value is less than the length of the blocks in scope
+            if (blocksInScope.length > 0 && blocksInScope.length > to) {
+                const targetBlock = blocksInScope[to];
+                targetIndex = this.blocks.findIndex((item) => {
+                    return item.id === targetBlock.id;
+                });
+            }
+
+            this.blocks.splice(removedIndex, 1); // remove from old position
+
+            if (targetIndex !== -1) {
+                this.blocks.splice(targetIndex, 0, block); // add to new position
+            } else {
+                // if we don't have a target index, we just push it to the end
+                this.blocks.push(block);
+            }
+
+            await this.saveBlockSequence();
+        },
+
+        async saveBlockSequence() {
+            if (!this.blocks || !this.form) {
+                return;
+            }
 
             // set new sequence numbers to blocks
-            this.blocks = this.blocks.map((item, key) => {
-                return { ...item, sequence: key };
+            this.blocks.map((item, index) => {
+                return { ...item, sequence: index };
             });
 
             // generate an array of ids to update sequence on server
-            const saveSequenceRequestData: Array<number> = this.blocks.map(
+            const saveSequenceRequestData: Array<any> = this.blocks.map(
                 (item) => {
-                    return item.id;
+                    return { id: item.id, scope: item.parent_block };
                 }
             );
 

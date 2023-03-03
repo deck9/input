@@ -5,6 +5,7 @@ namespace App\Enums;
 enum FormBlockType: string
 {
     case none = "none";
+    case group = "group";
 
     case consent = "consent";
 

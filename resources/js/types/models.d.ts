@@ -59,7 +59,7 @@ interface FormBlockModel extends BaseModel {
     title: string | null;
     options: string | null;
     responses: string | null;
-    has_parent_interaction: number | null;
+    parent_block: string | null;
     is_required: boolean | null;
     webhook_url: string;
     sequence: number;
@@ -69,6 +69,7 @@ interface FormBlockModel extends BaseModel {
 
 type FormBlockType =
     | "none"
+    | "group"
     | "consent"
     | "input-short"
     | "input-long"
@@ -140,6 +141,7 @@ type PublicFormBlockModel = {
     message: string | null;
     title: string | null;
     type: FormBlockType;
+    parent_block: string | null;
     is_required: boolean | null;
     interactions: Array<PublicFormBlockInteractionModel>;
 };

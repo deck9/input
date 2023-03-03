@@ -4,9 +4,14 @@
     class="relative mx-12 flex h-full max-w-xl flex-col justify-between px-4 pt-8 xl:mx-24"
   >
     <div class="space-y-8 pb-24">
-      <BlockMessage />
-      <BlockType />
-      <BlockInteractions v-if="workbench.needsInteractionSetup" />
+      <template v-if="workbench.block.type === 'group'">
+        <GroupSettings />
+      </template>
+      <template v-else>
+        <BlockMessage />
+        <BlockType />
+        <BlockInteractions v-if="workbench.needsInteractionSetup" />
+      </template>
     </div>
 
     <BlockMetaHeader class="py-4" :block="workbench.block" />
@@ -19,6 +24,7 @@ import BlockMetaHeader from "./BlockMetaHeader.vue";
 import BlockMessage from "./BlockMessage.vue";
 import BlockType from "./BlockType.vue";
 import BlockInteractions from "./BlockInteractions.vue";
+import GroupSettings from "./GroupSettings.vue";
 import { provide } from "@vue/runtime-core";
 
 const workbench = useWorkbench();

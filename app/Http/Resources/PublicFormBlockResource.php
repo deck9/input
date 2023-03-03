@@ -20,6 +20,7 @@ class PublicFormBlockResource extends JsonResource
             'title' => $this->title,
             'message' => $this->message,
             'is_required' => $this->is_required,
+            'parent_block' => $this->parent_block,
             'interactions' => PublicFormBlockInteractionResource::collection($this->activeInteractions),
         ];
     }
