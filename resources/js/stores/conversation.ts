@@ -165,6 +165,12 @@ export const useConversation = defineStore("form", {
             this.queue = this.storyboard.filter((block) => {
                 return block.parent_block === null;
             });
+
+            // if the first block is a group, we need to evaluate it
+            if (this.currentBlock?.type === "group") {
+                this.evaluateGroupBlock(this.currentBlock);
+                this.next();
+            }
         },
 
         enableInputMode() {
@@ -257,27 +263,31 @@ export const useConversation = defineStore("form", {
 
                 // need to check if the next block is a group block
                 if (this.currentBlock?.type === "group") {
-                    // we first should remove all blocks related to that group
-                    this.queue =
-                        this.queue?.filter((block) => {
-                            return block.parent_block !== this.currentBlock?.id;
-                        }) ?? [];
-
-                    // now we find all children from the storyboard
-                    const children = this.storyboard?.filter((block) => {
-                        return block.parent_block === this.currentBlock?.id;
-                    });
-
-                    // we add the children to the queue
-                    if (children && children?.length > 0) {
-                        this.queue?.splice(this.current + 1, 0, ...children);
-                    }
+                    this.evaluateGroupBlock(this.currentBlock);
 
                     // we call next, since the group block has no other action
                     return this.next();
                 }
 
                 return Promise.resolve(false);
+            }
+        },
+
+        evaluateGroupBlock(currentBlock: PublicFormBlockModel) {
+            // we first should remove all blocks related to that group
+            this.queue =
+                this.queue?.filter((block) => {
+                    return block.parent_block !== currentBlock?.id;
+                }) ?? [];
+
+            // now we find all children from the storyboard
+            const children = this.storyboard?.filter((block) => {
+                return block.parent_block === currentBlock?.id;
+            });
+
+            // we add the children to the queue
+            if (children && children?.length > 0) {
+                this.queue?.splice(this.current + 1, 0, ...children);
             }
         },
     },
