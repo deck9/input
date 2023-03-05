@@ -307,7 +307,7 @@ class Form extends Model
         $settings = json_encode(PublicFormResource::make($this)->resolve());
 
         $output = "window.iptSettings = window.iptSettings || [];";
-        $output .= "window.iptSettings = ${settings}";
+        $output .= "window.iptSettings = {$settings}";
 
         return $output;
     }
