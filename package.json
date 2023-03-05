@@ -1,6 +1,6 @@
 {
     "name": "@deck9/input",
-    "version": "1.0.0",
+    "version": "1.4.2",
     "private": true,
     "license": "GNU Affero General Public License v3.0",
     "engines": {

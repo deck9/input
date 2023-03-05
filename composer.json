@@ -1,10 +1,7 @@
 {
     "name": "deck9/input",
     "type": "project",
-    "description": "A survey platform",
-    "keywords": [
-        "survey"
-    ],
+    "description": "Input is a no-code application to create simple & clean forms. With our customization options, you can let the forms shine in your brands colors.",
     "license": "GNU Affero General Public License v3.0",
     "require": {
         "php": "^8.1",
