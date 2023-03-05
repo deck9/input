@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FormBlockType;
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
@@ -313,11 +314,23 @@ class Form extends Model
 
     public function getPublicStoryboard()
     {
-        $blockCount = $this->blocksCount();
+        // Filter out blocks that are groups and have no children
+        $blocks = $this->formBlocks->filter(function ($item) {
+            if ($item->type === FormBlockType::group) {
+
+                return $this->formBlocks->first(function ($child) use ($item) {
+                    return $child->parent_block === $item->uuid;
+                });
+            }
+
+            return true;
+        });
+
+        $blockCount = $blocks->count();
 
         return [
             'count' => $blockCount,
-            'blocks' => PublicFormBlockResource::collection($this->formBlocks),
+            'blocks' => PublicFormBlockResource::collection($blocks),
         ];
     }
 }
