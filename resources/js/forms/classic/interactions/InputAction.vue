@@ -4,11 +4,16 @@
     <input
       :type="nativeInputType"
       class="block w-full max-w-xs rounded border border-grey-300 bg-white px-3 py-2 text-black focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-      :class="[useIcon ? 'pl-10' : 'pl-3']"
+      :class="[
+        useIcon ? 'pl-10' : 'pl-3',
+        block.type === 'input-number' ? 'text-right ' : 'text-left',
+      ]"
       :name="block.id"
       :id="action.id"
       :placeholder="action.label || 'Enter text'"
       :value="storeValue"
+      :step="stepValue"
+      :inputmode="inputMode"
       ref="inputElement"
       autocomplete="off"
       @input="onInput"
@@ -37,18 +42,26 @@ const props = defineProps<{
 }>();
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
-const storeValue = (store.currentPayload as FormBlockInteractionPayload)
-  ?.payload;
+let storeValue = (store.currentPayload as FormBlockInteractionPayload)?.payload;
+
+if (props.block.type === "input-number" && storeValue) {
+  const formatter = new Intl.NumberFormat("de-DE", {
+    style: "decimal",
+    minimumFractionDigits: props.action.options?.decimalPlaces,
+    maximumFractionDigits: props.action.options?.decimalPlaces,
+  });
+
+  storeValue = formatter.format(storeValue);
+}
+
 const inputElement = ref<HTMLInputElement | null>(null);
+const stepValue = 1 / Math.pow(10, props.action.options?.decimalPlaces ?? 0);
 
 // get the input element type based on the action type
 const nativeInputType = computed(() => {
   const action: FormBlockType = props.block.type;
 
   switch (action) {
-    case "input-number":
-      return "number";
-
     case "input-email":
       return "email";
 
@@ -60,6 +73,25 @@ const nativeInputType = computed(() => {
 
     default:
       return "text";
+  }
+});
+
+const inputMode = computed(() => {
+  const action: FormBlockType = props.block.type;
+
+  switch (action) {
+    case "input-number":
+      if (
+        props.action.options?.decimalPlaces &&
+        props.action.options?.decimalPlaces > 0
+      ) {
+        return "decimal";
+      } else {
+        return "numeric";
+      }
+
+    default:
+      return undefined;
   }
 });
 
@@ -89,7 +121,17 @@ onMounted(() => {
 });
 
 const onInput = () => {
-  const input = inputElement.value?.value ?? null;
+  let input: string | number | null = inputElement.value?.value ?? null;
+
+  // format input based on validation?
+  if (input && props.block.type === "input-number") {
+    input = parseFloat(input.replace(",", "."));
+
+    if (props.action.options?.decimalPlaces) {
+      input = input.toFixed(props.action.options?.decimalPlaces);
+    }
+  }
+
   store.setResponse(props.action, input);
 };
 </script>

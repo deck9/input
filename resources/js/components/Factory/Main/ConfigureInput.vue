@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isInitialized" class="mb-4">
+  <div class="mb-4">
     <D9Label label="Placeholder Text" />
     <D9Input
       placeholder="Your placeholder text"
@@ -8,34 +8,56 @@
       v-model="label"
     />
   </div>
+  <div class="mb-4" v-if="block?.type === 'input-number'">
+    <D9Label
+      label="Decimal Places"
+      description="If empty, no decimal places are allowed"
+    />
+    <D9Input
+      placeholder="Number of decimal places"
+      type="number"
+      min="0"
+      max="10"
+      step="1"
+      block
+      v-model="decimalPlaces"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
 import { watch, Ref, ref } from "vue";
-import { onMounted } from "@vue/runtime-core";
+import { inject, onMounted } from "@vue/runtime-core";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
 
+const block: FormBlockModel | undefined = inject("block");
+
 const label: Ref<FormBlockInteractionModel["label"]> = ref("");
+const decimalPlaces = ref("0");
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
-const isInitialized = ref(false);
-
 onMounted(async () => {
-  interaction.value = await findOrCreate("input", workbench);
+  if (workbench.block?.interactions) {
+    interaction.value = await findOrCreate("input", workbench);
 
-  label.value = interaction.value.label;
-  isInitialized.value = true;
+    label.value = interaction.value.label;
+    decimalPlaces.value =
+      interaction.value.options?.decimalPlaces?.toString() ?? "";
+  }
 });
 
-watch([label], (newValues) => {
+watch([label, decimalPlaces], (newValues: any[]) => {
   const update = {
     id: interaction.value.id,
     label: newValues[0],
+    options: {
+      decimalPlaces: newValues[1] ? parseInt(newValues[1]) : undefined,
+    },
   };
 
   workbench.updateInteraction(update);
