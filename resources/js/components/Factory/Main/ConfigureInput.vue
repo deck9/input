@@ -26,8 +26,8 @@
       />
     </div>
     <div class="mb-4">
-      <D9Label label="Icon" />
-      <D9Input v-model="useSymbol" block />
+      <D9Label label="Show Symbol" />
+      <D9Input v-model="useSymbol" block max="3" />
     </div>
   </template>
 </template>
@@ -60,12 +60,13 @@ onMounted(async () => {
   }
 });
 
-watch([label, decimalPlaces], (newValues: any[]) => {
+watch([label, decimalPlaces, useSymbol], (newValues: any[]) => {
   const update = {
     id: interaction.value.id,
     label: newValues[0],
     options: {
       decimalPlaces: newValues[1] ? parseInt(newValues[1]) : undefined,
+      useSymbol: newValues[2] ? newValues[2] : undefined,
     },
   };
 

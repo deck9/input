@@ -5,7 +5,11 @@
       :type="nativeInputType"
       class="block w-full max-w-xs rounded border border-grey-300 bg-white px-3 py-2 text-black focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
       :class="[
-        useIcon ? 'pl-10' : 'pl-3',
+        {
+          'pl-16': useSymbol,
+          'pl-10': useIcon && !useSymbol,
+          'pl-3': !useSymbol && !useIcon,
+        },
         block.type === 'input-number' ? 'text-right ' : 'text-left',
       ]"
       :name="block.id"
@@ -21,7 +25,13 @@
     />
 
     <div
-      v-if="useIcon"
+      class="absolute inset-y-px left-px flex w-12 items-center justify-center rounded bg-content/10 text-sm font-medium"
+      v-if="useSymbol"
+    >
+      {{ useSymbol }}
+    </div>
+    <div
+      v-else-if="useIcon"
       class="absolute inset-y-0 left-3 flex items-center text-grey-700"
     >
       <D9Icon :name="useIcon" />
@@ -47,6 +57,7 @@ let storeValue = ref(
   (store.currentPayload as FormBlockInteractionPayload)?.payload
 );
 
+// if we restore a value from the store, we need to format it
 if (props.block.type === "input-number" && storeValue.value) {
   const formatter = new Intl.NumberFormat("de-DE", {
     style: "decimal",
@@ -59,6 +70,7 @@ if (props.block.type === "input-number" && storeValue.value) {
 
 const inputElement = ref<HTMLInputElement | null>(null);
 const stepValue = 1 / Math.pow(10, props.action.options?.decimalPlaces ?? 0);
+const useSymbol = ref(props.action.options?.useSymbol ?? false);
 
 // get the input element type based on the action type
 const nativeInputType = computed(() => {
@@ -136,8 +148,6 @@ const onInput = (event) => {
     });
     input = output.value;
   }
-
-  console.log("1312", input);
 
   store.setResponse(props.action, input);
 };
