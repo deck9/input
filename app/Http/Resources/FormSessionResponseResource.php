@@ -33,7 +33,7 @@ class FormSessionResponseResource extends JsonResource
 
     protected function formatValue($value)
     {
-        if (is_string($value)) {
+        if (is_string($value) || is_numeric($value)) {
             return $value;
         }
 
