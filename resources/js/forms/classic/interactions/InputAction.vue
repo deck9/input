@@ -33,6 +33,7 @@
 import { computed, ComputedRef, inject, onMounted, ref } from "vue";
 import { D9Icon } from "@deck9/ui";
 import { useConversation } from "@/stores/conversation";
+import { useFixedNumberFormatting } from "@/utils/useFixedNumberFormatting";
 
 const store = useConversation();
 
@@ -42,16 +43,18 @@ const props = defineProps<{
 }>();
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
-let storeValue = (store.currentPayload as FormBlockInteractionPayload)?.payload;
+let storeValue = ref(
+  (store.currentPayload as FormBlockInteractionPayload)?.payload
+);
 
-if (props.block.type === "input-number" && storeValue) {
+if (props.block.type === "input-number" && storeValue.value) {
   const formatter = new Intl.NumberFormat("de-DE", {
     style: "decimal",
     minimumFractionDigits: props.action.options?.decimalPlaces,
     maximumFractionDigits: props.action.options?.decimalPlaces,
   });
 
-  storeValue = formatter.format(storeValue);
+  storeValue.value = formatter.format(storeValue.value);
 }
 
 const inputElement = ref<HTMLInputElement | null>(null);
@@ -120,17 +123,21 @@ onMounted(() => {
   }
 });
 
-const onInput = () => {
-  let input: string | number | null = inputElement.value?.value ?? null;
-
-  // format input based on validation?
-  if (input && props.block.type === "input-number") {
-    input = parseFloat(input.replace(",", "."));
-
-    if (props.action.options?.decimalPlaces) {
-      input = input.toFixed(props.action.options?.decimalPlaces);
-    }
+const onInput = (event) => {
+  if (!inputElement.value) {
+    return;
   }
+
+  let input: string | number | null = inputElement.value.value;
+
+  if (input && props.block.type === "input-number") {
+    const { output } = useFixedNumberFormatting(event, {
+      decimalPlaces: props.action.options?.decimalPlaces ?? 0,
+    });
+    input = output.value;
+  }
+
+  console.log("1312", input);
 
   store.setResponse(props.action, input);
 };

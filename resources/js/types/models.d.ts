@@ -105,6 +105,7 @@ type FormBlockInteractionSettings = {
     labelLeft?: string;
     labelRight?: string;
     decimalPlaces?: number;
+    useSymbol?: string;
 };
 
 interface FormBlockInteractionModel extends BaseModel {
