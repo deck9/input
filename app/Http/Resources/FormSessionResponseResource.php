@@ -33,8 +33,16 @@ class FormSessionResponseResource extends JsonResource
 
     protected function formatValue($value)
     {
-        if (is_string($value) || is_numeric($value)) {
+        if (is_string($value)) {
             return $value;
+        }
+
+        // if numeric, format as number
+        if (is_numeric($value)) {
+            $options = collect($this->formBlockInteraction->options ?? []);
+            $decimalPlaces = $options->has('decimalPlaces') ? $options->get('decimalPlaces') : 0;
+
+            return number_format($value, $decimalPlaces, ',', '.');
         }
 
         if ($this->formBlock->type === FormBlockType::consent) {

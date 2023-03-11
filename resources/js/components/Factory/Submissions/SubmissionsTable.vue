@@ -16,18 +16,6 @@
               </th>
               <th
                 scope="col"
-                class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-grey-900 sm:pl-6"
-              >
-                ID
-              </th>
-              <th
-                scope="col"
-                class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
-              >
-                Params
-              </th>
-              <th
-                scope="col"
                 class="px-4 py-3.5 text-left text-sm font-semibold text-grey-900"
                 v-for="header in submissionTableHeaders"
                 :key="header.id"
