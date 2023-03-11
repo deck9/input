@@ -13,13 +13,13 @@
     <td
       class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-grey-900 sm:pl-6"
     >
+      <span class="mr-2 font-mono font-bold">{{ submission.uid }}</span>
       <FormattedDate :date="submission.completed_at" />
-    </td>
-    <td class="whitespace-nowrap p-4 text-sm text-grey-500">
-      {{ submission.uid }}
-    </td>
-    <td class="max-w-[200px] p-4 text-sm text-grey-500">
-      <SubmissionParams v-bind="{ params: submission.params }" />
+      <SubmissionParams
+        v-if="submission.params"
+        class="mt-1"
+        v-bind="{ params: submission.params }"
+      />
     </td>
     <td
       class="min-w-[200px] max-w-xs p-4 text-sm text-grey-500"

@@ -37,6 +37,14 @@ class FormSessionResponseResource extends JsonResource
             return $value;
         }
 
+        // if numeric, format as number
+        if (is_numeric($value)) {
+            $options = collect($this->formBlockInteraction->options ?? []);
+            $decimalPlaces = $options->has('decimalPlaces') ? $options->get('decimalPlaces') : 0;
+
+            return number_format($value, $decimalPlaces, ',', '.');
+        }
+
         if ($this->formBlock->type === FormBlockType::consent) {
             $accepted = $value['accepted'] ? 'yes' : 'no';
             return $value['consent'] . ': ' . $accepted;
