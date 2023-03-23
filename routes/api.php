@@ -48,6 +48,7 @@ $router->get('routes', ZiggyController::class);
 $router->middleware(['auth:sanctum'])->group(function (Router $router) {
 
     // Form Routes
+    $router->get('forms', [FormController::class, 'index'])->name('api.forms.index');
     $router->post('forms', [FormController::class, 'create'])->name('api.forms.create');
     $router->get('forms/{form}', [FormController::class, 'show'])->name('api.forms.show');
     $router->post('forms/{form}', [FormController::class, 'update'])->name('api.forms.update');

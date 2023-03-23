@@ -8,6 +8,14 @@ use App\Http\Controllers\Controller;
 
 class FormController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $forms = $request->user()->forms()->get();
+
+        return response()->json($forms);
+    }
+
     public function create(Request $request)
     {
         $form = Form::create([
@@ -17,7 +25,7 @@ class FormController extends Controller
             'brand_color' => Form::DEFAULT_BRAND_COLOR,
         ]);
 
-        return response()->json($form, 200);
+        return response()->json($form);
     }
 
     public function show(Request $request, Form $form)

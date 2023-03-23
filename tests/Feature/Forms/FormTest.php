@@ -54,6 +54,32 @@ class FormTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_return_all_the_forms_in_his_account()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $form = Form::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->get(route('api.forms.index'))
+            ->assertStatus(200);
+
+        $this->assertEquals($form->uuid, $response->json()[0]['uuid']);
+    }
+
+    /** @test */
+    public function a_user_cannot_return_forms_in_other_accounts()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        Form::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('api.forms.index'))
+            ->assertStatus(200);
+
+        $this->assertCount(0, $response->json());
+    }
+
+    /** @test */
     public function authenticated_user_can_view_the_edit_page_of_his_form()
     {
         $form = Form::factory()->create();
