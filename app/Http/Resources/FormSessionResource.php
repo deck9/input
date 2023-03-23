@@ -22,7 +22,7 @@ class FormSessionResource extends JsonResource
             'started_at' => $this->created_at->toDateTimeString(),
             'completed_at' => (string) $this->getRawOriginal('is_completed'),
             'params' => $this->params ? json_encode($this->params) : null,
-            'responses' => collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())
+            'responses' => collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())->keyBy('id')
         ];
     }
 }

@@ -103,6 +103,29 @@ class SubmissionsTest extends TestCase
     }
 
     /** @test */
+    public function returned_submission_has_responses_keyed_by_form_block_uuid()
+    {
+        $form = Form::factory()->create();
+
+        $block = FormBlock::factory()
+            ->input(FormBlockType::short)
+            ->for($form)
+            ->create();
+
+        FormSession::factory()
+            ->completed()
+            ->has(FormSessionResponse::factory()->for($block))
+            ->for($form)
+            ->create();
+
+        $response = $this->actingAs($form->user)
+            ->json('get', route('api.forms.submissions', ['form' => $form->uuid]))
+            ->assertStatus(200);
+
+        $this->assertArrayHasKey($block->uuid, $response->json('data.0.responses'));
+    }
+
+    /** @test */
     public function submissions_only_viewable_to_authenticated_owner_of_the_form()
     {
         $form = Form::factory()->create();

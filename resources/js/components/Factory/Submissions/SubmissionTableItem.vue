@@ -26,14 +26,8 @@
       v-for="header in headers"
       :key="submission.id + header.id"
     >
-      <span
-        class="block"
-        v-for="response in submission.responses.filter(
-          (r) => r.id === header.id
-        )"
-        :key="response.value"
-      >
-        {{ response.value }}
+      <span class="block">
+        {{ submission.responses[header.id]?.value ?? "-" }}
       </span>
     </td>
   </tr>
