@@ -1,0 +1,17 @@
+name: Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+    # Publish semver tags as releases.
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    tests:
+        uses: ./.github/workflows/ci.yml
+
+    docker:
+        needs: tests
+        uses: ./.github/workflows/docker-publish.yml
