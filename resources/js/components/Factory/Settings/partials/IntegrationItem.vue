@@ -28,7 +28,7 @@
             @change="updateIntegration"
           />
         </div>
-        <button class="ml-5 flex-shrink-0" @click="editIntegration">
+        <button class="ml-5 flex-shrink-0 px-1" @click="editIntegration">
           <D9Icon name="cog" class="text-grey-400" aria-hidden="true" />
         </button>
       </div>

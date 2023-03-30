@@ -39,7 +39,7 @@
                         <div class="ml-3 flex h-7 items-center">
                           <button
                             type="button"
-                            class="rounded-md bg-white text-grey-400 hover:text-grey-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="rounded-md bg-white px-2 text-grey-400 hover:text-grey-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             @click="close"
                           >
                             <span class="sr-only">Close panel</span>
