@@ -4,17 +4,16 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Form;
-use App\Jobs\CallWebhook;
 use App\Models\FormBlock;
 use App\Models\FormSession;
 use App\Enums\FormBlockType;
 use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Event;
 use App\Enums\FormBlockInteractionType;
 use App\Events\FormSessionCompletedEvent;
 use App\Listeners\FormSubmitWebhookListener;
+use App\Models\FormIntegration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CallWebhookTest extends TestCase
@@ -26,16 +25,20 @@ class CallWebhookTest extends TestCase
     {
         Http::fake();
 
-        $form = Form::factory()->has(
-            FormBlock::factory([
-                'type' => FormBlockType::short
-            ])->has(FormBlockInteraction::factory([
-                'type' => FormBlockInteractionType::input
+        $form = Form::factory()
+            ->has(FormIntegration::factory([
+                'webhook_method' => 'GET',
+                'webhook_url' => 'https://void.work/submit'
             ]))
-        )->create([
-            'submit_method' => 'get',
-            'submit_webhook' => 'https://void.work/submit'
-        ]);
+            ->has(
+                FormBlock::factory([
+                    'type' => FormBlockType::short
+                ])->has(
+                    FormBlockInteraction::factory([
+                        'type' => FormBlockInteractionType::input
+                    ])
+                )
+            )->create();
 
         $block = $form->formBlocks->first();
         $action = $block->formBlockInteractions->first();
@@ -51,8 +54,10 @@ class CallWebhookTest extends TestCase
             ->handle(new FormSessionCompletedEvent($session));
 
         Http::assertSent(function ($request) use ($form) {
-            return $request->url() === $form->submit_webhook
-                && $request->method() === strtoupper($form->submit_method);
+            $integration = $form->formIntegrations[0];
+
+            return $request->url() === $integration->webhook_url
+                && $request->method() === strtoupper($integration->webhook_method);
         });
     }
 }

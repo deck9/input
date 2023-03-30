@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\FormBlockType;
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
+use App\Models\FormIntegration;
 use Illuminate\Support\Facades\DB;
 use App\Models\Traits\TemplateImports;
 use Illuminate\Database\Eloquent\Model;
@@ -107,6 +108,11 @@ class Form extends Model
     public function scopePublished($query)
     {
         return $query->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());
+    }
+
+    public function formIntegrations(): HasMany
+    {
+        return $this->hasMany(FormIntegration::class);
     }
 
     public function formBlocks(): HasMany

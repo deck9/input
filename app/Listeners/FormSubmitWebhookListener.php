@@ -2,16 +2,18 @@
 
 namespace App\Listeners;
 
+use App\Jobs\CallWebhookJob;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Http;
+use App\Pipes\MergeResponsesIntoSession;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Http\Resources\FormSessionResource;
-use App\Pipes\MergeResponsesIntoSession;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class FormSubmitWebhookListener implements ShouldQueue
 {
-    use InteractsWithQueue;
+    use InteractsWithQueue, DispatchesJobs;
 
     /**
      * Handle the event.
@@ -21,26 +23,10 @@ class FormSubmitWebhookListener implements ShouldQueue
      */
     public function handle($event)
     {
-        // check if form has webhook settings
-        $form = $event->session->form;
-
-        if (!$form->submit_method || !$form->submit_webhook) {
-            return;
-        }
-
-        $payload = app(Pipeline::class)
-            ->send(FormSessionResource::make($event->session)->resolve())
-            ->through([
-                MergeResponsesIntoSession::class
-            ])
-            ->thenReturn();
-
-        $response = Http::send($form->submit_method, $form->submit_webhook, [
-            'form_params' => $payload
-        ]);
-
-        $event->session->update([
-            'webhook_submit_status' => $response->status(),
-        ]);
+        $event->session->form->formIntegrations->each(function ($integration) use ($event) {
+            // we should create a webhook job here with session data
+            // and the integration data
+            $this->dispatch(new CallWebhookJob($event->session, $integration));
+        });
     }
 }

@@ -75,8 +75,6 @@ class FormController extends Controller
                 'data_retention_days',
                 'show_cta_link',
                 'show_social_links',
-                'submit_method',
-                'submit_webhook',
             )
         );
 

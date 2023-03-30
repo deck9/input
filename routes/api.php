@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FormImagesController;
 use App\Http\Controllers\Api\FormSubmitController;
 use App\Http\Controllers\Api\PublishFormController;
 use App\Http\Controllers\Api\UnpublishFormController;
+use App\Http\Controllers\Api\FormIntegrationController;
 use App\Http\Controllers\Api\FormSubmissionsController;
 use App\Http\Controllers\Api\FormBlockMappingController;
 use App\Http\Controllers\Api\CreateFormSessionController;
@@ -53,6 +54,11 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->get('forms/{form}', [FormController::class, 'show'])->name('api.forms.show');
     $router->post('forms/{form}', [FormController::class, 'update'])->name('api.forms.update');
     $router->delete('forms/{form}', [FormController::class, 'delete'])->name('api.forms.delete');
+
+    // Form Integrations
+    $router->post('forms/{form}/integrations', [FormIntegrationController::class, 'create'])->name('api.forms.integrations.create');
+    $router->post('forms/{form}/integrations/{integration}', [FormIntegrationController::class, 'update'])->name('api.forms.integrations.update');
+    $router->delete('forms/{form}/integrations/{integration}', [FormIntegrationController::class, 'delete'])->name('api.forms.integrations.delete');
 
     // Form Publishing Routes
     $router->post('forms/{form}/publish', PublishFormController::class)->name('api.forms.publish');
