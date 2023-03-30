@@ -28,5 +28,5 @@
         "resources/js/**/*.vue",
         "tests/**/*.test.ts"
     ],
-    "exclude": ["node_modules", "tailwind.config.js", "resources/js/ziggy.js"]
+    "exclude": ["node_modules", "tailwind.config.js"]
 }

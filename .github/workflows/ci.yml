@@ -27,8 +27,6 @@ jobs:
       - name: Generate key
         run: php artisan key:generate
 
-      - run: php artisan ziggy:generate
-
       - name: Install NPM Dependencies
         run: npm ci
 

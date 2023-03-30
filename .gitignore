@@ -17,7 +17,6 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/resources/js/ziggy.js
 /.idea
 /.vscode
 coverage
