@@ -26,7 +26,9 @@ class FormSubmitWebhookListener implements ShouldQueue
         $event->session->form->formIntegrations->each(function ($integration) use ($event) {
             // we should create a webhook job here with session data
             // and the integration data
-            $this->dispatch(new CallWebhookJob($event->session, $integration));
+            if ($integration->is_enabled) {
+                $this->dispatch(new CallWebhookJob($event->session, $integration));
+            }
         });
     }
 }

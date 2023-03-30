@@ -1,66 +1,79 @@
 <template>
-  <form @submit="saveFormSubmitSettings">
-    <div class="mb-4">
-      <D9Label label="Integration Type" />
-      <D9Select
-        block
-        :options="integrationTypes"
-        disabledBadge="Planned"
-        v-model="integrationMethod"
+  <div
+    v-if="integrations && integrations.length > 0 && store.form"
+    class="overflow-hidden border border-grey-200 bg-white sm:rounded-md"
+  >
+    <ul role="list" class="divide-y divide-grey-200">
+      <IntegrationItem
+        v-for="integration in integrations"
+        :key="integration.id"
+        v-bind="{ integration, form: store.form }"
+        @edit="editIntegration"
       />
-    </div>
-    <div class="mb-4">
-      <D9Label label="Submit Method" />
-      <D9Select block :options="submitTypes" v-model="submitMethod" />
-    </div>
-    <div class="mb-4">
-      <D9Label label="Webhook / Submit URL" />
-      <D9Input icon="external-link" type="url" block v-model="submitWebhook" />
-    </div>
+    </ul>
+  </div>
 
-    <D9Button type="submit" label="Save Integration" :is-loading="isSaving" />
-  </form>
+  <EmptyState
+    v-else
+    :is-loading="isLoading"
+    title="You have no integrations configured"
+    description="Setup your first integration by clicking on the 'Add Integration' button"
+  />
+
+  <div class="mt-4">
+    <D9Button type="button" label="Add Integration" @click="addIntegration" />
+  </div>
+
+  <IntegrationEdit
+    v-if="store.form"
+    ref="editPanel"
+    @updated="loadIntegrations"
+    v-bind="{ form: store.form }"
+  />
 </template>
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
-import { D9Label, D9Input, D9Select, D9Button } from "@deck9/ui";
-import { ref } from "vue";
+import { D9Button } from "@deck9/ui";
+import IntegrationItem from "@/components/Factory/Settings/partials/IntegrationItem.vue";
+import { onMounted, ref } from "vue";
+import { callGetFormIntegrations } from "@/api/integrations";
+import EmptyState from "@/components/EmptyState.vue";
+import IntegrationEdit from "@/components/Factory/Settings/partials/IntegrationEdit.vue";
 
 const store = useForm();
-const isSaving = ref(false);
 
-const integrationTypes = ref([
-  { label: "Webhook", value: "webhook" },
-  { label: "Make", value: "make", disabled: true },
-  { label: "Zapier", value: "zapier", disabled: true },
-]);
+const integrations = ref<Array<FormIntegrationModel>>([]);
+const isLoading = ref(true);
 
-const integrationMethod = ref(integrationTypes.value[0]);
+const editPanel = ref<typeof IntegrationEdit | null>(null);
 
-const submitTypes = ref([
-  { label: "GET", value: "GET" },
-  { label: "POST", value: "POST" },
-]);
+const addIntegration = () => {
+  editPanel.value?.edit();
+};
 
-const submitMethod = ref(
-  store.form?.submit_method
-    ? submitTypes.value.find((i) => i.value === store.form?.submit_method)
-    : submitTypes.value[0]
-);
-const submitWebhook = ref(store.form?.submit_webhook);
+const editIntegration = (integration: FormIntegrationModel) => {
+  editPanel.value?.edit(integration);
+};
 
-const saveFormSubmitSettings = async () => {
-  isSaving.value = true;
+const loadIntegrations = async () => {
+  if (!store.form) {
+    return;
+  }
+
+  isLoading.value = true;
+
   try {
-    await store.updateForm({
-      submit_method: submitMethod.value?.value,
-      submit_webhook: submitWebhook.value,
-    });
-  } catch (e) {
-    console.error(e);
+    const response = await callGetFormIntegrations(store.form);
+    integrations.value = response.data;
+  } catch (error) {
+    console.warn(error);
   } finally {
-    isSaving.value = false;
+    isLoading.value = false;
   }
 };
+
+onMounted(() => {
+  loadIntegrations();
+});
 </script>

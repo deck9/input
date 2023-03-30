@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('webhook_url', 1024);
             $table->string('webhook_method', 8);
             $table->json('headers')->nullable();
+            $table->boolean('is_enabled')->default(true);
+            $table->string('provider')->nullable();
             $table->foreignIdFor(\App\Models\Form::class);
             $table->timestamps();
         });

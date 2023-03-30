@@ -27,7 +27,9 @@ class FormIntegrationRequest extends FormRequest
             'name' => 'required',
             'webhook_url' => 'required|url',
             'webhook_method' => 'required|in:GET,POST,PUT,PATCH',
-            'headers' => 'array',
+            'provider' => 'nullable|string|in:zapier,make',
+            'is_enabled' => 'boolean',
+            'headers' => 'array|nullable',
         ];
     }
 }

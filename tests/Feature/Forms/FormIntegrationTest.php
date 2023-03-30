@@ -17,6 +17,7 @@ class FormIntegrationTest extends TestCase
     /** @test */
     public function can_get_a_list_of_all_integrations_of_a_form()
     {
+        $this->withoutExceptionHandling();
         $form = Form::factory()->create();
 
         FormIntegration::factory()->count(3)->create([

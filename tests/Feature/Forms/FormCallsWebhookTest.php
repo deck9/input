@@ -41,6 +41,31 @@ test('submitting a session triggers all integrations on a form', function () {
     Queue::assertPushed(CallWebhookJob::class, 2);
 });
 
+test('should only dispatch enabled integrations', function () {
+    Queue::fake();
+
+    $form = Form::factory()
+        ->has(FormIntegration::factory([
+            'webhook_method' => 'GET',
+            'webhook_url' => 'https://void.work/submit',
+            'is_enabled' => false
+        ]))
+        ->create();
+
+    $session = FormSession::factory()->for($form)
+        ->has(FormSessionResponse::factory([
+            'value' => 'test response'
+        ]))
+        ->completed()
+        ->create();
+
+    // emulate the listener reacting to the FormSessionCompletedEvent
+    with(new FormSubmitWebhookListener)
+        ->handle(new FormSessionCompletedEvent($session));
+
+    Queue::assertPushed(CallWebhookJob::class, 0);
+});
+
 test('the webhook jobs submits response data to webhook url', function () {
     Http::fake();
 

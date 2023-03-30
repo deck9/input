@@ -51,6 +51,16 @@ interface FormModel extends BaseModel {
     deleted_at: string | null;
 }
 
+interface FormIntegrationModel extends BaseModel {
+    name: string;
+    webhook_url: string;
+    webhook_method: string;
+    provider: string;
+    has_provider: boolean;
+    is_enabled: boolean;
+    headers: Record<string, string> | null;
+}
+
 interface FormBlockModel extends BaseModel {
     type: FormBlockType;
     message: string | null;
