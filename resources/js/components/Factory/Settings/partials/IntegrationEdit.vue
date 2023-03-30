@@ -161,6 +161,11 @@ const edit = (payload?: FormIntegrationModel) => {
       webhookRequestMethod.value.find(
         (item) => item.value === payload.webhook_method
       ) ?? webhookRequestMethod.value[0];
+  } else {
+    integration.value = null;
+    name.value = "";
+    webhookUrl.value = "";
+    webhookMethod.value = webhookRequestMethod.value[0];
   }
 
   open.value = true;
