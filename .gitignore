@@ -21,3 +21,4 @@ yarn-error.log
 /.idea
 /.vscode
 coverage
+_ide_helper.php
