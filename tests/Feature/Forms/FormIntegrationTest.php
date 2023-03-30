@@ -13,6 +13,22 @@ class FormIntegrationTest extends TestCase
 
     use RefreshDatabase;
 
+
+    /** @test */
+    public function can_get_a_list_of_all_integrations_of_a_form()
+    {
+        $form = Form::factory()->create();
+
+        FormIntegration::factory()->count(3)->create([
+            'form_id' => $form->id
+        ]);
+
+        $response = $this->actingAs($form->user)->json('GET', route('api.forms.integrations.index', $form))
+            ->assertSuccessful();
+
+        $this->assertCount(3, $response->json());
+    }
+
     /** @test */
     public function can_create_a_new_integration_for_form()
     {

@@ -56,6 +56,7 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->delete('forms/{form}', [FormController::class, 'delete'])->name('api.forms.delete');
 
     // Form Integrations
+    $router->get('forms/{form}/integrations', [FormIntegrationController::class, 'index'])->name('api.forms.integrations.index');
     $router->post('forms/{form}/integrations', [FormIntegrationController::class, 'create'])->name('api.forms.integrations.create');
     $router->post('forms/{form}/integrations/{integration}', [FormIntegrationController::class, 'update'])->name('api.forms.integrations.update');
     $router->delete('forms/{form}/integrations/{integration}', [FormIntegrationController::class, 'delete'])->name('api.forms.integrations.delete');

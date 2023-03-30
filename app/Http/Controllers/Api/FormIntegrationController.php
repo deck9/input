@@ -11,6 +11,15 @@ use App\Http\Requests\FormIntegrationRequest;
 
 class FormIntegrationController extends Controller
 {
+
+
+    public function index(Form $form): JsonResponse
+    {
+        $this->authorize('view', $form);
+
+        return response()->json($form->formIntegrations);
+    }
+
     public function create(FormIntegrationRequest $request, Form $form): JsonResponse
     {
         $integration = $form->formIntegrations()->create($request->validated());
