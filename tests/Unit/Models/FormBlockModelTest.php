@@ -1,32 +1,22 @@
 <?php
 
-namespace Tests\Unit\Models;
-
-use Tests\TestCase;
 use App\Models\FormBlock;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class FormBlockModelTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function the_to_array_method_should_return_the_correct_fields()
-    {
-        $block = FormBlock::factory()->create();
 
-        $this->assertArrayHasKey('id', $block->toArray());
-        $this->assertArrayHasKey('type', $block->toArray());
-        $this->assertArrayHasKey('message', $block->toArray());
-    }
+test('the to array method should return the correct fields', function () {
+    $block = FormBlock::factory()->create();
 
-    /** @test */
-    public function has_scope_to_get_snippet_by_uuid()
-    {
-        $block = FormBlock::factory()->create();
+    expect($block->toArray())->toHaveKey('id');
+    expect($block->toArray())->toHaveKey('type');
+    expect($block->toArray())->toHaveKey('message');
+});
 
-        $result = FormBlock::withUuid($block->uuid)->first();
+test('has scope to get snippet by uuid', function () {
+    $block = FormBlock::factory()->create();
 
-        $this->assertEquals($result->id, $block->id);
-    }
-}
+    $result = FormBlock::withUuid($block->uuid)->first();
+
+    expect($result->id)->toEqual($block->id);
+});
