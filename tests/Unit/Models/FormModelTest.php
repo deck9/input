@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Unit\Models;
-
 use App\Models\Form;
 use App\Models\User;
 use App\Models\FormBlock;
@@ -15,7 +13,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-/** @test */
 test('published_scope_returns_only_published_forms', function () {
     $unpublishedFormA = Form::factory()->unpublished()->create();
     $unpublishedFormB = Form::factory()->state(['published_at' => Carbon::now()->addDay()])->create();
@@ -29,7 +26,6 @@ test('published_scope_returns_only_published_forms', function () {
     $this->assertFalse($publishedForms->contains($unpublishedFormB));
 });
 
-/** @test */
 test('can_check_if_a_form_is_published', function () {
     $formA = Form::factory()->create(['published_at' => null]);
     $formB = Form::factory()->create(['published_at' => Carbon::now()]);
@@ -40,14 +36,12 @@ test('can_check_if_a_form_is_published', function () {
     $this->assertFalse($formC->isPublished);
 });
 
-/** @test */
 test('the_route_attribute_returns_the_valid_url_for_the_model', function () {
     $form = Form::factory()->create();
 
     $this->assertEquals(url($form->uuid), $form->route());
 });
 
-/** @test */
 test('can_return_the_total_amount_of_related_blocks', function () {
     $form = Form::factory()->create();
     $form->formBlocks()->saveMany(FormBlock::factory()->count(12)->make());
@@ -55,7 +49,6 @@ test('can_return_the_total_amount_of_related_blocks', function () {
     $this->assertEquals(12, $form->blocksCount());
 });
 
-/** @test */
 test('can_return_total_amount_of_snippets_with_action_options', function () {
     $form = Form::factory()->create();
     $form->formBlocks()->saveMany(FormBlock::factory()->count(8)->make([
@@ -71,7 +64,6 @@ test('can_return_total_amount_of_snippets_with_action_options', function () {
     $this->assertEquals(12, $form->actionBlocksCount());
 });
 
-/** @test */
 test('can_return_the_total_amount_of_given_responses', function () {
     $form = Form::factory()->create();
     $blockA = FormBlock::factory()->make([
@@ -89,7 +81,6 @@ test('can_return_the_total_amount_of_given_responses', function () {
     $this->assertEquals(10, $form->responsesCount());
 });
 
-/** @test */
 test('can_return_path_to_avatar_if_available', function () {
     Storage::fake();
     $form = Form::factory()->create();
@@ -103,7 +94,6 @@ test('can_return_path_to_avatar_if_available', function () {
     $this->assertEquals(asset('images/' . $form->avatar_path), $form->avatar);
 });
 
-/** @test */
 test('can_return_a_custom_brand_and_contrast_color', function () {
     $form = Form::factory()->create([
         'brand_color' => '#ffffff',
@@ -116,7 +106,6 @@ test('can_return_a_custom_brand_and_contrast_color', function () {
     $this->assertEquals('#ffffff', $form->contrastColor);
 });
 
-/** @test */
 test('return_dark_color_if_no_brand_color_is_set', function () {
     $form = Form::factory()->create([
         'brand_color' => null,
@@ -126,7 +115,6 @@ test('return_dark_color_if_no_brand_color_is_set', function () {
     $this->assertEquals('#ffffff', $form->contrastColor);
 });
 
-/** @test */
 test('array_presentation_contains_brand_and_contrast_color', function () {
     $form = Form::factory()->make([
         'brand_color' => '#ffffff',
@@ -136,7 +124,6 @@ test('array_presentation_contains_brand_and_contrast_color', function () {
     $this->assertEquals('#000000', $form->toArray()['contrast_color']);
 });
 
-/** @test */
 test('can_return_total_started_sessions_count', function () {
     $form = Form::factory()->create();
     $sessions = FormSession::factory()->count(4)->create([
@@ -152,7 +139,6 @@ test('can_return_total_started_sessions_count', function () {
     $this->assertEquals(4, $form->totalSessions);
 });
 
-/** @test */
 test('form_can_return_legal_attributes', function () {
     $user = User::factory()->create([
         'company_name' => 'Test Corp',
