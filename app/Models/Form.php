@@ -46,8 +46,6 @@ class Form extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['deleted_at'];
-
     protected $casts = [
         'is_notification_via_mail' => 'boolean',
         'show_cta_link' => 'boolean',
@@ -57,7 +55,8 @@ class Form extends Model
         'show_privacy_link' => 'boolean',
         'has_data_privacy' => 'boolean',
         'user_id' => 'integer',
-        'published_at' => 'datetime'
+        'published_at' => 'datetime',
+        'deleted_at' => 'datetime'
     ];
 
     protected $hidden = [

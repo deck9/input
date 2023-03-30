@@ -1,63 +1,69 @@
 <?php
 
-namespace Tests\Unit;
-
-use Tests\TestCase;
 use App\Models\Form;
-use App\Models\FormBlock;
 use App\Models\FormSession;
-use App\Enums\FormBlockType;
-use App\Models\FormSessionResponse;
-use App\Models\FormBlockInteraction;
-use Illuminate\Support\Facades\Http;
-use App\Enums\FormBlockInteractionType;
-use App\Events\FormSessionCompletedEvent;
-use App\Listeners\FormSubmitWebhookListener;
 use App\Models\FormIntegration;
+use App\Models\FormSessionResponse;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
+use App\Events\FormSessionCompletedEvent;
+use App\Jobs\CallWebhookJob;
+use App\Listeners\FormSubmitWebhookListener;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CallWebhookTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    /** @test */
-    public function the_webhook_jobs_submits_response_data_to_webhook_url()
-    {
-        Http::fake();
+test('submitting a session triggers all integrations on a form', function () {
+    Queue::fake();
 
-        $form = Form::factory()
-            ->has(FormIntegration::factory([
-                'webhook_method' => 'GET',
-                'webhook_url' => 'https://void.work/submit'
-            ]))
-            ->has(
-                FormBlock::factory([
-                    'type' => FormBlockType::short
-                ])->has(
-                    FormBlockInteraction::factory([
-                        'type' => FormBlockInteractionType::input
-                    ])
-                )
-            )->create();
+    $form = Form::factory()
+        ->has(FormIntegration::factory([
+            'webhook_method' => 'GET',
+            'webhook_url' => 'https://void.work/submit'
+        ]))
+        ->has(FormIntegration::factory([
+            'webhook_method' => 'GET',
+            'webhook_url' => 'https://blackhole.wip/submit'
+        ]))
+        ->create();
 
-        $block = $form->formBlocks->first();
-        $action = $block->formBlockInteractions->first();
+    $session = FormSession::factory()->for($form)
+        ->has(FormSessionResponse::factory([
+            'value' => 'test response'
+        ]))
+        ->completed()
+        ->create();
 
-        $session = FormSession::factory()->for($form)
-            ->has(FormSessionResponse::factory([
-                'value' => 'test response'
-            ])->for($block)->for($action))
-            ->completed()
-            ->create();
+    // emulate the listener reacting to the FormSessionCompletedEvent
+    with(new FormSubmitWebhookListener)
+        ->handle(new FormSessionCompletedEvent($session));
 
-        with(new FormSubmitWebhookListener)
-            ->handle(new FormSessionCompletedEvent($session));
+    Queue::assertPushed(CallWebhookJob::class, 2);
+});
 
-        Http::assertSent(function ($request) use ($form) {
-            $integration = $form->formIntegrations[0];
+test('the webhook jobs submits response data to webhook url', function () {
+    Http::fake();
 
-            return $request->url() === $integration->webhook_url
-                && $request->method() === strtoupper($integration->webhook_method);
-        });
-    }
-}
+    $form = Form::factory()
+        ->has(FormIntegration::factory([
+            'webhook_method' => 'GET',
+            'webhook_url' => 'https://void.work/submit'
+        ]))->create();
+
+    $session = FormSession::factory()->for($form)
+        ->has(FormSessionResponse::factory([
+            'value' => 'test response'
+        ]))
+        ->completed()
+        ->create();
+
+    with(new FormSubmitWebhookListener)
+        ->handle(new FormSessionCompletedEvent($session));
+
+    Http::assertSent(function ($request) use ($form) {
+        $integration = $form->formIntegrations[0];
+
+        return $request->url() === $integration->webhook_url
+            && $request->method() === strtoupper($integration->webhook_method);
+    });
+});
