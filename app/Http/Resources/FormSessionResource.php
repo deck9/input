@@ -16,13 +16,15 @@ class FormSessionResource extends JsonResource
     {
         $this->load('formSessionResponses.formBlock');
 
+        $responses = collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())->groupBy('id');
+
         return [
             'id' => $this->id,
             'uid' => substr($this->token, 0, 8),
             'started_at' => $this->created_at->toDateTimeString(),
             'completed_at' => (string) $this->getRawOriginal('is_completed'),
             'params' => $this->params ? json_encode($this->params) : null,
-            'responses' => collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())->keyBy('id')
+            'responses' => $responses
         ];
     }
 }

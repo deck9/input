@@ -27,7 +27,13 @@
       :key="submission.id + header.id"
     >
       <span class="block">
-        {{ submission.responses[header.id]?.value ?? "-" }}
+        <span
+          class="block"
+          v-for="response in submission.responses[header.id]"
+          :key="response.id"
+        >
+          {{ response.value }}
+        </span>
       </span>
     </td>
   </tr>

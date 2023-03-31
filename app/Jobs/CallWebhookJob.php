@@ -49,6 +49,7 @@ class CallWebhookJob implements ShouldQueue
         $response = Http::send($this->integration->webhook_method, $this->integration->webhook_url, [
             'form_params' => $payload,
             'headers' => array_merge([
+                'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ], $this->integration->headers)
         ]);

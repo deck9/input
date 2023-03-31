@@ -5,7 +5,6 @@ namespace Tests\Feature\Forms;
 use Tests\TestCase;
 use App\Models\Form;
 use App\Models\FormSession;
-use App\Models\FormSessionResponse;
 use Illuminate\Support\Facades\Event;
 use App\Events\FormSessionCompletedEvent;
 use App\Listeners\FormSubmitWebhookListener;
