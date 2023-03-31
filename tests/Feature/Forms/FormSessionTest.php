@@ -61,6 +61,7 @@ EOD;
             ],
         ]))
             ->assertStatus(201)
+            // id and created_at are not whitelisted
             ->assertJsonMissing(["id", "created_at"])
             ->assertJsonStructure([
                 "token",
@@ -102,6 +103,41 @@ EOD;
         );
         $this->assertCount(4, $form->formSessionResponses);
         $this->assertTrue($submitted->json('is_completed'));
+    }
+
+    /** @test */
+    public function submitting_a_session_a_second_time_does_not_create_duplicate_responses()
+    {
+        $form = Form::factory()->create();
+        $form->applyTemplate($this->importTemplateString);
+
+        $session = FormSession::factory()->create(['form_id' => $form->id]);
+
+        $route = route('api.public.forms.submit', [
+            'form' => $form->uuid
+        ]);
+        $request = [
+            'token' => $session->token,
+            'payload' => [
+                'jR' => ['actionId' => 'jR', 'payload' => 'tester@getinput.co'],
+                'l5' => ['actionId' => 'k5', 'payload' => 'Yes'],
+                'mO' => [
+                    ['actionId' => 'mO', 'payload' => 'Transactional Mailing'],
+                    ['actionId' => 'nR', 'payload' => 'Template API']
+                ],
+            ]
+        ];
+
+        // Submit twice
+        $this->json('POST', $route, $request)->assertStatus(200);
+        $this->json('POST', $route, $request)->assertStatus(200);
+
+        $this->assertCount(
+            1,
+            $form->formBlocks[0]
+                ->formBlockInteractions[0]
+                ->formSessionResponses
+        );
     }
 
     /** @test */

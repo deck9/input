@@ -172,9 +172,10 @@ class FormBlock extends Model
                 ->withUuid($data['actionId'])
                 ->firstOrFail();
 
-            return $session->formSessionResponses()->create([
+            return $session->formSessionResponses()->updateOrCreate([
                 'form_block_id' => $this->id,
                 'form_block_interaction_id' => $interaction->id,
+            ], [
                 'value' => $data['payload'],
             ]);
         }
