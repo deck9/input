@@ -16,7 +16,10 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class CallWebhookJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $session;
     public $integration;
@@ -46,10 +49,22 @@ class CallWebhookJob implements ShouldQueue
             ])
             ->thenReturn();
 
-        $response = Http::send($this->integration->webhook_method, $this->integration->webhook_url, [
+        $request = [
             'form_params' => $payload,
             'headers' => array_merge([
-                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ], $this->integration->headers)
+        ];
+
+        $response = Http::send(
+            $this->integration->webhook_method,
+            $this->integration->webhook_url,
+            $request
+        );
+
+        dd($response, [
+            'form_params' => $payload,
+            'headers' => array_merge([
                 'Content-Type' => 'application/json',
             ], $this->integration->headers)
         ]);
