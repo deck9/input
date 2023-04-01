@@ -26,15 +26,16 @@
       v-for="header in headers"
       :key="submission.id + header.id"
     >
-      <span class="block">
+      <span class="block" v-if="submission.responses[header.id]">
         <span
           class="block"
-          v-for="response in submission.responses[header.id]"
+          v-for="response in submission.responses[header.id].data"
           :key="response.id"
         >
           {{ response.value }}
         </span>
       </span>
+      <span v-else>-</span>
     </td>
   </tr>
 </template>

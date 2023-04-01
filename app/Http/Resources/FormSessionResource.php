@@ -16,7 +16,19 @@ class FormSessionResource extends JsonResource
     {
         $this->load('formSessionResponses.formBlock');
 
-        $responses = collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())->groupBy('id');
+        $responses = collect(
+            FormSessionResponseResource::collection($this->formSessionResponses)
+            ->resolve()
+        )
+        ->groupBy('id')
+        ->map(function ($response) {
+            $concat = join(', ', $response->pluck('value')->sortBy('value')->all());
+
+            return [
+                'answer' => $concat,
+                'data' => $response->toArray(),
+            ];
+        });
 
         return [
             'id' => $this->id,

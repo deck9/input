@@ -42,32 +42,17 @@ class CallWebhookJob implements ShouldQueue
      */
     public function handle()
     {
-        $payload = app(Pipeline::class)
-            ->send(FormSessionResource::make($this->session)->resolve())
-            ->through([
-                MergeResponsesIntoSession::class
-            ])
-            ->thenReturn();
+        $payload = FormSessionResource::make($this->session)->resolve();
 
-        $request = [
-            'form_params' => $payload,
-            'headers' => array_merge([
-                'Content-Type' => 'application/json',
-            ], $this->integration->headers)
-        ];
-
-        $response = Http::send(
+        Http::withHeaders(
+            $this->integration->headers
+        )->send(
             $this->integration->webhook_method,
             $this->integration->webhook_url,
-            $request
+            [
+                'form_params' => $payload,
+            ]
         );
-
-        dd($response, [
-            'form_params' => $payload,
-            'headers' => array_merge([
-                'Content-Type' => 'application/json',
-            ], $this->integration->headers)
-        ]);
 
         // TODO: we need to somehow track status of the webhook submit in a new table with relation to the session and the integration
     }
