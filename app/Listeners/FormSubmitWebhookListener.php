@@ -3,17 +3,14 @@
 namespace App\Listeners;
 
 use App\Jobs\CallWebhookJob;
-use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Facades\Http;
-use App\Pipes\MergeResponsesIntoSession;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Http\Resources\FormSessionResource;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class FormSubmitWebhookListener implements ShouldQueue
 {
-    use InteractsWithQueue, DispatchesJobs;
+    use InteractsWithQueue;
+    use DispatchesJobs;
 
     /**
      * Handle the event.

@@ -6,7 +6,7 @@ use App\Models\Form;
 use Illuminate\Support\Str;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Controllers\Controller;
-use App\Pipes\MergeResponsesIntoSession;
+use App\Pipes\MergeResponsesIntoRoot;
 use App\Http\Resources\FormSessionResource;
 
 class FormSubmissionsExportController extends Controller
@@ -34,8 +34,9 @@ class FormSubmissionsExportController extends Controller
         $keys = $data
             ->reduce(function ($sum, $session) {
                 collect($session['responses'])
+                    ->keys()
                     ->each(function ($item) use (&$sum) {
-                        array_key_exists($item['name'], $sum) ? null : $sum[$item['name']] = null;
+                        array_key_exists($item, $sum) ? null : $sum[$item] = null;
                     });
 
                 return $sum;
@@ -46,7 +47,7 @@ class FormSubmissionsExportController extends Controller
                 return array_merge($session, $keys, app(Pipeline::class)
                     ->send($session)
                     ->through([
-                        MergeResponsesIntoSession::class
+                        MergeResponsesIntoRoot::class
                     ])
                     ->thenReturn());
             })->toArray();
