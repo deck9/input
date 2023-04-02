@@ -43,7 +43,7 @@ class CallWebhookJob implements ShouldQueue
         $payload = FormSessionResource::make($this->session)->resolve();
 
         Http::withHeaders(
-            $this->integration->headers
+            $this->integration->headers ?? []
         )->send(
             $this->integration->webhook_method,
             $this->integration->webhook_url,

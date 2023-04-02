@@ -23,6 +23,10 @@ class FormIntegration extends Model
         'has_provider'
     ];
 
+    protected $hidden = [
+        'form_id'
+    ];
+
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);

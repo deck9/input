@@ -40,6 +40,6 @@ class FormSessionResource extends JsonResource
                 'answer' => $concat,
                 'data' => $response->toArray(),
             ];
-        });
+        })->toArray();
     }
 }
