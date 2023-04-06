@@ -30,7 +30,7 @@ class FormIntegrationController extends Controller
     {
         $integration->update($request->validated());
 
-        return response()->json(FormIntegrationResource::make($form->formIntegrations));
+        return response()->json(FormIntegrationResource::make($integration));
     }
 
     public function delete(Form $form, FormIntegration $integration): JsonResponse

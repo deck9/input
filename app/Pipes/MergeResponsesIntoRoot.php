@@ -8,7 +8,7 @@ class MergeResponsesIntoRoot
 {
     public function __invoke($content, Closure $next)
     {
-        $content['responses']
+        collect($content['responses'])
             ->each(function ($response, $key) use (&$content) {
                 $content[$key] = $response['answer'];
             });

@@ -12,6 +12,7 @@
     "twitter": null,
     "show_cta_link": true,
     "show_social_links": false,
+    "show_form_progress": false,
     "blocks": [
         {
             "message": "<p>This is the first message</p>",
@@ -24,7 +25,7 @@
         {
             "message": "<p>What is your name?</p>",
             "type": "input-short",
-            "title": null,
+            "title": "Short",
             "parent_block": null,
             "sequence": 1,
             "formBlockInteractions": [
@@ -32,7 +33,8 @@
                     "type": "input",
                     "label": "Your name",
                     "message": null,
-                    "sequence": 0
+                    "sequence": 0,
+                    "options": []
                 }
             ]
         },
@@ -47,13 +49,31 @@
                     "type": "button",
                     "label": "Planes",
                     "message": null,
-                    "sequence": 0
+                    "sequence": 0,
+                    "options": null
                 },
                 {
                     "type": "button",
                     "label": "Trains",
                     "message": null,
-                    "sequence": 1
+                    "sequence": 1,
+                    "options": null
+                }
+            ]
+        },
+        {
+            "message": "<p>This is just a long form!</p>",
+            "type": "input-long",
+            "title": "Long Text",
+            "parent_block": null,
+            "sequence": 3,
+            "formBlockInteractions": [
+                {
+                    "type": "textarea",
+                    "label": null,
+                    "message": null,
+                    "sequence": 0,
+                    "options": { "rows": 3, "max_chars": 255 }
                 }
             ]
         }

@@ -10,7 +10,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class FormIntegrationTest extends TestCase
 {
-
     use RefreshDatabase;
 
 

@@ -96,7 +96,7 @@ class FormTemplateTest extends TestCase
         $this->assertEquals('Form Import Test', $form->name);
         $this->assertEquals('This is just a test', $form->description);
         $this->assertEquals($user->id, $form->user_id);
-        $this->assertCount(3, $form->formBlocks);
+        $this->assertCount(4, $form->formBlocks);
 
         $this->assertCount(1, $form->formBlocks[1]->formBlockInteractions);
         $this->assertEquals(FormBlockType::short, $form->formBlocks[1]->type);
@@ -135,7 +135,7 @@ class FormTemplateTest extends TestCase
         $this->assertEquals('Form Import Test', $form->name);
         $this->assertEquals('This is just a test', $form->description);
         $this->assertEquals($user->id, $form->user_id);
-        $this->assertCount(3, $form->formBlocks);
+        $this->assertCount(4, $form->formBlocks);
 
         $this->assertCount(1, $form->formBlocks[1]->formBlockInteractions);
         $this->assertEquals(FormBlockType::short, $form->formBlocks[1]->type);
