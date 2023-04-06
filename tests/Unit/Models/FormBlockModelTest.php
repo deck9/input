@@ -4,7 +4,6 @@ use App\Models\FormBlock;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-
 test('the to array method should return the correct fields', function () {
     $block = FormBlock::factory()->create();
 
