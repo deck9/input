@@ -8,7 +8,7 @@ use App\Models\FormBlock;
 use App\Models\FormSession;
 use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
-use App\Models\FormIntegration;
+use App\Models\FormWebhook;
 use Illuminate\Support\Facades\DB;
 use App\Models\Traits\TemplateImports;
 use Illuminate\Database\Eloquent\Model;
@@ -23,11 +23,13 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Form extends Model
 {
-    use HasFactory, SoftDeletes, TemplateImports;
+    use HasFactory;
+    use SoftDeletes;
+    use TemplateImports;
 
-    const DEFAULT_BRAND_COLOR = '#1f2937';
+    public const DEFAULT_BRAND_COLOR = '#1f2937';
 
-    const TEMPLATE_ATTRIBUTES = [
+    public const TEMPLATE_ATTRIBUTES = [
         'name',
         'description',
         'eoc_text',
@@ -109,9 +111,9 @@ class Form extends Model
         return $query->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());
     }
 
-    public function formIntegrations(): HasMany
+    public function formWebhooks(): HasMany
     {
-        return $this->hasMany(FormIntegration::class);
+        return $this->hasMany(FormWebhook::class);
     }
 
     public function formBlocks(): HasMany
@@ -219,7 +221,7 @@ class Form extends Model
 
     public function getActiveLegalNoticeLinkAttribute()
     {
-        return $this->legal_notice_link ?  $this->legal_notice_link : $this->user->legal_notice_link;
+        return $this->legal_notice_link ? $this->legal_notice_link : $this->user->legal_notice_link;
     }
 
     public function getPrivacyContactPersonAttribute()
@@ -322,7 +324,6 @@ class Form extends Model
         // Filter out blocks that are groups and have no children
         $blocks = $this->formBlocks->filter(function ($item) {
             if ($item->type === FormBlockType::group) {
-
                 return $this->formBlocks->first(function ($child) use ($item) {
                     return $child->parent_block === $item->uuid;
                 });

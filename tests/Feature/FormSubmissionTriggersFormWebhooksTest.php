@@ -2,7 +2,7 @@
 
 use App\Models\Form;
 use App\Models\FormSession;
-use App\Models\FormIntegration;
+use App\Models\FormWebhook;
 use App\Models\FormSessionResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
@@ -13,15 +13,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('triggers all integrations on a form when form submit is receveid', function () {
+it('triggers all webhooks on a form when form submit is receveid', function () {
     Queue::fake();
 
     $form = Form::factory()
-        ->has(FormIntegration::factory([
+        ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
             'webhook_url' => 'https://void.work/submit'
         ]))
-        ->has(FormIntegration::factory([
+        ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
             'webhook_url' => 'https://blackhole.wip/submit'
         ]))
@@ -41,11 +41,11 @@ it('triggers all integrations on a form when form submit is receveid', function 
     Queue::assertPushed(CallWebhookJob::class, 2);
 });
 
-it('should only dispatch enabled integrations', function () {
+it('should only dispatch enabled webhooks', function () {
     Queue::fake();
 
     $form = Form::factory()
-        ->has(FormIntegration::factory([
+        ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
             'webhook_url' => 'https://void.work/submit',
             'is_enabled' => false
@@ -70,7 +70,7 @@ it('submits to configured webhook url and http method', function () {
     Http::fake();
 
     $form = Form::factory()
-        ->has(FormIntegration::factory([
+        ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
             'webhook_url' => 'https://void.work/submit'
         ]))->create();
@@ -86,9 +86,9 @@ it('submits to configured webhook url and http method', function () {
         ->handle(new FormSessionCompletedEvent($session));
 
     Http::assertSent(function ($request) use ($form) {
-        $integration = $form->formIntegrations[0];
+        $webhook = $form->formWebhooks[0];
 
-        return $request->url() === $integration->webhook_url
-            && $request->method() === strtoupper($integration->webhook_method);
+        return $request->url() === $webhook->webhook_url
+            && $request->method() === strtoupper($webhook->webhook_method);
     });
 });

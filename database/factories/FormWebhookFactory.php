@@ -2,17 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\FormIntegration;
+use App\Models\FormWebhook;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\FormIntegration>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\FormWebhook>
  */
-class FormIntegrationFactory extends Factory
+class FormWebhookFactory extends Factory
 {
-
-
-    protected $model = FormIntegration::class;
+    protected $model = FormWebhook::class;
 
     /**
      * Define the model's default state.

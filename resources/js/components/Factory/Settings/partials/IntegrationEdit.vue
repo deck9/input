@@ -31,9 +31,7 @@
                           class="text-base font-semibold leading-6 text-grey-900"
                         >
                           {{
-                            integration?.id
-                              ? "Edit Integration"
-                              : "Add Integration"
+                            webhook?.id ? "Edit Integration" : "Add Integration"
                           }}</DialogTitle
                         >
                         <div class="ml-3 flex h-7 items-center">
@@ -125,10 +123,10 @@ import {
 } from "@headlessui/vue";
 import { D9Label, D9Input, D9Select, D9Button, D9Icon } from "@deck9/ui";
 import {
-  callCreateFormIntegrations,
-  callUpdateFormIntegrations,
+  callCreateformWebhooks,
+  callUpdateformWebhooks,
   callDeleteFormIntegration,
-} from "@/api/integrations";
+} from "@/api/webhooks.js";
 
 const emits = defineEmits<{
   (e: "updated"): void;
@@ -138,7 +136,7 @@ const props = defineProps<{
   form: FormModel;
 }>();
 
-const integration = ref<FormIntegrationModel | null>(null);
+const webhook = ref<FormWebhookModel | null>(null);
 const open = ref(false);
 const isSaving = ref(false);
 
@@ -151,9 +149,9 @@ const name = ref("");
 const webhookMethod = ref(webhookRequestMethod.value[0]);
 const webhookUrl = ref("");
 
-const edit = (payload?: FormIntegrationModel) => {
+const edit = (payload?: FormWebhookModel) => {
   if (payload) {
-    integration.value = payload;
+    webhook.value = payload;
 
     name.value = payload.name;
     webhookUrl.value = payload.webhook_url;
@@ -162,7 +160,7 @@ const edit = (payload?: FormIntegrationModel) => {
         (item) => item.value === payload.webhook_method
       ) ?? webhookRequestMethod.value[0];
   } else {
-    integration.value = null;
+    webhook.value = null;
     name.value = "";
     webhookUrl.value = "";
     webhookMethod.value = webhookRequestMethod.value[0];
@@ -173,18 +171,18 @@ const edit = (payload?: FormIntegrationModel) => {
 
 const close = () => {
   open.value = false;
-  integration.value = null;
+  webhook.value = null;
 };
 
 const deleteIntegration = () => {
-  if (!integration.value) return;
+  if (!webhook.value) return;
 
-  if (!confirm("Are you sure you want to delete this integration?")) return;
+  if (!confirm("Are you sure you want to delete this webhook?")) return;
 
   isSaving.value = true;
 
   try {
-    callDeleteFormIntegration(props.form, integration.value);
+    callDeleteFormIntegration(props.form, webhook.value);
     setTimeout(() => {
       emits("updated");
       close();
@@ -199,16 +197,16 @@ const saveIntegration = async () => {
   isSaving.value = true;
 
   try {
-    if (integration.value && integration.value.id) {
-      await callUpdateFormIntegrations(props.form, {
-        ...integration.value,
+    if (webhook.value && webhook.value.id) {
+      await callUpdateformWebhooks(props.form, {
+        ...webhook.value,
         name: name.value,
         webhook_method: webhookMethod.value?.value,
         webhook_url: webhookUrl.value,
         headers: {},
       });
     } else {
-      await callCreateFormIntegrations(props.form, {
+      await callCreateformWebhooks(props.form, {
         name: name.value,
         webhook_method: webhookMethod.value?.value,
         webhook_url: webhookUrl.value,

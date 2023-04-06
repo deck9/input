@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('form_integrations', function (Blueprint $table) {
+        Schema::create('form_webhooks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('webhook_url', 1024);
@@ -31,7 +30,7 @@ return new class extends Migration
         DB::table('forms')->orderBy('id')->chunk(100, function ($forms) {
             foreach ($forms as $form) {
                 if ($form->submit_webhook) {
-                    DB::table('form_integrations')->insert([
+                    DB::table('form_webhooks')->insert([
                         'name' => 'Default',
                         'webhook_url' => $form->submit_webhook,
                         'webhook_method' => $form->submit_method,
@@ -47,15 +46,5 @@ return new class extends Migration
         Schema::table('forms', function (Blueprint $table) {
             $table->dropColumn(['submit_method', 'submit_webhook']);
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('form_integrations');
     }
 };

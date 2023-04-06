@@ -6,16 +6,16 @@
           <div class="truncate">
             <div class="flex text-sm">
               <p class="truncate font-medium text-blue-600">
-                {{ integration.name }}
+                {{ webhook.name }}
               </p>
             </div>
             <div class="mt-2 flex">
               <div class="flex items-center text-sm text-grey-500">
                 <Label class="flex-shrink-0" color="grey">{{
-                  integration.webhook_method
+                  webhook.webhook_method
                 }}</Label>
                 <p class="ml-1">
-                  {{ integration.webhook_url }}
+                  {{ webhook.webhook_url }}
                 </p>
               </div>
             </div>
@@ -40,27 +40,27 @@
 import { D9Icon, D9Switch } from "@deck9/ui";
 import Label from "@/components/Label.vue";
 import { ref } from "vue";
-import { callUpdateFormIntegrations } from "@/api/integrations";
+import { callUpdateformWebhooks } from "@/api/webhooks.js";
 
 const props = defineProps<{
-  integration: FormIntegrationModel;
+  webhook: FormWebhookModel;
   form: FormModel;
 }>();
 
 const emits = defineEmits<{
-  (event: "edit", payload: FormIntegrationModel): void;
+  (event: "edit", payload: FormWebhookModel): void;
 }>();
 
-const isIntegrationEnabled = ref(props.integration.is_enabled);
+const isIntegrationEnabled = ref(props.webhook.is_enabled);
 
 const updateIntegration = async () => {
-  await callUpdateFormIntegrations(props.form, {
-    ...props.integration,
+  await callUpdateformWebhooks(props.form, {
+    ...props.webhook,
     is_enabled: isIntegrationEnabled.value,
   });
 };
 
 const editIntegration = () => {
-  emits("edit", props.integration);
+  emits("edit", props.webhook);
 };
 </script>

@@ -14,7 +14,7 @@
       <div>
         <D9Label
           label="Identifier"
-          description="This name is used when submitting your form through integrations and in the export."
+          description="This name is used when submitting your form through webhooks and in the export."
         />
         <D9Input v-model="title" block />
       </div>

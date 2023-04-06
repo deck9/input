@@ -2,59 +2,59 @@
 import { AxiosResponse } from "axios";
 import handler from "./handler";
 
-export function callGetFormIntegrations(
+export function callGetformWebhooks(
     form: FormModel
-): Promise<AxiosResponse<Array<FormIntegrationModel>>> {
+): Promise<AxiosResponse<Array<FormWebhookModel>>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
-                window.route("api.forms.integrations.index", {
+                window.route("api.forms.webhooks.index", {
                     uuid: form.uuid,
                 })
             );
 
-            resolve(response as AxiosResponse<Array<FormIntegrationModel>>);
+            resolve(response as AxiosResponse<Array<FormWebhookModel>>);
         } catch (error) {
             reject(error);
         }
     });
 }
 
-export function callCreateFormIntegrations(
+export function callCreateformWebhooks(
     form: FormModel,
-    integration: Partial<FormIntegrationModel>
-): Promise<AxiosResponse<FormIntegrationModel>> {
+    webhook: Partial<FormWebhookModel>
+): Promise<AxiosResponse<FormWebhookModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.forms.integrations.create", {
+                window.route("api.forms.webhooks.create", {
                     uuid: form.uuid,
                 }),
-                integration
+                webhook
             );
 
-            resolve(response as AxiosResponse<FormIntegrationModel>);
+            resolve(response as AxiosResponse<FormWebhookModel>);
         } catch (error) {
             reject(error);
         }
     });
 }
 
-export function callUpdateFormIntegrations(
+export function callUpdateformWebhooks(
     form: FormModel,
-    integration: FormIntegrationModel
-): Promise<AxiosResponse<FormIntegrationModel>> {
+    webhook: FormWebhookModel
+): Promise<AxiosResponse<FormWebhookModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.forms.integrations.update", {
+                window.route("api.forms.webhooks.update", {
                     form: form.uuid,
-                    integration: integration.id,
+                    webhook: webhook.id,
                 }),
-                integration
+                webhook
             );
 
-            resolve(response as AxiosResponse<FormIntegrationModel>);
+            resolve(response as AxiosResponse<FormWebhookModel>);
         } catch (error) {
             reject(error);
         }
@@ -63,14 +63,14 @@ export function callUpdateFormIntegrations(
 
 export function callDeleteFormIntegration(
     form: FormModel,
-    integration: FormIntegrationModel
+    webhook: FormWebhookModel
 ): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         try {
             await handler.delete(
-                window.route("api.forms.integrations.delete", {
+                window.route("api.forms.webhooks.delete", {
                     form: form.uuid,
-                    integration: integration.id,
+                    webhook: webhook.id,
                 })
             );
 

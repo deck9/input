@@ -93,7 +93,7 @@ const navigation: Array<{
   {
     name: "Integrations",
     component: Integrations,
-    slug: "integrations",
+    slug: "webhooks",
     icon: "puzzle-piece",
   },
   { name: "Privacy", component: Privacy, slug: "privacy" },

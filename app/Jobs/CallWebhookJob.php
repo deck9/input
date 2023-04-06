@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Models\FormSession;
 use Illuminate\Bus\Queueable;
-use App\Models\FormIntegration;
+use App\Models\FormWebhook;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,17 +20,17 @@ class CallWebhookJob implements ShouldQueue
     use SerializesModels;
 
     public $session;
-    public $integration;
+    public $webhook;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(FormSession $session, FormIntegration $integration)
+    public function __construct(FormSession $session, FormWebhook $webhook)
     {
         $this->session = $session;
-        $this->integration = $integration;
+        $this->webhook = $webhook;
     }
 
     /**
@@ -43,15 +43,15 @@ class CallWebhookJob implements ShouldQueue
         $payload = FormSessionResource::make($this->session)->resolve();
 
         Http::withHeaders(
-            $this->integration->headers ?? []
+            $this->webhook->headers ?? []
         )->send(
-            $this->integration->webhook_method,
-            $this->integration->webhook_url,
+            $this->webhook->webhook_method,
+            $this->webhook->webhook_url,
             [
                 'form_params' => $payload,
             ]
         );
 
-        // TODO: we need to somehow track status of the webhook submit in a new table with relation to the session and the integration
+        // TODO: we need to somehow track status of the webhook submit in a new table with relation to the session and the webhook
     }
 }

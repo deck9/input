@@ -51,7 +51,7 @@ interface FormModel extends BaseModel {
     deleted_at: string | null;
 }
 
-interface FormIntegrationModel extends BaseModel {
+interface FormWebhookModel extends BaseModel {
     name: string;
     webhook_url: string;
     webhook_method: string;
