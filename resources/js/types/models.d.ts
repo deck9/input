@@ -204,6 +204,17 @@ type FormSessionModel = {
     is_completed: boolean;
     has_data_privacy: boolean;
     created_at: string;
+    responses?: Record<string, any>;
+    webhooks?: Array<FormSessionWebhookModel>;
+};
+
+type FormSessionWebhookModel = {
+    id: number;
+    name: string;
+    response?: string;
+    status?: number;
+    tries: number;
+    updated_at: string;
 };
 
 type FormSubmitPayload = Record<

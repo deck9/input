@@ -56,11 +56,12 @@ class CallWebhookJob implements ShouldQueue
 
         // TODO: we need to somehow track status of the webhook submit in a new table with relation to the session and the webhook
 
+
         $this->session->webhooks()->updateOrCreate([
             'form_webhook_id' => $this->webhook->id
         ], [
             'status' => $response->status(),
-            'response' => $response->body(),
+            'response' => $response->json() ?? $response->body(),
             'tries' => $this->session->webhooks()->where('form_webhook_id', $this->webhook->id)->count() + 1,
         ]);
     }

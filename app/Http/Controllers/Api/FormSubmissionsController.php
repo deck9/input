@@ -20,7 +20,7 @@ class FormSubmissionsController extends Controller
         }
 
         $resource = FormSessionResource::collection(
-            $form->formSessions()->whereNotNull('is_completed')->orderBy('is_completed', 'desc')->paginate(15)
+            $form->formSessions()->with('webhooks.webhook')->whereNotNull('is_completed')->orderBy('is_completed', 'desc')->paginate(10)
         );
 
         return $resource->response();

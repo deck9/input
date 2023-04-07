@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Pipes\RemoveWebhookData;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Controllers\Controller;
 use App\Pipes\MergeResponsesIntoRoot;
 use App\Http\Resources\FormSessionResource;
+use App\Pipes\ConvertResponsesToJson;
 
 class FormSubmissionsExportController extends Controller
 {
@@ -44,12 +47,16 @@ class FormSubmissionsExportController extends Controller
 
         $exportFormatted = $data
             ->map(function ($session) use ($keys) {
-                return array_merge($session, $keys, app(Pipeline::class)
-                    ->send($session)
-                    ->through([
-                        MergeResponsesIntoRoot::class
-                    ])
-                    ->thenReturn());
+                $result = array_merge($session, $keys, app(Pipeline::class)
+                ->send($session)
+                ->through([
+                    MergeResponsesIntoRoot::class,
+                ])
+                ->thenReturn());
+
+                Arr::forget($result, 'responses');
+
+                return $result;
             })->toArray();
 
         return response()->streamDownload(function () use ($exportFormatted) {

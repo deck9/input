@@ -50,6 +50,26 @@ it('will use the same database entry if a webhook gets called twice for the same
     Http::assertSentCount(2);
 });
 
+it('will log webhook requests that are not successful', function () {
+    Http::fake(function () {
+        return Http::response('The request is not valid', 422);
+    });
+
+    $form = Form::factory()->has(
+        FormWebhook::factory()
+    )->create();
+    $session = FormSession::factory()->for($form)->create();
+
+    CallWebhookJob::dispatch($session, $form->formWebhooks->first());
+
+    $this->assertDatabaseHas('form_session_webhooks', [
+        'form_session_id' => $session->id,
+        'form_webhook_id' => $form->formWebhooks->first()->id,
+        'status' => 422,
+        'tries' => 1,
+    ]);
+});
+
 it('submissions api endpoint will include the session webhook data', function () {
     Http::fake(function () {
         return Http::response('OK!', 200);

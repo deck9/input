@@ -4,6 +4,7 @@
     color: #ffffff;
     padding: 3px 12px;
     border-radius: 6px;
+    font-size: theme('fontSize.sm');
 }
 
 .v-popper--theme-tooltip .v-popper__arrow-outer {
