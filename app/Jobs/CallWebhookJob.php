@@ -3,8 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\FormSession;
-use Illuminate\Bus\Queueable;
 use App\Models\FormWebhook;
+use Illuminate\Bus\Queueable;
+use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -48,7 +49,7 @@ class CallWebhookJob implements ShouldQueue
             $this->webhook->webhook_method,
             $this->webhook->webhook_url,
             [
-                'form_params' => $payload,
+                RequestOptions::JSON => $payload,
             ]
         );
 
