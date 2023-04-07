@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('can_purge_all_results_for_a_form', function () {
+test('can purge all results for a form', function () {
     $form = Form::factory()->create();
 
     FormSession::factory()
@@ -25,7 +25,7 @@ test('can_purge_all_results_for_a_form', function () {
     $this->assertCount(0, $form->fresh()->formSessions);
 });
 
-test('can_delete_a_single_form_submission', function () {
+test('can delete a single form submission', function () {
     $form = Form::factory()->create();
 
     FormSession::factory()
@@ -48,7 +48,7 @@ test('can_delete_a_single_form_submission', function () {
     $this->assertCount(2, $form->fresh()->formSessions);
 });
 
-test('can_get_all_submissions_for_a_form_via_api', function () {
+test('can get all submissions for a form via api', function () {
     $form = Form::factory()->create();
 
     FormBlock::factory()
@@ -91,7 +91,7 @@ test('can_get_all_submissions_for_a_form_via_api', function () {
     $this->assertCount(0, $response->json('data.2.responses'));
 });
 
-test('returned_submission_has_responses_keyed_by_form_block_uuid', function () {
+test('returned submission has responses keyed by form block uuid', function () {
     $form = Form::factory()->create();
 
     $block = FormBlock::factory()
@@ -112,7 +112,7 @@ test('returned_submission_has_responses_keyed_by_form_block_uuid', function () {
     $this->assertArrayHasKey($block->uuid, $response->json('data.0.responses'));
 });
 
-test('submissions_only_viewable_to_authenticated_owner_of_the_form', function () {
+test('submissions only viewable to authenticated owner of the form', function () {
     $form = Form::factory()->create();
 
     FormBlock::factory()
@@ -135,7 +135,7 @@ test('submissions_only_viewable_to_authenticated_owner_of_the_form', function ()
         ->assertStatus(401);
 });
 
-test('submissions_response_is_a_pagination_response', function () {
+test('submissions response is a pagination response', function () {
     $form = Form::factory()->create();
 
     FormBlock::factory()

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Http\Resources\FormSessionResource;
+use App\Models\FormSessionWebhook;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -43,7 +44,7 @@ class CallWebhookJob implements ShouldQueue
     {
         $payload = FormSessionResource::make($this->session)->resolve();
 
-        Http::withHeaders(
+        $response = Http::withHeaders(
             $this->webhook->headers ?? []
         )->send(
             $this->webhook->webhook_method,
@@ -54,5 +55,13 @@ class CallWebhookJob implements ShouldQueue
         );
 
         // TODO: we need to somehow track status of the webhook submit in a new table with relation to the session and the webhook
+
+        $this->session->webhooks()->updateOrCreate([
+            'form_webhook_id' => $this->webhook->id
+        ], [
+            'status' => $response->status(),
+            'response' => $response->body(),
+            'tries' => $this->session->webhooks()->where('form_webhook_id', $this->webhook->id)->count() + 1,
+        ]);
     }
 }

@@ -1,0 +1,11 @@
+/* Style */
+.v-popper--theme-tooltip .v-popper__inner {
+    background: #1e293b;
+    color: #ffffff;
+    padding: 3px 12px;
+    border-radius: 6px;
+}
+
+.v-popper--theme-tooltip .v-popper__arrow-outer {
+    border-color: #1e293b;
+}

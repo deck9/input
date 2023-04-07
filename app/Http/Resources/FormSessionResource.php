@@ -23,6 +23,7 @@ class FormSessionResource extends JsonResource
             'completed_at' => (string) $this->getRawOriginal('is_completed'),
             'params' => $this->params ? json_encode($this->params) : null,
             'responses' => $this->getResponses(),
+            'webhooks' => $this->webhooks
         ];
     }
 

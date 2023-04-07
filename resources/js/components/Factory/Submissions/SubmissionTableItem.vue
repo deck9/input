@@ -20,15 +20,19 @@
         class="mt-1"
         v-bind="{ params: submission.params }"
       />
+      <!-- Status for each Webhook Configured -->
+      <div class="flex">
+        <SubmissionWebhookStatus name="Webhook" />
+      </div>
     </td>
     <td
       class="min-w-[200px] max-w-xs p-4 text-sm text-grey-500"
       v-for="header in headers"
       :key="submission.id + header.id"
     >
-      <span class="block" v-if="submission.responses[header.id]">
+      <span class="block space-x-2" v-if="submission.responses[header.id]">
         <span
-          class="block"
+          class="inline-block rounded bg-grey-100 px-2 py-1"
           v-for="response in submission.responses[header.id].data"
           :key="response.id"
         >
@@ -43,6 +47,7 @@
 <script lang="ts" setup>
 import FormattedDate from "@/forms/common/LocaleDate.vue";
 import SubmissionParams from "@/components/Factory/Submissions/SubmissionParams.vue";
+import SubmissionWebhookStatus from "@/components/Factory/Submissions/SubmissionWebhookStatus.vue";
 import { D9Button } from "@deck9/ui";
 import { callDeleteFormSubmission } from "@/api/forms";
 import { useForm } from "@/stores";

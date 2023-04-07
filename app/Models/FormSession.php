@@ -33,6 +33,11 @@ class FormSession extends Model
         return $this->belongsTo(Form::class, 'form_id', 'id');
     }
 
+    public function webhooks()
+    {
+        return $this->hasMany(FormSessionWebhook::class);
+    }
+
     public static function getByTokenAndForm(String $token, Form $form)
     {
         return self::where('token', $token)->where('form_id', $form->id)->first();
