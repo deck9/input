@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Form;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Pipes\StringifyArrays;
 use App\Pipes\RemoveWebhookData;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Controllers\Controller;
+use App\Pipes\ConvertResponsesToJson;
 use App\Pipes\MergeResponsesIntoRoot;
 use App\Http\Resources\FormSessionResource;
-use App\Pipes\ConvertResponsesToJson;
 
 class FormSubmissionsExportController extends Controller
 {
@@ -51,10 +52,12 @@ class FormSubmissionsExportController extends Controller
                 ->send($session)
                 ->through([
                     MergeResponsesIntoRoot::class,
+                    StringifyArrays::class,
                 ])
                 ->thenReturn());
 
                 Arr::forget($result, 'responses');
+                Arr::forget($result, 'id');
 
                 return $result;
             })->toArray();

@@ -7,8 +7,11 @@
     <span>{{ webhook.name }}</span>
 
     <template #popper>
-      {{ status }}
-      <pre class="font-mono text-xs" v-html="prettyPrintedResponse"></pre>
+      <span class="font-bold">HTTP {{ webhook.status }}</span>
+      <pre
+        class="mt-1 border-t border-dashed border-grey-700 pt-1 font-mono text-xs"
+        v-html="prettyPrintedResponse"
+      ></pre>
     </template>
   </VTooltip>
 </template>
@@ -24,10 +27,6 @@ const isOK = computed(() => {
   if (!props.webhook.status) return false;
 
   return props.webhook.status >= 200 && props.webhook.status < 300;
-});
-
-const status = computed(() => {
-  return `(HTTP ${props.webhook.status})`;
 });
 
 const prettyPrintedResponse = computed(() => {

@@ -6,11 +6,12 @@ use App\Models\FormSession;
 use App\Models\FormWebhook;
 use Illuminate\Bus\Queueable;
 use GuzzleHttp\RequestOptions;
+use App\Models\FormSessionWebhook;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Http\Resources\FormSessionResource;
-use App\Models\FormSessionWebhook;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -54,8 +55,12 @@ class CallWebhookJob implements ShouldQueue
             ]
         );
 
-        // TODO: we need to somehow track status of the webhook submit in a new table with relation to the session and the webhook
-
+        Log::debug('Webhook response', [
+            'status' => $response->status(),
+            'body' => $response->body(),
+            'json' => $response->json(),
+            'headers' => $response->headers(),
+        ]);
 
         $this->session->webhooks()->updateOrCreate([
             'form_webhook_id' => $this->webhook->id

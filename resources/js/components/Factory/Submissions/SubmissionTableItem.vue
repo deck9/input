@@ -21,7 +21,7 @@
         v-bind="{ params: submission.params }"
       />
       <!-- Status for each Webhook Configured -->
-      <div class="flex" v-if="submission.webhooks?.length > 0">
+      <div class="mt-1 flex space-x-2" v-if="submission.webhooks?.length > 0">
         <SubmissionWebhookStatus
           v-bind="{ webhook }"
           v-for="webhook in submission.webhooks"

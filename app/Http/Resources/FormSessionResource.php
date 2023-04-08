@@ -21,7 +21,7 @@ class FormSessionResource extends JsonResource
             'uid' => substr($this->token, 0, 8),
             'started_at' => $this->created_at->toDateTimeString(),
             'completed_at' => (string) $this->getRawOriginal('is_completed'),
-            'params' => $this->params ? json_encode($this->params) : null,
+            'params' => $this->params,
             'responses' => $this->getResponses(),
             'webhooks' => FormSessionWebhookResource::collection($this->whenLoaded('webhooks')),
         ];
