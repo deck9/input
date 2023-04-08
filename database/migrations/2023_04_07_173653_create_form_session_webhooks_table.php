@@ -17,8 +17,13 @@ return new class () extends Migration {
             $table->integer('status')->nullable();
             $table->json('response')->nullable();
             $table->integer('tries')->default(0);
-            $table->foreignIdFor(FormSession::class);
-            $table->foreignIdFor(FormWebhook::class);
+            $table->foreignIdFor(FormSession::class)
+                ->references('id')->on('form_sessions')
+                ->onDelete('CASCADE');
+                ;
+            $table->foreignIdFor(FormWebhook::class)
+                ->references('id')->on('form_webhooks')
+                ->onDelete('CASCADE');
             $table->timestamps();
 
             // make form_session_id and form_webhook_id unique, so we can't have duplicate entries

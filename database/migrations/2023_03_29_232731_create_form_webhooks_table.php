@@ -22,7 +22,9 @@ return new class () extends Migration {
             $table->json('headers')->nullable();
             $table->boolean('is_enabled')->default(true);
             $table->string('provider')->nullable();
-            $table->foreignIdFor(\App\Models\Form::class);
+            $table->foreignIdFor(\App\Models\Form::class)
+                ->references('id')->on('forms')
+                ->onDelete('CASCADE');
             $table->timestamps();
         });
 
