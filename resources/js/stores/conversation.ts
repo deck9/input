@@ -128,7 +128,10 @@ export const useConversation = defineStore("form", {
 
             let queryParams = "";
 
-            if (Object.keys(state.session.params).length > 0) {
+            if (
+                state.session.params &&
+                Object.keys(state.session.params).length > 0
+            ) {
                 const params = new URLSearchParams(
                     state.session.params
                 ).toString();
