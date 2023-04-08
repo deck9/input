@@ -1,5 +1,8 @@
 <template>
-  <VTooltip class="inline-flex cursor-pointer items-center">
+  <VTooltip
+    class="inline-flex cursor-pointer items-center"
+    :triggers="['click', 'touch']"
+  >
     <span
       class="mr-1 inline-block h-3 w-3 rounded-full"
       :class="[isOK ? 'bg-green-400' : 'bg-red-400']"
@@ -9,7 +12,7 @@
     <template #popper>
       <span class="font-bold">HTTP {{ webhook.status }}</span>
       <pre
-        class="mt-1 border-t border-dashed border-grey-700 pt-1 font-mono text-xs"
+        class="mt-1 max-w-md border-t border-dashed border-grey-700 pt-1 font-mono text-xs"
         v-html="prettyPrintedResponse"
       ></pre>
     </template>

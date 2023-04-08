@@ -1,12 +1,12 @@
 /* Style */
 .v-popper--theme-tooltip .v-popper__inner {
-    background: #1e293b;
-    color: #ffffff;
+    background: theme('colors.grey.800');
+    color: theme('colors.white');
     padding: 3px 12px;
     border-radius: 6px;
     font-size: theme('fontSize.sm');
 }
 
 .v-popper--theme-tooltip .v-popper__arrow-outer {
-    border-color: #1e293b;
+    border-color: theme('colors.grey.800');
 }
