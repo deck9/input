@@ -200,7 +200,7 @@ type FormStoryboard = {
 type FormSessionModel = {
     id: number;
     token: string;
-    params: Record<string, any> | null;
+    params?: Record<string, any>;
     is_completed: boolean;
     has_data_privacy: boolean;
     created_at: string;

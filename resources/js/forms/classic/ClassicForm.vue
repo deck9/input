@@ -99,6 +99,8 @@ const { hasUnsavedPayload } = storeToRefs(store);
 onMounted(() => {
   isLoading.value = false;
 
+  console.log("test", store.callToActionUrl);
+
   useBeforeUnload(hasUnsavedPayload);
 });
 

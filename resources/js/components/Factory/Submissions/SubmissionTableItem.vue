@@ -13,8 +13,16 @@
     <td
       class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-grey-900 sm:pl-6"
     >
-      <span class="mr-2 font-mono font-bold">{{ submission.uid }}</span>
-      <FormattedDate :date="submission.completed_at" />
+      <div class="flex items-center">
+        <button
+          class="mr-2 inline-block font-mono font-bold active:text-blue-500"
+          v-tooltip="'Copy Session ID'"
+          @click="copySessionId"
+        >
+          {{ submission.uid.substring(0, 8) }}
+        </button>
+        <FormattedDate :date="submission.completed_at" />
+      </div>
       <SubmissionParams
         v-if="submission.params"
         class="mt-1"
@@ -55,6 +63,7 @@ import SubmissionWebhookStatus from "@/components/Factory/Submissions/Submission
 import { D9Button } from "@deck9/ui";
 import { callDeleteFormSubmission } from "@/api/forms";
 import { useForm } from "@/stores";
+import { useClipboard } from "@vueuse/core";
 
 const props = defineProps<{
   submission: Record<string, any>;
@@ -69,6 +78,15 @@ const emits = defineEmits<{
 }>();
 
 const store = useForm();
+
+const { copy } = useClipboard();
+const copySessionId = () => {
+  try {
+    copy(props.submission.uid);
+  } catch (e) {
+    console.warn("could not copy session id");
+  }
+};
 
 const deleteSubmission = async () => {
   if (
