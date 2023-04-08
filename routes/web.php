@@ -5,10 +5,10 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FormEditController;
 use App\Http\Controllers\ViewFormController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FormSummaryController;
 use App\Http\Controllers\MetaPreviewController;
 use App\Http\Controllers\FormSettingsController;
 use App\Http\Controllers\FormSubmissionsController;
+use App\Http\Controllers\FormIntegrationsController;
 use App\Http\Controllers\FormDownloadTemplateController;
 use App\Http\Controllers\FormSubmissionsExportController;
 
@@ -18,6 +18,7 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
     $router->get('forms/{uuid}/edit', [FormEditController::class, 'show'])->name('forms.edit');
     $router->get('forms/{uuid}/settings', [FormSettingsController::class, 'show'])->name('forms.settings');
     $router->get('forms/{uuid}/submissions', [FormSubmissionsController::class, 'show'])->name('forms.submissions');
+    $router->get('forms/{uuid}/integrations', [FormIntegrationsController::class, 'show'])->name('forms.integrations');
 
     // Form Template Download
     $router->get('forms/{form}/template-export', FormDownloadTemplateController::class)->name('forms.template-download');

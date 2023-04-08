@@ -15,7 +15,7 @@
 import { computed } from "vue";
 
 const props = defineProps<{
-  params?: string;
+  params?: Record<string, any>;
 }>();
 
 const paramsMap = computed(() => {

@@ -35,11 +35,11 @@
 <script setup lang="ts">
 import { useForm } from "@/stores";
 import { D9Button } from "@deck9/ui";
-import IntegrationItem from "@/components/Factory/Settings/partials/IntegrationItem.vue";
 import { onMounted, ref } from "vue";
 import { callGetformWebhooks } from "@/api/webhooks.js";
 import EmptyState from "@/components/EmptyState.vue";
-import IntegrationEdit from "@/components/Factory/Settings/partials/IntegrationEdit.vue";
+import IntegrationItem from "@/components/Factory/Integrations/IntegrationItem.vue";
+import IntegrationEdit from "@/components/Factory/Integrations/IntegrationEdit.vue";
 
 const store = useForm();
 
