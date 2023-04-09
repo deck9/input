@@ -181,6 +181,8 @@ type PublicFormModel = {
     privacy_link: string | null;
     cta_label: string | null;
     cta_link: string | null;
+    cta_append_params: boolean;
+    cta_append_session_id: boolean;
     linkedin: string | null;
     github: string | null;
     instagram: string | null;

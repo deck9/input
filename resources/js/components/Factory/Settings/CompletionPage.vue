@@ -46,6 +46,15 @@
             offLabel="no"
           />
         </div>
+        <div class="mb-4 flex justify-between">
+          <D9Label label="Append Session ID as Query Parameter" />
+          <D9Switch
+            label="Append Session ID as Query Parameter"
+            v-model="ctaAppendSessionId"
+            onLabel="yes"
+            offLabel="no"
+          />
+        </div>
       </div>
     </div>
 
@@ -129,6 +138,7 @@ const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);
 const ctaLink = ref(store.form?.cta_link);
 const ctaAppendParams = ref(store.form?.cta_append_params);
+const ctaAppendSessionId = ref(store.form?.cta_append_session_id);
 
 const isSocialOn = ref(store.form?.show_social_links ? true : false);
 const instagram = ref(store?.form?.instagram);
@@ -148,6 +158,7 @@ const saveFormSubmitSettings = async () => {
       cta_label: ctaLabel.value,
       cta_link: ctaLink.value,
       cta_append_params: ctaAppendParams.value,
+      cta_append_session_id: ctaAppendSessionId.value,
 
       show_social_links: isSocialOn.value,
       instagram: instagram.value,

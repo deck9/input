@@ -127,6 +127,7 @@ test('can_update_the_form_data_with_api_call', function () {
         'cta_label' => 'Proceed',
         'show_cta_link' => true,
         'cta_append_params' => true,
+        'cta_append_session_id' => true,
 
         // GDPR Related Information
         'has_data_privacy' => true,
@@ -172,6 +173,7 @@ test('can_update_the_form_data_with_api_call', function () {
     $this->assertEquals('Proceed', $form->cta_label);
     $this->assertTrue($form->show_cta_link);
     $this->assertTrue($form->cta_append_params);
+    $this->assertTrue($form->cta_append_session_id);
 
     $this->assertEquals('https://philreinking.de/privacy', $form->privacy_link);
     $this->assertEquals('https://philreinking.de/legal-notice', $form->legal_notice_link);
