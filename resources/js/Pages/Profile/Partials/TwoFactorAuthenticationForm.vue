@@ -104,6 +104,7 @@ import JetButton from "@/Jetstream/Button.vue";
 import JetConfirmsPassword from "@/Jetstream/ConfirmsPassword.vue";
 import JetDangerButton from "@/Jetstream/DangerButton.vue";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import axios from "axios";
 
 export default defineComponent({
   components: {

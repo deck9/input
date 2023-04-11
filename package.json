@@ -57,6 +57,7 @@
         "copy-text-to-clipboard": "^3.0.1",
         "eslint": "^8.28.0",
         "eslint-plugin-vue": "^8.7.1",
+        "floating-vue": "^2.0.0-beta.20",
         "highlight.js": "^11.6.0",
         "laravel-vite-plugin": "^0.7.4",
         "lodash": "^4.17.19",

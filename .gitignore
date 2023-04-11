@@ -11,12 +11,13 @@
 .env
 .env.backup
 .phpunit.result.cache
+.phpunit.cache
 docker-compose.override.yml
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/resources/js/ziggy.js
 /.idea
 /.vscode
 coverage
+_ide_helper.php

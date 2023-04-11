@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FormImagesController;
 use App\Http\Controllers\Api\FormSubmitController;
 use App\Http\Controllers\Api\PublishFormController;
 use App\Http\Controllers\Api\UnpublishFormController;
+use App\Http\Controllers\Api\FormWebhookController;
 use App\Http\Controllers\Api\FormSubmissionsController;
 use App\Http\Controllers\Api\FormBlockMappingController;
 use App\Http\Controllers\Api\CreateFormSessionController;
@@ -46,13 +47,18 @@ $router->post('public/forms/{form}', FormSubmitController::class)->name('api.pub
 $router->get('routes', ZiggyController::class);
 
 $router->middleware(['auth:sanctum'])->group(function (Router $router) {
-
     // Form Routes
     $router->get('forms', [FormController::class, 'index'])->name('api.forms.index');
     $router->post('forms', [FormController::class, 'create'])->name('api.forms.create');
     $router->get('forms/{form}', [FormController::class, 'show'])->name('api.forms.show');
     $router->post('forms/{form}', [FormController::class, 'update'])->name('api.forms.update');
     $router->delete('forms/{form}', [FormController::class, 'delete'])->name('api.forms.delete');
+
+    // Form Webhooks
+    $router->get('forms/{form}/webhooks', [FormWebhookController::class, 'index'])->name('api.forms.webhooks.index');
+    $router->post('forms/{form}/webhooks', [FormWebhookController::class, 'create'])->name('api.forms.webhooks.create');
+    $router->post('forms/{form}/webhooks/{webhook}', [FormWebhookController::class, 'update'])->name('api.forms.webhooks.update');
+    $router->delete('forms/{form}/webhooks/{webhook}', [FormWebhookController::class, 'delete'])->name('api.forms.webhooks.delete');
 
     // Form Publishing Routes
     $router->post('forms/{form}/publish', PublishFormController::class)->name('api.forms.publish');

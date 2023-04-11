@@ -126,16 +126,28 @@ export const useConversation = defineStore("form", {
                 return null;
             }
 
-            let queryParams = "";
+            const params = new URLSearchParams();
 
-            if (Object.keys(state.session.params).length > 0) {
-                const params = new URLSearchParams(
-                    state.session.params
-                ).toString();
-                queryParams = `?${params}`;
+            // we should always attach the session id as a query parameter
+            if (state.form.cta_append_session_id && state.session.token) {
+                params.append("ipt_session", state.session.token);
             }
 
-            return state.form?.cta_link + queryParams;
+            if (
+                state.form.cta_append_params &&
+                state.session.params &&
+                Object.keys(state.session.params).length > 0
+            ) {
+                for (const key of Object.keys(state.session.params)) {
+                    params.append(key, state.session.params[key]);
+                }
+            }
+
+            if ([...params].length) {
+                return state.form.cta_link + "?" + params.toString();
+            }
+
+            return state.form.cta_link;
         },
     },
 

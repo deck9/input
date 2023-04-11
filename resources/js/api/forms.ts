@@ -226,7 +226,7 @@ export function callImportFormTemplate(
 export function callGetFormSubmissions(
     form: FormModel,
     page = 1
-): Promise<PaginatedResponse<Record<string, any>>> {
+): Promise<PaginatedResponse<FormSessionModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
@@ -239,9 +239,7 @@ export function callGetFormSubmissions(
             );
 
             if (response.status === 200) {
-                resolve(
-                    response.data as PaginatedResponse<Record<string, any>>
-                );
+                resolve(response.data as PaginatedResponse<FormSessionModel>);
             }
         } catch (error) {
             reject(error);

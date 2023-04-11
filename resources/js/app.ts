@@ -1,3 +1,4 @@
+import "floating-vue/dist/style.css";
 import "@css/app.css";
 import { createApp, h } from "vue";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
@@ -6,6 +7,7 @@ import { InertiaProgress } from "@inertiajs/progress";
 import { createPinia } from "pinia";
 import { PiniaDebounce } from "@pinia/plugin-debounce";
 import { createI18n } from "vue-i18n";
+import FloatingVue from "floating-vue";
 import debounce from "lodash/debounce";
 
 import localeEN from "@i18n/en.json";
@@ -41,6 +43,15 @@ createInertiaApp({
             .use(plugin)
             .use(pinia)
             .use(i18n)
+            .use(FloatingVue, {
+                themes: {
+                    tooltip: {
+                        autoHide: true,
+                        placement: "auto",
+                        html: true,
+                    },
+                },
+            })
             .mixin({ methods: { route: window.route } })
             .mount(el);
     },

@@ -9,6 +9,7 @@
 /* CUSTOM */
 @import "./_scrollbar.css";
 @import "./_smooth-dnd.css";
+@import "./_tooltip.css";
 
 /* TAILWIND */
 @import "tailwindcss/utilities";

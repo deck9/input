@@ -36,7 +36,7 @@
         />
       </div>
 
-      <D9Button type="submit" label="Save" :is-loading="isSaving" />
+      <D9Button type="submit" label="Save Appearance" :is-loading="isSaving" />
     </form>
   </div>
 </template>

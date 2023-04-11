@@ -51,6 +51,7 @@ import JetDialogModal from "./DialogModal.vue";
 import JetInput from "./Input.vue";
 import JetInputError from "./InputError.vue";
 import JetSecondaryButton from "./SecondaryButton.vue";
+import axios from "axios";
 
 export default defineComponent({
   emits: ["confirmed"],

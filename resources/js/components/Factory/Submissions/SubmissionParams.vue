@@ -15,7 +15,7 @@
 import { computed } from "vue";
 
 const props = defineProps<{
-  params?: string;
+  params?: Record<string, any>;
 }>();
 
 const paramsMap = computed(() => {
@@ -23,7 +23,8 @@ const paramsMap = computed(() => {
     return [];
   }
 
-  const parsed = JSON.parse(props.params);
+  const parsed =
+    typeof props.params === "string" ? JSON.parse(props.params) : props.params;
 
   return Object.entries(parsed).map(([key, value]) => {
     return {

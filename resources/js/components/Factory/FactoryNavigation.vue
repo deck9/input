@@ -19,6 +19,11 @@
       >Settings</NavigationButton
     >
     <NavigationButton
+      icon="puzzle-piece"
+      :href="route('forms.integrations', { uuid: store.formId })"
+      >Integrations</NavigationButton
+    >
+    <NavigationButton
       icon="chart-pie"
       :href="route('forms.submissions', { uuid: store.formId })"
       >Results</NavigationButton

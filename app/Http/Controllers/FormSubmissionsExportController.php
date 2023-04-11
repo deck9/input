@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Pipes\StringifyArrays;
+use App\Pipes\RemoveWebhookData;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Controllers\Controller;
-use App\Pipes\MergeResponsesIntoSession;
+use App\Pipes\ConvertResponsesToJson;
+use App\Pipes\MergeResponsesIntoRoot;
 use App\Http\Resources\FormSessionResource;
 
 class FormSubmissionsExportController extends Controller
@@ -34,8 +38,9 @@ class FormSubmissionsExportController extends Controller
         $keys = $data
             ->reduce(function ($sum, $session) {
                 collect($session['responses'])
+                    ->keys()
                     ->each(function ($item) use (&$sum) {
-                        array_key_exists($item['name'], $sum) ? null : $sum[$item['name']] = null;
+                        array_key_exists($item, $sum) ? null : $sum[$item] = null;
                     });
 
                 return $sum;
@@ -43,12 +48,18 @@ class FormSubmissionsExportController extends Controller
 
         $exportFormatted = $data
             ->map(function ($session) use ($keys) {
-                return array_merge($session, $keys, app(Pipeline::class)
-                    ->send($session)
-                    ->through([
-                        MergeResponsesIntoSession::class
-                    ])
-                    ->thenReturn());
+                $result = array_merge($session, $keys, app(Pipeline::class)
+                ->send($session)
+                ->through([
+                    MergeResponsesIntoRoot::class,
+                    StringifyArrays::class,
+                ])
+                ->thenReturn());
+
+                Arr::forget($result, 'responses');
+                Arr::forget($result, 'id');
+
+                return $result;
             })->toArray();
 
         return response()->streamDownload(function () use ($exportFormatted) {

@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 
 class FormController extends Controller
 {
-
     public function index(Request $request)
     {
         $forms = $request->user()->forms()->get();
@@ -62,6 +61,7 @@ class FormController extends Controller
                 'cta_link',
                 'cta_label',
                 'cta_append_params',
+                'cta_append_session_id',
                 'eoc_headline',
                 'eoc_text',
                 'twitter',
@@ -75,8 +75,6 @@ class FormController extends Controller
                 'data_retention_days',
                 'show_cta_link',
                 'show_social_links',
-                'submit_method',
-                'submit_webhook',
             )
         );
 

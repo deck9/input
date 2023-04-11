@@ -18,11 +18,29 @@ class FormSessionResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'uid' => substr($this->token, 0, 8),
+            'uid' => $this->token,
             'started_at' => $this->created_at->toDateTimeString(),
             'completed_at' => (string) $this->getRawOriginal('is_completed'),
-            'params' => $this->params ? json_encode($this->params) : null,
-            'responses' => collect(FormSessionResponseResource::collection($this->formSessionResponses)->resolve())->keyBy('id')
+            'params' => $this->params,
+            'responses' => $this->getResponses(),
+            'webhooks' => FormSessionWebhookResource::collection($this->whenLoaded('webhooks')),
         ];
+    }
+
+    public function getResponses()
+    {
+        return collect(
+            FormSessionResponseResource::collection($this->formSessionResponses)
+            ->resolve()
+        )
+        ->groupBy('id')
+        ->map(function ($response) {
+            $concat = join(', ', $response->pluck('value')->sortBy('value')->all());
+
+            return [
+                'answer' => $concat,
+                'data' => $response->toArray(),
+            ];
+        })->toArray();
     }
 }

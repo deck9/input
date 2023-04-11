@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\FormBlockType;
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
+use App\Models\FormWebhook;
 use Illuminate\Support\Facades\DB;
 use App\Models\Traits\TemplateImports;
 use Illuminate\Database\Eloquent\Model;
@@ -22,11 +23,13 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Form extends Model
 {
-    use HasFactory, SoftDeletes, TemplateImports;
+    use HasFactory;
+    use SoftDeletes;
+    use TemplateImports;
 
-    const DEFAULT_BRAND_COLOR = '#1f2937';
+    public const DEFAULT_BRAND_COLOR = '#1f2937';
 
-    const TEMPLATE_ATTRIBUTES = [
+    public const TEMPLATE_ATTRIBUTES = [
         'name',
         'description',
         'eoc_text',
@@ -45,18 +48,18 @@ class Form extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['deleted_at'];
-
     protected $casts = [
         'is_notification_via_mail' => 'boolean',
         'show_cta_link' => 'boolean',
         'show_form_progress' => 'boolean',
         'cta_append_params' => 'boolean',
+        'cta_append_session_id' => 'boolean',
         'show_social_links' => 'boolean',
         'show_privacy_link' => 'boolean',
         'has_data_privacy' => 'boolean',
         'user_id' => 'integer',
-        'published_at' => 'datetime'
+        'published_at' => 'datetime',
+        'deleted_at' => 'datetime'
     ];
 
     protected $hidden = [
@@ -107,6 +110,11 @@ class Form extends Model
     public function scopePublished($query)
     {
         return $query->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());
+    }
+
+    public function formWebhooks(): HasMany
+    {
+        return $this->hasMany(FormWebhook::class);
     }
 
     public function formBlocks(): HasMany
@@ -214,7 +222,7 @@ class Form extends Model
 
     public function getActiveLegalNoticeLinkAttribute()
     {
-        return $this->legal_notice_link ?  $this->legal_notice_link : $this->user->legal_notice_link;
+        return $this->legal_notice_link ? $this->legal_notice_link : $this->user->legal_notice_link;
     }
 
     public function getPrivacyContactPersonAttribute()
@@ -317,7 +325,6 @@ class Form extends Model
         // Filter out blocks that are groups and have no children
         $blocks = $this->formBlocks->filter(function ($item) {
             if ($item->type === FormBlockType::group) {
-
                 return $this->formBlocks->first(function ($child) use ($item) {
                     return $child->parent_block === $item->uuid;
                 });

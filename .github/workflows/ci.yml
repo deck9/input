@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  phpunit:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +27,6 @@ jobs:
       - name: Generate key
         run: php artisan key:generate
 
-      - run: php artisan ziggy:generate
-
       - name: Install NPM Dependencies
         run: npm ci
 
@@ -42,11 +40,11 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
 
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
+      - name: Execute tests (Unit and Feature tests) via PestPHP
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: vendor/bin/phpunit
+        run: vendor/bin/pest
 
   vitest:
     runs-on: ubuntu-latest

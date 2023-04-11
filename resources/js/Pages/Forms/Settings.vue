@@ -25,7 +25,7 @@
                   selected
                     ? 'bg-grey-50'
                     : 'text-grey-600 hover:bg-grey-100 hover:text-grey-900',
-                  'relative block w-full px-3 py-3 text-left text-sm font-medium',
+                  'relative block w-full px-3 py-3 text-left text-sm font-medium outline-none',
                 ]"
               >
                 <div
@@ -67,14 +67,13 @@ import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import { D9Icon } from "@deck9/ui";
 import Appearance from "@/components/Factory/Settings/Appearance.vue";
 import CompletionPage from "@/components/Factory/Settings/CompletionPage.vue";
-import Integrations from "@/components/Factory/Settings/Integrations.vue";
 import Delete from "@/components/Factory/Settings/Delete.vue";
 import Embed from "@/components/Factory/Settings/Embed.vue";
 import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
   form: FormModel;
@@ -90,12 +89,6 @@ const navigation: Array<{
   icon?: string;
 }> = [
   { name: "Options", component: Options, slug: "options" },
-  {
-    name: "Integrations",
-    component: Integrations,
-    slug: "integrations",
-    icon: "puzzle-piece",
-  },
   { name: "Privacy", component: Privacy, slug: "privacy" },
   {
     name: "Completion Page",
@@ -111,10 +104,6 @@ const navigation: Array<{
   },
   { name: "Delete", component: Delete, slug: "delete" },
 ];
-
-onMounted(async () => {
-  await store.getBlocks();
-});
 
 const tabChanged = (index: any) => {
   const item = navigation[index];

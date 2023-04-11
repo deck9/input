@@ -41,8 +41,6 @@ interface FormModel extends BaseModel {
     show_cta_link: boolean;
     show_social_links: boolean;
     is_notification_via_mail: boolean;
-    submit_method: string;
-    submit_url: string;
     user_id: number;
     total_sessions: number;
     completed_sessions: number;
@@ -51,6 +49,16 @@ interface FormModel extends BaseModel {
     initials: string | null;
     published_at: string | null;
     deleted_at: string | null;
+}
+
+interface FormWebhookModel extends BaseModel {
+    name: string;
+    webhook_url: string;
+    webhook_method: string;
+    provider: string;
+    has_provider: boolean;
+    is_enabled: boolean;
+    headers: Record<string, string> | null;
 }
 
 interface FormBlockModel extends BaseModel {
@@ -173,6 +181,8 @@ type PublicFormModel = {
     privacy_link: string | null;
     cta_label: string | null;
     cta_link: string | null;
+    cta_append_params: boolean;
+    cta_append_session_id: boolean;
     linkedin: string | null;
     github: string | null;
     instagram: string | null;
@@ -192,10 +202,21 @@ type FormStoryboard = {
 type FormSessionModel = {
     id: number;
     token: string;
-    params: string;
+    params?: Record<string, any>;
     is_completed: boolean;
     has_data_privacy: boolean;
     created_at: string;
+    responses?: Record<string, any>;
+    webhooks?: Array<FormSessionWebhookModel>;
+};
+
+type FormSessionWebhookModel = {
+    id: number;
+    name: string;
+    response?: string;
+    status?: number;
+    tries: number;
+    updated_at: string;
 };
 
 type FormSubmitPayload = Record<
