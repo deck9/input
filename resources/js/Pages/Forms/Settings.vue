@@ -73,7 +73,7 @@ import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
   form: FormModel;
