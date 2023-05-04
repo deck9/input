@@ -55,6 +55,15 @@
             offLabel="no"
           />
         </div>
+        <div class="mb-4 flex justify-between">
+          <D9Label label="Automatically Redirect User" />
+          <D9Switch
+            label="Automatically Redirect User"
+            v-model="useCtaRedirect"
+            onLabel="yes"
+            offLabel="no"
+          />
+        </div>
       </div>
     </div>
 
@@ -137,6 +146,7 @@ const outroMessage = ref(store.form?.eoc_text);
 const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);
 const ctaLink = ref(store.form?.cta_link);
+const useCtaRedirect = ref(store.form?.use_cta_redirect);
 const ctaAppendParams = ref(store.form?.cta_append_params);
 const ctaAppendSessionId = ref(store.form?.cta_append_session_id);
 
@@ -157,6 +167,7 @@ const saveFormSubmitSettings = async () => {
       show_cta_link: isCtaOn.value,
       cta_label: ctaLabel.value,
       cta_link: ctaLink.value,
+      use_cta_redirect: useCtaRedirect.value,
       cta_append_params: ctaAppendParams.value,
       cta_append_session_id: ctaAppendSessionId.value,
 
