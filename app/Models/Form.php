@@ -54,6 +54,7 @@ class Form extends Model
         'show_form_progress' => 'boolean',
         'cta_append_params' => 'boolean',
         'cta_append_session_id' => 'boolean',
+        'use_cta_redirect' => 'boolean',
         'show_social_links' => 'boolean',
         'show_privacy_link' => 'boolean',
         'has_data_privacy' => 'boolean',

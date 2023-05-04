@@ -122,9 +122,11 @@ test('can_update_the_form_data_with_api_call', function () {
         'linkedin' => 'philreinking',
         'show_social_links' => true,
 
-        // CTA Settings
+        // CTA / Completion Page Settings
         'cta_link' => 'https://philreinking.de',
         'cta_label' => 'Proceed',
+        'use_cta_redirect' => true,
+        'cta_redirect_delay' => 0,
         'show_cta_link' => true,
         'cta_append_params' => true,
         'cta_append_session_id' => true,
@@ -172,6 +174,8 @@ test('can_update_the_form_data_with_api_call', function () {
     $this->assertEquals('https://philreinking.de', $form->cta_link);
     $this->assertEquals('Proceed', $form->cta_label);
     $this->assertTrue($form->show_cta_link);
+    $this->assertTrue($form->use_cta_redirect);
+    $this->assertEquals(0, $form->cta_redirect_delay);
     $this->assertTrue($form->cta_append_params);
     $this->assertTrue($form->cta_append_session_id);
 
