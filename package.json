@@ -27,6 +27,7 @@
         "prettier-eslint": "^13.0.0",
         "prettier-plugin-tailwindcss": "^0.2.4",
         "puppeteer": "^13.6.0",
+        "rollup-plugin-webpack-stats": "^0.2.0",
         "tailwind-config-viewer": "^1.7.2",
         "vite": "^3.0.2",
         "vitest": "^0.29.2"

@@ -32,6 +32,20 @@ jobs:
 
       - run: npm run build
 
+      - name: Upload Webpack Stats for App
+        uses: relative-ci/agent-action@v2
+        with:
+          webpackStatsFile: ./public/build/app/webpack-stats.json
+          key: ${{ secrets.RELATIVE_CI_KEY }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Webpack Stats for Form
+        uses: relative-ci/agent-action@v2
+        with:
+          webpackStatsFile: ./public/js/webpack-stats.json
+          key: ${{ secrets.RELATIVE_CI_KEY }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
