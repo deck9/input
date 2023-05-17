@@ -8,12 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-
-      - uses: actions/checkout@v3
-
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -51,9 +49,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: "Setup Node"
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '18'
 
@@ -63,18 +59,14 @@ jobs:
       - run: npm run build
 
       - name: Upload Webpack Stats for Backend App
-        uses: relative-ci/agent-action@v2
+        uses: relative-ci/agent-upload-artifact-action@v1
         with:
           webpackStatsFile: ./public/build/app/webpack-stats.json
-          key: ${{ secrets.RELATIVE_CI_KEY }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Webpack Stats for Classic Form
-        uses: relative-ci/agent-action@v2
+        uses: relative-ci/agent-upload-artifact-action@v1
         with:
           webpackStatsFile: ./public/js/webpack-stats.json
-          key: ${{ secrets.RELATIVE_CI_KEY }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Run Test Suite with Coverage Report"
         run: npm run coverage
