@@ -58,11 +58,6 @@ jobs:
 
       - run: npm run build
 
-      - name: Upload Webpack Stats for Backend App
-        uses: relative-ci/agent-upload-artifact-action@v1
-        with:
-          webpackStatsFile: ./public/build/app/webpack-stats.json
-
       - name: Upload Webpack Stats for Classic Form
         uses: relative-ci/agent-upload-artifact-action@v1
         with:
