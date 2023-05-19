@@ -62,6 +62,8 @@ class FormController extends Controller
                 'cta_label',
                 'cta_append_params',
                 'cta_append_session_id',
+                'use_cta_redirect',
+                'cta_redirect_delay',
                 'eoc_headline',
                 'eoc_text',
                 'twitter',

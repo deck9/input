@@ -262,6 +262,13 @@ export const useConversation = defineStore("form", {
                         this.payload
                     );
 
+                    // If a redirect is configured, we redirect the user to the given url
+                    if (this.form.use_cta_redirect && this.callToActionUrl) {
+                        window.location.href = this.callToActionUrl;
+
+                        return Promise.resolve(true);
+                    }
+
                     this.isSubmitted = true;
                     this.isProcessing = false;
 
