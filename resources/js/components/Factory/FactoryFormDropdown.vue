@@ -84,7 +84,6 @@ const isPublishing = ref(false);
 const { copy, isSupported } = useClipboard();
 
 const copyFormUrl = () => {
-  console.log("copy form url", store.formUrl);
   copy(store.formUrl);
 };
 
