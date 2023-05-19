@@ -32,6 +32,7 @@ class PublicFormResource extends JsonResource
             'cta_link' => $this->cta_link,
             'cta_append_params' => $this->cta_append_params,
             'cta_append_session_id' => $this->cta_append_session_id,
+            'use_cta_redirect' => (bool) $this->use_cta_redirect,
             'linkedin' => $this->linkedin,
             'github' => $this->github,
             'instagram' => $this->instagram,
