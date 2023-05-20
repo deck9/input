@@ -2,6 +2,7 @@
   <div
     ref="container"
     class="transition-sm group relative mb-2 flex rounded bg-white px-8 py-4 text-grey-900 no-underline shadow-sm transition-transform duration-200 hover:no-underline"
+    :class="isActive ? 'ring-2' : ''"
   >
     <div class="flex w-1/2 shrink-0 items-center">
       <div
@@ -54,7 +55,11 @@
         </div>
       </div>
       <div class="ml-6 overflow-hidden">
-        <h3 class="mb-1 truncate text-base font-bold">{{ form.name }}</h3>
+        <h3 class="mb-1 truncate text-base font-bold">
+          <a :href="route('forms.edit', { uuid: form.uuid })">
+            {{ form.name }}
+          </a>
+        </h3>
 
         <div v-if="form.is_published" class="flex items-center">
           <span
