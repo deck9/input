@@ -341,4 +341,18 @@ class Form extends Model
             'blocks' => PublicFormBlockResource::collection($blocks),
         ];
     }
+
+    /**
+     * For duplicating the form we do not use the Eloquent replicate method.
+     * Since we also might want to duplicated form blocks and form blocks interactions,
+     * we can use the template export and import functionality.
+     *
+     * @return Form
+     */
+    public function duplicate(string $newName): Form
+    {
+        return new Form([
+            'name' => $newName,
+        ]);
+    }
 }
