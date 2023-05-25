@@ -6,16 +6,16 @@ use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Models\FormWebhook;
 use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
-use App\Models\FormWebhook;
 use Illuminate\Support\Facades\DB;
-use App\Models\Traits\TemplateImports;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PublicFormResource;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Resources\PublicFormBlockResource;
+use App\Models\Traits\TemplateExportsAndImports;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,26 +25,9 @@ class Form extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use TemplateImports;
+    use TemplateExportsAndImports;
 
     public const DEFAULT_BRAND_COLOR = '#1f2937';
-
-    public const TEMPLATE_ATTRIBUTES = [
-        'name',
-        'description',
-        'eoc_text',
-        'eoc_headline',
-        'cta_label',
-        'cta_link',
-        'linkedin',
-        'github',
-        'instagram',
-        'facebook',
-        'twitter',
-        'show_cta_link',
-        'show_social_links',
-        'show_form_progress',
-    ];
 
     protected $guarded = [];
 

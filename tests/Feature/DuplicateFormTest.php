@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 
 it('can duplicate a Form Model', function () {
     $form = Form::factory()
-        ->has(FormBlock::factory()->count(3)->create())
+        ->has(FormBlock::factory()->count(3))
         ->create();
 
     $newForm = $form->duplicate('Optional new name');

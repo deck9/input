@@ -6,13 +6,30 @@ use App\Models\Form;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 
-trait TemplateImports
+trait TemplateExportsAndImports
 {
     public function toTemplate()
     {
+        $TEMPLATE_ATTRIBUTES = [
+            'name',
+            'description',
+            'eoc_text',
+            'eoc_headline',
+            'cta_label',
+            'cta_link',
+            'linkedin',
+            'github',
+            'instagram',
+            'facebook',
+            'twitter',
+            'show_cta_link',
+            'show_social_links',
+            'show_form_progress',
+        ];
+
         $this->load('formBlocks.formBlockInteractions');
 
-        $form = $this->only(Form::TEMPLATE_ATTRIBUTES);
+        $form = $this->only($TEMPLATE_ATTRIBUTES);
 
         $blocks = $this->formBlocks->map(function ($block) {
             return $block->toTemplate();
@@ -29,7 +46,7 @@ trait TemplateImports
         $blocks = $template->has('blocks') ? collect($template['blocks']) : [];
 
         $this->update(
-            $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
+            $template->toArray()
         );
 
         $this->formBlocks()->delete();
