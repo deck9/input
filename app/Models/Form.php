@@ -71,6 +71,36 @@ class Form extends Model
         'initials',
     ];
 
+    public const TEMPLATE_ATTRIBUTES = [
+        'name',
+        'description',
+        'language',
+        'avatar_path',
+        'background_path',
+        'brand_color',
+        'text_color',
+        'background_color',
+        'eoc_text',
+        'eoc_headline',
+        'data_retention_days',
+        'legal_notice_link',
+        'privacy_link',
+        'cta_label',
+        'cta_link',
+        'cta_append_params',
+        'cta_redirect_delay',
+        'use_cta_redirect',
+        'cta_append_session_id',
+        'linkedin',
+        'github',
+        'instagram',
+        'facebook',
+        'twitter',
+        'show_cta_link',
+        'show_social_links',
+        'show_form_progress',
+    ];
+
     protected static function boot()
     {
         parent::boot();

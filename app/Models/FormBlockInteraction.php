@@ -14,10 +14,13 @@ class FormBlockInteraction extends Model
 
     public const TEMPLATE_ATTRIBUTES = [
         'type',
+        'name',
+        'is_editable',
+        'is_disabled',
         'label',
+        'options',
         'message',
         'sequence',
-        'options'
     ];
 
     protected $guarded = [];
@@ -48,7 +51,8 @@ class FormBlockInteraction extends Model
             ]);
         });
 
-        self::deleted(function ($model) {;
+        self::deleted(function ($model) {
+            ;
             $model->formBlock->updateInteractionSequence(
                 self::where("form_block_id", $model->form_block_id)
                     ->where('type', $model->type)

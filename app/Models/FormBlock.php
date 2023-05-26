@@ -18,9 +18,11 @@ class FormBlock extends Model
     use HasFactory;
 
     public const TEMPLATE_ATTRIBUTES = [
-        'message',
         'type',
+        'message',
         'title',
+        'options',
+        'is_required',
         'parent_block',
         'sequence'
     ];

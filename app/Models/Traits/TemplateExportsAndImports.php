@@ -10,26 +10,9 @@ trait TemplateExportsAndImports
 {
     public function toTemplate()
     {
-        $TEMPLATE_ATTRIBUTES = [
-            'name',
-            'description',
-            'eoc_text',
-            'eoc_headline',
-            'cta_label',
-            'cta_link',
-            'linkedin',
-            'github',
-            'instagram',
-            'facebook',
-            'twitter',
-            'show_cta_link',
-            'show_social_links',
-            'show_form_progress',
-        ];
-
         $this->load('formBlocks.formBlockInteractions');
 
-        $form = $this->only($TEMPLATE_ATTRIBUTES);
+        $form = $this->only(Form::TEMPLATE_ATTRIBUTES);
 
         $blocks = $this->formBlocks->map(function ($block) {
             return $block->toTemplate();
@@ -46,11 +29,14 @@ trait TemplateExportsAndImports
         $blocks = $template->has('blocks') ? collect($template['blocks']) : [];
 
         $this->update(
-            $template->toArray()
+            $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
         );
 
+
+        // Clear out current form blocks (and their interactions)
         $this->formBlocks()->delete();
 
+        // Create new form blocks
         $blocks->each(function ($item) {
             $item = collect($item);
             $block = $this->formBlocks()
@@ -60,6 +46,7 @@ trait TemplateExportsAndImports
                         ->toArray()
                 );
 
+            // Attach the form blocks interactions, if they exist
             if ($item->has('formBlockInteractions') && count((array) $item->get('formBlockInteractions', []))) {
                 collect($item->get('formBlockInteractions', []))->each(function ($interaction) use ($block) {
                     $block->formBlockInteractions()->create(
