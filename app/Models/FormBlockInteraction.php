@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\FormBlockInteractionType;
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
+use App\Models\BaseModel;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class FormBlockInteraction extends Model
+class FormBlockInteraction extends BaseModel
 {
     use HasFactory;
 

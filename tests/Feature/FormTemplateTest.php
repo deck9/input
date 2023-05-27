@@ -29,8 +29,8 @@ test('can_export_a_form_as_a_string', function () {
         ]))->assertStatus(200);
 
     $response->assertJsonFragment([
-        'name' => 'Test Form',
-        'description' => 'A template Export Test'
+        'description' => 'A template Export Test',
+        'brand_color' => '#487596',
     ]);
 
     $this->assertNotNull($response->json('blocks.0.formBlockInteractions'));
@@ -82,7 +82,6 @@ test('can_import_a_string_template_for_an_existing_form', function () {
 
     $form->refresh();
 
-    $this->assertEquals('Form Import Test', $form->name);
     $this->assertEquals('This is just a test', $form->description);
     $this->assertEquals($user->id, $form->user_id);
     $this->assertCount(4, $form->formBlocks);
@@ -119,7 +118,6 @@ test('can_import_a_file_template_for_an_existing_form', function () {
 
     $form->refresh();
 
-    $this->assertEquals('Form Import Test', $form->name);
     $this->assertEquals('This is just a test', $form->description);
     $this->assertEquals($user->id, $form->user_id);
     $this->assertCount(4, $form->formBlocks);

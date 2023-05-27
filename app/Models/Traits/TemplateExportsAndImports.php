@@ -23,15 +23,19 @@ trait TemplateExportsAndImports
         ]);
     }
 
-    public function applyTemplate(string $template)
+    public function applyTemplate(array|string $template)
     {
-        $template = collect(json_decode($template, true));
+        if (!is_array($template)) {
+            $template = collect(json_decode($template, true));
+        } else {
+            $template = collect($template);
+        }
+
         $blocks = $template->has('blocks') ? collect($template['blocks']) : [];
 
         $this->update(
             $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
         );
-
 
         // Clear out current form blocks (and their interactions)
         $this->formBlocks()->delete();

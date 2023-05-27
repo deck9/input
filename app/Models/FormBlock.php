@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Enums\FormBlockInteractionType;
-use App\Enums\FormBlockType;
 use App\Models\Form;
 use Hashids\Hashids;
 use App\Scopes\Sequence;
 use Webpatser\Uuid\Uuid;
+use App\Models\BaseModel;
+use App\Enums\FormBlockType;
 use App\Models\FormSessionResponse;
 use App\Models\FormBlockInteraction;
-use Illuminate\Database\Eloquent\Model;
+use App\Enums\FormBlockInteractionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class FormBlock extends Model
+class FormBlock extends BaseModel
 {
     use HasFactory;
 

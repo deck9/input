@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
+use App\Models\BaseModel;
 use App\Models\FormBlock;
 use App\Models\FormSession;
 use App\Models\FormWebhook;
 use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PublicFormResource;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Form extends Model
+class Form extends BaseModel
 {
     use HasFactory;
     use SoftDeletes;
@@ -72,7 +72,6 @@ class Form extends Model
     ];
 
     public const TEMPLATE_ATTRIBUTES = [
-        'name',
         'description',
         'language',
         'avatar_path',
@@ -364,8 +363,12 @@ class Form extends Model
      */
     public function duplicate(string $newName): Form
     {
-        return new Form([
+        $newForm = Form::create([
             'name' => $newName,
         ]);
+
+        $newForm->applyTemplate($this->toTemplate());
+
+        return $newForm;
     }
 }
