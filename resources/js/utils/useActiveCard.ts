@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref } from "@vue/runtime-core";
+import { computed, ComputedRef, Ref } from "vue";
 
 export function useActiveCard(isActive: Ref<boolean>): {
     cardStyle: ComputedRef<string>;

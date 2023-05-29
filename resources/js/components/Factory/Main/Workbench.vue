@@ -25,7 +25,7 @@ import BlockMessage from "./BlockMessage.vue";
 import BlockType from "./BlockType.vue";
 import BlockInteractions from "./BlockInteractions.vue";
 import GroupSettings from "./GroupSettings.vue";
-import { provide } from "@vue/runtime-core";
+import { provide } from "vue";
 
 const workbench = useWorkbench();
 

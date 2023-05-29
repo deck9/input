@@ -25,9 +25,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ComputedRef, inject } from "@vue/runtime-core";
 import { onKeyStroke } from "@vueuse/core";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed, ComputedRef, inject } from "vue";
 import { useConversation } from "@/stores/conversation";
 import RequiredMark from "@/forms/classic/layout/RequiredMark.vue";
 

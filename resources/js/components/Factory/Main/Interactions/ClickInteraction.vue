@@ -46,7 +46,7 @@ import { D9Input } from "@deck9/ui";
 import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import { useWorkbench } from "@/stores";
-import { Ref, ref, watch, withDefaults } from "vue";
+import { Ref, ref, watch } from "vue";
 
 const workbench = useWorkbench();
 

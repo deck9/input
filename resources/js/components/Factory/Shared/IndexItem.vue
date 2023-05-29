@@ -9,8 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from "vue";
-import { computed } from "@vue/reactivity";
+import { inject, computed } from "vue";
 import { D9Icon } from "@deck9/ui";
 import { alphabetize } from "@/utils";
 import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";

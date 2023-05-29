@@ -39,8 +39,7 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
-import { watch, Ref, ref } from "vue";
-import { onMounted } from "@vue/runtime-core";
+import { watch, Ref, ref, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();

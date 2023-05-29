@@ -1,11 +1,11 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 
 let lastUse = 0;
 const sessionLifetimeInSeconds = 120;
 
 export default async (
-    config: AxiosRequestConfig<any>
-): Promise<AxiosRequestConfig<any>> => {
+    config: InternalAxiosRequestConfig<any>
+): Promise<InternalAxiosRequestConfig<any>> => {
     const now = Date.now();
 
     // get diff in seconds

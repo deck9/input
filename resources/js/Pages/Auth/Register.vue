@@ -94,6 +94,7 @@ import { Head, Link } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
   components: {
+    // eslint-disable-next-line vue/no-reserved-component-names
     Head,
     JetAuthenticationCard,
     JetApplicationLogo,
@@ -102,6 +103,7 @@ export default defineComponent({
     D9Checkbox,
     D9Label,
     JetValidationErrors,
+    // eslint-disable-next-line vue/no-reserved-component-names
     Link,
   },
 

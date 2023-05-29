@@ -127,7 +127,7 @@ const setActive = () => {
   isActive.value = true;
 };
 
-const duplicateForm = async (e) => {
+const duplicateForm = async () => {
   const form = props.form;
 
   isActive.value = false;

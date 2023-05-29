@@ -26,6 +26,7 @@ export default defineComponent({
   props: ["terms"],
 
   components: {
+    // eslint-disable-next-line vue/no-reserved-component-names
     Head,
     JetApplicationLogo,
   },

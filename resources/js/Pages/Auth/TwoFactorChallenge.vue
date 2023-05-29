@@ -82,6 +82,7 @@ import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 
 export default defineComponent({
   components: {
+    // eslint-disable-next-line vue/no-reserved-component-names
     Head,
     JetAuthenticationCard,
     JetApplicationLogo,

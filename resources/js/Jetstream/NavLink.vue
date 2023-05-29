@@ -10,6 +10,7 @@ import { Link } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
   components: {
+    // eslint-disable-next-line vue/no-reserved-component-names
     Link,
   },
   props: ["href", "active"],

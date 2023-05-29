@@ -10,9 +10,11 @@
       >
         <component
           :is="actionComponent"
-          :block="block"
-          :index="index"
-          :action="action"
+          v-bind="{
+            block,
+            index,
+            action,
+          }"
         ></component>
       </div>
     </div>
