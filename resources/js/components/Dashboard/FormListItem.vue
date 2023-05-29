@@ -80,13 +80,13 @@
           as="a"
           :href="route('forms.submissions', form.uuid)"
           class="block w-full text-left"
-          label="Open Submissions"
+          label="Submissions"
         />
         <D9MenuLink
           as="a"
           :href="route('forms.settings', form.uuid)"
           class="block w-full text-left"
-          label="Open Settings"
+          label="Settings"
         />
         <D9MenuLink
           as="button"
@@ -110,6 +110,7 @@
 import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
+import { callDuplicateForm } from "@/api/forms";
 
 const props = defineProps<{
   form: FormModel;
@@ -126,9 +127,24 @@ const setActive = () => {
   isActive.value = true;
 };
 
-const duplicateForm = (e) => {
+const duplicateForm = async (e) => {
   const form = props.form;
 
-  console.log(`Duplicate form ${form.name}`, e);
+  isActive.value = false;
+
+  const newName = window.prompt(
+    "Please enter a name for the new form",
+    `Copy of ${form.name}`
+  );
+
+  if (!newName) {
+    return;
+  }
+
+  const newFormResponse = await callDuplicateForm(form, newName);
+
+  window.location.href = window.route("forms.edit", {
+    uuid: newFormResponse.data.uuid,
+  });
 };
 </script>
