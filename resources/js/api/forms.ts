@@ -282,3 +282,27 @@ export function callDeleteFormSubmission(
         }
     });
 }
+
+export function callDuplicateForm(
+    form: FormModel,
+    newName: string
+): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.duplicate", {
+                    uuid: form.uuid,
+                }),
+                {
+                    name: newName,
+                }
+            );
+
+            if (response.status === 201) {
+                resolve(response as AxiosResponse);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

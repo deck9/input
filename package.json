@@ -32,7 +32,7 @@
         "vitest": "^0.29.2"
     },
     "dependencies": {
-        "@deck9/ui": "^0.12.9",
+        "@deck9/ui": "^0.12.10",
         "@headlessui/vue": "^1.7.12",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@inertiajs/inertia": "^0.11.1",
@@ -59,7 +59,7 @@
         "eslint-plugin-vue": "^8.7.1",
         "floating-vue": "^2.0.0-beta.20",
         "highlight.js": "^11.6.0",
-        "laravel-vite-plugin": "^0.7.4",
+        "laravel-vite-plugin": "^0.7.8",
         "lodash": "^4.17.19",
         "pinia": "^2.0.32",
         "postcss": "^8.4.21",

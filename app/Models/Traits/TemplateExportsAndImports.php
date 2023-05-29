@@ -6,7 +6,7 @@ use App\Models\Form;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 
-trait TemplateImports
+trait TemplateExportsAndImports
 {
     public function toTemplate()
     {
@@ -23,17 +23,24 @@ trait TemplateImports
         ]);
     }
 
-    public function applyTemplate(string $template)
+    public function applyTemplate(array|string $template)
     {
-        $template = collect(json_decode($template, true));
+        if (!is_array($template)) {
+            $template = collect(json_decode($template, true));
+        } else {
+            $template = collect($template);
+        }
+
         $blocks = $template->has('blocks') ? collect($template['blocks']) : [];
 
         $this->update(
             $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
         );
 
+        // Clear out current form blocks (and their interactions)
         $this->formBlocks()->delete();
 
+        // Create new form blocks
         $blocks->each(function ($item) {
             $item = collect($item);
             $block = $this->formBlocks()
@@ -43,6 +50,7 @@ trait TemplateImports
                         ->toArray()
                 );
 
+            // Attach the form blocks interactions, if they exist
             if ($item->has('formBlockInteractions') && count((array) $item->get('formBlockInteractions', []))) {
                 collect($item->get('formBlockInteractions', []))->each(function ($interaction) use ($block) {
                     $block->formBlockInteractions()->create(

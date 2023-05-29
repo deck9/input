@@ -9,9 +9,10 @@ use App\Http\Controllers\Api\ShowFormController;
 use App\Http\Controllers\Api\FormBlockController;
 use App\Http\Controllers\Api\FormImagesController;
 use App\Http\Controllers\Api\FormSubmitController;
-use App\Http\Controllers\Api\PublishFormController;
-use App\Http\Controllers\Api\UnpublishFormController;
 use App\Http\Controllers\Api\FormWebhookController;
+use App\Http\Controllers\Api\PublishFormController;
+use App\Http\Controllers\Api\DuplicateFormController;
+use App\Http\Controllers\Api\UnpublishFormController;
 use App\Http\Controllers\Api\FormSubmissionsController;
 use App\Http\Controllers\Api\FormBlockMappingController;
 use App\Http\Controllers\Api\CreateFormSessionController;
@@ -53,6 +54,9 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->get('forms/{form}', [FormController::class, 'show'])->name('api.forms.show');
     $router->post('forms/{form}', [FormController::class, 'update'])->name('api.forms.update');
     $router->delete('forms/{form}', [FormController::class, 'delete'])->name('api.forms.delete');
+
+    // Form Duplication
+    $router->post('forms/{form}/duplicate', DuplicateFormController::class)->name('api.forms.duplicate');
 
     // Form Webhooks
     $router->get('forms/{form}/webhooks', [FormWebhookController::class, 'index'])->name('api.forms.webhooks.index');

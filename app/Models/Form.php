@@ -4,47 +4,30 @@ namespace App\Models;
 
 use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
+use App\Models\BaseModel;
 use App\Models\FormBlock;
 use App\Models\FormSession;
+use App\Models\FormWebhook;
 use App\Enums\FormBlockType;
 use Illuminate\Support\Carbon;
-use App\Models\FormWebhook;
 use Illuminate\Support\Facades\DB;
-use App\Models\Traits\TemplateImports;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PublicFormResource;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Resources\PublicFormBlockResource;
+use App\Models\Traits\TemplateExportsAndImports;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Form extends Model
+class Form extends BaseModel
 {
     use HasFactory;
     use SoftDeletes;
-    use TemplateImports;
+    use TemplateExportsAndImports;
 
     public const DEFAULT_BRAND_COLOR = '#1f2937';
-
-    public const TEMPLATE_ATTRIBUTES = [
-        'name',
-        'description',
-        'eoc_text',
-        'eoc_headline',
-        'cta_label',
-        'cta_link',
-        'linkedin',
-        'github',
-        'instagram',
-        'facebook',
-        'twitter',
-        'show_cta_link',
-        'show_social_links',
-        'show_form_progress',
-    ];
 
     protected $guarded = [];
 
@@ -86,6 +69,35 @@ class Form extends Model
         'completion_rate',
         'is_published',
         'initials',
+    ];
+
+    public const TEMPLATE_ATTRIBUTES = [
+        'description',
+        'language',
+        'avatar_path',
+        'background_path',
+        'brand_color',
+        'text_color',
+        'background_color',
+        'eoc_text',
+        'eoc_headline',
+        'data_retention_days',
+        'legal_notice_link',
+        'privacy_link',
+        'cta_label',
+        'cta_link',
+        'cta_append_params',
+        'cta_redirect_delay',
+        'use_cta_redirect',
+        'cta_append_session_id',
+        'linkedin',
+        'github',
+        'instagram',
+        'facebook',
+        'twitter',
+        'show_cta_link',
+        'show_social_links',
+        'show_form_progress',
     ];
 
     protected static function boot()
@@ -340,5 +352,23 @@ class Form extends Model
             'count' => $blockCount,
             'blocks' => PublicFormBlockResource::collection($blocks),
         ];
+    }
+
+    /**
+     * For duplicating the form we do not use the Eloquent replicate method.
+     * Since we also might want to duplicated form blocks and form blocks interactions,
+     * we can use the template export and import functionality.
+     *
+     * @return Form
+     */
+    public function duplicate(string $newName): Form
+    {
+        $newForm = Form::create([
+            'name' => $newName,
+        ]);
+
+        $newForm->applyTemplate($this->toTemplate());
+
+        return $newForm;
     }
 }
