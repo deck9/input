@@ -12,7 +12,7 @@ return new class () extends Migration {
     {
         Schema::table('forms', function (Blueprint $table) {
             $table->boolean('use_cta_redirect')->default(false)->after('cta_append_params');
-            $table->integer('cta_redirect_delay')->default(0)->after('cta_append_params');
+            $table->integer('cta_redirect_delay')->default(0)->after('cta_append_params')->nullable();
         });
     }
 
