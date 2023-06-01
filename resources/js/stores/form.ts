@@ -14,6 +14,7 @@ import {
     callCreateFormBlock,
     callUpdateBlockSequence,
     callDeleteFormBlock,
+    callUpdateFormBlock,
 } from "@/api/blocks";
 import { useWorkbench } from ".";
 
@@ -274,6 +275,33 @@ export const useForm = defineStore("form", {
                                 this.deleteFormBlock(item);
                             });
                     }
+                }
+            } catch (error) {
+                console.warn(error);
+            }
+        },
+
+        async disableFormBlock(block: FormBlockModel, newValue: boolean) {
+            if (!this.form) {
+                return;
+            }
+
+            try {
+                const response = await callUpdateFormBlock({
+                    ...block,
+                    is_disabled: newValue,
+                });
+
+                const index = this.blocks?.findIndex((item) => {
+                    return item.id === block.id;
+                });
+
+                if (
+                    response.status === 200 &&
+                    typeof index !== "undefined" &&
+                    this.blocks
+                ) {
+                    this.blocks[index] = response.data;
                 }
             } catch (error) {
                 console.warn(error);

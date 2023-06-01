@@ -23,6 +23,7 @@ class FormBlock extends BaseModel
         'title',
         'options',
         'is_required',
+        'is_disabled',
         'parent_block',
         'sequence'
     ];
@@ -33,6 +34,7 @@ class FormBlock extends BaseModel
 
     protected $casts = [
         'is_required' => 'boolean',
+        'is_disabled' => 'boolean',
         'form_id' => 'integer',
         'options' => 'array',
         'type' => FormBlockType::class,

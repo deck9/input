@@ -231,3 +231,24 @@ test('can_save_information_in_an_options_field', function () {
 
     $this->assertEquals('Test Title', $block->fresh()->options['title']);
 });
+
+
+it('can disable and enable a form block', function () {
+    $block = FormBlock::factory()->create([
+        'is_disabled' => false
+    ]);
+
+    $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), [
+            'is_disabled' => true
+        ]);
+
+    expect($block->fresh()->is_disabled)->toBeTrue();
+
+    $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), [
+            'is_disabled' => false
+        ]);
+
+    expect($block->fresh()->is_disabled)->toBeFalse();
+});

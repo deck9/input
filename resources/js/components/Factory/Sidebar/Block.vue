@@ -3,7 +3,7 @@
     <InsertAfterButton v-bind="{ block }" />
     <button
       class="group relative block w-full cursor-pointer overflow-visible rounded-md p-4 text-left"
-      :class="cardStyle"
+      :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
       @click.stop="workbench.putOnWorkbench(block)"
     >
       <div
@@ -23,6 +23,12 @@
             :meta="block.uuid"
             label="Copy ID"
             @click="copyId"
+          />
+          <D9MenuLink
+            as="button"
+            class="block w-full text-left"
+            :label="block.is_disabled ? 'Enable Block' : 'Disable Block'"
+            @click="disableBlock"
           />
           <D9MenuLink
             as="button"
@@ -51,8 +57,13 @@
         :key="interaction.id"
       />
 
-      <div class="mt-2" v-if="block.is_required">
-        <Label color="red">required</Label>
+      <div class="flex space-x-1">
+        <div class="mt-2" v-if="block.is_disabled">
+          <Label color="grey">disabled</Label>
+        </div>
+        <div class="mt-2" v-if="block.is_required">
+          <Label color="red">required</Label>
+        </div>
       </div>
     </button>
   </div>
@@ -102,6 +113,10 @@ const deleteBlock = () => {
       workbench.clearWorkbench();
     }
   }
+};
+
+const disableBlock = () => {
+  store.disableFormBlock(props.block, !props.block.is_disabled);
 };
 
 const copyId = () => {

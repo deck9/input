@@ -31,3 +31,41 @@ test('a_guest_user_can_get_the_storyboard_for_a_form', function () {
     $this->assertCount(1, $response->json('blocks.0.interactions'));
     $this->assertCount(4, $response->json('blocks.1.interactions'));
 });
+
+
+test('the storyboard should not return disabled blocks', function () {
+    $form = Form::factory()->create();
+
+    FormBlock::factory()
+        ->for($form)
+        ->count(2)
+        ->create();
+
+    FormBlock::factory()->for($form)
+        ->create(['is_disabled' => true]);
+
+    $response = $this->json('GET', route('api.public.forms.storyboard', [
+        'form' => $form->uuid
+    ]));
+
+
+    expect($response->json('count'))->toBe(2);
+});
+
+test('a disabled group should not return its children', function () {
+    $form = Form::factory()->create();
+
+    $group = FormBlock::factory()->for($form)
+        ->create(['is_disabled' => true, 'type' => FormBlockType::group]);
+
+    FormBlock::factory()
+        ->for($form)
+        ->count(2)
+        ->create(['parent_block' => $group->uuid]);
+
+    $response = $this->json('GET', route('api.public.forms.storyboard', [
+        'form' => $form->uuid
+    ]));
+
+    expect($response->json('count'))->toBe(0);
+});

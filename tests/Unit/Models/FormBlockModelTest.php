@@ -19,3 +19,11 @@ test('has scope to get snippet by uuid', function () {
 
     expect($result->id)->toEqual($block->id);
 });
+
+it('has a setting to disabled the block from displaying on the frontend', function () {
+    $block = FormBlock::factory()->create([
+        'is_disabled' => true,
+    ]);
+
+    expect($block->is_disabled)->toBeTrue();
+});

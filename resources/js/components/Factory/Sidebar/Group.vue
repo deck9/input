@@ -3,11 +3,11 @@
     <InsertAfterButton v-bind="{ block }" />
     <button
       class="relative block w-full rounded-md border-dashed px-4 py-3 text-left"
-      :class="cardStyle"
+      :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
       @click.stop="workbench.putOnWorkbench(block)"
     >
       <h1
-        class="mr-4 -ml-2 rounded px-2 py-1 font-bold text-grey-400 hover:bg-grey-100"
+        class="-ml-2 mr-4 rounded px-2 py-1 font-bold text-grey-400 hover:bg-grey-100"
         :class="[{ 'mb-3': !isCollapsed }]"
       >
         <button
@@ -46,6 +46,12 @@
           <D9MenuLink
             as="button"
             class="block w-full text-left"
+            :label="block.is_disabled ? 'Enable Block' : 'Disable Block'"
+            @click="disableBlock"
+          />
+          <D9MenuLink
+            as="button"
+            class="block w-full text-left"
             label="Delete"
             @click.stop="deleteBlock"
           />
@@ -56,6 +62,12 @@
         :groupId="block.uuid"
         class="transition duration-200"
       />
+
+      <div class="flex space-x-1">
+        <div class="mt-2" v-if="block.is_disabled">
+          <Label color="grey">disabled</Label>
+        </div>
+      </div>
     </button>
   </div>
 </template>
@@ -63,6 +75,7 @@
 <script lang="ts" setup>
 import BlockContainer from "@/components/Factory/Sidebar/BlockContainer.vue";
 import InsertAfterButton from "./InsertAfterButton.vue";
+import Label from "@/components/Label.vue";
 import copy from "copy-text-to-clipboard";
 import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import { useActiveCard } from "@/utils/useActiveCard";
@@ -82,7 +95,7 @@ const store = useForm();
 
 const { showBlockMenus } = storeToRefs(store);
 
-const isCollapsed = ref(false);
+const isCollapsed = ref(props.block.is_disabled ?? false);
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id
@@ -107,6 +120,14 @@ const deleteBlock = () => {
       workbench.clearWorkbench();
     }
   }
+};
+
+const disableBlock = () => {
+  if (!props.block.is_disabled) {
+    isCollapsed.value = true;
+  }
+
+  store.disableFormBlock(props.block, !props.block.is_disabled);
 };
 
 const copyId = () => {
