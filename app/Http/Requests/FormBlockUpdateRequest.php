@@ -9,7 +9,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FormBlockUpdateRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,6 +32,7 @@ class FormBlockUpdateRequest extends FormRequest
             'options' => 'array|nullable',
             'title' => 'string|nullable',
             'is_required' => 'boolean|nullable',
+            'is_disabled' => 'boolean|nullable',
             'type' => [new Enum(FormBlockType::class)]
         ];
     }
