@@ -95,7 +95,7 @@ const store = useForm();
 
 const { showBlockMenus } = storeToRefs(store);
 
-const isCollapsed = ref(false);
+const isCollapsed = ref(props.block.is_disabled ?? false);
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id
