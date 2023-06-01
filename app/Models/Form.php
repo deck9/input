@@ -344,6 +344,18 @@ class Form extends BaseModel
             }
 
             return true;
+        })->reject(function ($item) {
+            return $item->is_disabled;
+        });
+
+        $blocks = $blocks->reject(function ($item) use ($blocks) {
+            // Reject all items that are children of disabled groups
+            if ($item->parent_block) {
+                // just check if the parent is still in the collection
+                return !$blocks->firstWhere('uuid', $item->parent_block);
+            }
+
+            return false;
         });
 
         $blockCount = $blocks->count();
