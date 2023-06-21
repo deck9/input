@@ -9,7 +9,7 @@
         </h2>
         <div class="mb-4">
           <D9Label label="Link" />
-          <D9Input type="url" block :disabled="!isCtaOn" v-model="ctaLink" />
+          <D9Input type="url" block v-model="ctaLink" />
         </div>
         <div class="mb-4 flex justify-between">
           <D9Label label="Append Incoming Query Parameters" />
@@ -67,16 +67,11 @@
         >
           <div class="mb-4">
             <D9Label label="Label" />
-            <D9Input
-              type="text"
-              block
-              :disabled="!isCtaOn"
-              v-model="ctaLabel"
-            />
+            <D9Input type="text" block v-model="ctaLabel" />
           </div>
           <div class="mb-4">
             <D9Label label="Link" />
-            <D9Input type="url" block :disabled="!isCtaOn" v-model="ctaLink" />
+            <D9Input type="url" block v-model="ctaLink" />
           </div>
           <div class="mb-4 flex justify-between">
             <D9Label label="Append Incoming Query Parameters" />
@@ -119,48 +114,23 @@
         >
           <div class="mb-4">
             <D9Label label="Instagram" />
-            <D9Input
-              type="url"
-              block
-              :disabled="!isSocialOn"
-              v-model="instagram"
-            />
+            <D9Input type="url" block v-model="instagram" />
           </div>
           <div class="mb-4">
             <D9Label label="Facebook" />
-            <D9Input
-              type="url"
-              block
-              :disabled="!isSocialOn"
-              v-model="facebook"
-            />
+            <D9Input type="url" block v-model="facebook" />
           </div>
           <div class="mb-4">
             <D9Label label="Twitter" />
-            <D9Input
-              type="url"
-              block
-              :disabled="!isSocialOn"
-              v-model="twitter"
-            />
+            <D9Input type="url" block v-model="twitter" />
           </div>
           <div class="mb-4">
             <D9Label label="LinkedIn" />
-            <D9Input
-              type="url"
-              block
-              :disabled="!isSocialOn"
-              v-model="linkedin"
-            />
+            <D9Input type="url" block v-model="linkedin" />
           </div>
           <div class="mb-4">
             <D9Label label="Github" />
-            <D9Input
-              type="url"
-              block
-              :disabled="!isSocialOn"
-              v-model="github"
-            />
+            <D9Input type="url" block v-model="github" />
           </div>
         </div>
       </div>

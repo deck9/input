@@ -51,7 +51,7 @@
               {{ item.name }}
             </h3>
 
-            <div class="mt-6">
+            <div class="mt-6 pb-6">
               <component :is="item.component" />
             </div>
           </TabPanel>
