@@ -28,6 +28,8 @@ RUN apk add --no-cache \
     sqlite
 
 COPY nginx.conf /etc/nginx/nginx.conf
+# Change default nginx location to use different root
+RUN sed -i 's|root /var/www/html;|root /var/www/html/public;|' /etc/nginx/conf.d/default.conf
 
 USER nobody
 WORKDIR /var/www/html
