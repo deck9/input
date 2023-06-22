@@ -88,6 +88,7 @@ type FormBlockType =
     | "input-email"
     | "input-link"
     | "input-phone"
+    | "input-secret"
     | "scale"
     | "rating"
     | "date";

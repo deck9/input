@@ -18,6 +18,7 @@ dataset('interactions', [
     [FormBlockType::number->value, FormBlockInteractionType::input->value],
     [FormBlockType::phone->value, FormBlockInteractionType::input->value],
     [FormBlockType::short->value, FormBlockInteractionType::input->value],
+    [FormBlockType::secret->value, FormBlockInteractionType::input->value],
     [FormBlockType::radio->value, FormBlockInteractionType::button->value],
     [FormBlockType::rating->value, FormBlockInteractionType::range->value],
     [FormBlockType::scale->value, FormBlockInteractionType::range->value],
