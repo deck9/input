@@ -86,6 +86,9 @@ const nativeInputType = computed(() => {
     case "input-phone":
       return "tel";
 
+    case "input-secret":
+      return "password";
+
     default:
       return "text";
   }
