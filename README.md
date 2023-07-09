@@ -74,7 +74,6 @@ sail artisan test # run phpunit
 sail composer {args} # use composer
 ```
 
-
 ## Production Deployment
 
 ### Quick Start
@@ -89,7 +88,19 @@ docker run -d -p 8080:8080 --name input \
     ghcr.io/deck9/input:main
 ```
 
+### Behind a Proxy
+
+Make sure to set the `APP_URL` env to the domain you want to use for your proxy.
+
+```bash
+docker run -d -p 8080:8080 --name input \
+    -v input-data:/var/www/html/storage \
+    -e APP_URL=https://domain.tld \
+    ghcr.io/deck9/input:main
+```
+
 ### With MySQL
+
 ```bash
 docker run -d -p 8080:8080 --name input \
     -e DB_CONNECTION=mysql \
