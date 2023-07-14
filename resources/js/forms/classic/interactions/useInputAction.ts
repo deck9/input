@@ -8,6 +8,7 @@ export function useInputAction(block: PublicFormBlockModel) {
         "input-number",
         "input-link",
         "input-phone",
+        "input-secret",
     ].includes(block.type);
 
     const validator = (input: any) => {

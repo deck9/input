@@ -122,6 +122,7 @@ class FormBlock extends BaseModel
             case FormBlockType::phone:
             case FormBlockType::link:
             case FormBlockType::number:
+            case FormBlockType::secret:
                 return FormBlockInteractionType::input;
 
             case FormBlockType::long:
