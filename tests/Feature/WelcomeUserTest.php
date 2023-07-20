@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('auto redirect to register page if no user exists in database', function () {
+    $this->get('/')->assertRedirect('/login');
     $this->get('/login')->assertRedirect('/register');
 });
 
