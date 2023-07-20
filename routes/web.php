@@ -1,10 +1,7 @@
 <?php
 
 use Illuminate\Routing\Router;
-use App\Http\Middleware\NoUserCreated;
-use App\Http\Middleware\HasUserCreated;
 use App\Http\Controllers\ImageController;
-use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\FormEditController;
 use App\Http\Controllers\ViewFormController;
 use App\Http\Controllers\DashboardController;
