@@ -119,9 +119,15 @@ export default defineComponent({
     Link,
   },
 
+  props: {
+    isFirstSetup: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data() {
     return {
-      isFirstSetup: true,
       form: this.$inertia.form({
         email: "",
         password: "",

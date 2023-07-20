@@ -6,6 +6,7 @@ use Closure;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckUserSetup
@@ -19,13 +20,15 @@ class CheckUserSetup
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $isSetup = Cache::get($this->CACHE_KEY, false);
+        $isSetupDone = Cache::get($this->CACHE_KEY, false);
 
-        if (!$isSetup && User::count() === 0) {
+        Inertia::share('isFirstSetup', !$isSetupDone);
+
+        if (!$isSetupDone && User::count() === 0) {
             return redirect('/register');
         }
 
-        if (!$isSetup) {
+        if (!$isSetupDone) {
             Cache::forever($this->CACHE_KEY, true);
         }
 
