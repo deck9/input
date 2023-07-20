@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+use Illuminate\Routing\Router;
+use Illuminate\Foundation\Application;
+use App\Http\Middleware\CheckUserSetup;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,5 +67,17 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'check-user-setup' => CheckUserSetup::class,
     ];
+
+
+    /**
+     * We need to change the priority of the middleware to ensure that the
+     * HasUserCreated middleware is run before the Sanctum/Auth middleware.
+     */
+    public function __construct(Application $app, Router $router)
+    {
+        array_unshift($this->middlewarePriority, CheckUserSetup::class);
+        parent::__construct($app, $router);
+    }
 }
