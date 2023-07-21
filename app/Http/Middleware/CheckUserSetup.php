@@ -20,16 +20,18 @@ class CheckUserSetup
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $isSetupDone = Cache::get($this->CACHE_KEY, false);
+        if ($request->method() === 'GET') {
+            $isSetupDone = Cache::get($this->CACHE_KEY, false);
 
-        Inertia::share('isFirstSetup', !$isSetupDone);
+            Inertia::share('isFirstSetup', !$isSetupDone);
 
-        if (!$isSetupDone && User::count() === 0) {
-            return redirect('/register');
-        }
+            if ($request->route()->getName() !== 'register' && !$isSetupDone && User::count() === 0) {
+                return redirect('/register');
+            }
 
-        if (!$isSetupDone) {
-            Cache::forever($this->CACHE_KEY, true);
+            if (!$isSetupDone && User::count() > 0) {
+                Cache::forever($this->CACHE_KEY, true);
+            }
         }
 
         return $next($request);
