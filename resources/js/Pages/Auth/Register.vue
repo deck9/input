@@ -8,7 +8,7 @@
 
     <div
       v-if="isFirstSetup"
-      class="mb-6 rounded border border-blue-50 bg-blue-200 px-4 py-6"
+      class="border-indigo-80 mb-6 rounded border border-indigo-700 bg-indigo-900 px-4 py-6 text-indigo-300"
     >
       <h1 class="mb-2 text-xl font-bold">Create your first account</h1>
       <p>
