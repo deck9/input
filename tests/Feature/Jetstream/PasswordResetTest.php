@@ -19,6 +19,8 @@ class PasswordResetTest extends TestCase
             return $this->markTestSkipped('Password updates are not enabled.');
         }
 
+        User::factory()->create();
+
         $response = $this->get('/forgot-password');
 
         $response->assertStatus(200);

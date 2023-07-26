@@ -6,11 +6,22 @@
       <jet-application-logo class="mx-auto h-8 text-white" />
     </template>
 
-    <jet-validation-errors class="mb-6" />
+    <div
+      v-if="isFirstSetup"
+      class="border-indigo-80 mb-6 rounded border border-indigo-700 bg-indigo-900 px-4 py-6 text-indigo-300"
+    >
+      <h1 class="mb-2 text-xl font-bold">Create your first account</h1>
+      <p>
+        Welcome to <strong>Input</strong>. To get started, please create your
+        first user account.
+      </p>
+    </div>
 
-    <h1 class="mb-6 text-center text-2xl font-bold text-grey-300">
+    <h1 v-else class="mb-6 text-center text-2xl font-bold text-grey-300">
       Create your account
     </h1>
+
+    <jet-validation-errors class="mb-6" />
 
     <form @submit.prevent="submit">
       <div class="mt-4">
@@ -67,6 +78,7 @@
         <Link
           :href="route('login')"
           class="text-sm text-grey-400 underline hover:text-grey-200"
+          :class="isFirstSetup ? 'pointer-events-none opacity-0' : ''"
         >
           Already registered?
         </Link>
@@ -105,6 +117,13 @@ export default defineComponent({
     JetValidationErrors,
     // eslint-disable-next-line vue/no-reserved-component-names
     Link,
+  },
+
+  props: {
+    isFirstSetup: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
