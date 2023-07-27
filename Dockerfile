@@ -29,6 +29,7 @@ RUN apk add --no-cache \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.default.conf /etc/nginx/conf.d/default.conf
+COPY php.conf.ini /etc/php81/conf.d/99-input.ini
 
 USER nobody
 WORKDIR /var/www/html
