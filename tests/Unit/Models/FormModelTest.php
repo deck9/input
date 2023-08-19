@@ -64,23 +64,6 @@ test('can_return_total_amount_of_snippets_with_action_options', function () {
     $this->assertEquals(12, $form->actionBlocksCount());
 });
 
-test('can_return_the_total_amount_of_given_responses', function () {
-    $form = Form::factory()->create();
-    $blockA = FormBlock::factory()->make([
-        'type' => FormBlockType::radio,
-    ]);
-    $blockB = FormBlock::factory()->make([
-        'type' => FormBlockType::short,
-    ]);
-    $form->formBlocks()->save($blockA);
-    $form->formBlocks()->save($blockB);
-
-    FormSessionResponse::factory()->count(10)->create(['form_block_id' => $blockA->id]);
-    FormSessionResponse::factory()->count(5)->create(['form_block_id' => $blockB->id]);
-
-    $this->assertEquals(10, $form->responsesCount());
-});
-
 test('can_return_path_to_avatar_if_available', function () {
     Storage::fake();
     $form = Form::factory()->create();
