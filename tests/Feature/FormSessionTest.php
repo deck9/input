@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Form;
 use App\Models\FormSession;
+use Illuminate\Support\Facades\DB;
+use App\Models\FormSessionResponse;
 use Illuminate\Support\Facades\Event;
 use App\Events\FormSessionCompletedEvent;
 use App\Listeners\FormSubmitWebhookListener;
@@ -74,12 +76,9 @@ test('can_submit_a_form_through_a_session_token', function ($template) {
     ]), [
         'token' => $session->token,
         'payload' => [
-            'jR' => ['actionId' => 'jR', 'payload' => 'tester@getinput.co'],
-            'l5' => ['actionId' => 'k5', 'payload' => 'Yes'],
-            'mO' => [
-                ['actionId' => 'mO', 'payload' => 'Transactional Mailing'],
-                ['actionId' => 'nR', 'payload' => 'Template API']
-            ],
+            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[2]->getSubmitPayload([0]),
+            ...$form->formBlocks[3]->getSubmitPayload([0,1])
         ]
     ])->assertStatus(200);
 
@@ -103,15 +102,13 @@ test('submitting_a_session_a_second_time_does_not_create_duplicate_responses', f
     $route = route('api.public.forms.submit', [
         'form' => $form->uuid
     ]);
+
     $request = [
         'token' => $session->token,
         'payload' => [
-            'jR' => ['actionId' => 'jR', 'payload' => 'tester@getinput.co'],
-            'l5' => ['actionId' => 'k5', 'payload' => 'Yes'],
-            'mO' => [
-                ['actionId' => 'mO', 'payload' => 'Transactional Mailing'],
-                ['actionId' => 'nR', 'payload' => 'Template API']
-            ],
+            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[2]->getSubmitPayload([0]),
+            ...$form->formBlocks[3]->getSubmitPayload([0,1])
         ]
     ];
 
@@ -176,3 +173,34 @@ test('when_submitting_a_form_an_event_is_fired', function () {
 
     Event::assertListening(FormSessionCompletedEvent::class, FormSubmitWebhookListener::class);
 });
+
+it("should delete old submissions if auto delete is enabled for the form after specified time", function ($template) {
+    $form = Form::factory()->create([
+        'data_retention_days' => 30,
+    ]);
+
+    $form->applyTemplate($template);
+
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+
+    $this->json('POST', route('api.public.forms.submit', [
+        'form' => $form->uuid
+    ]), [
+        'token' => $session->token,
+        'payload' => [
+            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[2]->getSubmitPayload([0]),
+            ...$form->formBlocks[3]->getSubmitPayload([0,1])
+        ]
+    ])->assertStatus(200);
+
+    // Assertions after submission
+    $this->assertCount(4, FormSessionResponse::all());
+
+    $this->travel(31)->days();
+    $this->artisan('input:auto-delete-submissions');
+
+    $this->assertNull($session->fresh());
+
+    $this->assertCount(0, FormSessionResponse::all());
+})->with('templates');

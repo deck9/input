@@ -172,18 +172,6 @@ class Form extends BaseModel
         })->count();
     }
 
-    public function responsesCount()
-    {
-        $result = $this->formSessionResponses()
-            ->select(DB::raw('count(*) as response_count'))
-            ->groupBy('form_block_id')
-            ->orderBy('response_count', 'DESC')
-            ->limit(1)
-            ->first();
-
-        return $result ? $result->response_count : 0;
-    }
-
     public function hasImage($type)
     {
         $fieldname = $type . '_path';
