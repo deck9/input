@@ -39,9 +39,15 @@ COPY --chown=nobody . .
 
 RUN composer install --optimize-autoloader --no-interaction --no-progress
 
-# Remove Composer Cache & Script since we do not need it any more
 USER root
+
+# Remove Composer Cache & Script since we do not need it any more
 RUN rm -rf /root/.composer /usr/bin/composer
+
+# Copy Supervisor Config for Scheduler
+COPY scheduler.conf /tmp/scheduler.conf
+RUN cat /tmp/scheduler.conf >> /etc/supervisor/conf.d/supervisord.conf && rm -f /tmp/scheduler.conf
+
 USER nobody
 
 # ---
