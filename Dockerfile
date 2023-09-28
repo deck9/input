@@ -14,17 +14,17 @@ ENV LOG_CHANNEL=stderr
 ENV MAIL_MAILER=log
 
 RUN apk add --no-cache \
-    php81-exif \
-    php81-fileinfo \
-    php81-iconv \
-    php81-simplexml \
-    php81-tokenizer \
-    php81-xmlwriter \
-    php81-redis \
-    php81-pdo \
-    php81-pdo_mysql \
-    php81-pdo_sqlite \
-    php81-bcmath \
+    php82-exif \
+    php82-fileinfo \
+    php82-iconv \
+    php82-simplexml \
+    php82-tokenizer \
+    php82-xmlwriter \
+    php82-redis \
+    php82-pdo \
+    php82-pdo_mysql \
+    php82-pdo_sqlite \
+    php82-bcmath \
     sqlite
 
 COPY nginx.conf /etc/nginx/nginx.conf
