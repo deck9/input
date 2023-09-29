@@ -62,15 +62,19 @@ class FormSubmissionsExportController extends Controller
                 return $result;
             })->toArray();
 
-        return response()->streamDownload(function () use ($exportFormatted) {
-            $out = fopen('php://output', 'w');
-            fputcsv($out, array_keys($exportFormatted[0]));
-
-            foreach ($exportFormatted as $row) {
-                fputcsv($out, array_values($row));
-            }
-
-            fclose($out);
-        }, Str::slug($form->name) . '.results.csv');
+            return response()->streamDownload(function () use ($exportFormatted) {
+                $out = fopen('php://output', 'w');
+            
+                // Add BOM for UTF-8 to help software like Excel to correctly identify encoding
+                fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+                fputcsv($out, array_keys($exportFormatted[0]));
+            
+                foreach ($exportFormatted as $row) {
+                    fputcsv($out, array_values($row));
+                }
+            
+                fclose($out);
+            }, Str::slug($form->name) . '.results.csv');
     }
 }
