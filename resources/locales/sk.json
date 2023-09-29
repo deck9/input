@@ -27,6 +27,6 @@
         "confirm": "{0} pre potvrdenie"
     },
     "validation": {
-        "consent_required": "Pre pokračovanie je potrebné súhlasiť so súhlasmi."
+        "consent_required": "Pre pokračovanie je potrebné akcpetovať súhlasy."
     }
 }
