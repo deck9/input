@@ -24,6 +24,8 @@
     <jet-validation-errors class="mb-6" />
 
     <form @submit.prevent="submit">
+      <input type="hidden" name="name" autocomplete="off" ref="honeypot" />
+
       <div class="mt-4">
         <d9-label for="email" label="Email" />
         <d9-input
@@ -138,6 +140,10 @@ export default defineComponent({
 
   methods: {
     submit() {
+      if (this.$refs.honeypot.value) {
+        return;
+      }
+
       this.form.post(this.route("register"), {
         onFinish: () => this.form.reset("password", "password_confirmation"),
       });
