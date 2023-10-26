@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Form;
-use Illuminate\Support\Carbon;
-use App\Models\FormSessionResponse;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class FormSession extends Model
 {
@@ -21,11 +19,11 @@ class FormSession extends Model
     ];
 
     protected $hidden = [
-        "id", "form_id", "updated_at",
+        'id', 'form_id', 'updated_at',
     ];
 
     protected $appends = [
-        "is_completed",
+        'is_completed',
     ];
 
     public function form()
@@ -38,7 +36,7 @@ class FormSession extends Model
         return $this->hasMany(FormSessionWebhook::class);
     }
 
-    public static function getByTokenAndForm(String $token, Form $form)
+    public static function getByTokenAndForm(string $token, Form $form)
     {
         return self::where('token', $token)->where('form_id', $form->id)->first();
     }
@@ -56,7 +54,7 @@ class FormSession extends Model
     public function getIsCompletedAttribute(): bool
     {
         if (array_key_exists('is_completed', $this->attributes)) {
-            return !is_null($this->original['is_completed']);
+            return ! is_null($this->original['is_completed']);
         }
 
         return false;

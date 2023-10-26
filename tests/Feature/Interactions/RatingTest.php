@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
+use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -17,8 +17,8 @@ test('can_update_options_for_range_interaction', function () {
                 'start' => 5,
                 'end' => 10,
                 'icon' => 'globe',
-                'color' => "#223344",
-            ]
+                'color' => '#223344',
+            ],
         ])
         ->assertStatus(200);
 
@@ -26,6 +26,6 @@ test('can_update_options_for_range_interaction', function () {
         'start' => 5,
         'end' => 10,
         'icon' => 'globe',
-        'color' => "#223344",
+        'color' => '#223344',
     ]);
 });

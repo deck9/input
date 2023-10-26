@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-
 test('can_create_a_new_form', function () {
     /** @var User $user */
     $user = User::factory()->create();
@@ -136,6 +135,7 @@ test('can_update_the_form_data_with_api_call', function () {
         'privacy_link' => 'https://philreinking.de/privacy',
         'legal_notice_link' => 'https://philreinking.de/legal-notice',
         'data_retention_days' => 90,
+        'is_auto_delete_enabled' => true,
 
         // End of Conversation
         'eoc_headline' => 'Thank You',
@@ -182,6 +182,7 @@ test('can_update_the_form_data_with_api_call', function () {
     $this->assertEquals('https://philreinking.de/privacy', $form->privacy_link);
     $this->assertEquals('https://philreinking.de/legal-notice', $form->legal_notice_link);
     $this->assertEquals(90, $form->data_retention_days);
+    $this->assertEquals(true, $form->is_auto_delete_enabled);
     $this->assertTrue($form->has_data_privacy);
 
     $this->assertEquals('Thank You', $form->eoc_headline);

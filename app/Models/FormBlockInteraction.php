@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Hashids\Hashids;
-use Ramsey\Uuid\Uuid;
-use App\Models\BaseModel;
 use App\Enums\FormBlockInteractionType;
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ramsey\Uuid\Uuid;
 
 class FormBlockInteraction extends BaseModel
 {
@@ -40,7 +39,7 @@ class FormBlockInteraction extends BaseModel
         self::creating(function ($model) {
             $model->uuid = Uuid::uuid4();
 
-            if (!$model->sequence) {
+            if (! $model->sequence) {
                 $model->sequence = self::where('form_block_id', $model->form_block_id)->count();
             }
         });
@@ -52,9 +51,9 @@ class FormBlockInteraction extends BaseModel
         });
 
         self::deleted(function ($model) {
-            ;
+
             $model->formBlock->updateInteractionSequence(
-                self::where("form_block_id", $model->form_block_id)
+                self::where('form_block_id', $model->form_block_id)
                     ->where('type', $model->type)
                     ->pluck('id')
                     ->toArray()

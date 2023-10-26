@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Routing\Router;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\FormEditController;
-use App\Http\Controllers\ViewFormController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MetaPreviewController;
+use App\Http\Controllers\FormDownloadTemplateController;
+use App\Http\Controllers\FormEditController;
+use App\Http\Controllers\FormIntegrationsController;
 use App\Http\Controllers\FormSettingsController;
 use App\Http\Controllers\FormSubmissionsController;
-use App\Http\Controllers\FormIntegrationsController;
-use App\Http\Controllers\FormDownloadTemplateController;
 use App\Http\Controllers\FormSubmissionsExportController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MetaPreviewController;
+use App\Http\Controllers\ViewFormController;
+use Illuminate\Routing\Router;
 
 $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $router) {
     $router->get('/', [DashboardController::class, 'show'])->name('dashboard');

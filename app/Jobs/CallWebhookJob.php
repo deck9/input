@@ -2,18 +2,17 @@
 
 namespace App\Jobs;
 
+use App\Http\Resources\FormSessionResource;
 use App\Models\FormSession;
 use App\Models\FormWebhook;
-use Illuminate\Bus\Queueable;
 use GuzzleHttp\RequestOptions;
-use App\Models\FormSessionWebhook;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Http\Resources\FormSessionResource;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CallWebhookJob implements ShouldQueue
 {
@@ -23,6 +22,7 @@ class CallWebhookJob implements ShouldQueue
     use SerializesModels;
 
     public $session;
+
     public $webhook;
 
     /**
@@ -63,7 +63,7 @@ class CallWebhookJob implements ShouldQueue
         ]);
 
         $this->session->webhooks()->updateOrCreate([
-            'form_webhook_id' => $this->webhook->id
+            'form_webhook_id' => $this->webhook->id,
         ], [
             'status' => $response->status(),
             'response' => $response->json() ?? $response->body(),

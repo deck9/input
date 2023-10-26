@@ -38,7 +38,6 @@ it('can duplicate via API route', function () {
     expect($newForm->formBlocks->count())->toBe(3);
 });
 
-
 it('has a default name if no new name is provided via API', function () {
     $form = Form::factory()
         ->has(FormBlock::factory()->count(3))
@@ -50,5 +49,5 @@ it('has a default name if no new name is provided via API', function () {
 
     $newForm = Form::find($response->json('id'));
 
-    expect($newForm->name)->toBe('Copy of ' . $form->name);
+    expect($newForm->name)->toBe('Copy of '.$form->name);
 });

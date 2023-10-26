@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\FormBlockInteractionType;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
-use App\Enums\FormBlockInteractionType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FormBlockInteractionFactory extends Factory

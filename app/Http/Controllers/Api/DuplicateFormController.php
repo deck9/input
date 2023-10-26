@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class DuplicateFormController extends Controller
 {
@@ -12,7 +12,7 @@ class DuplicateFormController extends Controller
     {
         $this->authorize('update', $form);
 
-        $newForm = $form->duplicate($request->name ?? 'Copy of ' . $form->name);
+        $newForm = $form->duplicate($request->name ?? 'Copy of '.$form->name);
 
         $request->user()->forms()->save($newForm);
 

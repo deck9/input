@@ -1,15 +1,15 @@
 <?php
 
+use App\Enums\FormBlockType;
 use App\Models\Form;
-use App\Models\User;
 use App\Models\FormBlock;
 use App\Models\FormSession;
-use App\Enums\FormBlockType;
-use Illuminate\Support\Carbon;
-use Illuminate\Http\UploadedFile;
 use App\Models\FormSessionResponse;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -70,11 +70,11 @@ test('can_return_path_to_avatar_if_available', function () {
 
     $this->assertFalse($form->avatar);
 
-    Storage::put($form->uuid . '/avatar.png', UploadedFile::fake()->image('avatar.png'));
-    Storage::put($form->uuid . '/avatar.png', UploadedFile::fake()->image('avatar.png'));
-    $form->avatar_path = $form->uuid . '/avatar.png';
+    Storage::put($form->uuid.'/avatar.png', UploadedFile::fake()->image('avatar.png'));
+    Storage::put($form->uuid.'/avatar.png', UploadedFile::fake()->image('avatar.png'));
+    $form->avatar_path = $form->uuid.'/avatar.png';
 
-    $this->assertEquals(asset('images/' . $form->avatar_path), $form->avatar);
+    $this->assertEquals(asset('images/'.$form->avatar_path), $form->avatar);
 });
 
 test('can_return_a_custom_brand_and_contrast_color', function () {
@@ -117,7 +117,7 @@ test('can_return_total_started_sessions_count', function () {
         FormSessionResponse::factory()->create([
             'form_session_id' => $session->id,
         ]);
-    };
+    }
 
     $this->assertEquals(4, $form->totalSessions);
 });

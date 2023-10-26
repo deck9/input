@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\FormBlockInteractionType;
+use App\Http\Controllers\Controller;
 use App\Models\FormBlock;
+use App\Models\FormBlockInteraction;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\Controller;
-use App\Models\FormBlockInteraction;
-use App\Enums\FormBlockInteractionType;
 
 class FormBlockInteractionController extends Controller
 {

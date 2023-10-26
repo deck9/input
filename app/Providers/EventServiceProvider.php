@@ -29,7 +29,7 @@ class EventServiceProvider extends ServiceProvider
 
         FormSessionCompletedEvent::class => [
             FormSubmitWebhookListener::class,
-        ]
+        ],
     ];
 
     /**

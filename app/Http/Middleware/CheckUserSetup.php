@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Models\User;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -23,13 +23,13 @@ class CheckUserSetup
         if ($request->method() === 'GET') {
             $isSetupDone = Cache::get($this->CACHE_KEY, false);
 
-            Inertia::share('isFirstSetup', !$isSetupDone);
+            Inertia::share('isFirstSetup', ! $isSetupDone);
 
-            if ($request->route()->getName() !== 'register' && !$isSetupDone && User::count() === 0) {
+            if ($request->route()->getName() !== 'register' && ! $isSetupDone && User::count() === 0) {
                 return redirect('/register');
             }
 
-            if (!$isSetupDone && User::count() > 0) {
+            if (! $isSetupDone && User::count() > 0) {
                 Cache::forever($this->CACHE_KEY, true);
             }
         }

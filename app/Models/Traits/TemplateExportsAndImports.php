@@ -25,7 +25,7 @@ trait TemplateExportsAndImports
 
     public function applyTemplate(array|string $template)
     {
-        if (!is_array($template)) {
+        if (! is_array($template)) {
             $template = collect(json_decode($template, true));
         } else {
             $template = collect($template);
@@ -59,7 +59,7 @@ trait TemplateExportsAndImports
                             ->toArray()
                     );
                 });
-            };
+            }
         });
     }
 }

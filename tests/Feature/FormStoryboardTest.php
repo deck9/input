@@ -1,9 +1,8 @@
 <?php
 
-use Tests\TestCase;
+use App\Enums\FormBlockType;
 use App\Models\Form;
 use App\Models\FormBlock;
-use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -24,14 +23,13 @@ test('a_guest_user_can_get_the_storyboard_for_a_form', function () {
         ->create(['type' => FormBlockType::radio]);
 
     $response = $this->json('GET', route('api.public.forms.storyboard', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]));
 
     $this->assertEquals(2, $response->json('count'));
     $this->assertCount(1, $response->json('blocks.0.interactions'));
     $this->assertCount(4, $response->json('blocks.1.interactions'));
 });
-
 
 test('the storyboard should not return disabled blocks', function () {
     $form = Form::factory()->create();
@@ -45,9 +43,8 @@ test('the storyboard should not return disabled blocks', function () {
         ->create(['is_disabled' => true]);
 
     $response = $this->json('GET', route('api.public.forms.storyboard', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]));
-
 
     expect($response->json('count'))->toBe(2);
 });
@@ -64,7 +61,7 @@ test('a disabled group should not return its children', function () {
         ->create(['parent_block' => $group->uuid]);
 
     $response = $this->json('GET', route('api.public.forms.storyboard', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]));
 
     expect($response->json('count'))->toBe(0);

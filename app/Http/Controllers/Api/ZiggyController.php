@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use Tightenco\Ziggy\Ziggy;
 use App\Http\Controllers\Controller;
+use Tightenco\Ziggy\Ziggy;
 
 class ZiggyController extends Controller
 {

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Form;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 
 class MetaPreviewController extends Controller
 {

@@ -28,8 +28,8 @@ test('can_update_the_block_interactions_sequence', function () {
             'sequence' => [
                 $interactions[2]->id,
                 $interactions[0]->id,
-                $interactions[1]->id
-            ]
+                $interactions[1]->id,
+            ],
         ]);
     $response->assertStatus(204);
 

@@ -4,24 +4,24 @@ namespace App\Enums;
 
 enum FormBlockType: string
 {
-    case none = "none";
-    case group = "group";
+    case none = 'none';
+    case group = 'group';
 
-    case consent = "consent";
+    case consent = 'consent';
 
-    case checkbox = "checkbox";
-    case radio = "radio";
+    case checkbox = 'checkbox';
+    case radio = 'radio';
 
-    case long = "input-long";
-    case short = "input-short";
-    case email = "input-email";
-    case link = "input-link";
-    case number = "input-number";
-    case phone = "input-phone";
-    case secret = "input-secret";
+    case long = 'input-long';
+    case short = 'input-short';
+    case email = 'input-email';
+    case link = 'input-link';
+    case number = 'input-number';
+    case phone = 'input-phone';
+    case secret = 'input-secret';
 
-    case rating = "rating";
-    case scale = "scale";
+    case rating = 'rating';
+    case scale = 'scale';
 
-    case date = "date";
+    case date = 'date';
 }

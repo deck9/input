@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FormSessionResource;
 use App\Models\Form;
+use App\Pipes\MergeResponsesIntoRoot;
+use App\Pipes\StringifyArrays;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Pipes\StringifyArrays;
-use App\Pipes\RemoveWebhookData;
-use Illuminate\Pipeline\Pipeline;
-use App\Http\Controllers\Controller;
-use App\Pipes\ConvertResponsesToJson;
-use App\Pipes\MergeResponsesIntoRoot;
-use App\Http\Resources\FormSessionResource;
 
 class FormSubmissionsExportController extends Controller
 {
@@ -26,7 +23,6 @@ class FormSubmissionsExportController extends Controller
                     ->get()
             )->resolve()
         );
-
 
         /* With this block, we try to find all response keys that have been used
         in the collected forms data. Since there can be cases where a session
@@ -49,12 +45,12 @@ class FormSubmissionsExportController extends Controller
         $exportFormatted = $data
             ->map(function ($session) use ($keys) {
                 $result = array_merge($session, $keys, app(Pipeline::class)
-                ->send($session)
-                ->through([
-                    MergeResponsesIntoRoot::class,
-                    StringifyArrays::class,
-                ])
-                ->thenReturn());
+                    ->send($session)
+                    ->through([
+                        MergeResponsesIntoRoot::class,
+                        StringifyArrays::class,
+                    ])
+                    ->thenReturn());
 
                 Arr::forget($result, 'responses');
                 Arr::forget($result, 'id');
@@ -71,6 +67,6 @@ class FormSubmissionsExportController extends Controller
             }
 
             fclose($out);
-        }, Str::slug($form->name) . '.results.csv');
+        }, Str::slug($form->name).'.results.csv');
     }
 }

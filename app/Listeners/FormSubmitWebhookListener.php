@@ -3,14 +3,14 @@
 namespace App\Listeners;
 
 use App\Jobs\CallWebhookJob;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Queue\InteractsWithQueue;
 
 class FormSubmitWebhookListener implements ShouldQueue
 {
-    use InteractsWithQueue;
     use DispatchesJobs;
+    use InteractsWithQueue;
 
     /**
      * Handle the event.

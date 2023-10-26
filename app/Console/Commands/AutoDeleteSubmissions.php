@@ -9,6 +9,7 @@ class AutoDeleteSubmissions extends Command
 {
     /**
      * The number of submissions cleaned.
+     *
      * @var int
      */
     protected $cleaned = 0;

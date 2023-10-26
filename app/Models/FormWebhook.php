@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Form;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FormWebhook extends Model
 {
@@ -16,15 +15,15 @@ class FormWebhook extends Model
 
     protected $casts = [
         'headers' => 'array',
-        'is_enabled' => 'boolean'
+        'is_enabled' => 'boolean',
     ];
 
     protected $appends = [
-        'has_provider'
+        'has_provider',
     ];
 
     protected $hidden = [
-        'form_id'
+        'form_id',
     ];
 
     public function form(): BelongsTo

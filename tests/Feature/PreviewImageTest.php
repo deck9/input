@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Form;
-use Mockery\MockInterface;
 use App\Events\FormPublished;
-use Spatie\Browsershot\Browsershot;
+use App\Models\Form;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery\MockInterface;
+use Spatie\Browsershot\Browsershot;
 
 uses(RefreshDatabase::class);
 

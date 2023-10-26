@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\FormBlock;
-use App\Enums\FormBlockType;
-use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
+use App\Enums\FormBlockType;
+use App\Models\FormBlock;
+use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -90,7 +90,7 @@ test('can_save_json_option_object_to_interaction', function ($blockType, $intera
             'options' => [
                 'rows' => 10,
                 'max_chars' => 250,
-            ]
+            ],
         ])
         ->assertSuccessful();
 

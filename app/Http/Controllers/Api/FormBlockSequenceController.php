@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class FormBlockSequenceController extends Controller
 {
@@ -17,7 +17,7 @@ class FormBlockSequenceController extends Controller
         ]);
 
         foreach ($request->sequence as $pos => $item) {
-            $block = $form->formBlocks->firstWhere('id', $item["id"]);
+            $block = $form->formBlocks->firstWhere('id', $item['id']);
 
             $block->update(['sequence' => $pos, 'parent_block' => $item['scope']]);
         }

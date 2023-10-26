@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Form;
+use App\Http\Controllers\Controller;
 use App\Models\FormBlock;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class FormBlockInteractionSequenceController extends Controller
 {

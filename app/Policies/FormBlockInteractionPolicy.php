@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\FormBlockInteraction;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FormBlockInteractionPolicy

@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Form;
-use App\Models\FormSession;
-use App\Models\FormWebhook;
-use App\Models\FormSessionResponse;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Queue;
 use App\Events\FormSessionCompletedEvent;
 use App\Jobs\CallWebhookJob;
 use App\Listeners\FormSubmitWebhookListener;
+use App\Models\Form;
+use App\Models\FormSession;
+use App\Models\FormSessionResponse;
+use App\Models\FormWebhook;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
@@ -19,17 +19,17 @@ it('triggers all webhooks on a form when form submit is receveid', function () {
     $form = Form::factory()
         ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
-            'webhook_url' => 'https://void.work/submit'
+            'webhook_url' => 'https://void.work/submit',
         ]))
         ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
-            'webhook_url' => 'https://blackhole.wip/submit'
+            'webhook_url' => 'https://blackhole.wip/submit',
         ]))
         ->create();
 
     $session = FormSession::factory()->for($form)
         ->has(FormSessionResponse::factory([
-            'value' => 'test response'
+            'value' => 'test response',
         ]))
         ->completed()
         ->create();
@@ -48,13 +48,13 @@ it('should only dispatch enabled webhooks', function () {
         ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
             'webhook_url' => 'https://void.work/submit',
-            'is_enabled' => false
+            'is_enabled' => false,
         ]))
         ->create();
 
     $session = FormSession::factory()->for($form)
         ->has(FormSessionResponse::factory([
-            'value' => 'test response'
+            'value' => 'test response',
         ]))
         ->completed()
         ->create();
@@ -72,12 +72,12 @@ it('submits to configured webhook url and http method', function () {
     $form = Form::factory()
         ->has(FormWebhook::factory([
             'webhook_method' => 'GET',
-            'webhook_url' => 'https://void.work/submit'
+            'webhook_url' => 'https://void.work/submit',
         ]))->create();
 
     $session = FormSession::factory()->for($form)
         ->has(FormSessionResponse::factory([
-            'value' => 'test response'
+            'value' => 'test response',
         ]))
         ->completed()
         ->create();

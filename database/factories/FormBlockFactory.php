@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\FormBlockType;
 use App\Models\Form;
 use App\Models\FormBlock;
-use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,7 +30,7 @@ class FormBlockFactory extends Factory
             'type' => FormBlockType::none,
             'sequence' => 0,
             'webhook_url' => null,
-            'form_id' => Form::factory()
+            'form_id' => Form::factory(),
         ];
     }
 

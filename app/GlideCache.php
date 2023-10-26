@@ -2,15 +2,14 @@
 
 namespace App;
 
-use League\Glide\ServerFactory;
-use League\Flysystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
-use League\Glide\Responses\LaravelResponseFactory;
+use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\ServerFactory;
 
 class GlideCache
 {
-
     public $server;
 
     public function __construct()
@@ -29,7 +28,7 @@ class GlideCache
 
     public function clear($path)
     {
-        if (!$path) {
+        if (! $path) {
             return;
         }
 

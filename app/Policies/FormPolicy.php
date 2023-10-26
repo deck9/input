@@ -10,7 +10,6 @@ class FormPolicy
 {
     use HandlesAuthorization;
 
-
     public function view(User $user, Form $form)
     {
         return $user->id === $form->user_id;

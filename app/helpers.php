@@ -1,14 +1,11 @@
 <?php
 
-use App\Models\FormBlock;
-
 const DELAY_MULTIPLICATOR = 30;
 const MAX_DELAY = 1500;
 
 /**
  * calculates if the contrast color of the passed hexcode should be black or white
  *
- * @param string $hexcolor
  * @return string 'black' | 'white'
  */
 function getContrastYIQ(string $hexcolor): string

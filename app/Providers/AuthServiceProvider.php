@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Team;
-use App\Policies\FormPolicy;
-use App\Policies\TeamPolicy;
 use App\Models\FormBlockInteraction;
+use App\Models\Team;
 use App\Policies\FormBlockInteractionPolicy;
 use App\Policies\FormBlockPolicy;
+use App\Policies\FormPolicy;
+use App\Policies\TeamPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

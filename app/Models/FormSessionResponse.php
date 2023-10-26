@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\FormBlock;
-use App\Models\FormSession;
-use App\Scopes\WithoutChildren;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class FormSessionResponse extends Model
 {
@@ -40,7 +37,6 @@ class FormSessionResponse extends Model
     {
         return $this->belongsTo(FormSession::class, 'form_session_id');
     }
-
 
     public function setValueAttribute($new)
     {

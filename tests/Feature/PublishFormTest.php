@@ -1,15 +1,15 @@
 <?php
 
 use App\Models\Form;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
 test('user can publish a form', function () {
     Event::fake();
 
-    $form = Form::factory()->create(['published_at' =>  null]);
+    $form = Form::factory()->create(['published_at' => null]);
 
     $this->actingAs($form->user)
         ->json('POST', route('api.forms.publish', $form->uuid))
@@ -19,7 +19,7 @@ test('user can publish a form', function () {
 });
 
 test('user can unpublish a form', function () {
-    $form = Form::factory()->create(['published_at' =>  now()]);
+    $form = Form::factory()->create(['published_at' => now()]);
 
     $this->actingAs($form->user)
         ->json('POST', route('api.forms.unpublish', $form->uuid))

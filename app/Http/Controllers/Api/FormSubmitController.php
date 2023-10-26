@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\FormSessionCompletedEvent;
+use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Events\FormSessionCompletedEvent;
 
 class FormSubmitController extends Controller
 {

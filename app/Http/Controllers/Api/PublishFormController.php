@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Form;
-use Illuminate\Http\Request;
 use App\Events\FormPublished;
 use App\Http\Controllers\Controller;
+use App\Models\Form;
 
 class PublishFormController extends Controller
 {

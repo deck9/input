@@ -4,12 +4,12 @@ namespace App\Enums;
 
 enum FormBlockInteractionType: string
 {
-    case input = "input";
-    case textarea = "textarea";
-    case button = "button";
-    case consent = "consent";
+    case input = 'input';
+    case textarea = 'textarea';
+    case button = 'button';
+    case consent = 'consent';
 
-    case range = "range";
+    case range = 'range';
 
-    case date = "date";
+    case date = 'date';
 }

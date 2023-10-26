@@ -2,10 +2,10 @@
 
 namespace App\Http;
 
-use Illuminate\Routing\Router;
-use Illuminate\Foundation\Application;
 use App\Http\Middleware\CheckUserSetup;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Router;
 
 class Kernel extends HttpKernel
 {
@@ -69,7 +69,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check-user-setup' => CheckUserSetup::class,
     ];
-
 
     /**
      * We need to change the priority of the middleware to ensure that the

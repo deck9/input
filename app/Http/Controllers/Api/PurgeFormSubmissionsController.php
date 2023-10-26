@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Form;
 use App\Http\Controllers\Controller;
+use App\Models\Form;
 
 class PurgeFormSubmissionsController extends Controller
 {

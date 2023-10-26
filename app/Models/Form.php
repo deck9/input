@@ -2,24 +2,19 @@
 
 namespace App\Models;
 
-use Hashids\Hashids;
-use Ramsey\Uuid\Uuid;
-use App\Models\BaseModel;
-use App\Models\FormBlock;
-use App\Models\FormSession;
-use App\Models\FormWebhook;
 use App\Enums\FormBlockType;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Resources\PublicFormResource;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Resources\PublicFormBlockResource;
+use App\Http\Resources\PublicFormResource;
 use App\Models\Traits\TemplateExportsAndImports;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 
 class Form extends BaseModel
 {
@@ -44,7 +39,7 @@ class Form extends BaseModel
         'is_auto_delete_enabled' => 'boolean',
         'user_id' => 'integer',
         'published_at' => 'datetime',
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -176,9 +171,9 @@ class Form extends BaseModel
 
     public function hasImage($type)
     {
-        $fieldname = $type . '_path';
+        $fieldname = $type.'_path';
 
-        if (!$this->$fieldname) {
+        if (! $this->$fieldname) {
             return false;
         }
 
@@ -188,7 +183,7 @@ class Form extends BaseModel
     public function getAvatarAttribute()
     {
         if ($this->hasImage('avatar')) {
-            return asset('images/' . $this->avatar_path);
+            return asset('images/'.$this->avatar_path);
         }
 
         return false;
@@ -197,7 +192,7 @@ class Form extends BaseModel
     public function getBackgroundAttribute()
     {
         if ($this->hasImage('background')) {
-            return asset('images/' . $this->background_path);
+            return asset('images/'.$this->background_path);
         }
 
         return false;
@@ -251,11 +246,12 @@ class Form extends BaseModel
     public function getInitialsAttribute()
     {
         $strings = explode(' ', $this->name)[0];
-        return join(
+
+        return implode(
             ' ',
             collect($strings)
                 ->take(2)
-                ->map(fn($item) => substr($item, 0, 2))
+                ->map(fn ($item) => substr($item, 0, 2))
                 ->toArray()
         );
     }
@@ -317,7 +313,7 @@ class Form extends BaseModel
     {
         $settings = json_encode(PublicFormResource::make($this)->resolve());
 
-        $output = "window.iptSettings = window.iptSettings || [];";
+        $output = 'window.iptSettings = window.iptSettings || [];';
         $output .= "window.iptSettings = {$settings}";
 
         return $output;
@@ -342,7 +338,7 @@ class Form extends BaseModel
             // Reject all items that are children of disabled groups
             if ($item->parent_block) {
                 // just check if the parent is still in the collection
-                return !$blocks->firstWhere('uuid', $item->parent_block);
+                return ! $blocks->firstWhere('uuid', $item->parent_block);
             }
 
             return false;
@@ -360,8 +356,6 @@ class Form extends BaseModel
      * For duplicating the form we do not use the Eloquent replicate method.
      * Since we also might want to duplicated form blocks and form blocks interactions,
      * we can use the template export and import functionality.
-     *
-     * @return Form
      */
     public function duplicate(string $newName): Form
     {

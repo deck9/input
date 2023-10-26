@@ -19,9 +19,9 @@ test('can_change_the_sequence_of_blocks', function () {
     $this->actingAs($form->user)
         ->json('POST', route('api.blocks.sequence', ['form' => $form->uuid]), [
             'sequence' => [
-                ["id" => $form->formBlocks[1]->id, "scope" => null],
-                ["id" => $form->formBlocks[0]->id, "scope" => null]
-            ]
+                ['id' => $form->formBlocks[1]->id, 'scope' => null],
+                ['id' => $form->formBlocks[0]->id, 'scope' => null],
+            ],
         ])->assertStatus(204);
 
     // Now test that the sequence of the blocks is the inverse
@@ -41,9 +41,9 @@ test('can_add_a_scope_to_blocks', function () {
     $this->actingAs($form->user)
         ->json('POST', route('api.blocks.sequence', ['form' => $form->uuid]), [
             'sequence' => [
-                ["id" => $form->formBlocks[0]->id, "scope" => null],
-                ["id" => $form->formBlocks[1]->id, "scope" => $form->formBlocks[0]->uuid]
-            ]
+                ['id' => $form->formBlocks[0]->id, 'scope' => null],
+                ['id' => $form->formBlocks[1]->id, 'scope' => $form->formBlocks[0]->uuid],
+            ],
         ])->assertStatus(204);
 
     // Now test that the sequence of the blocks is the inverse

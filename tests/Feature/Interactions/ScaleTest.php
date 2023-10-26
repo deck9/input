@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
+use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -18,7 +18,7 @@ test('can_update_options_for_range_interaction', function () {
                 'end' => 10,
                 'labelLeft' => 'Test Left',
                 'labelRight' => 'Test Right',
-            ]
+            ],
         ])
         ->assertStatus(200);
 

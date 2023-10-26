@@ -2,10 +2,10 @@
 
 namespace App\Listeners;
 
-use Spatie\Browsershot\Browsershot;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Browsershot\Browsershot;
 
 class CreatePreviewImage implements ShouldQueue
 {
@@ -24,11 +24,11 @@ class CreatePreviewImage implements ShouldQueue
      */
     public function handle($event)
     {
-        $relativePath = $event->form->uuid . '_' . time() . '.jpg';
+        $relativePath = $event->form->uuid.'_'.time().'.jpg';
         $outputPath = storage_path(
-            join('/', [
+            implode('/', [
                 'app/public/previews',
-                $relativePath
+                $relativePath,
             ])
         );
 

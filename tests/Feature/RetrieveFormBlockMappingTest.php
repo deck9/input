@@ -14,17 +14,17 @@ it('can_get_a_mapping_for_which_block_type_uses_which_interaction_type', functio
         ->assertSuccessful();
 
     $response->assertJsonFragment([
-        "consent" => "consent",
-        "checkbox" => "button",
-        "radio" => "button",
-        "input-short" => "input",
-        "input-email" => "input",
-        "input-link" => "input",
-        "input-number" => "input",
-        "input-phone" => "input",
-        "input-long" => "textarea",
-        "rating" => "range",
-        "scale" => "range",
-        "date" => "date"
+        'consent' => 'consent',
+        'checkbox' => 'button',
+        'radio' => 'button',
+        'input-short' => 'input',
+        'input-email' => 'input',
+        'input-link' => 'input',
+        'input-number' => 'input',
+        'input-phone' => 'input',
+        'input-long' => 'textarea',
+        'rating' => 'range',
+        'scale' => 'range',
+        'date' => 'date',
     ]);
 });

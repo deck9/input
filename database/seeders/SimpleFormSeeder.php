@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\Form;
-use App\Models\User;
-use App\Models\FormBlock;
-use App\Models\FormSession;
-use Illuminate\Support\Str;
 use App\Enums\FormBlockType;
-use Illuminate\Database\Seeder;
+use App\Models\Form;
+use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
+use App\Models\FormSession;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class SimpleFormSeeder extends Seeder
 {
@@ -27,11 +27,11 @@ class SimpleFormSeeder extends Seeder
             'name' => 'Simple Form',
             'description' => 'This form is for testing purposes.',
             'brand_color' => '#000000',
-            'user_id' => $user ?  $user->id : User::factory()->create()->id,
+            'user_id' => $user ? $user->id : User::factory()->create()->id,
         ]);
 
         $sessions = FormSession::factory(5)->create([
-            'form_id' => $form
+            'form_id' => $form,
         ]);
 
         FormBlock::factory()->create([
@@ -106,7 +106,7 @@ class SimpleFormSeeder extends Seeder
         $block = FormBlock::factory()->create([
             'form_id' => $form->id,
             'type' => $type,
-            'message' => $type->value . ' block',
+            'message' => $type->value.' block',
         ]);
 
         $action = FormBlockInteraction::factory()->create([

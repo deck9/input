@@ -1,13 +1,13 @@
 <?php
 
+use App\Enums\FormBlockType;
 use App\Models\Form;
 use App\Models\FormBlock;
-use Illuminate\Support\Arr;
-use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 
 uses(RefreshDatabase::class);
 
@@ -67,13 +67,13 @@ test('can_import_a_string_template_for_an_existing_form', function () {
     $form = Form::factory()->create([
         'name' => 'Test Form',
         'description' => 'A template Import Test',
-        'user_id' => $user->id
+        'user_id' => $user->id,
     ]);
 
     $importTemplateString = file_get_contents(base_path('tests/form.template.json'));
 
     $response = $this->actingAs($user)->post(route('api.forms.template-import', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [
         'template' => $importTemplateString,
     ])->assertStatus(200);
@@ -100,7 +100,7 @@ test('can_import_a_file_template_for_an_existing_form', function () {
     $form = Form::factory()->create([
         'name' => 'Test Form',
         'description' => 'A template Import Test',
-        'user_id' => $user->id
+        'user_id' => $user->id,
     ]);
 
     $templateFile = UploadedFile::fake()->createWithContent(
@@ -109,7 +109,7 @@ test('can_import_a_file_template_for_an_existing_form', function () {
     );
 
     $response = $this->actingAs($user)->post(route('api.forms.template-import', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [
         'file' => $templateFile,
     ])->assertOk();

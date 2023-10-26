@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Form;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 class FormFactory extends Factory
 {
@@ -38,7 +38,7 @@ class FormFactory extends Factory
     {
         return $this->state(function ($attributes) {
             return [
-                'published_at' => null
+                'published_at' => null,
             ];
         });
     }

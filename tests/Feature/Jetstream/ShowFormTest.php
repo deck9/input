@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Jetstream;
 
-use Tests\TestCase;
 use App\Models\Form;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ShowFormTest extends TestCase
 {
@@ -14,7 +14,7 @@ class ShowFormTest extends TestCase
     /** @test */
     public function cannot_view_unpublished_form()
     {
-        $form  = Form::factory()->unpublished()->create();
+        $form = Form::factory()->unpublished()->create();
 
         $this->get(route('forms.show', ['uuid' => $form->uuid]))
             ->assertStatus(404);
@@ -23,7 +23,7 @@ class ShowFormTest extends TestCase
     /** @test */
     public function can_view_the_form_view_when_form_is_unpublished_but_owner()
     {
-        $form  = Form::factory()->unpublished()->create();
+        $form = Form::factory()->unpublished()->create();
 
         $this->actingAs($form->user)->get(route('forms.show', ['uuid' => $form->uuid]))
             ->assertStatus(200);
@@ -32,7 +32,7 @@ class ShowFormTest extends TestCase
     /** @test */
     public function cannot_view_the_form_view_when_form_is_unpublished_and_other_user()
     {
-        $form  = Form::factory()->unpublished()->create();
+        $form = Form::factory()->unpublished()->create();
 
         /** @var User $other */
         $other = User::factory()->create();
@@ -44,7 +44,7 @@ class ShowFormTest extends TestCase
     /** @test */
     public function can_view_the_form_view_when_form_is_published()
     {
-        $form  = Form::factory()->create();
+        $form = Form::factory()->create();
 
         $this->get(route('forms.show', ['uuid' => $form->uuid]))
             ->assertStatus(200);

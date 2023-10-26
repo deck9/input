@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Form;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 
 class FormDownloadTemplateController extends Controller
 {
@@ -14,6 +13,6 @@ class FormDownloadTemplateController extends Controller
 
         return response()->streamDownload(function () use ($form) {
             echo json_encode($form->toTemplate());
-        }, Str::slug($form->name) . ".template.json");
+        }, Str::slug($form->name).'.template.json');
     }
 }

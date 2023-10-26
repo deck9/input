@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\FormBlock;
 use App\Enums\FormBlockType;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class FormBlockUpdateRequest extends FormRequest
 {
@@ -33,7 +32,7 @@ class FormBlockUpdateRequest extends FormRequest
             'title' => 'string|nullable',
             'is_required' => 'boolean|nullable',
             'is_disabled' => 'boolean|nullable',
-            'type' => [new Enum(FormBlockType::class)]
+            'type' => [new Enum(FormBlockType::class)],
         ];
     }
 

@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Form;
-use Hashids\Hashids;
-use App\Scopes\Sequence;
-use Webpatser\Uuid\Uuid;
-use App\Models\BaseModel;
-use App\Enums\FormBlockType;
-use App\Models\FormSessionResponse;
-use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
+use App\Enums\FormBlockType;
+use App\Scopes\Sequence;
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Webpatser\Uuid\Uuid;
 
 class FormBlock extends BaseModel
 {
@@ -25,7 +21,7 @@ class FormBlock extends BaseModel
         'is_required',
         'is_disabled',
         'parent_block',
-        'sequence'
+        'sequence',
     ];
 
     protected $guarded = [];
@@ -45,7 +41,7 @@ class FormBlock extends BaseModel
     ];
 
     protected $hidden = [
-        'formBlockInteractions'
+        'formBlockInteractions',
     ];
 
     protected static function boot()
@@ -68,13 +64,13 @@ class FormBlock extends BaseModel
     public function scopeOnlyInteractive($query)
     {
         return $query->whereNotIn('type', [
-            FormBlockType::none
+            FormBlockType::none,
         ]);
     }
 
     public function hasResponseAction()
     {
-        return !in_array($this->type, [FormBlockType::none]);
+        return ! in_array($this->type, [FormBlockType::none]);
     }
 
     public function hasInput()
@@ -111,10 +107,10 @@ class FormBlock extends BaseModel
 
     public function getSessionCountAttribute()
     {
-        return $this->formSessionResponses()->selectRaw("COUNT(DISTINCT form_session_id) as count")->first()->count;
+        return $this->formSessionResponses()->selectRaw('COUNT(DISTINCT form_session_id) as count')->first()->count;
     }
 
-    public function getInteractionType(): FormBlockInteractionType | null
+    public function getInteractionType(): ?FormBlockInteractionType
     {
         switch ($this->type) {
             case FormBlockType::short:
@@ -170,7 +166,7 @@ class FormBlock extends BaseModel
 
     public function submit(FormSession $session, array $data)
     {
-        if (!has_string_keys($data)) {
+        if (! has_string_keys($data)) {
             collect($data)->each(fn ($chunk) => $this->submit($session, $chunk));
         } else {
             $interaction = $this->formBlockInteractions()
@@ -191,20 +187,21 @@ class FormBlock extends BaseModel
         if (is_array($payload)) {
             $action = collect($payload)->map(function ($index) {
                 $action = $this->formBlockInteractions[$index];
+
                 return [
                     'actionId' => $action->uuid,
-                    'payload' => $action->label
+                    'payload' => $action->label,
                 ];
             })->toArray();
         } elseif (is_string($payload)) {
-            $action  = [
+            $action = [
                 'actionId' => $this->formBlockInteractions[0]->uuid,
-                'payload' => $payload
+                'payload' => $payload,
             ];
         }
 
         return [
-            $this->uuid => $action
+            $this->uuid => $action,
         ];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\FormBlockInteraction;
 use App\Enums\FormBlockInteractionType;
+use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -13,7 +13,7 @@ test('can_not_update_interaction_with_empty_label', function () {
 
     $this->actingAs($interaction->formBlock->form->user)
         ->json('post', route('api.interactions.update', $interaction), [
-            'label' => ''
+            'label' => '',
         ])
         ->assertStatus(422);
 

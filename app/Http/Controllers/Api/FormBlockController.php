@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Form;
-use App\Models\FormBlock;
 use App\Enums\FormBlockType;
-use Illuminate\Http\Request;
 use App\Events\FormBlocksUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormBlockUpdateRequest;
+use App\Models\Form;
+use App\Models\FormBlock;
+use Illuminate\Http\Request;
 
 class FormBlockController extends Controller
 {
@@ -33,14 +33,14 @@ class FormBlockController extends Controller
         $this->authorize('update', $form);
 
         $request->validate([
-            'type' => 'nullable|in:' . collect(FormBlockType::cases())->pluck('value')->join(','),
+            'type' => 'nullable|in:'.collect(FormBlockType::cases())->pluck('value')->join(','),
         ]);
 
         $sequence = $form->formBlocks->count();
 
         $block = $form->formBlocks()->create([
             'type' => $request->input('type') ?? FormBlockType::none,
-            'sequence' => $sequence
+            'sequence' => $sequence,
         ]);
 
         return response()->json($block->fresh(), 201);

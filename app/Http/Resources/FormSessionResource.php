@@ -31,16 +31,16 @@ class FormSessionResource extends JsonResource
     {
         return collect(
             FormSessionResponseResource::collection($this->formSessionResponses)
-            ->resolve()
+                ->resolve()
         )
-        ->groupBy('id')
-        ->map(function ($response) {
-            $concat = join(', ', $response->pluck('value')->sortBy('value')->all());
+            ->groupBy('id')
+            ->map(function ($response) {
+                $concat = implode(', ', $response->pluck('value')->sortBy('value')->all());
 
-            return [
-                'answer' => $concat,
-                'data' => $response->toArray(),
-            ];
-        })->toArray();
+                return [
+                    'answer' => $concat,
+                    'data' => $response->toArray(),
+                ];
+            })->toArray();
     }
 }

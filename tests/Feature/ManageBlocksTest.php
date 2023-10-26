@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Form;
-use App\Models\User;
-use Hashids\Hashids;
-use App\Models\FormBlock;
 use App\Enums\FormBlockType;
 use App\Events\FormBlocksUpdated;
-use Illuminate\Support\Facades\Event;
+use App\Models\Form;
+use App\Models\FormBlock;
+use App\Models\User;
 use Database\Seeders\SimpleFormSeeder;
+use Hashids\Hashids;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
@@ -32,7 +32,7 @@ test('can_create_a_new_block_of_type_group', function () {
 
     $response = $this->actingAs($form->user)
         ->json('post', route('api.blocks.create', $form->uuid), [
-            'type' => 'group'
+            'type' => 'group',
         ])
         ->assertSuccessful();
 
@@ -52,7 +52,7 @@ test('can_only_create_blocks_for_forms_that_a_user_owns', function () {
     $this->actingAs($otherUser)
         ->json('post', route('api.blocks.create', $form))
         ->assertStatus(403);
-    ;
+
 });
 
 test('can_get_blocks_related_to_a_form', function () {
@@ -232,22 +232,21 @@ test('can_save_information_in_an_options_field', function () {
     $this->assertEquals('Test Title', $block->fresh()->options['title']);
 });
 
-
 it('can disable and enable a form block', function () {
     $block = FormBlock::factory()->create([
-        'is_disabled' => false
+        'is_disabled' => false,
     ]);
 
     $this->actingAs($block->form->user)
         ->json('POST', route('api.blocks.update', $block->id), [
-            'is_disabled' => true
+            'is_disabled' => true,
         ]);
 
     expect($block->fresh()->is_disabled)->toBeTrue();
 
     $this->actingAs($block->form->user)
         ->json('POST', route('api.blocks.update', $block->id), [
-            'is_disabled' => false
+            'is_disabled' => false,
         ]);
 
     expect($block->fresh()->is_disabled)->toBeFalse();

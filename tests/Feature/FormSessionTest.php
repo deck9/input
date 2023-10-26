@@ -2,19 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Models\Form;
-use App\Models\FormSession;
-use Illuminate\Support\Facades\DB;
-use App\Models\FormSessionResponse;
-use Illuminate\Support\Facades\Event;
 use App\Events\FormSessionCompletedEvent;
 use App\Listeners\FormSubmitWebhookListener;
+use App\Models\Form;
+use App\Models\FormSession;
+use App\Models\FormSessionResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
 dataset('templates', [
-    '{"name":"MailFrog Newsletter Sign-Up","description":"Test","eoc_text":"To complete the signup for our newsletter, we send you an email with a link to confirm your address.","eoc_headline":"Please check your inbox","cta_label":"Go To Homepage","cta_link":"https://getinput.co","linkedin":null,"github":null,"instagram":null,"facebook":null,"twitter":null,"show_cta_link":false,"show_social_links":false,"blocks":[{"message":"<p>Hey, thanks for your interest in the MailFrog newsletter.</p><p><strong>Please insert your e-mail address.</strong></p>","type":"input-email","title":null,"parent_block":null,"sequence":0,"formBlockInteractions":[{"type":"input","label":"froggy@mailfrog.com","message":null,"sequence":0}]},{"message":"<p><strong>Thank You! 🐸🐸🐸</strong><br>After confirming your email, we subscribe you to our list. Do you mind answering a few questions?</p>","type":"none","title":null,"parent_block":null,"sequence":1,"formBlockInteractions":[]},{"message":"<p>Is this the first time you are visiting <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://mailfrog.com\">mailfrog.com</a>?</p>","type":"radio","title":null,"parent_block":null,"sequence":2,"formBlockInteractions":[{"type":"button","label":"Yes","message":null,"sequence":0},{"type":"button","label":"No","message":null,"sequence":1}]},{"message":"<p><strong>What feature do you wish, MailFrog would offer?</strong></p>","type":"checkbox","title":null,"parent_block":null,"sequence":3,"formBlockInteractions":[{"type":"button","label":"Transactional Mailing","message":null,"sequence":0},{"type":"button","label":"Template API","message":null,"sequence":1},{"type":"button","label":"Inbound Mail","message":null,"sequence":2},{"type":"button","label":"Spam Protection","message":null,"sequence":3}]}]}'
+    '{"name":"MailFrog Newsletter Sign-Up","description":"Test","eoc_text":"To complete the signup for our newsletter, we send you an email with a link to confirm your address.","eoc_headline":"Please check your inbox","cta_label":"Go To Homepage","cta_link":"https://getinput.co","linkedin":null,"github":null,"instagram":null,"facebook":null,"twitter":null,"show_cta_link":false,"show_social_links":false,"blocks":[{"message":"<p>Hey, thanks for your interest in the MailFrog newsletter.</p><p><strong>Please insert your e-mail address.</strong></p>","type":"input-email","title":null,"parent_block":null,"sequence":0,"formBlockInteractions":[{"type":"input","label":"froggy@mailfrog.com","message":null,"sequence":0}]},{"message":"<p><strong>Thank You! 🐸🐸🐸</strong><br>After confirming your email, we subscribe you to our list. Do you mind answering a few questions?</p>","type":"none","title":null,"parent_block":null,"sequence":1,"formBlockInteractions":[]},{"message":"<p>Is this the first time you are visiting <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://mailfrog.com\">mailfrog.com</a>?</p>","type":"radio","title":null,"parent_block":null,"sequence":2,"formBlockInteractions":[{"type":"button","label":"Yes","message":null,"sequence":0},{"type":"button","label":"No","message":null,"sequence":1}]},{"message":"<p><strong>What feature do you wish, MailFrog would offer?</strong></p>","type":"checkbox","title":null,"parent_block":null,"sequence":3,"formBlockInteractions":[{"type":"button","label":"Transactional Mailing","message":null,"sequence":0},{"type":"button","label":"Template API","message":null,"sequence":1},{"type":"button","label":"Inbound Mail","message":null,"sequence":2},{"type":"button","label":"Spam Protection","message":null,"sequence":3}]}]}',
 ]);
 
 test('can_create_a_new_form_session', function () {
@@ -55,13 +54,13 @@ test('create_session_only_return_whitelisted_attributes_in_response', function (
     ]))
         ->assertStatus(201)
         // id and created_at are not whitelisted
-        ->assertJsonMissing(["id", "created_at"])
+        ->assertJsonMissing(['id', 'created_at'])
         ->assertJsonStructure([
-            "token",
-            "has_data_privacy",
-            "is_completed",
-            "params",
-            "created_at",
+            'token',
+            'has_data_privacy',
+            'is_completed',
+            'params',
+            'created_at',
         ]);
 });
 
@@ -72,14 +71,14 @@ test('can_submit_a_form_through_a_session_token', function ($template) {
     $session = FormSession::factory()->create(['form_id' => $form->id]);
 
     $submitted = $this->json('POST', route('api.public.forms.submit', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [
         'token' => $session->token,
         'payload' => [
             ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
-            ...$form->formBlocks[3]->getSubmitPayload([0,1])
-        ]
+            ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
+        ],
     ])->assertStatus(200);
 
     $form->refresh();
@@ -100,7 +99,7 @@ test('submitting_a_session_a_second_time_does_not_create_duplicate_responses', f
     $session = FormSession::factory()->create(['form_id' => $form->id]);
 
     $route = route('api.public.forms.submit', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]);
 
     $request = [
@@ -108,8 +107,8 @@ test('submitting_a_session_a_second_time_does_not_create_duplicate_responses', f
         'payload' => [
             ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
-            ...$form->formBlocks[3]->getSubmitPayload([0,1])
-        ]
+            ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
+        ],
     ];
 
     // Submit twice
@@ -128,10 +127,10 @@ test('a_session_token_must_be_valid', function () {
     $form = Form::factory()->create();
 
     $this->json('POST', route('api.public.forms.submit', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [
         'token' => 'invalid-token',
-        'payload' => []
+        'payload' => [],
     ])
         ->assertStatus(404);
 });
@@ -140,7 +139,7 @@ test('can_not_submit_a_form_without_a_session_token', function () {
     $form = Form::factory()->create();
 
     $this->json('POST', route('api.public.forms.submit', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [])
         ->assertStatus(422)
         ->assertJsonValidationErrors('token');
@@ -150,10 +149,10 @@ test('can_submit_a_form_without_payload_when_no_input_required', function () {
     $session = FormSession::factory()->create();
 
     $submitted = $this->json('POST', route('api.public.forms.submit', [
-        'form' => $session->form->uuid
+        'form' => $session->form->uuid,
     ]), [
         'token' => $session->token,
-        'payload' => []
+        'payload' => [],
     ])->assertStatus(200);
 
     $this->assertTrue($submitted->json('is_completed'));
@@ -165,16 +164,16 @@ test('when_submitting_a_form_an_event_is_fired', function () {
     $session = FormSession::factory()->create();
 
     $this->json('POST', route('api.public.forms.submit', [
-        'form' => $session->form->uuid
+        'form' => $session->form->uuid,
     ]), [
         'token' => $session->token,
-        'payload' => []
+        'payload' => [],
     ])->assertStatus(200);
 
     Event::assertListening(FormSessionCompletedEvent::class, FormSubmitWebhookListener::class);
 });
 
-it("should delete old submissions if auto delete is enabled for the form after specified time", function ($template) {
+it('should delete old submissions if auto delete is enabled for the form after specified time', function ($template) {
     $form = Form::factory()->create([
         'is_auto_delete_enabled' => true,
         'data_retention_days' => 30,
@@ -185,14 +184,14 @@ it("should delete old submissions if auto delete is enabled for the form after s
     $session = FormSession::factory()->create(['form_id' => $form->id]);
 
     $this->json('POST', route('api.public.forms.submit', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [
         'token' => $session->token,
         'payload' => [
             ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
-            ...$form->formBlocks[3]->getSubmitPayload([0,1])
-        ]
+            ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
+        ],
     ])->assertStatus(200);
 
     // Assertions after submission
@@ -206,7 +205,7 @@ it("should delete old submissions if auto delete is enabled for the form after s
     $this->assertCount(0, FormSessionResponse::all());
 })->with('templates');
 
-it("should not delete submissions when auto delete is not enabled", function ($template) {
+it('should not delete submissions when auto delete is not enabled', function ($template) {
     $form = Form::factory()->create([
         'is_auto_delete_enabled' => false,
         'data_retention_days' => 30,
@@ -217,14 +216,14 @@ it("should not delete submissions when auto delete is not enabled", function ($t
     $session = FormSession::factory()->create(['form_id' => $form->id]);
 
     $this->json('POST', route('api.public.forms.submit', [
-        'form' => $form->uuid
+        'form' => $form->uuid,
     ]), [
         'token' => $session->token,
         'payload' => [
             ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
-            ...$form->formBlocks[3]->getSubmitPayload([0,1])
-        ]
+            ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
+        ],
     ])->assertStatus(200);
 
     // Assertions after submission

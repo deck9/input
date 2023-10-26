@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\FormBlockType;
 use App\Models\Form;
-use App\Models\User;
 use App\Models\FormBlock;
 use App\Models\FormSession;
-use App\Enums\FormBlockType;
 use App\Models\FormSessionResponse;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
