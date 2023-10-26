@@ -16,6 +16,16 @@
         <D9Select v-model="language" :options="languageOptions" />
       </div>
 
+      <div class="mb-4 flex justify-between">
+        <D9Label label="Send email notifications" />
+        <D9Switch
+          label=""
+          v-model="isNotificationViaMail"
+          onLabel="yes"
+          offLabel="no"
+        />
+      </div>
+
       <D9Button type="submit" label="Save Options" :is-loading="isSaving" />
     </form>
   </div>
@@ -23,7 +33,14 @@
 
 <script setup lang="ts">
 import { useForm } from "@/stores";
-import { D9Button, D9Label, D9Input, D9Textarea, D9Select } from "@deck9/ui";
+import {
+  D9Button,
+  D9Label,
+  D9Input,
+  D9Textarea,
+  D9Select,
+  D9Switch,
+} from "@deck9/ui";
 import { ref } from "vue";
 
 const store = useForm();
@@ -31,6 +48,7 @@ const isSaving = ref(false);
 
 const name = ref(store?.form?.name);
 const description = ref(store?.form?.description);
+const isNotificationViaMail = ref(store?.form?.is_notification_via_mail);
 
 const languageOptions = ref([
   // Default language
@@ -53,6 +71,7 @@ const saveOptions = async () => {
     name: name.value,
     description: description.value,
     language: language.value.value,
+    is_notification_via_mail: isNotificationViaMail.value,
   });
 
   isSaving.value = false;

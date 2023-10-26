@@ -18,6 +18,7 @@ class FormSessionResponseResource extends JsonResource
         try {
             return [
                 'id' => $this->formBlock->uuid,
+                'message' => strip_tags($this->formBlock->message),
                 'name' => $this->formBlock->title ?? $this->formBlock->uuid,
                 'value' => $this->formatValue($this->value),
                 'original' => $this->value,
@@ -27,6 +28,7 @@ class FormSessionResponseResource extends JsonResource
                 'name' => '',
                 'value' => '',
                 'original' => '',
+                'message' => ''
             ];
         }
     }
@@ -48,7 +50,7 @@ class FormSessionResponseResource extends JsonResource
         if ($this->formBlock->type === FormBlockType::consent) {
             $accepted = $value['accepted'] ? 'yes' : 'no';
 
-            return $value['consent'].': '.$accepted;
+            return $value['consent'] . ': ' . $accepted;
         }
 
         if ($this->formBlock->type === FormBlockType::rating || $this->formBlock->type === FormBlockType::scale) {
