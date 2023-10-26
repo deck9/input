@@ -39,6 +39,7 @@ class FormSessionResource extends JsonResource
 
                 return [
                     'answer' => $concat,
+                    'message' => $response->pluck('message')[0],
                     'data' => $response->toArray(),
                 ];
             })->toArray();

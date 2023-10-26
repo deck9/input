@@ -21,7 +21,7 @@
         />
       </div>
 
-      <div class="mb-4">
+      <div class="mb-4" v-show="isAutoDeleteEnabled">
         <D9Label label="Data retention in days" />
         <D9Input type="number" min="1" v-model="dataRetentionDays" block />
       </div>

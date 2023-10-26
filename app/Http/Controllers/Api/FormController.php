@@ -44,7 +44,7 @@ class FormController extends Controller
 
         $request->validate([
             'is_auto_delete_enabled' => 'boolean',
-            'data_retention_days' => 'required_if:is_auto_delete_enabled,true|integer|min:1',
+            'data_retention_days' => 'required_if:is_auto_delete_enabled,true',
         ]);
 
         $form->update(
