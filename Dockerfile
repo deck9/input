@@ -1,4 +1,4 @@
-FROM trafex/php-nginx as php_base
+FROM trafex/php-nginx:3.3.0 as php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
 LABEL org.opencontainers.image.licenses="GNU Affero General Public License v3.0"
@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.default.conf /etc/nginx/conf.d/default.conf
-COPY php.conf.ini /etc/php81/conf.d/99-input.ini
+COPY php.conf.ini /etc/php82/conf.d/99-input.ini
 
 USER nobody
 WORKDIR /var/www/html
@@ -39,9 +39,15 @@ COPY --chown=nobody . .
 
 RUN composer install --optimize-autoloader --no-interaction --no-progress
 
-# Remove Composer Cache & Script since we do not need it any more
 USER root
+
+# Remove Composer Cache & Script since we do not need it any more
 RUN rm -rf /root/.composer /usr/bin/composer
+
+# Copy Supervisor Config for Scheduler
+COPY scheduler.conf /tmp/scheduler.conf
+RUN cat /tmp/scheduler.conf >> /etc/supervisor/conf.d/supervisord.conf && rm -f /tmp/scheduler.conf
+
 USER nobody
 
 # ---

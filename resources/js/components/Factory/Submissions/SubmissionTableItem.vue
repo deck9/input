@@ -1,6 +1,6 @@
 <template>
   <tr class="divide-x divide-grey-200">
-    <td class="px-2">
+    <td class="px-2 text-center">
       <D9Button
         class="whitespace-nowrap"
         color="danger"

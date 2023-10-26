@@ -42,6 +42,11 @@ class FormController extends Controller
     {
         $this->authorize('update', $form);
 
+        $request->validate([
+            'is_auto_delete_enabled' => 'boolean',
+            'data_retention_days' => 'required_if:is_auto_delete_enabled,true|integer|min:1',
+        ]);
+
         $form->update(
             $request->only(
                 'name',
@@ -75,6 +80,7 @@ class FormController extends Controller
                 'privacy_link',
                 'legal_notice_link',
                 'data_retention_days',
+                'is_auto_delete_enabled',
                 'show_cta_link',
                 'show_social_links',
             )

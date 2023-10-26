@@ -185,4 +185,26 @@ class FormBlock extends BaseModel
             ]);
         }
     }
+
+    public function getSubmitPayload(string|array $payload)
+    {
+        if (is_array($payload)) {
+            $action = collect($payload)->map(function ($index) {
+                $action = $this->formBlockInteractions[$index];
+                return [
+                    'actionId' => $action->uuid,
+                    'payload' => $action->label
+                ];
+            })->toArray();
+        } elseif (is_string($payload)) {
+            $action  = [
+                'actionId' => $this->formBlockInteractions[0]->uuid,
+                'payload' => $payload
+            ];
+        }
+
+        return [
+            $this->uuid => $action
+        ];
+    }
 }
