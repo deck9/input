@@ -176,6 +176,7 @@ test('when_submitting_a_form_an_event_is_fired', function () {
 
 it("should delete old submissions if auto delete is enabled for the form after specified time", function ($template) {
     $form = Form::factory()->create([
+        'is_auto_delete_enabled' => true,
         'data_retention_days' => 30,
     ]);
 
@@ -203,4 +204,36 @@ it("should delete old submissions if auto delete is enabled for the form after s
     $this->assertNull($session->fresh());
 
     $this->assertCount(0, FormSessionResponse::all());
+})->with('templates');
+
+it("should not delete submissions when auto delete is not enabled", function ($template) {
+    $form = Form::factory()->create([
+        'is_auto_delete_enabled' => false,
+        'data_retention_days' => 30,
+    ]);
+
+    $form->applyTemplate($template);
+
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+
+    $this->json('POST', route('api.public.forms.submit', [
+        'form' => $form->uuid
+    ]), [
+        'token' => $session->token,
+        'payload' => [
+            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[2]->getSubmitPayload([0]),
+            ...$form->formBlocks[3]->getSubmitPayload([0,1])
+        ]
+    ])->assertStatus(200);
+
+    // Assertions after submission
+    $this->assertCount(4, FormSessionResponse::all());
+
+    $this->travel(31)->days();
+    $this->artisan('input:auto-delete-submissions');
+
+    $this->assertNotNull($session->fresh());
+
+    $this->assertCount(4, FormSessionResponse::all());
 })->with('templates');

@@ -28,6 +28,7 @@ interface FormModel extends BaseModel {
     eoc_text: string | null;
     eoc_headline: string | null;
     data_retention_days: number | null;
+    is_auto_delete_enabled: boolean;
     legal_notice_link: string | null;
     privacy_link: string | null;
     has_data_privacy: boolean;

@@ -41,6 +41,7 @@ class Form extends BaseModel
         'show_social_links' => 'boolean',
         'show_privacy_link' => 'boolean',
         'has_data_privacy' => 'boolean',
+        'is_auto_delete_enabled' => 'boolean',
         'user_id' => 'integer',
         'published_at' => 'datetime',
         'deleted_at' => 'datetime'
@@ -82,6 +83,7 @@ class Form extends BaseModel
         'eoc_text',
         'eoc_headline',
         'data_retention_days',
+        'is_auto_delete_enabled',
         'legal_notice_link',
         'privacy_link',
         'cta_label',
@@ -253,7 +255,7 @@ class Form extends BaseModel
             ' ',
             collect($strings)
                 ->take(2)
-                ->map(fn ($item) => substr($item, 0, 2))
+                ->map(fn($item) => substr($item, 0, 2))
                 ->toArray()
         );
     }

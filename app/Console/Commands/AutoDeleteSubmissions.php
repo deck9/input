@@ -33,7 +33,7 @@ class AutoDeleteSubmissions extends Command
     public function handle(): void
     {
         Form::has('formSessions')->lazyById()->each(function (Form $form) {
-            if (is_null($form->data_retention_days)) {
+            if ($form->is_auto_delete_enabled === false) {
                 return;
             }
 
