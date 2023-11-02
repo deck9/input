@@ -60,6 +60,10 @@ class FormSubmissionsExportController extends Controller
 
         return response()->streamDownload(function () use ($exportFormatted) {
             $out = fopen('php://output', 'w');
+
+            // Add BOM for UTF-8 to help software like Excel to correctly identify encoding
+            fwrite($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
             fputcsv($out, array_keys($exportFormatted[0]));
 
             foreach ($exportFormatted as $row) {

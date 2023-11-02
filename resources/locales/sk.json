@@ -14,7 +14,7 @@
     "Please enter a valid link.": "Prosíme, zadajte sprvány link.",
     "Please enter a valid number.": "Prosíme, zadajte správne číslo.",
     "Please enter a valid phone number.": "Prosíme, zadajte správne telefónne číslo.",
-    "Please select an option.": "Prosíme, vyberte nejakú mužnosť.",
+    "Please select an option.": "Prosíme, vyberte nejakú možnosť.",
     "Privacy Policy": "Ochrana osobných údajov",
     "required": "Povinné",
     "Something went wrong validating your input": "Niečo sa nepodarilo pri overení Vašich údajov",
@@ -27,6 +27,6 @@
         "confirm": "{0} pre potvrdenie"
     },
     "validation": {
-        "consent_required": "Pre pokračovanie je potrebné súhlasiť so zásadami ochrany osobných údajov a pravidlami používania."
+        "consent_required": "Pre pokračovanie je potrebný súhlas."
     }
 }
