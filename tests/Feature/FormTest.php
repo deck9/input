@@ -51,6 +51,34 @@ test('a_user_can_return_all_the_forms_in_his_account', function () {
     $this->assertEquals($form->uuid, $response->json()[0]['uuid']);
 });
 
+test('a user can filter for published/unpublished/trashed forms', function () {
+    $user = User::factory()->create();
+
+    // published form
+    $formA = Form::factory()->for($user)->create();
+
+    // unpublished form
+    $formB = Form::factory()->unpublished()->for($user)->create();
+
+    // deleted form
+    $formC = Form::factory()->deleted()->for($user)->create();
+
+    $this->actingAs($user)
+        ->get(route('api.forms.index', ['filter' => 'published']))
+        ->assertStatus(200)
+        ->assertJsonFragment(['uuid' => $formA->uuid]);
+
+    $this->actingAs($user)
+        ->get(route('api.forms.index', ['filter' => 'unpublished']))
+        ->assertStatus(200)
+        ->assertJsonFragment(['uuid' => $formB->uuid]);
+
+    $this->actingAs($user)
+        ->get(route('api.forms.index', ['filter' => 'trashed']))
+        ->assertStatus(200)
+        ->assertJsonFragment(['uuid' => $formC->uuid]);
+});
+
 test('a_user_cannot_return_forms_in_other_accounts', function () {
     /** @var User $user */
     $user = User::factory()->create();

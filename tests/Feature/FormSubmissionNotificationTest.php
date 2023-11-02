@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
-use Mail;
+use App\Mail\FormSubmissionNotification;
 use App\Models\Form;
 use App\Models\FormSession;
-use App\Mail\FormSubmissionNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mail;
 
 uses(RefreshDatabase::class);
 
-it("can activate notifications for form submissions", function () {
+it('can activate notifications for form submissions', function () {
     $form = Form::factory()->create();
 
     $updateRequestA = [
@@ -36,8 +36,7 @@ it("can activate notifications for form submissions", function () {
     $this->assertNotTrue($form->is_notification_via_mail);
 });
 
-
-it("send an email notification for a submitted form", function () {
+it('send an email notification for a submitted form', function () {
     Mail::fake();
 
     $form = Form::factory()->create([

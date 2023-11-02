@@ -3,14 +3,14 @@
 namespace App\Providers;
 
 use App\Events\FormPublished;
-use App\Listeners\CreatePreviewImage;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Auth\Events\Registered;
 use App\Events\FormSessionCompletedEvent;
-use App\Listeners\FormSubmitWebhookListener;
+use App\Listeners\CreatePreviewImage;
 use App\Listeners\FormSessionNotificationListener;
+use App\Listeners\FormSubmitWebhookListener;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
 
         FormSessionCompletedEvent::class => [
             FormSubmitWebhookListener::class,
-            FormSessionNotificationListener::class
+            FormSessionNotificationListener::class,
         ],
     ];
 

@@ -10,7 +10,14 @@ class FormController extends Controller
 {
     public function index(Request $request)
     {
-        $forms = $request->user()->forms()->get();
+        $request->validate([
+            'filter' => 'in:published,unpublished,trashed',
+        ]);
+
+        $forms = $request->user()
+            ->forms()
+            ->withFilter($request->filter ?? null)
+            ->get();
 
         return response()->json($forms);
     }

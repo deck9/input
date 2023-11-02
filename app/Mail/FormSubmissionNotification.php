@@ -2,14 +2,14 @@
 
 namespace App\Mail;
 
+use App\Http\Resources\FormSessionResource;
 use App\Models\FormSession;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use App\Http\Resources\FormSessionResource;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
 class FormSubmissionNotification extends Mailable implements ShouldQueue
 {
@@ -17,6 +17,7 @@ class FormSubmissionNotification extends Mailable implements ShouldQueue
     use SerializesModels;
 
     public $session;
+
     public $form;
 
     /**
