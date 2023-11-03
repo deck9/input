@@ -12,7 +12,7 @@ class DashboardController extends Controller
         $forms = $request->user()->forms;
 
         return Inertia::render('Dashboard', [
-            'forms' => $forms,
+            'initialForms' => $forms,
         ]);
     }
 }

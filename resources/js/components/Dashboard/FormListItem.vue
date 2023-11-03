@@ -25,17 +25,25 @@
           </a>
         </h3>
 
-        <div v-if="form.is_published" class="flex items-center">
-          <span
-            class="mr-1 inline-block h-3 w-3 rounded-full bg-green-500"
-          ></span>
-          <span class="text-xs text-grey-500">Published</span>
-        </div>
-        <div v-else class="flex items-center">
-          <span
-            class="mr-1 inline-block h-3 w-3 rounded-full bg-grey-200"
-          ></span>
-          <span class="text-xs text-grey-500">Unpublished</span>
+        <div class="flex items-center">
+          <template v-if="form.is_trashed">
+            <span
+              class="mr-1 inline-block h-3 w-3 rounded-full bg-red-500"
+            ></span>
+            <span class="text-xs text-grey-500">Deleted</span>
+          </template>
+          <template v-else-if="form.is_published">
+            <span
+              class="mr-1 inline-block h-3 w-3 rounded-full bg-green-500"
+            ></span>
+            <span class="text-xs text-grey-500">Published</span>
+          </template>
+          <template v-else>
+            <span
+              class="mr-1 inline-block h-3 w-3 rounded-full bg-grey-200"
+            ></span>
+            <span class="text-xs text-grey-500">Unpublished</span>
+          </template>
         </div>
       </div>
     </div>

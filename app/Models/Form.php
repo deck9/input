@@ -65,6 +65,7 @@ class Form extends BaseModel
         'completed_sessions',
         'completion_rate',
         'is_published',
+        'is_trashed',
         'initials',
     ];
 
@@ -207,6 +208,11 @@ class Form extends BaseModel
         }
 
         return false;
+    }
+
+    public function getIsTrashedAttribute()
+    {
+        return $this->deleted_at && $this->deleted_at->isPast();
     }
 
     public function getIsPublishedAttribute()

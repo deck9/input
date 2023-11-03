@@ -2,6 +2,25 @@
 import { AxiosResponse } from "axios";
 import handler from "./handler";
 
+export function callListForms(
+    filter: string | null = null
+): Promise<AxiosResponse<FormModel[]>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.get(
+                window.route("api.forms.index"),
+                {
+                    params: { filter },
+                }
+            );
+
+            resolve(response as AxiosResponse<FormModel[]>);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
