@@ -10,45 +10,9 @@
               <h2 class="text-xl font-bold leading-8 text-grey-900">
                 Your Forms
               </h2>
-              <Label class="ml-2" v-show="filter" color="grey">
-                {{ filter }}
-                <button @click="filter = null"><D9Icon name="close" /></button>
-              </Label>
             </div>
-            <div>
-              <Popover class="relative inline-block">
-                <PopoverButton
-                  class="relative mr-2 inline-flex items-center rounded-lg border-transparent bg-grey-100 px-5 py-2 text-sm font-medium leading-4 text-blue-600 ring-blue-300 ring-offset-2 transition duration-150 ease-in-out hover:bg-blue-100 hover:text-blue-700 focus:outline-none focus:ring active:bg-grey-100 active:ring dark:ring-offset-grey-900"
-                >
-                  Filter
-                  <D9Icon class="-mr-1 ml-3 text-blue-600" name="filter" />
-                </PopoverButton>
-                <PopoverPanel
-                  class="absolute z-10 flex flex-col items-stretch rounded bg-grey-50 px-1 py-2 text-grey-700 shadow-lg"
-                >
-                  <button
-                    class="block rounded px-3 py-1 text-left font-medium hover:bg-grey-200"
-                    type="button"
-                    @click="filter = 'published'"
-                  >
-                    Published
-                  </button>
-                  <button
-                    class="block rounded px-3 py-1 text-left font-medium hover:bg-grey-200"
-                    type="button"
-                    @click="filter = 'unpublished'"
-                  >
-                    Unpublished
-                  </button>
-                  <button
-                    class="block rounded px-3 py-1 text-left font-medium hover:bg-grey-200"
-                    type="button"
-                    @click="filter = 'trashed'"
-                  >
-                    Trashed
-                  </button>
-                </PopoverPanel>
-              </Popover>
+            <div class="flex">
+              <FilterControl :filter="filter" @changeFilter="changeFilter" />
               <CreateFormButton />
             </div>
           </div>
@@ -70,6 +34,13 @@
             </p>
           </div>
 
+          <div
+            class="w-full rounded bg-white p-16 text-center"
+            v-else-if="isLoading"
+          >
+            <D9Spinner />
+          </div>
+
           <div v-else>
             <FormListItem :form="form" :key="form.id" v-for="form in forms" />
           </div>
@@ -85,12 +56,11 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import FormListItem from "@/components/Dashboard/FormListItem.vue";
 import UpdatesContainer from "@/components/Dashboard/UpdatesContainer.vue";
 import CreateFormButton from "@/components/Dashboard/CreateFormButton.vue";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-import Label from "@/components/Label.vue";
+import FilterControl from "@/components/Dashboard/FilterControl.vue";
 
-import { D9Icon } from "@deck9/ui";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { callListForms } from "@/api/forms";
+import { D9Spinner } from "@deck9/ui";
 
 const props = withDefaults(
   defineProps<{
@@ -101,12 +71,20 @@ const props = withDefaults(
   }
 );
 
+const isLoading = ref(false);
 const forms = ref<Array<FormModel>>(props.initialForms);
 const filter = ref<"published" | "unpublished" | "trashed" | null>(null);
 
-watch(filter, async (newFilter) => {
-  const response = await callListForms(newFilter);
-
-  forms.value = response.data;
-});
+const changeFilter = async (setting: FilterSetting) => {
+  isLoading.value = true;
+  try {
+    const response = await callListForms(setting);
+    filter.value = setting;
+    forms.value = response.data;
+  } catch (e) {
+    console.warn(e);
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>

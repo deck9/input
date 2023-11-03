@@ -242,3 +242,5 @@ type EmbedFlags = {
 };
 
 type ImageType = "avatar" | "background";
+
+type FilterSetting = "published" | "unpublished" | "trashed" | null;
