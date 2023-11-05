@@ -243,6 +243,16 @@ test('can_delete_a_form', function () {
     $this->assertNotNull($form->fresh()->deleted_at);
 });
 
+test('a user can permanently delete a form', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('DELETE', route('api.forms.trashed.delete', $form->uuid))
+        ->assertStatus(200);
+
+    $this->assertNull(Form::withTrashed()->find($form->id));
+});
+
 test('can_enable_or_disable_email_notifications_for_a_form', function () {
     $form = Form::factory()->create();
 

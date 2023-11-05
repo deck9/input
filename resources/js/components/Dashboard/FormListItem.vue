@@ -17,12 +17,13 @@
       </div>
       <div class="ml-6 overflow-hidden">
         <h3 class="mb-1 truncate text-base font-bold">
-          <a
+          <component
+            :is="form.is_trashed ? 'span' : 'a'"
             class="hover:text-blue-600"
             :href="route('forms.edit', { uuid: form.uuid })"
           >
             {{ form.name }}
-          </a>
+          </component>
         </h3>
 
         <div class="flex items-center">
@@ -61,11 +62,12 @@
         <div class="mt-1 text-xs text-grey-500">Completion Rate</div>
       </div>
     </div>
-    <div class="flex w-1/5 justify-end">
+    <div class="flex w-1/5 items-center justify-end">
       <D9Menu
         class="flex items-center"
         position="left"
         use-portal
+        v-if="!form.is_trashed"
         @click="setActive"
       >
         <template #button>
@@ -104,7 +106,40 @@
           @click="duplicateForm"
         />
       </D9Menu>
+      <D9Menu
+        class="flex items-center"
+        position="left"
+        use-portal
+        v-else
+        @click="setActive"
+      >
+        <template #button>
+          <D9Icon
+            :class="[
+              'relative px-4 text-grey-600 transition-all duration-150 group-hover:opacity-100',
+              isActive ? ' opacity-100' : '  opacity-0',
+            ]"
+            name="cog"
+          />
+        </template>
+
+        <D9MenuLink
+          as="button"
+          type="button"
+          class="block w-full text-left"
+          label="Restore Form"
+          @click="restoreForm"
+        />
+        <D9MenuLink
+          as="button"
+          type="button"
+          class="block w-full text-left"
+          label="Delete forever"
+          @click="deleteForever"
+        />
+      </D9Menu>
       <a
+        v-if="!form.is_trashed"
         :href="route('forms.edit', form.uuid)"
         class="flex cursor-pointer items-center justify-end transition duration-150 hover:text-blue-600 group-hover:scale-110"
       >
@@ -115,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
+import { D9Icon, D9Menu, D9MenuLink, D9Button } from "@deck9/ui";
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { callDuplicateForm } from "@/api/forms";
@@ -154,5 +189,15 @@ const duplicateForm = async () => {
   window.location.href = window.route("forms.edit", {
     uuid: newFormResponse.data.uuid,
   });
+};
+
+const restoreForm = () => {
+  window.alert("restore form now");
+};
+
+const deleteForever = () => {
+  window.confirm(
+    "Are you sure you want to delete your form permanently. This action cannot be undone."
+  );
 };
 </script>
