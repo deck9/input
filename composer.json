@@ -17,6 +17,7 @@
         "league/flysystem-memory": "^3.0",
         "league/glide-laravel": "^1.0",
         "spatie/browsershot": "^3.50",
+        "symfony/http-client": "^6.3",
         "tightenco/ziggy": "^1.0",
         "webpatser/laravel-uuid": "^4.0"
     },
