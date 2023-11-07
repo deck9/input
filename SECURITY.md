@@ -8,7 +8,7 @@ Please follow these steps to report a security vulnerability:
 
 1. Do Not Publicly Disclose: Do not disclose the vulnerability publicly or to any third parties. By keeping the issue private until we resolve it, we can prevent potential misuse and provide security for our users.
 
-2. Use GitHub Advisories: Report the vulnerability directly using GitHub Security Advisories in our repository. This will allow you to report a vulnerability privately to the project maintainers.
+2. Use GitHub Advisories: Report the vulnerability directly using [GitHub Security Advisories](https://github.com/deck9/input/security/advisories/new) in our repository. This will allow you to report a vulnerability privately to the project maintainers.
 
 3. Provide Details: Include as much information as possible about the potential vulnerability. Steps to reproduce or proof of concept (POC) can help us understand the nature and scope of the potential issue.
 
