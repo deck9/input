@@ -243,14 +243,33 @@ test('can_delete_a_form', function () {
     $this->assertNotNull($form->fresh()->deleted_at);
 });
 
-test('a user can permanently delete a form', function () {
+test('a user can permanently delete a form if it was soft deleted before', function () {
     $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('DELETE', route('api.forms.trashed.delete', $form->uuid))
+        ->assertStatus(422);
+
+    $form->delete();
 
     $this->actingAs($form->user)
         ->json('DELETE', route('api.forms.trashed.delete', $form->uuid))
         ->assertStatus(200);
 
     $this->assertNull(Form::withTrashed()->find($form->id));
+});
+
+test('a user can restore a deleted form', function () {
+    $form = Form::factory()->create();
+    $form->delete();
+
+    $this->assertNull(Form::find($form->id));
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.trashed.restore', $form->uuid))
+        ->assertStatus(200);
+
+    $this->assertNotNull(Form::find($form->id));
 });
 
 test('can_enable_or_disable_email_notifications_for_a_form', function () {
