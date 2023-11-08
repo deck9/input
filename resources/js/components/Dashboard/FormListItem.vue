@@ -150,10 +150,14 @@
 </template>
 
 <script setup lang="ts">
-import { D9Icon, D9Menu, D9MenuLink, D9Button } from "@deck9/ui";
+import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
-import { callDuplicateForm } from "@/api/forms";
+import {
+  callDeleteForeverForm,
+  callDuplicateForm,
+  callRestoreForm,
+} from "@/api/forms";
 
 const props = defineProps<{
   form: FormModel;
@@ -191,13 +195,21 @@ const duplicateForm = async () => {
   });
 };
 
-const restoreForm = () => {
-  window.alert("restore form now");
+const restoreForm = async () => {
+  const restored = await callRestoreForm(props.form);
+
+  window.location.href = window.route("forms.edit", {
+    uuid: restored.data.uuid,
+  });
 };
 
-const deleteForever = () => {
+const deleteForever = async () => {
   window.confirm(
     "Are you sure you want to delete your form permanently. This action cannot be undone."
   );
+
+  await callDeleteForeverForm(props.form);
+
+  window.location.reload();
 };
 </script>

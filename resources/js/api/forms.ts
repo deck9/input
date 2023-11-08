@@ -325,3 +325,35 @@ export function callDuplicateForm(
         }
     });
 }
+
+export function callDeleteForeverForm(form: FormModel): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.delete(
+                window.route("api.forms.trashed.delete", {
+                    form: form.uuid,
+                })
+            );
+
+            resolve(response as AxiosResponse);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callRestoreForm(form: FormModel): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.trashed.restore", {
+                    form: form.uuid,
+                })
+            );
+
+            resolve(response as AxiosResponse);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
