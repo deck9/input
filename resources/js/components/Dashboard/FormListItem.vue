@@ -99,6 +99,14 @@
           label="Settings"
         />
         <D9MenuLink
+          v-if="!form.is_published && !form.is_trashed"
+          as="button"
+          type="button"
+          class="block w-full text-left"
+          label="Delete Form"
+          @click="deleteForm"
+        />
+        <D9MenuLink
           as="button"
           type="button"
           class="block w-full text-left"
@@ -155,6 +163,7 @@ import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import {
   callDeleteForeverForm,
+  callDeleteForm,
   callDuplicateForm,
   callRestoreForm,
 } from "@/api/forms";
@@ -201,6 +210,16 @@ const restoreForm = async () => {
   window.location.href = window.route("forms.edit", {
     uuid: restored.data.uuid,
   });
+};
+
+const deleteForm = async () => {
+  window.confirm(
+    "Are you sure you want to delete your form?"
+  );
+
+  await callDeleteForm(props.form);
+
+  window.location.reload();
 };
 
 const deleteForever = async () => {
