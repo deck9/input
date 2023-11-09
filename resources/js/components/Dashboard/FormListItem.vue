@@ -103,6 +103,22 @@
           as="button"
           type="button"
           class="block w-full text-left"
+          label="Publish Form"
+          @click="publishForm"
+        />
+        <D9MenuLink
+          v-if="form.is_published && !form.is_trashed"
+          as="button"
+          type="button"
+          class="block w-full text-left"
+          label="Unpublish Form"
+          @click="unpublishForm"
+        />
+        <D9MenuLink
+          v-if="!form.is_published && !form.is_trashed"
+          as="button"
+          type="button"
+          class="block w-full text-left"
           label="Delete Form"
           @click="deleteForm"
         />
@@ -165,7 +181,9 @@ import {
   callDeleteForeverForm,
   callDeleteForm,
   callDuplicateForm,
+  callPublishForm,
   callRestoreForm,
+  callUnpublishForm,
 } from "@/api/forms";
 
 const props = defineProps<{
@@ -202,6 +220,18 @@ const duplicateForm = async () => {
   window.location.href = window.route("forms.edit", {
     uuid: newFormResponse.data.uuid,
   });
+};
+
+const publishForm = async () => {
+  await callPublishForm(props.form);
+
+  window.location.reload();
+};
+
+const unpublishForm = async () => {
+  await callUnpublishForm(props.form)
+
+  window.location.reload();
 };
 
 const restoreForm = async () => {
