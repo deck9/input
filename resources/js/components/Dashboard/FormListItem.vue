@@ -229,7 +229,7 @@ const publishForm = async () => {
 };
 
 const unpublishForm = async () => {
-  await callUnpublishForm(props.form)
+  await callUnpublishForm(props.form);
 
   window.location.reload();
 };
@@ -243,9 +243,7 @@ const restoreForm = async () => {
 };
 
 const deleteForm = async () => {
-  window.confirm(
-    "Are you sure you want to delete your form?"
-  );
+  window.confirm("Are you sure you want to delete your form?");
 
   await callDeleteForm(props.form);
 

@@ -61,6 +61,9 @@ import FilterControl from "@/components/Dashboard/FilterControl.vue";
 import { ref } from "vue";
 import { callListForms } from "@/api/forms";
 import { D9Spinner } from "@deck9/ui";
+import { useUrlSearchParams } from "@vueuse/core";
+
+const params = useUrlSearchParams("history");
 
 const props = withDefaults(
   defineProps<{
@@ -81,10 +84,20 @@ const changeFilter = async (setting: FilterSetting) => {
     const response = await callListForms(setting);
     filter.value = setting;
     forms.value = response.data;
+
+    if (setting) {
+      params.filter = setting;
+    } else {
+      delete params.filter;
+    }
   } catch (e) {
     console.warn(e);
   } finally {
     isLoading.value = false;
   }
 };
+
+if (params.filter) {
+  filter.value = params.filter as FilterSetting;
+}
 </script>
