@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Form;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class TrashedFormController extends Controller
 {
@@ -16,7 +15,7 @@ class TrashedFormController extends Controller
             ->where('uuid', $form)
             ->firstOrFail();
 
-        if (!$model->trashed()) {
+        if (! $model->trashed()) {
             return abort(422, 'You need to put the form into trash before deleting it permanently.');
         }
 
