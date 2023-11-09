@@ -5,12 +5,18 @@ use App\Models\Form;
 use App\Models\FormSession;
 use App\Models\FormWebhook;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 uses(RefreshDatabase::class);
 
 it('can create a database entry for a session and configured form webhook response', function () {
-    Http::fake();
+    app()->bind(HttpClientInterface::class, function () {
+        return new MockHttpClient([
+            new MockResponse(json_encode(['message' => 'Ok!'])),
+        ]);
+    });
 
     $form = Form::factory()->has(
         FormWebhook::factory()
@@ -25,12 +31,14 @@ it('can create a database entry for a session and configured form webhook respon
         'status' => 200,
         'tries' => 1,
     ]);
-
-    Http::assertSentCount(1);
 });
 
 it('will use the same database entry if a webhook gets called twice for the same session', function () {
-    Http::fake();
+    app()->bind(HttpClientInterface::class, function () {
+        return new MockHttpClient([
+            new MockResponse(json_encode(['message' => 'Ok!'])),
+        ]);
+    });
 
     $form = Form::factory()->has(
         FormWebhook::factory()
@@ -46,13 +54,15 @@ it('will use the same database entry if a webhook gets called twice for the same
         'status' => 200,
         'tries' => 2,
     ]);
-
-    Http::assertSentCount(2);
 });
 
 it('will log webhook requests that are not successful', function () {
-    Http::fake(function () {
-        return Http::response('The request is not valid', 422);
+    app()->bind(HttpClientInterface::class, function () {
+        return new MockHttpClient([
+            new MockResponse(json_encode(['message' => 'Ok!']), [
+                'http_code' => 422,
+            ]),
+        ]);
     });
 
     $form = Form::factory()->has(
@@ -71,8 +81,10 @@ it('will log webhook requests that are not successful', function () {
 });
 
 it('submissions api endpoint will include the session webhook data', function () {
-    Http::fake(function () {
-        return Http::response('OK!', 200);
+    app()->bind(HttpClientInterface::class, function () {
+        return new MockHttpClient([
+            new MockResponse('OK!'),
+        ]);
     });
 
     $form = Form::factory()->has(

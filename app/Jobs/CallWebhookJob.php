@@ -2,23 +2,17 @@
 
 namespace App\Jobs;
 
-use Exception;
+use App\Http\Resources\FormSessionResource;
 use App\Models\FormSession;
 use App\Models\FormWebhook;
 use Illuminate\Bus\Queueable;
-use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Http\Resources\FormSessionResource;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
-use Symfony\Component\HttpClient\Exception\TransportException;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CallWebhookJob implements ShouldQueue
 {
@@ -47,36 +41,31 @@ class CallWebhookJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(HttpClientInterface $client)
     {
         $payload = FormSessionResource::make($this->session)->resolve();
 
-
-        $client = new NoPrivateNetworkHttpClient(HttpClient::create());
-
         $client->withOptions([
-            'headers' => $this->webhook->headers ?? []
+            'headers' => $this->webhook->headers ?? [],
         ]);
-
 
         $response = $client->request($this->webhook->webhook_method, $this->webhook->webhook_url, [
             'json' => $payload,
         ]);
 
         try {
-
             $status = $response->getStatusCode();
             $body = $response->getContent();
-            $json = $response->toArray();
+            $json = json_decode($body);
             $headers = $response->getHeaders();
         } catch (HttpExceptionInterface $e) {
             $errorResponse = $e->getResponse();
 
             $status = $errorResponse->getStatusCode(false);
             $body = $errorResponse->getContent(false);
-            $json = $errorResponse->toArray(false);
+            $json = json_decode($body);
             $headers = $errorResponse->getHeaders(false);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = 500;
             $body = $e->getMessage();
             $json = ['error' => $e->getMessage()];
