@@ -7,6 +7,7 @@ use App\Http\Resources\PublicFormBlockResource;
 use App\Http\Resources\PublicFormResource;
 use App\Models\Traits\TemplateExportsAndImports;
 use Hashids\Hashids;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -64,6 +65,7 @@ class Form extends BaseModel
         'completed_sessions',
         'completion_rate',
         'is_published',
+        'is_trashed',
         'initials',
     ];
 
@@ -147,6 +149,16 @@ class Form extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function scopeWithFilter(Builder $builder, ?string $filter)
+    {
+        return match ($filter) {
+            'published' => $builder->published(),
+            'unpublished' => $builder->whereNull('published_at')->orWhereDate('published_at', '>', Carbon::now()),
+            'trashed' => $builder->withTrashed()->whereNotNull('deleted_at'),
+            default => $builder,
+        };
+    }
+
     public function route()
     {
         return route('forms.show', $this->uuid);
@@ -196,6 +208,11 @@ class Form extends BaseModel
         }
 
         return false;
+    }
+
+    public function getIsTrashedAttribute()
+    {
+        return $this->deleted_at && $this->deleted_at->isPast();
     }
 
     public function getIsPublishedAttribute()

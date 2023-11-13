@@ -6,10 +6,15 @@
       >
         <div class="col-span-12 lg:col-span-8">
           <div class="relative mb-6 flex items-center justify-between">
-            <h2 class="text-xl font-bold leading-8 text-grey-900">
-              Your Forms
-            </h2>
-            <CreateFormButton />
+            <div class="flex items-center">
+              <h2 class="text-xl font-bold leading-8 text-grey-900">
+                Your Forms
+              </h2>
+            </div>
+            <div class="flex">
+              <FilterControl :filter="filter" @changeFilter="changeFilter" />
+              <CreateFormButton />
+            </div>
           </div>
 
           <div
@@ -29,6 +34,13 @@
             </p>
           </div>
 
+          <div
+            class="w-full rounded bg-white p-16 text-center"
+            v-else-if="isLoading"
+          >
+            <D9Spinner />
+          </div>
+
           <div v-else>
             <FormListItem :form="form" :key="form.id" v-for="form in forms" />
           </div>
@@ -44,14 +56,48 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import FormListItem from "@/components/Dashboard/FormListItem.vue";
 import UpdatesContainer from "@/components/Dashboard/UpdatesContainer.vue";
 import CreateFormButton from "@/components/Dashboard/CreateFormButton.vue";
-// import { withDefaults } from "vue";
+import FilterControl from "@/components/Dashboard/FilterControl.vue";
 
-withDefaults(
+import { ref } from "vue";
+import { callListForms } from "@/api/forms";
+import { D9Spinner } from "@deck9/ui";
+import { useUrlSearchParams } from "@vueuse/core";
+
+const params = useUrlSearchParams("history");
+
+const props = withDefaults(
   defineProps<{
-    forms: Array<FormModel>;
+    initialForms: Array<FormModel>;
   }>(),
   {
-    forms: () => [],
+    initialForms: () => [],
   }
 );
+
+const isLoading = ref(false);
+const forms = ref<Array<FormModel>>(props.initialForms);
+const filter = ref<"published" | "unpublished" | "trashed" | null>(null);
+
+const changeFilter = async (setting: FilterSetting) => {
+  isLoading.value = true;
+  try {
+    const response = await callListForms(setting);
+    filter.value = setting;
+    forms.value = response.data;
+
+    if (setting) {
+      params.filter = setting;
+    } else {
+      delete params.filter;
+    }
+  } catch (e) {
+    console.warn(e);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+if (params.filter) {
+  filter.value = params.filter as FilterSetting;
+}
 </script>

@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\GetFormStoryboardController;
 use App\Http\Controllers\Api\PublishFormController;
 use App\Http\Controllers\Api\PurgeFormSubmissionsController;
 use App\Http\Controllers\Api\ShowFormController;
+use App\Http\Controllers\Api\TrashedFormController;
 use App\Http\Controllers\Api\UnpublishFormController;
 use App\Http\Controllers\Api\ZiggyController;
 use Illuminate\Http\Request;
@@ -54,6 +55,9 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     $router->get('forms/{form}', [FormController::class, 'show'])->name('api.forms.show');
     $router->post('forms/{form}', [FormController::class, 'update'])->name('api.forms.update');
     $router->delete('forms/{form}', [FormController::class, 'delete'])->name('api.forms.delete');
+
+    $router->delete('forms/trashed/{form}', [TrashedFormController::class, 'delete'])->name('api.forms.trashed.delete');
+    $router->post('forms/trashed/{form}/restore', [TrashedFormController::class, 'restore'])->name('api.forms.trashed.restore');
 
     // Form Duplication
     $router->post('forms/{form}/duplicate', DuplicateFormController::class)->name('api.forms.duplicate');

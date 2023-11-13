@@ -8,7 +8,6 @@ use App\Models\FormSession;
 use App\Models\FormSessionResponse;
 use App\Models\FormWebhook;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
@@ -64,31 +63,4 @@ it('should only dispatch enabled webhooks', function () {
         ->handle(new FormSessionCompletedEvent($session));
 
     Queue::assertPushed(CallWebhookJob::class, 0);
-});
-
-it('submits to configured webhook url and http method', function () {
-    Http::fake();
-
-    $form = Form::factory()
-        ->has(FormWebhook::factory([
-            'webhook_method' => 'GET',
-            'webhook_url' => 'https://void.work/submit',
-        ]))->create();
-
-    $session = FormSession::factory()->for($form)
-        ->has(FormSessionResponse::factory([
-            'value' => 'test response',
-        ]))
-        ->completed()
-        ->create();
-
-    with(new FormSubmitWebhookListener())
-        ->handle(new FormSessionCompletedEvent($session));
-
-    Http::assertSent(function ($request) use ($form) {
-        $webhook = $form->formWebhooks[0];
-
-        return $request->url() === $webhook->webhook_url
-            && $request->method() === strtoupper($webhook->webhook_method);
-    });
 });

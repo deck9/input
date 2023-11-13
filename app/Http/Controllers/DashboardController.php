@@ -9,10 +9,14 @@ class DashboardController extends Controller
 {
     public function show(Request $request)
     {
-        $forms = $request->user()->forms;
+        $request->validate([
+            'filter' => 'in:published,unpublished,trashed',
+        ]);
+
+        $forms = $request->user()->forms()->withFilter($request->filter ?? null)->get();
 
         return Inertia::render('Dashboard', [
-            'forms' => $forms,
+            'initialForms' => $forms,
         ]);
     }
 }

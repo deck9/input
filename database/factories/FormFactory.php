@@ -42,4 +42,13 @@ class FormFactory extends Factory
             ];
         });
     }
+
+    public function deleted()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'deleted_at' => Carbon::now(),
+            ];
+        });
+    }
 }

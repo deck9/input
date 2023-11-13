@@ -47,6 +47,7 @@ interface FormModel extends BaseModel {
     completed_sessions: number;
     completion_rate: number;
     is_published: boolean;
+    is_trashed: boolean;
     initials: string | null;
     published_at: string | null;
     deleted_at: string | null;
@@ -241,3 +242,5 @@ type EmbedFlags = {
 };
 
 type ImageType = "avatar" | "background";
+
+type FilterSetting = "published" | "unpublished" | "trashed" | null;

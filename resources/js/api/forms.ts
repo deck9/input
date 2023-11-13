@@ -2,6 +2,25 @@
 import { AxiosResponse } from "axios";
 import handler from "./handler";
 
+export function callListForms(
+    filter: string | null = null
+): Promise<AxiosResponse<FormModel[]>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.get(
+                window.route("api.forms.index"),
+                {
+                    params: { filter },
+                }
+            );
+
+            resolve(response as AxiosResponse<FormModel[]>);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -301,6 +320,38 @@ export function callDuplicateForm(
             if (response.status === 201) {
                 resolve(response as AxiosResponse);
             }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callDeleteForeverForm(form: FormModel): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.delete(
+                window.route("api.forms.trashed.delete", {
+                    form: form.uuid,
+                })
+            );
+
+            resolve(response as AxiosResponse);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callRestoreForm(form: FormModel): Promise<AxiosResponse> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.forms.trashed.restore", {
+                    form: form.uuid,
+                })
+            );
+
+            resolve(response as AxiosResponse);
         } catch (error) {
             reject(error);
         }

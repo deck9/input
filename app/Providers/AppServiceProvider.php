@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(
+            HttpClientInterface::class,
+            function ($app) {
+                return new NoPrivateNetworkHttpClient(HttpClient::create());
+            }
+        );
     }
 
     /**

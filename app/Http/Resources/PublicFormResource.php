@@ -42,6 +42,7 @@ class PublicFormResource extends JsonResource
             'show_social_links' => $this->show_social_links,
             'show_form_progress' => $this->show_form_progress,
             'is_published' => $this->is_published,
+            'is_trashed' => $this->is_trashed,
             'avatar' => $this->avatar,
             'background' => $this->background,
             'company_name' => $this->company_name,
