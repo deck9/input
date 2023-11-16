@@ -37,6 +37,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Authenticated User
+ *
+ * Get the authenticated user's details. You can use this to check if your authentication is working.
+ *
+ * @group User
+ * @authenticated
+ */
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
