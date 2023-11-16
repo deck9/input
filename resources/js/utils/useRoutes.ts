@@ -1,9 +1,9 @@
-import route, { RouteParamsWithQueryOverload } from "ziggy-js";
+import route, { RouteName, RouteParams } from "ziggy-js";
 
 export async function useRoutes(): Promise<{
-    route: (
-        name?: string,
-        params?: RouteParamsWithQueryOverload,
+    route: <T extends RouteName>(
+        name: T,
+        params?: RouteParams<T> | undefined,
         absolute?: boolean
     ) => string | undefined;
 }> {
@@ -14,9 +14,9 @@ export async function useRoutes(): Promise<{
     );
     const Ziggy = await response.json();
 
-    const routeWrapper = (
-        name?: string,
-        params?: RouteParamsWithQueryOverload,
+    const routeWrapper = <T extends RouteName>(
+        name: T,
+        params?: RouteParams<T> | undefined,
         absolute?: boolean
     ): string | undefined => {
         if (name) {

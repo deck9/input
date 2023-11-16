@@ -49,7 +49,7 @@ withDefaults(
   }>(),
   {
     direction: "vertical",
-  }
+  },
 );
 
 const container = ref(null);
@@ -58,24 +58,24 @@ const start = ref(null);
 const startIsVisible = ref(false);
 const startObserver = useIntersectionObserver(
   start,
-  ([{ isIntersecting }]) => {
-    startIsVisible.value = isIntersecting;
+  (entries: IntersectionObserverEntry[]) => {
+    startIsVisible.value = entries[0].isIntersecting;
   },
   {
     root: container,
-  }
+  },
 );
 
 const end = ref(null);
 const endIsVisible = ref(false);
 const endObserver = useIntersectionObserver(
   end,
-  ([{ isIntersecting }]) => {
-    endIsVisible.value = isIntersecting;
+  (entries: IntersectionObserverEntry[]) => {
+    endIsVisible.value = entries[0].isIntersecting;
   },
   {
     root: container,
-  }
+  },
 );
 
 onBeforeUnmount(() => {
