@@ -80,6 +80,9 @@ RUN php artisan storage:link
 RUN echo "APP_KEY=" > .env
 RUN php artisan key:generate
 
+# Generate the API Documentation
+RUN php artisan scribe:generate
+
 USER root
 COPY --chown=nobody:nobody ./start-container.sh /opt/input/start-container.sh
 RUN chmod +x /opt/input/start-container.sh
