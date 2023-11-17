@@ -5,9 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormSessionResource;
 use Illuminate\Http\Request;
+use Knuckles\Scribe\Attributes\Authenticated;
+use Knuckles\Scribe\Attributes\Group;
 
 class FormSubmissionsController extends Controller
 {
+    /**
+     * Get form submissions
+     *
+     * This endpoint returns all form submissions for a form.
+     */
+    #[Group('Form Submissions')]
+    #[Authenticated]
     public function __invoke(Request $request, string $uuid)
     {
         try {

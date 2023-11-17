@@ -98,7 +98,7 @@ return [
                      */
                     'config' => [
                         'app.env' => 'documentation',
-                        // 'app.debug' => false,
+                        'app.debug' => false,
                     ],
 
                     /*
@@ -322,17 +322,15 @@ INTRO,
          * Note: you must include the initial '/' when writing an endpoint.
          */
         'order' => [
-            // 'This group will come first',
-            // 'This group will come next' => [
-            //     'POST /this-endpoint-will-comes-first',
-            //     'GET /this-endpoint-will-comes-next',
-            // ],
-            // 'This group will come third' => [
-            //     'This subgroup will come first' => [
-            //         'GET /this-other-endpoint-will-comes-first',
-            //         'GET /this-other-endpoint-will-comes-next',
-            //     ]
-            // ]
+            'Public Form Endpoints',
+            'Forms',
+            'Form Blocks',
+            'Form Block Interactions',
+            'Form Images',
+            'Form Webhooks',
+            'Form Visibility',
+            '*',
+            'Utilities',
         ],
     ],
 

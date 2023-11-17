@@ -9,11 +9,18 @@ use App\Models\Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
 
 #[Group('Form Images')]
+#[Authenticated]
 class FormImagesController extends Controller
 {
+    /**
+     * Upload a new form image
+     *
+     * This endpoint uploads a new image for the specified form. This can be a logo or a background image.
+     */
     public function store(FormImageRequest $request, Form $form)
     {
         $this->authorize('update', $form);
@@ -39,6 +46,11 @@ class FormImagesController extends Controller
         return response()->json($form, 201);
     }
 
+    /**
+     * Delete a form image
+     *
+     * This endpoint deletes an image for the specified form.
+     */
     public function delete(Request $request, Form $form)
     {
         $this->authorize('update', $form);

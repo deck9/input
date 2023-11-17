@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Route;
  *
  * Get the authenticated user's details. You can use this to check if your authentication is working.
  *
- * @group User
+ * @group Utilities
  *
  * @authenticated
  */

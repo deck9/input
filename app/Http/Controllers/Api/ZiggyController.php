@@ -13,7 +13,7 @@ class ZiggyController extends Controller
      *
      * This endpoint returns the routes used in the Ziggy package.
      */
-    #[Group('Ziggy Routes')]
+    #[Group('Utilities')]
     public function __invoke()
     {
         return response()->json(new Ziggy)

@@ -5,9 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Knuckles\Scribe\Attributes\Group;
 
 class FormTemplateImportController extends Controller
 {
+    /**
+     * Import a form from template
+     *
+     * This endpoint imports a form from a template.
+     *
+     * @hideFromAPIDocumentation
+     */
+    #[Group('Templates')]
     public function __invoke(Request $request, Form $form)
     {
         if ($request->user()->cannot('view', $form)) {

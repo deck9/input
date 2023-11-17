@@ -8,9 +8,20 @@ use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Knuckles\Scribe\Attributes\Authenticated;
+use Knuckles\Scribe\Attributes\Group;
 
+#[Group('Form Block Interactions')]
+#[Authenticated]
 class FormBlockInteractionController extends Controller
 {
+    /**
+     * Create a new form block interaction
+     *
+     * This endpoint creates a new form block interaction. Please note that the type of the interaction must be compatible with the type of the form block. If you create a button interaction, the form block must be of type "button".
+     *
+     * You can get a mapping of the available types via the [/api/form-blocks/mapping](#endpoints-GETapi-form-blocks-mapping) endpoint
+     */
     public function create(Request $request, FormBlock $block)
     {
         $this->authorize('update', $block);
@@ -29,6 +40,11 @@ class FormBlockInteractionController extends Controller
         return response()->json($interaction->fresh(), 201);
     }
 
+    /**
+     * Update a form block interaction
+     *
+     * This endpoint updates a form block interaction.
+     */
     public function update(Request $request, FormBlockInteraction $interaction)
     {
         $this->authorize('update', $interaction);
@@ -47,6 +63,11 @@ class FormBlockInteractionController extends Controller
         return response()->json($interaction, 200);
     }
 
+    /**
+     * Delete a form block interaction
+     *
+     * This endpoint deletes a form block interaction.
+     */
     public function delete(Request $request, FormBlockInteraction $interaction)
     {
         $this->authorize('delete', $interaction);
