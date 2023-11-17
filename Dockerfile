@@ -73,8 +73,6 @@ COPY --from=asset_builder /var/www/html/public/js ./public/js
 RUN touch /var/www/html/storage/database.sqlite
 RUN php artisan migrate --force
 
-RUN php artisan route:cache
-RUN php artisan view:cache
 RUN php artisan storage:link
 
 RUN echo "APP_KEY=" > .env
@@ -82,6 +80,9 @@ RUN php artisan key:generate
 
 # Generate the API Documentation
 RUN php artisan scribe:generate
+
+RUN php artisan route:cache
+RUN php artisan view:cache
 
 USER root
 COPY --chown=nobody:nobody ./start-container.sh /opt/input/start-container.sh
