@@ -17,7 +17,7 @@ class ShowFormController extends Controller
     #[Group('Public Form Endpoints')]
     public function __invoke(Form $form)
     {
-        if (!$form->is_published) {
+        if (! $form->is_published) {
             abort(404);
         }
 
