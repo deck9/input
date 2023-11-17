@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
-use Knuckles\Scribe\Attributes\Unauthenticated;
 use Tightenco\Ziggy\Ziggy;
 
 class ZiggyController extends Controller
 {
-    #[Endpoint("Get the ziggy routes", <<<DESC
-    This endpoint returns the routes used in the Ziggy package.
-    DESC)]
-    #[Group("Ziggy Routes")]
-    #[Unauthenticated]
+    /**
+     * Get the ziggy routes
+     *
+     * This endpoint returns the routes used in the Ziggy package.
+     */
+    #[Group('Ziggy Routes')]
     public function __invoke()
     {
         return response()->json(new Ziggy)

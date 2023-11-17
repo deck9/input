@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\GlideCache;
-use App\Models\Form;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Knuckles\Scribe\Attributes\Group;
 use App\Http\Requests\FormImageRequest;
+use App\Models\Form;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Knuckles\Scribe\Attributes\Group;
 
-#[Group("Form Images")]
+#[Group('Form Images')]
 class FormImagesController extends Controller
 {
     public function store(FormImageRequest $request, Form $form)

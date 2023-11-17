@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Knuckles\Scribe\Attributes\Authenticated;
-use Knuckles\Scribe\Attributes\Group;
 use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
 
-#[Group("Forms")]
+#[Group('Forms')]
 #[Authenticated]
 class FormController extends Controller
 {
-    #[Endpoint("List all forms", <<<DESC
+    #[Endpoint('List all forms', <<<'DESC'
     This endpoint returns all forms of the authenticated user.
     DESC)]
-
     public function index(Request $request)
     {
         $request->validate([
