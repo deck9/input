@@ -79,7 +79,7 @@ RUN echo "APP_KEY=" > .env
 RUN php artisan key:generate
 
 # Generate the API Documentation
-RUN php artisan scribe:generate
+RUN php artisan scribe:generate --env doc
 
 RUN php artisan route:cache
 RUN php artisan view:cache
