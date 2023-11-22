@@ -9,9 +9,18 @@ use App\Http\Requests\FormBlockUpdateRequest;
 use App\Models\Form;
 use App\Models\FormBlock;
 use Illuminate\Http\Request;
+use Knuckles\Scribe\Attributes\Authenticated;
+use Knuckles\Scribe\Attributes\Group;
 
+#[Group('Form Blocks')]
+#[Authenticated]
 class FormBlockController extends Controller
 {
+    /**
+     * Get all form blocks
+     *
+     * This endpoint returns all form blocks of a form. A form block is like a single page on the form. Each block has a type that can contain different block interactions based on that type.
+     */
     public function index(Request $request, Form $form)
     {
         $this->authorize('view', $form);
@@ -28,6 +37,11 @@ class FormBlockController extends Controller
         return response()->json($blocks->values()->toArray());
     }
 
+    /**
+     * Create a form block
+     *
+     * This endpoint creates a new form block for the specified form.
+     */
     public function create(Form $form, Request $request)
     {
         $this->authorize('update', $form);
@@ -46,6 +60,11 @@ class FormBlockController extends Controller
         return response()->json($block->fresh(), 201);
     }
 
+    /**
+     * Update a form block
+     *
+     * This endpoint updates a form block for the specified form.
+     */
     public function update(FormBlockUpdateRequest $request, FormBlock $block)
     {
         $this->authorize('update', $block);
@@ -58,6 +77,11 @@ class FormBlockController extends Controller
         return response()->json($block, 200);
     }
 
+    /**
+     * Delete a form block
+     *
+     * This endpoint deletes a form block for the specified form.
+     */
     public function delete(Request $request, FormBlock $block)
     {
         $this->authorize('delete', $block);

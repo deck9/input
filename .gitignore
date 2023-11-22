@@ -2,6 +2,8 @@
 /node_modules
 /public/hot
 /public/build
+/public/docs
+/public/vendor/scribe
 /public/storage
 /public/js
 /public/css
@@ -19,5 +21,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+/.scribe
 coverage
 _ide_helper.php

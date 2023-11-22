@@ -37,13 +37,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Authenticated User
+ *
+ * Get the authenticated user's details. You can use this to check if your authentication is working.
+ *
+ * @group Utilities
+ *
+ * @authenticated
+ */
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+$router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
 $router->get('public/forms/{form}/storyboard', GetFormStoryboardController::class)->name('api.public.forms.storyboard');
 $router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
-$router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
 $router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
 
 $router->get('routes', ZiggyController::class);

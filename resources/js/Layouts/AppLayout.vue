@@ -63,12 +63,16 @@
                     >API Tokens</jet-dropdown-link
                   >
 
+                  <jet-dropdown-link as="a" href="/docs" target="_blank"
+                    >API Reference <D9Icon size="xs" name="external-link"
+                  /></jet-dropdown-link>
+
                   <jet-dropdown-link
                     as="a"
                     href="https://help.getinput.co/"
                     target="_blank"
-                    >Help Center</jet-dropdown-link
-                  >
+                    >Help Center <D9Icon size="xs" name="external-link"
+                  /></jet-dropdown-link>
 
                   <div class="border-t border-grey-100"></div>
 
@@ -138,7 +142,7 @@ export default defineComponent({
         },
         {
           preserveState: false,
-        }
+        },
       );
     },
 

@@ -5,9 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Knuckles\Scribe\Attributes\Authenticated;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
 
+#[Group('Forms')]
+#[Authenticated]
 class FormController extends Controller
 {
+    /**
+     * List all forms
+     *
+     * This endpoint returns all forms of the authenticated user.
+     */
     public function index(Request $request)
     {
         $request->validate([
@@ -22,6 +32,11 @@ class FormController extends Controller
         return response()->json($forms);
     }
 
+    /**
+     * Create a new form
+     *
+     * This endpoint creates a new form for the authenticated user.
+     */
     public function create(Request $request)
     {
         $form = Form::create([
@@ -34,6 +49,11 @@ class FormController extends Controller
         return response()->json($form);
     }
 
+    /**
+     * Get a form
+     *
+     * This endpoint returns all meta data of a form, like title, description and settings.
+     */
     public function show(Request $request, Form $form)
     {
         $this->authorize('view', $form);
@@ -45,6 +65,11 @@ class FormController extends Controller
         return response()->json($form);
     }
 
+    /**
+     * Update a form
+     *
+     * This endpoint can update the forms basic data, like title, description and settings
+     */
     public function update(Request $request, Form $form)
     {
         $this->authorize('update', $form);
@@ -96,6 +121,11 @@ class FormController extends Controller
         return response()->json($form, 200);
     }
 
+    /**
+     * Delete a form
+     *
+     * This endpoint soft deletes a form and all its data. When a form is deleted, it can be restored within 30 days.
+     */
     public function delete(Form $form)
     {
         $this->authorize('delete', $form);
