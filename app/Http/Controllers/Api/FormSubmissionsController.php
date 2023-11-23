@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FormSessionResource;
-use App\Models\FormSession;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
-use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 
 class FormSubmissionsController extends Controller
 {
@@ -18,7 +16,6 @@ class FormSubmissionsController extends Controller
      * This endpoint returns all form submissions for a form.
      */
     #[Group('Form Submissions')]
-    #[ResponseFromApiResource(FormSessionResource::class, FormSession::class, status: 200, collection: true, with: ['formSessionResponses', 'webhooks'])]
     #[Authenticated]
     public function __invoke(Request $request, string $uuid)
     {
