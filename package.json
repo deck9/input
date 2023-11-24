@@ -28,8 +28,8 @@
         "prettier-plugin-tailwindcss": "^0.3.0",
         "puppeteer": "^20.5.0",
         "tailwind-config-viewer": "^1.7.3",
-        "vite": "^4.3.9",
-        "vitest": "^0.31.4"
+        "vite": "^5.0.2",
+        "vitest": "^0.34.6"
     },
     "dependencies": {
         "@deck9/ui": "^0.12.13",
@@ -49,7 +49,7 @@
         "@types/ziggy-js": "^1.3.2",
         "@typescript-eslint/eslint-plugin": "^5.59.8",
         "@typescript-eslint/parser": "^5.59.8",
-        "@vitejs/plugin-vue": "^4.2.3",
+        "@vitejs/plugin-vue": "^4.5.0",
         "@vue/compiler-sfc": "^3.2.47",
         "@vueuse/core": "^10.1.2",
         "autoprefixer": "^10.4.16",
@@ -59,7 +59,7 @@
         "eslint-plugin-vue": "^9.14.1",
         "floating-vue": "^2.0.0-beta.20",
         "highlight.js": "^11.8.0",
-        "laravel-vite-plugin": "^0.7.8",
+        "laravel-vite-plugin": "^0.8.1",
         "lodash": "^4.17.19",
         "pinia": "^2.0.32",
         "postcss": "^8.4.31",
@@ -67,7 +67,7 @@
         "striptags": "^3.2.0",
         "tailwindcss": "^3.3.5",
         "typescript": "^5.1.3",
-        "vite-plugin-css-injected-by-js": "^3.1.1",
+        "vite-plugin-css-injected-by-js": "^3.3.0",
         "vue": "^3.2.47",
         "vue-i18n": "^9.2.2",
         "vue-tsc": "^1.0.24",
