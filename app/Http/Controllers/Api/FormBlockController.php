@@ -10,6 +10,7 @@ use App\Models\Form;
 use App\Models\FormBlock;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\Authenticated;
+use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
 
 #[Group('Form Blocks')]
@@ -42,7 +43,8 @@ class FormBlockController extends Controller
      *
      * This endpoint creates a new form block for the specified form.
      */
-    public function create(Form $form, Request $request)
+    #[BodyParam('type', description: 'The type of the form block. The form block type defaults to `none`.', required: false, enum: FormBlockType::class)]
+    public function create(Request $request, Form $form)
     {
         $this->authorize('update', $form);
 
