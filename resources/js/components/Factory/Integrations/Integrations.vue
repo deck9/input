@@ -22,6 +22,10 @@
 
   <div class="mt-4">
     <D9Button type="button" label="Add Integration" @click="addIntegration" />
+    <MakeButton />
+    <span>Test</span>
+    <span>Test</span>
+    <span>Test</span>
   </div>
 
   <IntegrationEdit
@@ -40,6 +44,7 @@ import { callGetformWebhooks } from "@/api/webhooks.js";
 import EmptyState from "@/components/EmptyState.vue";
 import IntegrationItem from "@/components/Factory/Integrations/IntegrationItem.vue";
 import IntegrationEdit from "@/components/Factory/Integrations/IntegrationEdit.vue";
+import MakeButton from "@/components/Factory/Integrations/MakeButton.vue";
 
 const store = useForm();
 
