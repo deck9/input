@@ -26,7 +26,7 @@
         "prettier": "^3.1.0",
         "prettier-eslint": "^16.1.2",
         "prettier-plugin-tailwindcss": "^0.5.7",
-        "puppeteer": "^20.5.0",
+        "puppeteer": "^21.5.2",
         "tailwind-config-viewer": "^1.7.3",
         "vite": "^4.5.0",
         "vitest": "^0.34.6"
