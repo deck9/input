@@ -22,10 +22,7 @@
 
   <div class="mt-4">
     <D9Button type="button" label="Add Integration" @click="addIntegration" />
-    <MakeButton />
-    <span>Test</span>
-    <span>Test</span>
-    <span>Test</span>
+    <MakeButton class="ml-2" />
   </div>
 
   <IntegrationEdit
