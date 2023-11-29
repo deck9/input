@@ -10,7 +10,7 @@
         "lint": "eslint --ext .js,.ts,.vue resources/js",
         "vue-tsc": "vue-tsc --noEmit -p tsconfig.build.json",
         "tw-config": "tailwind-config-viewer -o",
-        "dev": "vite --force",
+        "dev": "vite",
         "build-app": "vite build -c vite.prod-app.config.js",
         "build-classic": "vite build -c vite.prod-classic.config.js",
         "build": "npm run lint && npm run vue-tsc && npm run build-app && npm run build-classic",
