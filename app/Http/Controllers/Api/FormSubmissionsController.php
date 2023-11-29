@@ -7,6 +7,7 @@ use App\Http\Resources\FormSessionResource;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FormSubmissionsController extends Controller
 {
@@ -25,7 +26,7 @@ class FormSubmissionsController extends Controller
                 ->withUuid($uuid)
                 ->firstOrFail();
         } catch (\Exception $e) {
-            abort(401);
+            throw new NotFoundHttpException('Form not found.', $e);
         }
 
         $resource = FormSessionResource::collection(
