@@ -21,7 +21,16 @@
       ref="inputElement"
       autocomplete="off"
       @input="onInput"
+      maxlength="100"
       v-once
+    />
+
+    <CharCount
+      v-if="block.type === 'input-short'"
+      v-bind="{
+        text: inputText,
+        maxChars: 100,
+      }"
     />
 
     <div
@@ -44,6 +53,7 @@ import { computed, ComputedRef, inject, onMounted, ref } from "vue";
 import { D9Icon } from "@deck9/ui";
 import { useConversation } from "@/stores/conversation";
 import { useFixedNumberFormatting } from "@/utils/useFixedNumberFormatting";
+import CharCount from "@/components/CharCount.vue";
 
 const store = useConversation();
 
@@ -54,7 +64,7 @@ const props = defineProps<{
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 
 let storeValue = ref(
-  (store.currentPayload as FormBlockInteractionPayload)?.payload
+  (store.currentPayload as FormBlockInteractionPayload)?.payload,
 );
 
 // if we restore a value from the store, we need to format it
@@ -69,6 +79,7 @@ if (props.block.type === "input-number" && storeValue.value) {
 }
 
 const inputElement = ref<HTMLInputElement | null>(null);
+const inputText = ref<string | undefined>(inputElement.value?.value);
 const stepValue = 1 / Math.pow(10, props.action.options?.decimalPlaces ?? 0);
 const useSymbol = ref(props.action.options?.useSymbol ?? false);
 
@@ -144,6 +155,8 @@ const onInput = (event) => {
   }
 
   let input: string | number | null = inputElement.value.value;
+
+  inputText.value = input;
 
   if (input && props.block.type === "input-number") {
     const { output } = useFixedNumberFormatting(event, {

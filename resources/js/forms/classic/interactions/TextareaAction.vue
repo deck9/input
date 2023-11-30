@@ -16,32 +16,19 @@
       v-once
     >
     </textarea>
-
-    <span
-      v-if="action.options?.max_chars"
-      class="text-xs"
-      :class="[
-        hasMaxChars && charCount > action.options?.max_chars
-          ? 'font-medium text-red-600'
-          : 'text-grey-600',
-      ]"
-    >
-      {{ charCount }}
-      <span v-if="hasMaxChars">/ {{ action.options?.max_chars }}</span>
-    </span>
+    <CharCount
+      v-bind="{
+        text: inputText,
+        maxChars: action.options?.max_chars,
+      }"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  ComputedRef,
-  inject,
-  onMounted,
-  onUnmounted,
-  ref,
-} from "vue";
+import { ComputedRef, inject, onMounted, onUnmounted, ref } from "vue";
 import { useConversation } from "@/stores/conversation";
+import CharCount from "@/components/CharCount.vue";
 
 const store = useConversation();
 
@@ -54,12 +41,11 @@ const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const storeValue = (store.currentPayload as FormBlockInteractionPayload)
   ?.payload;
 
-const charCount = ref<number>(0);
 const inputElement = ref<HTMLInputElement | null>(null);
+const inputText = ref<string | undefined>(inputElement.value?.value);
 
 onMounted(() => {
   store.enableInputMode();
-  updateCharCount();
 
   if (!disableFocus?.value) {
     inputElement.value?.focus();
@@ -70,23 +56,9 @@ onUnmounted(() => {
   store.disableInputMode();
 });
 
-const hasMaxChars = computed(() => {
-  return props.action.options?.max_chars && props.action.options?.max_chars > 0;
-});
-
-const updateCharCount = () => {
-  const input = inputElement.value?.value ?? null;
-
-  if (input) {
-    charCount.value = input.length;
-  } else {
-    charCount.value = 0;
-  }
-};
-
 const onInput = () => {
-  const input = inputElement.value?.value ?? null;
-  updateCharCount();
-  store.setResponse(props.action, input);
+  const input = inputElement.value?.value;
+  inputText.value = input;
+  store.setResponse(props.action, input ?? null);
 };
 </script>

@@ -12,12 +12,14 @@ export function useInputAction(block: PublicFormBlockModel) {
     ].includes(block.type);
 
     const validator = (input: any) => {
-        const emailValidator = string().required().email();
-        const linkValidator = string().required().url();
-        const numberValidator = number().required();
+        const defaultValidator = string().max(100).required();
+        const emailValidator = string().max(100).required().email();
+        const linkValidator = string().max(100).required().url();
+        const numberValidator = number().max(100).required();
         const phoneValidator = string()
             .required()
             .min(7)
+            .max(100)
             .matches(/^[+]?(?:[0-9]+[\s-]?[0-9]+)+$/);
 
         switch (block.type) {
@@ -51,8 +53,10 @@ export function useInputAction(block: PublicFormBlockModel) {
                 };
             default:
                 return {
-                    valid: block.is_required ? input?.payload.length > 0 : true,
-                    message: "This field is required",
+                    valid:
+                        (!block.is_required && !input?.payload) ||
+                        defaultValidator.isValidSync(input?.payload),
+                    message: "Please enter a valid short text.",
                 };
         }
     };
