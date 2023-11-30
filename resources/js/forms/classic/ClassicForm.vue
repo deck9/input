@@ -88,7 +88,7 @@ await store.initForm(
     "hideNavigation",
     "focusOnMount",
     "alignLeft",
-  ])
+  ]),
 );
 
 const { locale } = useI18n({ useScope: "global" });
@@ -105,7 +105,7 @@ onMounted(() => {
 const primaryColor = useThemableColor(store.form?.brand_color ?? "#1f2937");
 const contrastColor = useThemableColor(store.form?.contrast_color ?? "#f9fafb");
 const backgroundColor = useThemableColor(
-  store.form?.background_color ?? "#ffffff"
+  store.form?.background_color ?? "#ffffff",
 );
 const textColor = useThemableColor(store.form?.text_color ?? "#000000");
 </script>
@@ -116,5 +116,13 @@ const textColor = useThemableColor(store.form?.text_color ?? "#000000");
   --color-contrast: v-bind(contrastColor);
   --color-background: v-bind(backgroundColor);
   --color-content: v-bind(textColor);
+}
+
+.text-content {
+  @apply text-base;
+}
+
+.text-content a {
+  @apply text-primary underline;
 }
 </style>
