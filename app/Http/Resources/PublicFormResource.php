@@ -26,6 +26,8 @@ class PublicFormResource extends JsonResource
             'contrast_color' => $this->contrast_color,
             'privacy_link' => $this->privacy_link,
             'legal_notice_link' => $this->legal_notice_link,
+            'use_brighter_inputs' => $this->use_brighter_inputs,
+            'show_form_progress' => $this->show_form_progress,
             'eoc_text' => $this->eoc_text,
             'eoc_headline' => $this->eoc_headline,
             'cta_label' => $this->cta_label,

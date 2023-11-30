@@ -108,6 +108,7 @@ const backgroundColor = useThemableColor(
   store.form?.background_color ?? "#ffffff",
 );
 const textColor = useThemableColor(store.form?.text_color ?? "#000000");
+const brightness = store.form?.use_brighter_inputs ? 1.5 : 1;
 </script>
 
 <style>
@@ -116,13 +117,19 @@ const textColor = useThemableColor(store.form?.text_color ?? "#000000");
   --color-contrast: v-bind(contrastColor);
   --color-background: v-bind(backgroundColor);
   --color-content: v-bind(textColor);
+  --brightness-user: v-bind(brightness);
 }
 
-.text-content {
+.form-message-prose {
   @apply text-base;
 }
 
-.text-content a {
+.form-message-prose a,
+.form-message-prose a:visited {
   @apply text-primary underline;
+}
+
+.form-message-prose a:hover {
+  @apply brightness-125;
 }
 </style>

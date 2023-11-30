@@ -139,6 +139,7 @@ test('can_update_the_form_data_with_api_call', function () {
         'user_message_text_color' => '#ffffff',
         'interaction_background_color' => '#ffffff',
         'interaction_text_color' => '#ffffff',
+        'use_brighter_inputs' => true,
         'show_form_progress' => true,
 
         // Social Settings
@@ -190,6 +191,7 @@ test('can_update_the_form_data_with_api_call', function () {
     $this->assertEquals('#ffffff', $form->user_message_text_color);
     $this->assertEquals('#ffffff', $form->interaction_background_color);
     $this->assertEquals('#ffffff', $form->interaction_text_color);
+    $this->assertTrue($form->use_brighter_inputs);
     $this->assertTrue($form->show_form_progress);
 
     $this->assertTrue($form->show_social_links);

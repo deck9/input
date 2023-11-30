@@ -94,6 +94,7 @@ class FormController extends Controller
                 'user_message_text_color',
                 'interaction_background_color',
                 'interaction_text_color',
+                'use_brighter_inputs',
                 'show_form_progress',
                 'cta_link',
                 'cta_label',

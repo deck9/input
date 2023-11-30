@@ -30,6 +30,7 @@ class Form extends BaseModel
     protected $casts = [
         'is_notification_via_mail' => 'boolean',
         'show_cta_link' => 'boolean',
+        'use_brighter_inputs' => 'boolean',
         'show_form_progress' => 'boolean',
         'cta_append_params' => 'boolean',
         'cta_append_session_id' => 'boolean',
@@ -96,6 +97,7 @@ class Form extends BaseModel
         'twitter',
         'show_cta_link',
         'show_social_links',
+        'use_brighter_inputs',
         'show_form_progress',
     ];
 

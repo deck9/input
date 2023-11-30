@@ -3,7 +3,7 @@
     <label class="sr-only block" :for="action.id">{{ action.label }}</label>
     <input
       type="date"
-      class="block w-full max-w-xs rounded border border-grey-300 bg-white px-3 py-2 pl-10 text-black focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+      class="block w-full max-w-xs rounded border border-content/20 bg-background brightness-user px-3 py-2 pl-10 text-content focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
       :name="block.id"
       :id="action.id"
       :placeholder="action.label || t('Choose a date')"
@@ -16,7 +16,7 @@
       v-once
     />
 
-    <div class="absolute inset-y-0 left-3 flex items-center text-grey-700">
+    <div class="absolute inset-y-0 left-3 flex items-center text-content/50">
       <D9Icon name="calendar" />
     </div>
   </div>

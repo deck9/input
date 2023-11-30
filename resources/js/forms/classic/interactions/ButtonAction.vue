@@ -2,7 +2,7 @@
   <label
     v-if="isVisible"
     :for="action.id"
-    class="relative block cursor-pointer rounded border py-2 pl-6 pr-3"
+    class="relative block cursor-pointer rounded border py-2 pl-6 pr-3 bg-background brightness-user"
     :class="{
       'border-primary ring-1 ring-primary': isChecked,
       'border-content/20': !isChecked,
@@ -14,7 +14,7 @@
         class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium"
         :class="{
           'bg-primary text-contrast': isChecked,
-          'bg-content/80 text-background': !isChecked,
+          'bg-content/70 text-background': !isChecked,
         }"
         >{{ index + 1 }}</span
       >
@@ -103,7 +103,7 @@ const isChecked = computed<boolean>(() => {
   if (Array.isArray(store.currentPayload)) {
     return (
       store.currentPayload.findIndex(
-        (value) => value.actionId === props.action.id
+        (value) => value.actionId === props.action.id,
       ) !== -1
     );
   } else {
@@ -206,7 +206,7 @@ if (isVisible.value) {
         e.preventDefault();
         startEditing(true);
       },
-      { target: document }
+      { target: document },
     );
   }
 }

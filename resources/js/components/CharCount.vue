@@ -5,7 +5,7 @@
     :class="[
       hasMaxChars && charCount > maxChars
         ? 'font-medium text-red-600'
-        : 'text-grey-600',
+        : 'text-content/80',
     ]"
   >
     {{ charCount }}

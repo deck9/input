@@ -42,6 +42,9 @@ module.exports = {
             borderColor: {
                 DEFAULT: colors.slate[300],
             },
+            brightness: {
+                user: "var(--brightness-user)",
+            },
             keyframes: {
                 spinner: {
                     "0%, 70%, 100%": { transform: "scale3D(1,1,1);" },

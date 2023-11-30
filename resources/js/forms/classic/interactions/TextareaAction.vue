@@ -2,7 +2,7 @@
   <div>
     <label class="sr-only block" :for="action.id"> {{ action.label }}</label>
     <textarea
-      class="block min-h-[4rem] w-full max-w-md rounded border border-grey-300 bg-white px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+      class="block min-h-[4rem] w-full max-w-md rounded border border-content/20 bg-background brightness-user text-content px-3 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
       :name="block.id"
       :id="action.id"
       :placeholder="action.label || 'Enter text'"

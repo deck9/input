@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit" :title="`Form for section ${block.id}`">
-    <div class="text-content" v-html="block.message"></div>
+    <div class="text-content form-message-prose" v-html="block.message"></div>
 
     <div class="mt-6">
       <div
@@ -51,7 +51,7 @@ const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const store = useConversation();
 
 const { actionComponent, actionValidator, actionProps } = useActions(
-  props.block
+  props.block,
 );
 
 const submitButton = templateRef<HTMLElement | null>("submitButton", null);

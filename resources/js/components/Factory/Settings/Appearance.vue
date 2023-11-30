@@ -24,6 +24,19 @@
         <D9Input type="color" v-model="textColor" block show-color-picker />
       </div>
 
+      <div class="mb-4 flex justify-between">
+        <D9Label
+          label="Brighten Input Fields"
+          description="This will brighten up the inputs and is especially desirable for themes with a dark background color."
+        />
+        <D9Switch
+          label="Brighten Input Fields"
+          v-model="useBrighterInputs"
+          onLabel="yes"
+          offLabel="no"
+        />
+      </div>
+
       <hr class="mb-4 border-grey-200" />
 
       <div class="mb-4 flex justify-between pb-3">
@@ -54,6 +67,7 @@ const brandColor = ref(store?.form?.brand_color);
 const backgroundColor = ref(store?.form?.background_color);
 const textColor = ref(store?.form?.text_color);
 
+const useBrighterInputs = ref(store?.form?.use_brighter_inputs);
 const showFormProgress = ref(store?.form?.show_form_progress);
 
 const saveOptions = async () => {
@@ -64,6 +78,7 @@ const saveOptions = async () => {
     background_color: backgroundColor.value,
     text_color: textColor.value,
     show_form_progress: showFormProgress.value,
+    use_brighter_inputs: useBrighterInputs.value,
   });
 
   isSaving.value = false;
