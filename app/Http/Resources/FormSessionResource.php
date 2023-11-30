@@ -19,6 +19,7 @@ class FormSessionResource extends JsonResource
         return [
             'id' => $this->id,
             'uid' => $this->token,
+            'form' => $this->form->uuid,
             'started_at' => $this->created_at->toDateTimeString(),
             'completed_at' => (string) $this->getRawOriginal('is_completed'),
             'params' => $this->params,
