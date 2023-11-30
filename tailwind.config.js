@@ -2,20 +2,20 @@ const colors = require("tailwindcss/colors");
 
 function withOpacityValue(variable) {
     return ({ opacityValue }) => {
-      if (opacityValue === undefined) {
-        return `rgb(var(${variable}))`
-      }
-      return `rgba(var(${variable}), ${opacityValue})`
-    }
-  }
+        if (opacityValue === undefined) {
+            return `rgb(var(${variable}))`;
+        }
+        return `rgba(var(${variable}), ${opacityValue})`;
+    };
+}
 
 module.exports = {
     darkMode: "class",
 
-    important: '.ipt',
+    important: ".ipt",
 
     content: [
-        "./node_modules/@deck9/ui/dist/src/index.es.js",
+        "./node_modules/@deck9/ui/dist/src/ui.mjs",
         "./node_modules/smooth-dnd/dist/index.js",
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./vendor/laravel/jetstream/**/*.blade.php",
@@ -33,11 +33,11 @@ module.exports = {
                 grey: colors.slate,
 
                 // Custom colors used for user overrides
-                primary: withOpacityValue('--color-primary'),
-                contrast: withOpacityValue('--color-contrast'),
-                background: withOpacityValue('--color-background'),
-                content: withOpacityValue('--color-content'),
-                range: withOpacityValue('--color-range'),
+                primary: withOpacityValue("--color-primary"),
+                contrast: withOpacityValue("--color-contrast"),
+                background: withOpacityValue("--color-background"),
+                content: withOpacityValue("--color-content"),
+                range: withOpacityValue("--color-range"),
             },
             borderColor: {
                 DEFAULT: colors.slate[300],
@@ -62,5 +62,5 @@ module.exports = {
     corePlugins: {
         preflight: false,
         container: false,
-    }
+    },
 };

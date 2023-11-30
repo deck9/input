@@ -1,6 +1,7 @@
 <template>
   <button
-    class="bg-white rounded-lg shadow-sm relative py-2 px-5 leading-4"
+    class="relative inline-flex items-center focus:outline-none focus:ring active:ring transition duration-150 ease-in-out text-purple-800 bg-white border-transparent hover:bg-grey-100 hover:text-purple-700 active:bg-grey-100 ring-blue-300 ring-offset-2 dark:ring-offset-grey-900 px-5 py-2 text-sm leading-4 font-medium rounded-lg"
+    @click="useMakeApp"
   >
     <span class="mr-1">Automate with</span>
     <div class="inset-0 inline-flex items-center justify-center">
@@ -99,6 +100,16 @@
     </div>
   </button>
 </template>
+
+<script lang="ts" setup>
+// TODO: This is harcoded for now, until we are an official app on make.com
+const useMakeApp = () => {
+  window.open(
+    "https://www.make.com/en/hq/app-invitation/ab079bcecb9e0c5545389a8ea96b3079",
+    "_blank",
+  );
+};
+</script>
 
 <style>
 .cls-1 {
