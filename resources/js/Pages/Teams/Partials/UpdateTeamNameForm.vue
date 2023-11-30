@@ -11,12 +11,13 @@
 
         <div class="mt-2 flex items-center">
           <img
-            class="h-12 w-12 rounded-full object-cover"
+            v-if="$page.props.jetstream.managesProfilePhotos"
+            class="h-12 w-12 rounded-full object-cover mr-4"
             :src="team.owner.profile_photo_url"
             :alt="team.owner.name"
           />
 
-          <div class="ml-4 leading-tight">
+          <div class="leading-tight">
             <div>{{ team.owner.name }}</div>
             <div class="text-sm text-grey-700">{{ team.owner.email }}</div>
           </div>
