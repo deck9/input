@@ -14,6 +14,12 @@
                 <Label class="flex-shrink-0" color="grey">{{
                   webhook.webhook_method
                 }}</Label>
+                <Label
+                  v-if="webhook.has_provider && webhook.provider === 'make'"
+                  class="ml-1 flex-shrink-0"
+                  color="black"
+                  >Managed by Make</Label
+                >
                 <p class="ml-1">
                   {{ webhook.webhook_url }}
                 </p>

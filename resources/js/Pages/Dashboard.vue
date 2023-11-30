@@ -71,7 +71,7 @@ const props = withDefaults(
   }>(),
   {
     initialForms: () => [],
-  }
+  },
 );
 
 const isLoading = ref(false);

@@ -132,7 +132,7 @@ test('submissions only viewable to authenticated owner of the form', function ()
 
     $this->actingAs(User::factory()->create())
         ->json('get', route('api.forms.submissions', ['form' => $form->uuid]))
-        ->assertStatus(401);
+        ->assertStatus(404);
 });
 
 test('submissions response is a pagination response', function () {
