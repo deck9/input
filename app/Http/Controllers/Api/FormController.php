@@ -25,6 +25,7 @@ class FormController extends Controller
         ]);
 
         $forms = $request->user()
+            ->currentTeam
             ->forms()
             ->withFilter($request->filter ?? null)
             ->get();

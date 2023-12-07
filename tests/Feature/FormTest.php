@@ -51,6 +51,22 @@ test('a_user_can_return_all_the_forms_in_his_account', function () {
     $this->assertEquals($form->uuid, $response->json()[0]['uuid']);
 });
 
+test('a team member can view all forms of his team', function () {
+    $user = User::factory()->withTeam()->create();
+    $member = User::factory()->withTeam()->create();
+    $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+
+    $user->currentTeam->users()->attach($member, ['role' => null]);
+
+    // need to refresh member to get the team relationship
+    $member->refresh()->switchTeam($user->currentTeam);
+
+    $response = $this->actingAs($member)->get(route('api.forms.index'))
+        ->assertStatus(200);
+
+    $this->assertEquals($form->uuid, $response->json()[0]['uuid']);
+});
+
 test('a user can filter for published/unpublished/trashed forms', function () {
     $user = User::factory()->create();
 

@@ -2,7 +2,7 @@
   <div>
     <div
       :class="{
-        'bg-blue-500': style == 'success',
+        'bg-teal-500': style == 'success',
         'bg-red-700': style == 'danger',
       }"
       v-if="show && message"
@@ -13,7 +13,7 @@
             <span
               class="flex p-2 rounded-lg"
               :class="{
-                'bg-blue-600': style == 'success',
+                'bg-teal-600': style == 'success',
                 'bg-red-600': style == 'danger',
               }"
             >
@@ -58,17 +58,9 @@
           <div class="flex-shrink-0 sm:ml-3">
             <button
               type="button"
-              class="
-                -mr-1
-                flex
-                p-2
-                rounded-md
-                focus:outline-none
-                sm:-mr-2
-                transition
-              "
+              class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
               :class="{
-                'hover:bg-blue-600 focus:bg-blue-600': style == 'success',
+                'hover:bg-teal-600 focus:bg-teal-600': style == 'success',
                 'hover:bg-red-600 focus:bg-red-600': style == 'danger',
               }"
               aria-label="Dismiss"

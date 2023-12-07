@@ -31,6 +31,13 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
+        $count = Team::count();
+
+        // Only allow creating a team if there are no teams yet.
+        if ($count >= 1) {
+            return false;
+        }
+
         return true;
     }
 
