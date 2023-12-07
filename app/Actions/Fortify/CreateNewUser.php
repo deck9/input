@@ -35,16 +35,13 @@ class CreateNewUser implements CreatesNewUsers
                 // if first user, then create a team for them
                 if (User::count() === 1) {
                     $this->createTeam($user);
-                } else {
-                    // otherwise, add them to the first team
-                    $user->teams()->attach(Team::first());
                 }
             });
         });
     }
 
     /**
-     * Create a personal team for the user.
+     * Create a team for the user.
      *
      * @return void
      */
@@ -53,7 +50,7 @@ class CreateNewUser implements CreatesNewUsers
         $user->ownedTeams()->save(Team::forceCreate([
             'user_id' => $user->id,
             'name' => explode(' ', $user->name, 2)[0]."'s Team",
-            'personal_team' => true,
+            'personal_team' => false,
         ]));
     }
 }

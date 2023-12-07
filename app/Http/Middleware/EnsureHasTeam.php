@@ -62,12 +62,8 @@ class EnsureHasTeam
             return $next($request);
         }
 
-        if ($request->route()->getName() === 'teams.missing') {
-            return $next($request);
-        }
-
-        // if user is accepting an invitation, allow them to proceed
-        if ($request->route()->getName() === 'team-invitations.accept') {
+        // whitelist some routes
+        if (in_array($request->route()->getName(), ['teams.missing', 'team-invitations.accept', 'logout'])) {
             return $next($request);
         }
 

@@ -5,14 +5,17 @@
     <template #logo>
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <jet-application-logo class="mx-auto h-8 text-white" />
+        <div class="flex justify-center mt-4">
+          <button
+            @click="logout"
+            type="button"
+            class="text-grey-400 hover:text-blue-100 text-sm underline"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </template>
-
-    <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-      {{ status }}
-    </div>
-
-    <jet-validation-errors class="mb-6" />
 
     <h1 class="mb-6 text-center text-2xl font-bold text-grey-300">
       Join a Team to Get Started
@@ -40,11 +43,9 @@
 
 <script>
 import { defineComponent } from "vue";
+import { Head } from "@inertiajs/inertia-vue3";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
-import { D9Input, D9Label, D9Checkbox, D9Button } from "@deck9/ui";
-import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
-import { Head, Link } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
   components: {
@@ -52,40 +53,12 @@ export default defineComponent({
     Head,
     JetAuthenticationCard,
     JetApplicationLogo,
-    D9Input,
-    D9Label,
-    D9Checkbox,
-    D9Button,
-    JetValidationErrors,
-    // eslint-disable-next-line vue/no-reserved-component-names
-    Link,
-  },
-
-  props: {
-    canResetPassword: Boolean,
-    status: String,
-  },
-
-  data() {
-    return {
-      form: this.$inertia.form({
-        email: "",
-        password: "",
-        remember: false,
-      }),
-    };
   },
 
   methods: {
-    submit() {
-      this.form
-        .transform((data) => ({
-          ...data,
-          remember: this.form.remember ? "on" : "",
-        }))
-        .post(this.route("login"), {
-          onFinish: () => this.form.reset("password"),
-        });
+    logout() {
+      console.log("logout");
+      this.$inertia.post(this.route("logout"));
     },
   },
 });
