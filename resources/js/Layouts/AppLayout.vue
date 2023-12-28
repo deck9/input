@@ -60,7 +60,7 @@
                   <jet-dropdown-link
                     :href="route('teams.show', $page.props.user.current_team)"
                   >
-                    Team Settings
+                    Manage Team
                   </jet-dropdown-link>
 
                   <jet-dropdown-link
