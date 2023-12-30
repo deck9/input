@@ -8,6 +8,7 @@ import ClassicForm from "./classic/ClassicForm.vue";
 import localeDE from "@i18n/de.json";
 import localeEN from "@i18n/en.json";
 import localeSK from "@i18n/sk.json";
+import localeFR from "@i18n/fr.json";
 
 const pinia = createPinia();
 
@@ -19,6 +20,7 @@ const i18n = createI18n({
         en: localeEN,
         de: localeDE,
         sk: localeSK,
+        fr: localeFR,
     },
 });
 
