@@ -19,7 +19,7 @@
             <FactoryNavigation />
 
             <!-- Settings Dropdown -->
-            <div class="relative ml-3">
+            <div class="relative ml-3" v-if="false">
               <jet-dropdown align="right" width="48">
                 <template #trigger>
                   <span class="inline-flex rounded-md">

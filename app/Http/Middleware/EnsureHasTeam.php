@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,12 +64,17 @@ class EnsureHasTeam
         }
 
         // whitelist some routes
-        if (in_array($request->route()->getName(), ['teams.missing', 'team-invitations.accept', 'logout'])) {
+        if (in_array($request->route()->getName(), ['teams.missing', 'teams.create', 'team-invitations.accept', 'logout'])) {
             return $next($request);
         }
 
         // otherwise, get all teams for the user
         $teams = $request->user()->allTeams();
+
+        // if the user is the first user, redirect them to the create team page
+        if ($teams->count() === 0 && User::count() === 1) {
+            return redirect()->route('teams.create');
+        }
 
         // if user has no team at this point, redirect them to the missing team page
         if ($teams->count() === 0) {
