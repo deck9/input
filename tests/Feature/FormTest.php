@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('can_create_a_new_form', function () {
+test('can create a new form', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 
@@ -22,7 +22,7 @@ test('can_create_a_new_form', function () {
     $this->assertNotNull($form->name);
 });
 
-test('when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled', function () {
+test('when creating a new form the data privacy mode should not be enabled', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 
@@ -32,7 +32,7 @@ test('when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled', fun
     $this->assertFalse($form->has_data_privacy);
 });
 
-test('a_new_form_should_have_a_default_brand_color_set', function () {
+test('a new form should have a default brand color set', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 
@@ -42,7 +42,7 @@ test('a_new_form_should_have_a_default_brand_color_set', function () {
     $this->assertEquals(Form::DEFAULT_BRAND_COLOR, $form->brand_color);
 });
 
-test('a_user_can_return_all_the_forms_in_his_account', function () {
+test('a user can return all the forms in his account', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
     $form = Form::factory()->create([
@@ -144,7 +144,7 @@ test('authenticated_user_can_view_the_edit_page_of_his_form', function () {
         );
 });
 
-test('can_retrieve_the_form_data', function () {
+test('can retrieve the form data', function () {
     $form = Form::factory()->create();
 
     $response = $this->actingAs($form->user)
@@ -154,7 +154,7 @@ test('can_retrieve_the_form_data', function () {
     $this->assertEquals($form->uuid, $response->json('uuid'));
 });
 
-test('can_update_the_form_data_with_api_call', function () {
+test('can update the form data with api call', function () {
     $form = Form::factory()->create();
 
     $updateRequest = [
@@ -252,7 +252,7 @@ test('can_update_the_form_data_with_api_call', function () {
     $this->assertEquals('You can close this window now', $form->eoc_text);
 });
 
-test('can_not_update_form_of_other_users', function () {
+test('can not update form of other users', function () {
     $form = Form::factory()->create();
 
     $updateRequest = [
@@ -268,7 +268,7 @@ test('can_not_update_form_of_other_users', function () {
         ->assertStatus(403);
 });
 
-test('can_delete_a_form', function () {
+test('can delete a form', function () {
     $form = Form::factory()->create();
 
     $this->actingAs($form->user)
@@ -307,7 +307,7 @@ test('a user can restore a deleted form', function () {
     $this->assertNotNull(Form::find($form->id));
 });
 
-test('can_enable_or_disable_email_notifications_for_a_form', function () {
+test('can enable or disable email notifications for a form', function () {
     $form = Form::factory()->create();
 
     $updateRequestA = [
