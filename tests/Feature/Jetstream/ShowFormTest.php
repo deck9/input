@@ -35,7 +35,7 @@ class ShowFormTest extends TestCase
         $form = Form::factory()->unpublished()->create();
 
         /** @var User $other */
-        $other = User::factory()->create();
+        $other = User::factory()->withTeam()->create();
 
         $this->actingAs($other)->get(route('forms.show', ['uuid' => $form->uuid]))
             ->assertStatus(404);

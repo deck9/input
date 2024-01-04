@@ -41,7 +41,7 @@ test('can_create_a_new_webhook_for_form', function () {
     $this->assertCount(1, $form->fresh()->formWebhooks);
 
     // assert that other user cannot create webhook for form
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->withTeam()->create())
         ->json('POST', route('api.forms.webhooks.create', $form), [
             'name' => 'Test Integration',
             'webhook_url' => 'https://example.com/webhook',

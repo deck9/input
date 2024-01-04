@@ -130,7 +130,7 @@ test('submissions only viewable to authenticated owner of the form', function ()
     $this->json('get', route('api.forms.submissions', ['form' => $form->uuid]))
         ->assertStatus(401);
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->withTeam()->create())
         ->json('get', route('api.forms.submissions', ['form' => $form->uuid]))
         ->assertStatus(404);
 });

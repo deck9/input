@@ -23,6 +23,8 @@ class FormFactory extends Factory
      */
     public function definition()
     {
+        $user = User::factory()->withTeam()->create();
+
         return [
             'uuid' => $this->faker->uuid,
             'name' => $this->faker->name,
@@ -30,7 +32,8 @@ class FormFactory extends Factory
             'is_notification_via_mail' => false,
             'brand_color' => '#333333',
             'published_at' => Carbon::now()->subDays(7),
-            'user_id' => User::factory(),
+            'user_id' => $user->id,
+            'team_id' => $user->current_team_id,
         ];
     }
 

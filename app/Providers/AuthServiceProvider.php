@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Form;
+use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\Team;
 use App\Policies\FormBlockInteractionPolicy;

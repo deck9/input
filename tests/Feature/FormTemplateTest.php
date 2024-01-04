@@ -62,7 +62,7 @@ test('can_export_a_form_as_a_json_file', function () {
 
 test('can_import_a_string_template_for_an_existing_form', function () {
     /** @var User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
 
     $form = Form::factory()->create([
         'name' => 'Test Form',
@@ -95,7 +95,7 @@ test('can_import_a_string_template_for_an_existing_form', function () {
 
 test('can_import_a_file_template_for_an_existing_form', function () {
     /** @var User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
 
     $form = Form::factory()->create([
         'name' => 'Test Form',

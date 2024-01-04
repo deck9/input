@@ -21,13 +21,14 @@ class SimpleFormSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::first();
+        $user = User::first() ?? User::factory()->withTeam()->create();
 
         $form = Form::factory()->create([
             'name' => 'Simple Form',
             'description' => 'This form is for testing purposes.',
             'brand_color' => '#000000',
-            'user_id' => $user ? $user->id : User::factory()->create()->id,
+            'user_id' => $user->id,
+            'team_id' => $user->current_team_id,
         ]);
 
         $sessions = FormSession::factory(5)->create([

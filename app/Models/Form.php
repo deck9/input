@@ -380,6 +380,8 @@ class Form extends BaseModel
     {
         $newForm = Form::create([
             'name' => $newName,
+            'user_id' => $this->user_id,
+            'team_id' => $this->team_id,
         ]);
 
         $newForm->applyTemplate($this->toTemplate());

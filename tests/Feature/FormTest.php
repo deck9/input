@@ -8,7 +8,9 @@ uses(RefreshDatabase::class);
 
 test('can_create_a_new_form', function () {
     /** @var User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
+
+    $this->withoutExceptionHandling();
 
     $this->actingAs($user)
         ->post(route('api.forms.create'))
@@ -22,7 +24,7 @@ test('can_create_a_new_form', function () {
 
 test('when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled', function () {
     /** @var User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
 
     $this->actingAs($user)->post(route('api.forms.create'));
     $form = Form::get()->last();
@@ -32,7 +34,7 @@ test('when_creating_a_new_form_the_data_privacy_mode_should_not_be_enabled', fun
 
 test('a_new_form_should_have_a_default_brand_color_set', function () {
     /** @var User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
 
     $this->actingAs($user)->post(route('api.forms.create'));
     $form = Form::get()->last();
@@ -42,8 +44,11 @@ test('a_new_form_should_have_a_default_brand_color_set', function () {
 
 test('a_user_can_return_all_the_forms_in_his_account', function () {
     /** @var User $user */
-    $user = User::factory()->create();
-    $form = Form::factory()->create(['user_id' => $user->id]);
+    $user = User::factory()->withTeam()->create();
+    $form = Form::factory()->create([
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
 
     $response = $this->actingAs($user)->get(route('api.forms.index'))
         ->assertStatus(200);
@@ -54,7 +59,10 @@ test('a_user_can_return_all_the_forms_in_his_account', function () {
 test('a team member can view all forms of his team', function () {
     $user = User::factory()->withTeam()->create();
     $member = User::factory()->withTeam()->create();
-    $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    $form = Form::factory()->create([
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
 
     $user->currentTeam->users()->attach($member, ['role' => null]);
 
@@ -68,16 +76,25 @@ test('a team member can view all forms of his team', function () {
 });
 
 test('a user can filter for published/unpublished/trashed forms', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
 
     // published form
-    $formA = Form::factory()->for($user)->create();
+    $formA = Form::factory()->create([
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
 
     // unpublished form
-    $formB = Form::factory()->unpublished()->for($user)->create();
+    $formB = Form::factory()->unpublished()->create([
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
 
     // deleted form
-    $formC = Form::factory()->deleted()->for($user)->create();
+    $formC = Form::factory()->deleted()->create([
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
 
     $this->actingAs($user)
         ->get(route('api.forms.index', ['filter' => 'published']))
@@ -97,7 +114,7 @@ test('a user can filter for published/unpublished/trashed forms', function () {
 
 test('a_user_cannot_return_forms_in_other_accounts', function () {
     /** @var User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
     Form::factory()->create();
 
     $response = $this->actingAs($user)->get(route('api.forms.index'))
@@ -111,7 +128,7 @@ test('authenticated_user_can_view_the_edit_page_of_his_form', function () {
 
     // test response for unauthorized user
     /** @var User $otherUser */
-    $otherUser = User::factory()->create();
+    $otherUser = User::factory()->withTeam()->create();
     $responseA = $this->actingAs($otherUser)
         ->get(route('forms.edit', $form->uuid));
     $responseA->assertStatus(404);
@@ -244,7 +261,7 @@ test('can_not_update_form_of_other_users', function () {
     ];
 
     /** @var User $newUser */
-    $newUser = User::factory()->create();
+    $newUser = User::factory()->withTeam()->create();
 
     $this->actingAs($newUser)
         ->json('POST', route('api.forms.update', $form->uuid), $updateRequest)

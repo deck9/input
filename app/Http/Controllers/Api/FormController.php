@@ -43,6 +43,7 @@ class FormController extends Controller
         $form = Form::create([
             'name' => 'Untitled Form',
             'user_id' => $request->user()->id,
+            'team_id' => $request->user()->currentTeam->id,
             'has_data_privacy' => false,
             'brand_color' => Form::DEFAULT_BRAND_COLOR,
         ]);

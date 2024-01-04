@@ -46,7 +46,7 @@ test('can_create_a_new_block_of_type_group', function () {
 
 test('can_only_create_blocks_for_forms_that_a_user_owns', function () {
     /** @var User $otherUser */
-    $otherUser = User::factory()->create([]);
+    $otherUser = User::factory()->withTeam()->create([]);
     $form = Form::factory()->create();
 
     $this->actingAs($otherUser)
@@ -119,7 +119,7 @@ test('can_update_a_block_with_a_empty_message', function () {
 
 test('cannot_create_or_update_blocks_of_not_owned_form', function () {
     /** @var User $otherUser */
-    $otherUser = User::factory()->create();
+    $otherUser = User::factory()->withTeam()->create();
 
     $block = FormBlock::factory()->create([
         'message' => 'Hey there',
@@ -172,7 +172,7 @@ test('can_delete_a_block', function () {
 
 test('cannot_delete_blocks_of_other_users', function () {
     /** @var User $otherUser */
-    $otherUser = User::factory()->create();
+    $otherUser = User::factory()->withTeam()->create();
     $block = FormBlock::factory()->create();
 
     $this->actingAs($otherUser)
