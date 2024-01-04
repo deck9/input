@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class TeamPolicy
 {
@@ -29,16 +30,16 @@ class TeamPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user): Response
     {
         $count = Team::count();
 
         // Only allow creating a team if there are no teams yet.
         if ($count >= 1) {
-            return false;
+            return Response::deny('You may only create one team');
         }
 
-        return true;
+        return Response::allow();
     }
 
     /**
