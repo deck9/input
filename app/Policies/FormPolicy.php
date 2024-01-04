@@ -12,16 +12,16 @@ class FormPolicy
 
     public function view(User $user, Form $form)
     {
-        return $user->id === $form->user_id;
+        return $user->id === $form->user_id || $user->current_team_id === $form->team_id;
     }
 
     public function update(User $user, Form $form)
     {
-        return $user->id === $form->user_id;
+        return $user->id === $form->user_id || $user->current_team_id === $form->team_id;
     }
 
     public function delete(User $user, Form $form)
     {
-        return $user->id === $form->user_id;
+        return $user->id === $form->user_id || $user->current_team_id === $form->team_id;
     }
 }

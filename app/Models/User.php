@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\Features;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
@@ -77,8 +79,14 @@ class User extends Authenticatable
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=c5cfdb&background=060b16';
     }
 
-    public function forms()
+    public function forms(): HasMany
     {
+        if (Features::hasTeamFeatures()) {
+            if ($this->currentTeam) {
+                return $this->currentTeam->forms();
+            }
+        }
+
         return $this->hasMany(Form::class);
     }
 }

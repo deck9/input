@@ -12,11 +12,11 @@ class FormBlockPolicy
 
     public function update(User $user, FormBlock $block)
     {
-        return $user->id === $block->form->user_id;
+        return $user->id === $block->form->user_id || $user->current_team_id === $block->form->team_id;
     }
 
     public function delete(User $user, FormBlock $block)
     {
-        return $user->id === $block->form->user_id;
+        return $user->id === $block->form->user_id || $user->current_team_id === $block->form->team_id;
     }
 }

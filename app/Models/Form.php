@@ -151,6 +151,11 @@ class Form extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function scopeWithFilter(Builder $builder, ?string $filter)
     {
         return match ($filter) {

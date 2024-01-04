@@ -10,7 +10,7 @@
     >
       <div
         @mousedown="enableResize"
-        class="-ml-[7px] flex h-9 w-3 cursor-[ew-resize] flex-col items-center justify-around rounded border border-grey-200 bg-grey-100 py-2"
+        class="-ml-[7px] flex h-9 w-3 cursor-[ew-resize] flex-col items-center justify-around rounded border border-grey-200 bg-grey-100 py-2 z-10"
       >
         <span
           class="block h-1 w-1 rounded bg-grey-300 transition duration-200 group-hover:bg-blue-400"
@@ -91,7 +91,7 @@ const resize = _throttle((event) => {
 
   sidebarWidth.value = Math.min(
     maxSidebarWidth,
-    Math.max(380, sidebarWidthStart.value + delta)
+    Math.max(380, sidebarWidthStart.value + delta),
   );
 }, 30);
 

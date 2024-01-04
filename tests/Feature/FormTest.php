@@ -58,16 +58,11 @@ test('a user can return all the forms in his account', function () {
 
 test('a team member can view all forms of his team', function () {
     $user = User::factory()->withTeam()->create();
-    $member = User::factory()->withTeam()->create();
+    $member = User::factory()->withTeam($user->currentTeam)->create();
     $form = Form::factory()->create([
         'user_id' => $user->id,
         'team_id' => $user->current_team_id,
     ]);
-
-    $user->currentTeam->users()->attach($member, ['role' => null]);
-
-    // need to refresh member to get the team relationship
-    $member->refresh()->switchTeam($user->currentTeam);
 
     $response = $this->actingAs($member)->get(route('api.forms.index'))
         ->assertStatus(200);
@@ -123,15 +118,19 @@ test('a_user_cannot_return_forms_in_other_accounts', function () {
     $this->assertCount(0, $response->json());
 });
 
-test('authenticated_user_can_view_the_edit_page_of_his_form', function () {
+test('authenticated user can view the edit page of his form', function () {
     $form = Form::factory()->create();
 
     // test response for unauthorized user
-    /** @var User $otherUser */
     $otherUser = User::factory()->withTeam()->create();
     $responseA = $this->actingAs($otherUser)
         ->get(route('forms.edit', $form->uuid));
     $responseA->assertStatus(404);
+
+    // test response for team member
+    $member = User::factory()->withTeam($form->team)->create();
+    $this->actingAs($member)->get(route('forms.edit', $form->uuid))
+        ->assertStatus(200);
 
     // test response for authorized user
     $this->actingAs($form->user)->get(route('forms.edit', $form->uuid))
