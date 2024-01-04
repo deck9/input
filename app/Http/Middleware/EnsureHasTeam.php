@@ -63,8 +63,16 @@ class EnsureHasTeam
             return $next($request);
         }
 
+        $whitelistedRoutes = [
+            'teams.missing',
+            'teams.create',
+            'teams.store',
+            'team-invitations.accept',
+            'logout',
+        ];
+
         // whitelist some routes
-        if (in_array($request->route()->getName(), ['teams.missing', 'teams.create', 'team-invitations.accept', 'logout'])) {
+        if (in_array($request->route()->getName(), $whitelistedRoutes)) {
             return $next($request);
         }
 

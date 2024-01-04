@@ -70,6 +70,13 @@ class User extends Authenticatable
         });
     }
 
+    protected function defaultProfilePhotoUrl()
+    {
+        $name = trim(collect(explode('@', $this->email))->first());
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=c5cfdb&background=060b16';
+    }
+
     public function forms()
     {
         return $this->hasMany(Form::class);
