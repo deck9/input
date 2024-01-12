@@ -19,6 +19,9 @@ return new class extends Migration
         // make all teams non personal teams
         DB::statement('UPDATE teams SET personal_team = 0');
 
+        // Overwrite the default team name if it is the old default
+        DB::statement('UPDATE teams SET name = "Your Team" WHERE name = "\'s Team"');
+
         if (DB::getDriverName() === 'sqlite') {
             // this is the sqlite version for the migration
             DB::statement('UPDATE forms SET team_id=teams.id FROM(SELECT*FROM teams)AS teams WHERE teams.user_id=forms.user_id');
