@@ -15,7 +15,7 @@ class ViewFormController extends Controller
             abort(404);
         }
 
-        if (! $form->is_published && $request->user()->id !== $form->user_id) {
+        if (! $form->is_published && $request->user()->current_team_id !== $form->team_id) {
             abort(404);
         }
 

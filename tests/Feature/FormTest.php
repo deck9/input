@@ -107,7 +107,7 @@ test('a user can filter for published/unpublished/trashed forms', function () {
         ->assertJsonFragment(['uuid' => $formC->uuid]);
 });
 
-test('a_user_cannot_return_forms_in_other_accounts', function () {
+test('a user cannot return forms in other accounts', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
     Form::factory()->create();
