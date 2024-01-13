@@ -47,6 +47,34 @@ class UserFactory extends Factory
         });
     }
 
+    public function withTeam(Team $team = null)
+    {
+        if (! Features::hasTeamFeatures()) {
+            return $this->state([]);
+        }
+
+        // if a team is passed in, do not create a new one
+        if ($team) {
+            return $this->afterCreating(function (User $user) use ($team) {
+                $team->users()->attach($user, ['role' => null]);
+                $user->switchTeam($team);
+            });
+        } else {
+            return $this->has(
+                Team::factory()
+                    ->state(function (array $attributes, User $user) {
+                        return ['user_id' => $user->id];
+                    }),
+                'teams'
+            )->afterCreating(
+                function (User $user) {
+                    $user->switchTeam($user->allTeams()->first());
+                }
+            );
+        }
+
+    }
+
     /**
      * Indicate that the user should have a personal team.
      *

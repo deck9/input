@@ -7,7 +7,7 @@ uses(RefreshDatabase::class);
 
 it('can_get_a_mapping_for_which_block_type_uses_which_interaction_type', function () {
     /** @var \App\Models\User $user */
-    $user = User::factory()->create();
+    $user = User::factory()->withTeam()->create();
 
     $response = $this->actingAs($user)
         ->json('GET', route('api.form-blocks.mapping'))

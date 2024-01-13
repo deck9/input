@@ -1,8 +1,8 @@
 <template>
-  <app-layout title="Team Settings">
+  <app-layout title="Manage Team">
     <template #header>
       <h2 class="text-xl font-semibold leading-tight text-grey-800">
-        Team Settings
+        Manage Team
       </h2>
     </template>
 

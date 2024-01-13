@@ -9,6 +9,7 @@ use App\Http\Controllers\FormSubmissionsController;
 use App\Http\Controllers\FormSubmissionsExportController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MetaPreviewController;
+use App\Http\Controllers\MissingTeamController;
 use App\Http\Controllers\ViewFormController;
 use Illuminate\Routing\Router;
 
@@ -25,6 +26,8 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
 
     // Form Submissions Export Routes
     $router->get('forms/{form}/submissions-export', FormSubmissionsExportController::class)->name('forms.submissions-export');
+
+    $router->get('team-missing', MissingTeamController::class)->name('teams.missing');
 });
 
 $router->get('/images/{path}', [ImageController::class, 'show'])->where('path', '.*')->name('images.show');

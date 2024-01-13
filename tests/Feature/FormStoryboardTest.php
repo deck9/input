@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('a_guest_user_can_get_the_storyboard_for_a_form', function () {
+test('a guest user can get the storyboard for a form', function () {
     $form = Form::factory()->create();
 
     FormBlock::factory()

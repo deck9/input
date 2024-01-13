@@ -185,12 +185,7 @@
               :key="user.id"
             >
               <div class="flex items-center">
-                <img
-                  class="h-8 w-8 rounded-full"
-                  :src="user.profile_photo_url"
-                  :alt="user.name"
-                />
-                <div class="ml-4">{{ user.name }}</div>
+                <div class="ml-4">{{ user.name ?? user.email }}</div>
               </div>
 
               <div class="flex items-center">
@@ -455,7 +450,7 @@ export default defineComponent({
         {
           preserveScroll: true,
           onSuccess: () => (this.currentlyManagingRole = false),
-        }
+        },
       );
     },
 
@@ -465,7 +460,7 @@ export default defineComponent({
 
     leaveTeam() {
       this.leaveTeamForm.delete(
-        route("team-members.destroy", [this.team, this.$page.props.user])
+        route("team-members.destroy", [this.team, this.$page.props.user]),
       );
     },
 
@@ -481,7 +476,7 @@ export default defineComponent({
           preserveScroll: true,
           preserveState: true,
           onSuccess: () => (this.teamMemberBeingRemoved = null),
-        }
+        },
       );
     },
 

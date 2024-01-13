@@ -19,7 +19,7 @@ class PasswordResetTest extends TestCase
             return $this->markTestSkipped('Password updates are not enabled.');
         }
 
-        User::factory()->create();
+        User::factory()->withTeam()->create();
 
         $response = $this->get('/forgot-password');
 
@@ -34,7 +34,7 @@ class PasswordResetTest extends TestCase
 
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()->withTeam()->create();
 
         $response = $this->post('/forgot-password', [
             'email' => $user->email,
@@ -51,7 +51,7 @@ class PasswordResetTest extends TestCase
 
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()->withTeam()->create();
 
         $response = $this->post('/forgot-password', [
             'email' => $user->email,
@@ -74,7 +74,7 @@ class PasswordResetTest extends TestCase
 
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()->withTeam()->create();
 
         $response = $this->post('/forgot-password', [
             'email' => $user->email,

@@ -151,6 +151,11 @@ class Form extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function scopeWithFilter(Builder $builder, ?string $filter)
     {
         return match ($filter) {
@@ -380,6 +385,8 @@ class Form extends BaseModel
     {
         $newForm = Form::create([
             'name' => $newName,
+            'user_id' => $this->user_id,
+            'team_id' => $this->team_id,
         ]);
 
         $newForm->applyTemplate($this->toTemplate());

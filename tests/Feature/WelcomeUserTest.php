@@ -11,7 +11,7 @@ it('auto redirect to register page if no user exists in database', function () {
 });
 
 it('do not redirect to register if user already exists', function () {
-    User::factory()->create();
+    User::factory()->withTeam()->create();
 
     $this->get('/login')->assertStatus(200);
 });

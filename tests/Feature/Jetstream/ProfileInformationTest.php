@@ -12,7 +12,7 @@ class ProfileInformationTest extends TestCase
 
     public function test_profile_information_can_be_updated()
     {
-        $this->actingAs($user = User::factory()->create());
+        $this->actingAs($user = User::factory()->withTeam()->create());
 
         $response = $this->put('/user/profile-information', [
             'name' => 'Test Name',

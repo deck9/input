@@ -65,17 +65,8 @@ import { useUrlSearchParams } from "@vueuse/core";
 
 const params = useUrlSearchParams("history");
 
-const props = withDefaults(
-  defineProps<{
-    initialForms: Array<FormModel>;
-  }>(),
-  {
-    initialForms: () => [],
-  },
-);
-
-const isLoading = ref(false);
-const forms = ref<Array<FormModel>>(props.initialForms);
+const isLoading = ref(true);
+const forms = ref<Array<FormModel>>([]);
 const filter = ref<"published" | "unpublished" | "trashed" | null>(null);
 
 const changeFilter = async (setting: FilterSetting) => {
@@ -100,4 +91,7 @@ const changeFilter = async (setting: FilterSetting) => {
 if (params.filter) {
   filter.value = params.filter as FilterSetting;
 }
+
+// init forms on load
+changeFilter(filter.value);
 </script>
