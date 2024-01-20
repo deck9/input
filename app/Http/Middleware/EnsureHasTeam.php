@@ -69,6 +69,17 @@ class EnsureHasTeam
             'teams.store',
             'team-invitations.accept',
             'logout',
+
+            'sanctum.csrf-cookie',
+
+            'verification.notice',
+            'verification.send',
+            'verification.verify',
+
+            'password.email',
+            'password.request',
+            'password.reset',
+            'password.update',
         ];
 
         // whitelist some routes
