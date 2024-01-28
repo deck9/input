@@ -11,8 +11,13 @@
           <div class="flex h-16 items-center justify-between">
             <!-- Logo -->
             <div class="mr-6 hidden flex-shrink-0 items-center sm:flex">
-              <Link :href="route('dashboard')">
+              <Link class="flex items-center" :href="route('dashboard')">
                 <jet-application-logo class="block h-8 w-auto text-white" />
+                <span
+                  class="ml-3 text-white text-xs uppercase font-bold leading-none"
+                >
+                  {{ $page.props.user.current_team.name }}
+                </span>
               </Link>
             </div>
 
@@ -68,6 +73,9 @@
                     v-if="$page.props.jetstream.hasApiFeatures"
                     >API Tokens</jet-dropdown-link
                   >
+
+                  <div class="border-t border-grey-100"></div>
+                  <div class="block px-4 py-2 text-xs text-grey-400">Help</div>
 
                   <jet-dropdown-link as="a" href="/docs" target="_blank"
                     >API Reference <D9Icon size="xs" name="external-link"

@@ -1,5 +1,5 @@
 <template>
-  <app-layout title="Dashboard">
+  <app-layout :title="'Dashboard for ' + $page.props.user.current_team.name">
     <div class="w-full py-12">
       <div
         class="mx-auto grid max-w-7xl grid-cols-12 gap-x-10 px-4 sm:px-6 lg:px-8"
