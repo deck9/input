@@ -110,3 +110,18 @@ docker run -d -p 8080:8080 --name input \
     -e DB_PASSWORD=<MySQL-Password> \
     ghcr.io/deck9/input:main
 ```
+
+### Sending Emails
+
+Setting up an SMTP email service is mandatory for some features, as team invitations or email notifications. Please use the following environment variables when running the container.
+
+```bash
+docker run -d -p 8080:8080 --name input \
+    -e MAIL_MAILER=smtp \
+    -e MAIL_HOST=<Mail-Host> \
+    -e MAIL_USERNAME=<Mail-Username> \
+    -e MAIL_PASSWORD=<Mail-Password> \
+    -e MAIL_PORT=1025 \
+    -e MAIL_ENCRYPTION=tls \
+    ghcr.io/deck9/input:main
+```
