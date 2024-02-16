@@ -27,8 +27,11 @@ return new class extends Migration
             DB::statement('UPDATE forms SET team_id=teams.id FROM(SELECT*FROM teams)AS teams WHERE teams.user_id=forms.user_id');
         } else {
             // set team id on all forms based on user who created the form
-            DB::statement('UPDATE forms INNER JOIN teams on forms.user_id = teams.user_id SET forms.`team_id` = teams.id');
+            DB::statement('UPDATE forms LEFT JOIN teams on forms.user_id = teams.user_id SET forms.`team_id` = teams.id WHERE teams.user_id IS NOT NULL');
         }
+
+        // delete all forms that are not associated with a team
+        DB::statement('DELETE FROM forms WHERE team_id IS NULL');
 
         // Reverse the nullable setting, since we only need it for initial altering
         Schema::table('forms', function (Blueprint $table) {
