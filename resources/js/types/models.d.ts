@@ -92,6 +92,7 @@ type FormBlockType =
     | "input-link"
     | "input-phone"
     | "input-secret"
+    | "input-file"
     | "scale"
     | "rating"
     | "date";
@@ -102,6 +103,7 @@ type FormBlockInteractionType =
     | "textarea"
     | "consent"
     | "range"
+    | "file"
     | "date";
 
 type FormBlockInteractionSettings = {
@@ -119,6 +121,9 @@ type FormBlockInteractionSettings = {
     labelRight?: string;
     decimalPlaces?: number;
     useSymbol?: string;
+    allowedFiles ?: number;
+    allowedFileSize ?: number;
+    allowedFileTypes ?: Record<string, boolean>;
 };
 
 interface FormBlockInteractionModel extends BaseModel {

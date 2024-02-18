@@ -8,6 +8,7 @@
     <ConfigureInput v-if="workbench.usesInteractionType === 'input'" />
     <ConfigureRange v-if="workbench.usesInteractionType === 'range'" />
     <ConfigureTextarea v-if="workbench.usesInteractionType === 'textarea'" />
+    <ConfigureFile v-if="workbench.usesInteractionType === 'file'" />
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import ConfigureDate from "./ConfigureDate.vue";
 import ConfigureInput from "./ConfigureInput.vue";
 import ConfigureRange from "./ConfigureRange.vue";
 import ConfigureTextarea from "./ConfigureTextarea.vue";
+import ConfigureFile from "./ConfigureFile.vue";
 
 const workbench = useWorkbench();
 </script>
