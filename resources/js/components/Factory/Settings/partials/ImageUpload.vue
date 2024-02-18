@@ -13,18 +13,14 @@
         />
         <div v-else class="text-sm text-grey-600">max 4MB</div>
       </div>
+
       <D9Button
         label="Upload"
-        @click="initUpload"
+        @click="open"
         :is-disabled="isSelecting"
         :is-loading="isSelecting"
       />
-      <input
-        type="file"
-        class="hidden"
-        ref="uploadInput"
-        @change="selectFiles"
-      />
+
       <D9Button
         label="Remove"
         color="dark"
@@ -47,6 +43,7 @@ import { D9Button, D9Label } from "@deck9/ui";
 import ValidationErrors from "@/components/ValidationErrors.vue";
 import { computed, Ref, ref } from "vue";
 import { AxiosError } from "axios";
+import { useFileDialog } from "@vueuse/core";
 
 const props = defineProps<{
   label: string;
@@ -54,10 +51,14 @@ const props = defineProps<{
 }>();
 
 const store = useForm();
-const uploadInput = ref(null) as unknown as Ref<HTMLElement>;
 const isSelecting = ref(false);
 const isDeleting = ref(false);
 const uploadErrors = ref<string[]>([]);
+
+const { open, onChange } = useFileDialog({
+  accept: "image/png,image/jpeg,image/jpg,image/gif",
+  multiple: false,
+});
 
 // computed property to retrieve the image url base on the type
 const imageUrl = computed(() => {
@@ -72,18 +73,8 @@ const imageUrl = computed(() => {
     : false;
 });
 
-const initUpload = () => {
+onChange(async (files) => {
   isSelecting.value = true;
-  uploadInput.value?.click();
-
-  setTimeout(() => {
-    isSelecting.value = false;
-  }, 2000);
-};
-
-const selectFiles = async (payload: Event) => {
-  const files = (payload?.target as HTMLInputElement).files;
-
   if (files && files.length > 0) {
     const file = files[0];
     try {
@@ -94,7 +85,8 @@ const selectFiles = async (payload: Event) => {
       }
     }
   }
-};
+  isSelecting.value = false;
+});
 
 const deleteImage = async () => {
   isDeleting.value = true;
