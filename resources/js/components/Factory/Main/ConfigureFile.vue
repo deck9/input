@@ -13,16 +13,32 @@
   <div class="mb-4">
     <D9Label
       label="Max Files"
-      description="The maximum number of allowed files to upload (max. 10)"
+      :description="`The maximum number of allowed files to upload (max. ${maxFiles})`"
     />
     <D9Input
-      placeholder="The maximum number of allowed files to upload"
+      :placeholder="`The maximum number of allowed files to upload (max. ${maxFiles})`"
       type="number"
       min="1"
-      max="10"
+      :max="maxFiles"
       step="1"
       block
       v-model="allowedFiles"
+    />
+  </div>
+
+  <div class="mb-4">
+    <D9Label
+      label="Max Filesize"
+      :description="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
+    />
+    <D9Input
+      :placeholder="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
+      type="number"
+      min="1"
+      :max="maxFileSize"
+      step="1"
+      block
+      v-model="allowedFileSize"
     />
   </div>
 </template>
@@ -35,6 +51,9 @@ import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
+
+const maxFiles = 10;
+const maxFileSize = 16;
 
 const availableFileTypes = [
   { label: "Image", key: "image" },
@@ -57,8 +76,6 @@ onMounted(async () => {
     allowedFileTypes.value = interaction.value.options?.allowedFileTypes ?? {};
     allowedFiles.value = interaction.value.options?.allowedFiles ?? 1;
     allowedFileSize.value = interaction.value.options?.allowedFileSize ?? 4;
-
-    console.log(allowedFiles.value);
   }
 });
 
