@@ -70,7 +70,7 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
   if (workbench.block?.interactions) {
-    interaction.value = await findOrCreate("input", workbench);
+    interaction.value = await findOrCreate("file", workbench);
 
     label.value = interaction.value.label;
     allowedFileTypes.value = interaction.value.options?.allowedFileTypes ?? {};
