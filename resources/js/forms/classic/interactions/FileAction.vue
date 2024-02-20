@@ -1,8 +1,11 @@
 <template>
   <div class="relative max-w-md">
     <div
-      class="border-2 border-dashed border-primary rounded px-4 py-10 text-center"
-      :class="isOverDropZone ? 'border-content/20' : 'border-primary'"
+      class="border-2 border-dashed rounded px-4 text-center transition-all"
+      :class="[
+        isOverDropZone ? 'border-content/20 py-10' : 'border-primary',
+        !isOverDropZone && !!currentFiles ? 'py-2' : 'py-10',
+      ]"
       ref="dropZoneRef"
     >
       <button
@@ -15,37 +18,100 @@
       <span class="block text-xs text-content/80 leading-0">or drop here</span>
     </div>
 
-    <pre>{{ storeValue }}</pre>
-    <pre>{{ isOverDropZone }}</pre>
+    <div v-if="currentFiles" class="my-4 space-y-2">
+      <TransitionGroup
+        appear
+        enter-from-class="-translate-x-8 opacity-0"
+        enter-to-class="translate-x-0"
+        enter-active-class="transition-all duration-300"
+        leave-from-class="translate-x-0"
+        leave-to-class="translate-x-8 opacity-0"
+        leave-active-class="transition-all duration-200"
+      >
+        <UploadFileItem
+          v-for="(file, index) in currentFiles"
+          @remove="removeFile(index)"
+          :key="file.name"
+          :file="file"
+        />
+      </TransitionGroup>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useConversation } from "@/stores/conversation";
 import { useFileDialog, useDropZone } from "@vueuse/core";
-import { ref } from "vue";
+import UploadFileItem from "@/forms/classic/components/UploadFileItem.vue";
+import { computed, ref } from "vue";
 
 const store = useConversation();
 
-const storeValue = (store.currentPayload as FormBlockInteractionPayload)
-  ?.payload;
+const props = defineProps<{
+  index: number;
+  block: PublicFormBlockModel;
+  action: PublicFormBlockInteractionModel;
+}>();
 
 const dropZoneRef = ref<HTMLDivElement>();
 
-const { isOverDropZone } = useDropZone(dropZoneRef, {
-  onDrop: function (files: File[] | null) {
-    console.log(files);
-  },
+const currentFiles = computed<File[] | false>(() => {
+  if (
+    !Array.isArray(store.currentPayload) &&
+    store.currentPayload?.payload.length > 0
+  ) {
+    return store.currentPayload?.payload;
+  }
+
+  return false;
 });
 
-console.log(dropZoneRef, isOverDropZone);
+const setFiles = (files: File[] | FileList | null) => {
+  const currentFiles: File[] = [];
+
+  // first load the current files
+  if (!Array.isArray(store.currentPayload) && store.currentPayload?.payload) {
+    for (const file of store.currentPayload.payload) {
+      currentFiles.push(file);
+    }
+  }
+
+  // then add the new files
+  if (files) {
+    for (const file of files) {
+      currentFiles.push(file);
+    }
+  }
+
+  // set them as response
+  store.setResponse(props.action, currentFiles);
+};
+
+const { isOverDropZone } = useDropZone(dropZoneRef, {
+  onDrop: setFiles,
+});
 
 const { open, onChange } = useFileDialog({
   multiple: true,
   accept: "image/*",
 });
 
-onChange((files) => {
-  console.log(files);
-});
+onChange(setFiles);
+
+const removeFile = (index: number) => {
+  const currentFiles: File[] = [];
+
+  // first load the current files
+  if (!Array.isArray(store.currentPayload) && store.currentPayload?.payload) {
+    for (const file of store.currentPayload.payload) {
+      currentFiles.push(file);
+    }
+  }
+
+  // then remove the file
+  currentFiles.splice(index, 1);
+
+  // set them as response
+  store.setResponse(props.action, currentFiles);
+};
 </script>

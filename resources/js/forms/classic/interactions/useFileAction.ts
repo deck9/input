@@ -7,7 +7,7 @@ export function useFileAction(block: PublicFormBlockModel) {
 
     const validator = (input: any) => {
 
-        console.log("input", input)
+        console.log("input file validation", input)
 
         return {
             valid: true,

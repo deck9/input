@@ -195,7 +195,7 @@ export const useConversation = defineStore("form", {
 
         setResponse(
             action: PublicFormBlockInteractionModel,
-            value: string | boolean | number | null
+            value: string | boolean | number | File[] | null
         ) {
             if (!this.currentBlock) return;
 

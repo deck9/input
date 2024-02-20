@@ -37,7 +37,7 @@
         class="block w-full border-0 focus:ring-0"
         :class="{ 'pointer-events-none': !isChecked }"
       />
-      <span data-testid="button-label" v-else class="inline-block">{{
+      <span v-else class="inline-block" data-testid="button-label">{{
         action.label
       }}</span>
       <div
@@ -94,6 +94,7 @@ const props = defineProps<{
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const buttonElement = ref<HTMLInputElement | null>(null);
 const otherInput = ref<HTMLInputElement | null>(null);
+const otherValue = ref<string>("");
 const inputType = props.block.type === "checkbox" ? "checkbox" : "radio";
 const shortcutKey = (props.index + 1).toString();
 
@@ -114,8 +115,6 @@ const isChecked = computed<boolean>(() => {
 const isOtherOption = computed<boolean>(() => {
   return props.action.name === "alt_response";
 });
-
-const otherValue = ref<string>("");
 
 const isVisible = computed<boolean>(() => {
   return (
