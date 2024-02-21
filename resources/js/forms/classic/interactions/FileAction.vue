@@ -1,5 +1,5 @@
 <template>
-  <div class="relative max-w-md">
+  <div class="relative">
     <div
       class="border-2 border-dashed rounded px-4 text-center transition-all"
       :class="[

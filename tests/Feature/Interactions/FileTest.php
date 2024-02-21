@@ -6,20 +6,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('can_not_update_interaction_with_empty_label', function () {
+test('can_change_settings_for_allowed_files', function () {
     $interaction = FormBlockInteraction::factory()->create([
-        'type' => FormBlockInteractionType::button->value,
+        'type' => FormBlockInteractionType::file->value,
     ]);
 
-    $this->actingAs($interaction->formBlock->form->user)
+    $response = $this->actingAs($interaction->formBlock->form->user)
         ->json('post', route('api.interactions.update', $interaction), [
-            'label' => '',
+            'options' => [
+                'allowedFiles' => 1,
+                'allowedFileSize' => 16,
+            ],
         ])
-        ->assertStatus(422);
+        ->assertStatus(200);
 
-    $this->actingAs($interaction->formBlock->form->user)
-        ->json('post', route('api.interactions.update', $interaction), [
-            'label' => null,
-        ])
-        ->assertStatus(422);
-})->skip();
+    $response->assertJsonFragment([
+        'allowedFiles' => 1,
+        'allowedFileSize' => 16,
+    ]);
+});
