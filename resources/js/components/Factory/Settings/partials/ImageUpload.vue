@@ -41,7 +41,7 @@
 import { useForm } from "@/stores";
 import { D9Button, D9Label } from "@deck9/ui";
 import ValidationErrors from "@/components/ValidationErrors.vue";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 import { AxiosError } from "axios";
 import { useFileDialog } from "@vueuse/core";
 

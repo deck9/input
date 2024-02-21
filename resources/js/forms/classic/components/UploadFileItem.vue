@@ -4,19 +4,29 @@
   >
     <div class="w-10 h-10 shrink-0" v-if="hasRenderablePreview">
       <img
-        class="object-cover w-full h-full"
+        class="object-cover w-full h-full rounded"
         :src="renderableImageUrl"
         alt="Preview"
       />
     </div>
-    <div class="truncate">
-      {{ file.name }}
+    <div
+      v-else
+      class="h-10 w-10 shrink-0 inline-flex items-center justify-center"
+    >
+      <D9Icon size="lg" :name="iconName" />
     </div>
-    <div class="whitespace-nowrap text-xs font-mono">{{ file.type }}</div>
-    <div class="whitespace-nowrap text-xs font-mono">{{ fileSize }}</div>
-    <button type="button" @click="emits('remove')" class="px-2">
-      <D9Icon name="times" />
-    </button>
+    <div class="flex items-center justify-between w-full">
+      <div class="truncate max-w-72">
+        {{ file.name }}
+      </div>
+
+      <div class="flex items-center">
+        <div class="whitespace-nowrap text-xs font-mono">{{ fileSize }}</div>
+        <button type="button" @click="emits('remove')" class="px-2">
+          <D9Icon name="times" />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -49,6 +59,22 @@ const hasRenderablePreview = computed(() => {
 
 const renderableImageUrl = computed(() => {
   return URL.createObjectURL(props.file);
+});
+
+const iconName = computed(() => {
+  if (props.file.type === "application/pdf") {
+    return "file-pdf";
+  }
+
+  if (props.file.type.includes("audio")) {
+    return "file-waveform";
+  }
+
+  if (props.file.type.includes("video")) {
+    return "file-video";
+  }
+
+  return "file-lines";
 });
 
 console.log("created", props.file);
