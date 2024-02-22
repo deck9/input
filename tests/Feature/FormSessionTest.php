@@ -75,7 +75,7 @@ test('can submit a form through a session token', function ($template) {
     ]), [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
@@ -105,7 +105,7 @@ test('submitting a session a second time does not create duplicate responses', f
     $request = [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
@@ -188,7 +188,7 @@ it('should delete old submissions if auto delete is enabled for the form after s
     ]), [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
@@ -220,7 +220,7 @@ it('should not delete submissions when auto delete is not enabled', function ($t
     ]), [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
