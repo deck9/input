@@ -1,5 +1,5 @@
 /* eslint-disable no-async-promise-executor */
-import { Axios, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import handler from "./handler";
 import { useRoutes } from "@/utils/useRoutes";
 
