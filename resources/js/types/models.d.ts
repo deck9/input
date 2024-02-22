@@ -234,13 +234,18 @@ type FormSessionWebhookModel = {
 
 type FormSubmitPayload = Record<
     string,
-    FormBlockInteractionPayload | FormBlockInteractionPayload[]
+    FormBlockInteractionPayload | FormBlockInteractionPayload[] | FormBlockUploadPayload
 >;
 
 type FormBlockInteractionPayload = {
     payload: any;
     actionId: string;
 };
+
+type FormBlockUploadPayload = {
+    payload: File[];
+    actionId: string;
+}
 
 type EmbedFlags = {
     hideTitle?: boolean;

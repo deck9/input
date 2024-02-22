@@ -1,10 +1,10 @@
 /* eslint-disable no-async-promise-executor */
-import { AxiosResponse } from "axios";
+import { Axios, AxiosResponse } from "axios";
 import handler from "./handler";
 import { useRoutes } from "@/utils/useRoutes";
 
 export function callGetForm(
-    uuid: string
+    uuid: string,
 ): Promise<AxiosResponse<PublicFormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -27,7 +27,7 @@ export function callGetForm(
 }
 
 export function callGetFormStoryboard(
-    uuid: string
+    uuid: string,
 ): Promise<AxiosResponse<FormStoryboard>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -51,7 +51,7 @@ export function callGetFormStoryboard(
 
 export function callCreateFormSession(
     uuid: string,
-    params: Record<string, string>
+    params: Record<string, string>,
 ): Promise<AxiosResponse<FormSessionModel>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -78,7 +78,7 @@ export function callCreateFormSession(
 export function callSubmitForm(
     uuid: string,
     token: string,
-    payload: FormSubmitPayload
+    payload: FormSubmitPayload,
 ): Promise<AxiosResponse<null>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -101,4 +101,45 @@ export function callSubmitForm(
             reject(error);
         }
     });
+}
+
+export async function callUploadFiles(
+    uuid: string,
+    token: string,
+    payload: FormSubmitPayload,
+): Promise<AxiosResponse[]> {
+    const { route } = await useRoutes();
+
+    const resolvedRoute = route("api.public.forms.file-upload", {
+        uuid,
+    });
+
+    if (!resolvedRoute) {
+        return Promise.reject("route not found");
+    }
+
+    const requests: Promise<AxiosResponse>[] = [];
+
+    Object.values(payload).forEach((value) => {
+        if (Array.isArray(value)) {
+            return;
+        }
+
+        value.payload.forEach((file: any) => {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("token", token);
+            formData.append("actionId", value.actionId);
+
+            requests.push(
+                handler.post(resolvedRoute, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }),
+            );
+        });
+    });
+
+    return await Promise.all(requests);
 }

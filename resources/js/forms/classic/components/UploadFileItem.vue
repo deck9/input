@@ -76,6 +76,4 @@ const iconName = computed(() => {
 
   return "file-lines";
 });
-
-console.log("created", props.file);
 </script>

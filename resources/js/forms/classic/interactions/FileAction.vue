@@ -36,6 +36,8 @@
         />
       </TransitionGroup>
     </div>
+
+    <pre>{{ store.hasFileUploads }}</pre>
   </div>
 </template>
 
