@@ -70,7 +70,7 @@ class FormBlock extends BaseModel
 
     public function hasResponseAction()
     {
-        return !in_array($this->type, [FormBlockType::none]);
+        return ! in_array($this->type, [FormBlockType::none]);
     }
 
     public function hasInput()
@@ -169,7 +169,7 @@ class FormBlock extends BaseModel
 
     public function submit(FormSession $session, array $data)
     {
-        if (!has_string_keys($data)) {
+        if (! has_string_keys($data)) {
             collect($data)->each(fn ($chunk) => $this->submit($session, $chunk));
         } else {
             $interaction = $this->formBlockInteractions()

@@ -17,11 +17,11 @@ test('can_change_settings_for_allowed_files', function () {
                 'allowedFiles' => 1,
                 'allowedFileSize' => 16,
                 'allowedFileTypes' => [
-                    "image" => true,
-                    "audio" => true,
-                    "video" => true,
-                    "text" => true
-                ]
+                    'image' => true,
+                    'audio' => true,
+                    'video' => true,
+                    'text' => true,
+                ],
             ],
         ])
         ->assertStatus(200);
@@ -30,10 +30,10 @@ test('can_change_settings_for_allowed_files', function () {
         'allowedFiles' => 1,
         'allowedFileSize' => 16,
         'allowedFileTypes' => [
-            "image" => true,
-            "audio" => true,
-            "video" => true,
-            "text" => true
-        ]
+            'image' => true,
+            'audio' => true,
+            'video' => true,
+            'text' => true,
+        ],
     ]);
 });

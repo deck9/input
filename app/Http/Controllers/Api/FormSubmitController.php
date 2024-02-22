@@ -47,6 +47,6 @@ class FormSubmitController extends Controller
 
         event(new FormSessionCompletedEvent($session));
 
-        return response()->json($session, 200);
+        return response()->json($session->setHidden(['form']), 200);
     }
 }
