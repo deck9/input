@@ -16,6 +16,12 @@ test('can_change_settings_for_allowed_files', function () {
             'options' => [
                 'allowedFiles' => 1,
                 'allowedFileSize' => 16,
+                'allowedFileTypes' => [
+                    "image" => true,
+                    "audio" => true,
+                    "video" => true,
+                    "text" => true
+                ]
             ],
         ])
         ->assertStatus(200);
@@ -23,5 +29,11 @@ test('can_change_settings_for_allowed_files', function () {
     $response->assertJsonFragment([
         'allowedFiles' => 1,
         'allowedFileSize' => 16,
+        'allowedFileTypes' => [
+            "image" => true,
+            "audio" => true,
+            "video" => true,
+            "text" => true
+        ]
     ]);
 });

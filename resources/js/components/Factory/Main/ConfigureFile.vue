@@ -4,7 +4,7 @@
     <div v-for="fileType in availableFileTypes" :key="fileType.key">
       <D9Checkbox
         :id="'check' + fileType.key"
-        v-model:checked="allowedFileTypes[fileType.key]"
+        v-model="allowedFileTypes[fileType.key]"
         :label="fileType.label"
       />
     </div>
@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Checkbox, D9Input } from "@deck9/ui";
-import { watch, Ref, ref, onMounted } from "vue";
+import { watchEffect, Ref, ref, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 
 const workbench = useWorkbench();
@@ -59,7 +59,7 @@ const availableFileTypes = [
   { label: "Image", key: "image" },
   { label: "Audio", key: "audio" },
   { label: "Video", key: "video" },
-  { label: "Document", key: "documents" },
+  { label: "Document", key: "text" },
 ];
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref("");
@@ -73,26 +73,34 @@ onMounted(async () => {
     interaction.value = await findOrCreate("file", workbench);
 
     label.value = interaction.value.label;
-    allowedFileTypes.value = interaction.value.options?.allowedFileTypes ?? {};
+    allowedFileTypes.value =
+      interaction.value.options?.allowedFileTypes &&
+      !Array.isArray(interaction.value.options?.allowedFileTypes)
+        ? interaction.value.options?.allowedFileTypes
+        : {};
     allowedFiles.value = interaction.value.options?.allowedFiles ?? 1;
     allowedFileSize.value = interaction.value.options?.allowedFileSize ?? 4;
   }
 });
 
-watch(
-  [label, allowedFileTypes, allowedFiles, allowedFileSize],
-  (newValues: any[]) => {
-    const update = {
-      id: interaction.value.id,
-      label: newValues[0],
-      options: {
-        allowedFileTypes: newValues[1] ? newValues[1] : undefined,
-        allowedFiles: newValues[2] ? parseInt(newValues[2]) : undefined,
-        allowedFileSize: newValues[3] ? parseInt(newValues[3]) : undefined,
-      },
-    };
+watchEffect(() => {
+  if (!interaction.value) {
+    return;
+  }
 
-    workbench.updateInteraction(update);
-  },
-);
+  workbench.updateInteraction({
+    id: interaction.value.id,
+    label: label.value,
+    options: {
+      allowedFileTypes: {
+        image: allowedFileTypes.value.image,
+        video: allowedFileTypes.value.video,
+        audio: allowedFileTypes.value.audio,
+        text: allowedFileTypes.value.text,
+      },
+      allowedFiles: allowedFiles.value,
+      allowedFileSize: allowedFileSize.value,
+    },
+  });
+});
 </script>
