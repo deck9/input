@@ -121,6 +121,8 @@ docker run -d -p 8080:8080 --name input \
     -e MAIL_HOST=<Mail-Host> \
     -e MAIL_USERNAME=<Mail-Username> \
     -e MAIL_PASSWORD=<Mail-Password> \
+    -e MAIL_FROM_ADDRESS=<Mail-From-Address> \
+    -e MAIL_FROM_NAME=<Mail-From-Name> \
     -e MAIL_PORT=1025 \
     -e MAIL_ENCRYPTION=tls \
     ghcr.io/deck9/input:main
