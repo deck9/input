@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\FormBlockInteractionType;
 use App\Enums\FormBlockType;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -61,7 +60,7 @@ class FormSessionResponseResource extends JsonResource
         }
 
         if ($this->formBlock->type === FormBlockType::file) {
-            return sprintf('%d Files', $this->formSessionUploads->count());
+            return $this->formSessionUploads->map(fn ($upload) => $upload->downloadUrl)->join(', ');
         }
 
         return 'Unsupported value type';
