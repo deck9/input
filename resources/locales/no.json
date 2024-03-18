@@ -1,0 +1,35 @@
+{
+    "admin": {
+        "blocks": "ingen blokker | 1 blokk | {n} blokker"
+    },
+    "Accept & Submit": "Godkjenn og send inn",
+    "Accept": "Godkjenn",
+    "Close": "Lukk",
+    "Enter": "Legg inn",
+    "Find us here": "Finn oss her",
+    "Form Submitted": "Skjema sendt inn",
+    "Go to next Page": "Gå til neste side",
+    "Go to previous Page": "Gå til forrige side",
+    "Legal Notice": "Juridisk merknad",
+    "Next": "Neste",
+    "Other": "Annet",
+    "Please enter a valid email.": "Vennligst skriv inn en gyldig e-postadresse.",
+    "Please enter a valid link.": "Vennligst skriv inn en gyldig lenke.",
+    "Please enter a valid number.": "Vennligst skriv inn et gyldig nummer.",
+    "Please enter a valid phone number.": "Vennligst skriv inn et gyldig telefonnummer.",
+    "Please select an option.": "Vennligst velg et alternativ.",
+    "Privacy Policy": "Personvern",
+    "required": "påkrevd",
+    "Something went wrong validating your input": "Noe gikk galt under validering av inndataene dine",
+    "Submit": "Send inn",
+    "This field is required.": "Dette feltet er påkrevd.",
+    "Type your answer": "Skriv svaret ditt",
+    "You have exceeded the maximum number of characters allowed.": "Du har overskredet det maksimale antallet tegn som er tillatt.",
+    "hints": {
+        "edit": "Trykk {0} for å redigere",
+        "confirm": "{0} for å bekrefte"
+    },
+    "validation": {
+        "consent_required": "For å fortsette, må du godta vilkårene."
+    }
+}
