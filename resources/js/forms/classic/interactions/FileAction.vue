@@ -93,9 +93,27 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
   onDrop: setFiles,
 });
 
+const allowedFileTypes = computed<string>(() => {
+  if (props.action?.options?.allowedFileTypes) {
+    let accept = "";
+    Object.keys(props.action.options.allowedFileTypes).forEach((key) => {
+      if (
+        props.action.options.allowedFileTypes[key] !== "undefined" &&
+        props.action.options.allowedFileTypes[key] === true
+      ) {
+        accept += key + "/*,";
+      }
+    });
+
+    return accept;
+  }
+
+  return "";
+});
+
 const { open, onChange } = useFileDialog({
   multiple: true,
-  accept: "image/*",
+  accept: allowedFileTypes.value,
 });
 
 onChange(setFiles);
