@@ -42,14 +42,26 @@
       v-for="header in headers"
       :key="submission.id + header.id"
     >
-      <span class="block space-x-2" v-if="submission.responses[header.id]">
-        <span
-          class="inline-block rounded bg-grey-100 px-2 py-1"
+      <span class="flex flex-wrap gap-2" v-if="submission.responses[header.id]">
+        <template
           v-for="response in submission.responses[header.id].data"
           :key="response.id"
         >
-          {{ response.value }}
-        </span>
+          <template v-if="response.type === 'input-file'">
+            <a
+              class="inline-block rounded bg-grey-100 px-2 py-1 hover:bg-grey-200"
+              :href="upload.url"
+              v-for="upload in response.original"
+              :key="upload.uuid"
+            >
+              <span class="inline-block">{{ upload.name }}</span>
+              <D9Icon class="ml-1" name="cloud-download" />
+            </a>
+          </template>
+          <span class="inline-block rounded bg-grey-100 px-2 py-1" v-else>
+            {{ response.value }}
+          </span>
+        </template>
       </span>
       <span v-else>-</span>
     </td>
@@ -60,7 +72,7 @@
 import FormattedDate from "@/forms/common/LocaleDate.vue";
 import SubmissionParams from "@/components/Factory/Submissions/SubmissionParams.vue";
 import SubmissionWebhookStatus from "@/components/Factory/Submissions/SubmissionWebhookStatus.vue";
-import { D9Button } from "@deck9/ui";
+import { D9Button, D9Icon } from "@deck9/ui";
 import { callDeleteFormSubmission } from "@/api/forms";
 import { useForm } from "@/stores";
 import { useClipboard } from "@vueuse/core";
@@ -96,7 +108,7 @@ const deleteSubmission = async () => {
     try {
       await callDeleteFormSubmission(
         store.form,
-        props.submission as FormSessionModel
+        props.submission as FormSessionModel,
       );
 
       emits("deleted", props.submission.id);

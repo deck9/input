@@ -21,7 +21,8 @@ class FormSessionResponseResource extends JsonResource
                 'message' => strip_tags($this->formBlock->message),
                 'name' => $this->formBlock->title ?? $this->formBlock->uuid,
                 'value' => $this->formatValue($this->value),
-                'original' => $this->value,
+                'original' => $this->formBlock->type === FormBlockType::file ? $this->appendFiles() : $this->value,
+                'type' => $this->formBlock->type,
             ];
         } catch (\Exception $e) {
             return [
@@ -29,6 +30,7 @@ class FormSessionResponseResource extends JsonResource
                 'value' => '',
                 'original' => '',
                 'message' => '',
+                'type' => '',
             ];
         }
     }
@@ -50,13 +52,28 @@ class FormSessionResponseResource extends JsonResource
         if ($this->formBlock->type === FormBlockType::consent) {
             $accepted = $value['accepted'] ? 'yes' : 'no';
 
-            return $value['consent'].': '.$accepted;
+            return $value['consent'] . ': ' . $accepted;
         }
 
         if ($this->formBlock->type === FormBlockType::rating || $this->formBlock->type === FormBlockType::scale) {
             return $value;
         }
 
+        if ($this->formBlock->type === FormBlockType::file) {
+            return $this->formSessionUploads->map(fn ($upload) => $upload->downloadUrl)->join(', ');
+        }
+
         return 'Unsupported value type';
+    }
+
+    protected function appendFiles()
+    {
+        return $this->formSessionUploads->map(function ($upload) {
+            return [
+                'uuid' => $upload->uuid,
+                'name' => $upload->name,
+                'url' => $upload->downloadUrl,
+            ];
+        });
     }
 }

@@ -22,6 +22,7 @@ dataset('interactions', [
     [FormBlockType::radio->value, FormBlockInteractionType::button->value],
     [FormBlockType::rating->value, FormBlockInteractionType::range->value],
     [FormBlockType::scale->value, FormBlockInteractionType::range->value],
+    [FormBlockType::file->value, FormBlockInteractionType::file->value],
 ]);
 
 test('can_create_an_interaction_for_block_type', function ($blockType, $interactionType) {

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\FormSubmissionsController;
 use App\Http\Controllers\Api\FormSubmitController;
 use App\Http\Controllers\Api\FormTemplateExportController;
 use App\Http\Controllers\Api\FormTemplateImportController;
+use App\Http\Controllers\Api\FormUploadController;
 use App\Http\Controllers\Api\FormWebhookController;
 use App\Http\Controllers\Api\GetFormStoryboardController;
 use App\Http\Controllers\Api\PublishFormController;
@@ -54,6 +55,7 @@ $router->get('public/forms/{form}', ShowFormController::class)->name('api.public
 $router->get('public/forms/{form}/storyboard', GetFormStoryboardController::class)->name('api.public.forms.storyboard');
 $router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
 $router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
+$router->post('public/forms/{form}/upload', FormUploadController::class)->name('api.public.forms.file-upload');
 
 $router->get('routes', ZiggyController::class);
 
