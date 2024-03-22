@@ -85,7 +85,29 @@ docker volume create input-data
 # Run the container using port 8080 on the host
 docker run -d -p 8080:8080 --name input \
     -v input-data:/var/www/html/storage \
+    -e APP_URL=https://hostname.domain.tld:8080 \
     ghcr.io/deck9/input:main
+```
+
+or as `docker-compose.yml`:
+
+```docker-compose
+version: '3.2'
+services:
+    input:
+      image: ghcr.io/deck9/input:main
+      container_name: input
+      hostname: <hostname>
+      volumes:
+        - input-data:/var/www/html/storage
+      ports:
+        - 8080:8080
+      restart: unless-stopped
+      environment:
+        - APP_URL="https://<hostname>:8080"
+
+volumes:
+  input-data:
 ```
 
 ### Behind a Proxy
