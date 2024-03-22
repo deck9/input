@@ -99,6 +99,23 @@ docker run -d -p 8080:8080 --name input \
     ghcr.io/deck9/input:main
 ```
 
+Also make sure that the proxy is configured to pass forward important request information like the scheme, host and IP.
+
+```nginx
+location / {
+    proxy_set_header Connection "";
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Frame-Options SAMEORIGIN;
+    proxy_http_version 1.1;
+
+    # Pass the request to the address of the docker container
+    proxy_pass http://127.0.0.1:8080;
+}
+```
+
 ### With MySQL
 
 ```bash
