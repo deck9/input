@@ -36,8 +36,6 @@
         />
       </TransitionGroup>
     </div>
-
-    <pre>{{ store.hasFileUploads }}</pre>
   </div>
 </template>
 
@@ -81,7 +79,22 @@ const setFiles = (files: File[] | FileList | null) => {
   // then add the new files
   if (files) {
     for (const file of files) {
-      currentFiles.push(file);
+      // validate first if file type is allowed
+      if (
+        allowedFileTypes.value
+          .split(",")
+          .some(
+            (mimeType) =>
+              mimeType === "*" ||
+              file.type === mimeType ||
+              (mimeType.endsWith("/*") &&
+                file.type.startsWith(mimeType.slice(0, -1))),
+          )
+      ) {
+        currentFiles.push(file);
+      } else {
+        console.error("File type not allowed");
+      }
     }
   }
 
@@ -94,21 +107,31 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
 });
 
 const allowedFileTypes = computed<string>(() => {
-  if (props.action?.options?.allowedFileTypes) {
-    let accept = "";
-    Object.keys(props.action.options.allowedFileTypes).forEach((key) => {
-      if (
-        props.action.options.allowedFileTypes[key] !== "undefined" &&
-        props.action.options.allowedFileTypes[key] === true
-      ) {
-        accept += key + "/*,";
+  const types = props.action?.options?.allowedFileTypes;
+
+  const map = {
+    image: "image/*",
+    video: "video/*",
+    audio: "audio/*",
+    text: "application/*,text/*",
+  };
+
+  if (types) {
+    let accept: string[] = [];
+    Object.keys(types).forEach((key) => {
+      if (key in types && types[key] === true && key in map) {
+        accept.push(map[key]);
       }
     });
 
-    return accept;
+    if (accept.length === 0) {
+      return "*";
+    }
+
+    return accept.join(", ");
   }
 
-  return "";
+  return "*";
 });
 
 const { open, onChange } = useFileDialog({
