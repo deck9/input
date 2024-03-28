@@ -59,6 +59,7 @@ const languageOptions = ref([
   { label: "Slovak", value: "sk" },
   { label: "Français", value: "fr" },
   { label: "Norwegian", value: "no" },
+  { label: "简体中文", value: "zh-CN"},
 ]);
 
 const language = ref(

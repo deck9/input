@@ -1,0 +1,35 @@
+{
+    "admin": {
+        "blocks": "没有内容块 | 1 内容块 | {n} 内容块"
+    },
+    "Accept & Submit": "接受并提交",
+    "Accept": "接受",
+    "Close": "关闭",
+    "Enter": "输入",
+    "Find us here": "在这里找到我们",
+    "Form Submitted": "表单已提交",
+    "Go to next Page": "前往下一页",
+    "Go to previous Page": "返回上一页",
+    "Legal Notice": "法律声明",
+    "Next": "下一步",
+    "Other": "其他",
+    "Please enter a valid email.": "请输入有效的邮箱。",
+    "Please enter a valid link.": "请输入有效的链接。",
+    "Please enter a valid number.": "请输入有效的数字。",
+    "Please enter a valid phone number.": "请输入有效的电话号码。",
+    "Please select an option.": "请选择一个选项。",
+    "Privacy Policy": "隐私政策",
+    "required": "必填",
+    "Something went wrong validating your input": "验证您的输入时出错",
+    "Submit": "提交",
+    "This field is required.": "此字段为必填项。",
+    "Type your answer": "输入您的答案",
+    "You have exceeded the maximum number of characters allowed.": "您已超过允许的最大字符数。",
+    "hints": {
+        "edit": "按 {0} 进行编辑",
+        "confirm": "按 {0} 确认"
+    },
+    "validation": {
+        "consent_required": "继续操作前，您必须同意条款和条件。"
+    }
+}
