@@ -11,20 +11,21 @@ jobs:
       mariadb.test:
         image: "mariadb:10"
         env:
-          MYSQL_ROOT_PASSWORD: "password"
-          MYSQL_ROOT_HOST: "%"
-          MYSQL_DATABASE: "input"
-          MYSQL_USER: "sail"
-          MYSQL_PASSWORD: "password"
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MARIADB_ROOT_PASSWORD: "password"
+          MARIADB_ROOT_HOST: "%"
+          MARIADB_DATABASE: "input"
+          MARIADB_USER: "sail"
+          MARIADB_PASSWORD: "password"
+          MARIADB_ALLOW_EMPTY_PASSWORD: "yes"
         ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -uroot -ppassword" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.1"
+          extensions: bcmath,gd
 
       - uses: actions/checkout@v3
 
@@ -56,8 +57,11 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PestPHP
         env:
-          DB_PORT: ${{ job.services['mariadb.test'].ports[3306] }}
+          DB_PORT: 3306
           DB_HOST: 127.0.0.1
+          DB_USERNAME: sail
+          DB_PASSWORD: password
+          DB_DATABASE: input
         run: vendor/bin/pest
 
   vitest:
