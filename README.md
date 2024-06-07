@@ -34,7 +34,7 @@ git clone git@github.com:deck9/input.git
 Copy the `.env.dev.example` file to `.env` - the contents for the file should, in most cases, work out of the box. You may later generate and set the `APP_KEY` with the `sail artisan key:generate` command.
 
 ```bash
-cp .env.example .env
+cp .env.dev.example .env
 ```
 
 ### Running
@@ -69,7 +69,7 @@ With the alias, you can quickly perform tasks on the App Docker Container:
 ```bash
 sail up -d # start container
 sail artisan tinker # use laravel artisan commands
-sail artisan db:migrate # run database migrations
+sail artisan migrate # run database migrations
 sail artisan test # run phpunit
 sail composer {args} # use composer
 ```
