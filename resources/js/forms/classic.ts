@@ -11,7 +11,7 @@ import localeSK from "@i18n/sk.json";
 import localeFR from "@i18n/fr.json";
 import localeNO from "@i18n/no.json";
 import localePL from "@i18n/pl.json";
-import localeZHCN from "@i18n/zh-CN.json";
+import localeZH from "@i18n/zh.json";
 
 const pinia = createPinia();
 
@@ -26,7 +26,7 @@ const i18n = createI18n({
         fr: localeFR,
         no: localeNO,
         pl: localePL,
-        zhCN: localeZHCN,
+        zh: localeZH,
     },
 });
 

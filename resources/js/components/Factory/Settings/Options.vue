@@ -60,12 +60,12 @@ const languageOptions = ref([
   { label: "Norwegian", value: "no" },
   { label: "Polish", value: "pl" },
   { label: "Slovak", value: "sk" },
-  { label: "简体中文", value: "zh-CN"},
+  { label: "简体中文", value: "zh" },
 ]);
 
 const language = ref(
   languageOptions.value.find((lang) => lang.value === store?.form?.language) ??
-    languageOptions.value[0]
+    languageOptions.value[0],
 );
 
 const saveOptions = async () => {
