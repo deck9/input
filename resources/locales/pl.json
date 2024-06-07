@@ -1,0 +1,35 @@
+{
+    "admin": {
+        "blocks": "brak bloków | 1 blok | {n} bloków"
+    },
+    "Accept & Submit": "Zaakceptuj i wyślij",
+    "Accept": "Akceptuj",
+    "Close": "Zamknij",
+    "Enter": "Enter",
+    "Find us here": "Znajdziesz nas tutaj",
+    "Form Submitted": "Formularz przesłany",
+    "Go to next Page": "Idź do następnej Strony",
+    "Go to previous Page": "Idź do poprzedniej Strony",
+    "Legal Notice": "Informacje Prawne",
+    "Next": "Następny",
+    "Other": "Inne",
+    "Please enter a valid email.": "Proszę wprowadzić prawidłowy adres e-mail.",
+    "Please enter a valid link.": "Proszę wprowadzić prawidłowy link.",
+    "Please enter a valid number.": "Proszę wprowadzić prawidłową liczbę.",
+    "Please enter a valid phone number.": "Proszę wprowadzić prawidłowy numer telefonu.",
+    "Please select an option.": "Proszę wybrać opcję.",
+    "Privacy Policy": "Polityka Prywatności",
+    "required": "wymagane",
+    "Something went wrong validating your input": "Coś poszło nie tak podczas sprawdzania poprawności danych wejściowych",
+    "Submit": "Wyślij",
+    "This field is required.": "Tol pole jest wymagane.",
+    "Type your answer": "Wprowadź swoją odpowiedź",
+    "You have exceeded the maximum number of characters allowed.": "Przekroczyłeś maksymalną dozwoloną liczbę znaków.",
+    "hints": {
+        "edit": "Naciśnij {0} aby edytować",
+        "confirm": "{0} aby potwierdzić"
+    },
+    "validation": {
+        "consent_required": "Aby kontynuować, musisz zaakceptować warunki."
+    }
+}

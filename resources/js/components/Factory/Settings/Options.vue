@@ -55,10 +55,11 @@ const languageOptions = ref([
   { label: "English", value: "en" },
 
   // Alternative languages
-  { label: "German", value: "de" },
-  { label: "Slovak", value: "sk" },
   { label: "Français", value: "fr" },
+  { label: "German", value: "de" },
   { label: "Norwegian", value: "no" },
+  { label: "Polish", value: "pl" },
+  { label: "Slovak", value: "sk" },
   { label: "简体中文", value: "zh-CN"},
 ]);
 
