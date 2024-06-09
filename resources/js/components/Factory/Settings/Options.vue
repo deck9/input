@@ -59,6 +59,7 @@ const languageOptions = ref([
   { label: "German", value: "de" },
   { label: "Norwegian", value: "no" },
   { label: "Polish", value: "pl" },
+  { label: "Ukrainian", value: "uk" },
   { label: "Slovak", value: "sk" },
   { label: "简体中文", value: "zh" },
 ]);
