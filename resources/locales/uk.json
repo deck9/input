@@ -1,0 +1,35 @@
+{
+    "admin": {
+        "blocks": "немає блоків | 1 блок | {n} блоків"
+    },
+    "Accept & Submit": "Прийняти та відправити",
+    "Accept": "Прийняти",
+    "Close": "Закрити",
+    "Enter": "Ввести",
+    "Find us here": "Знайдіть нас тут",
+    "Form Submitted": "Форма надіслана",
+    "Go to next Page": "Перейти на наступну сторінку",
+    "Go to previous Page": "Повернутись на минулу сторінку",
+    "Legal Notice": "Юридичне повідомлення",
+    "Next": "Наступне",
+    "Other": "Інше",
+    "Please enter a valid email.": "Будь ласка, введіть правильну email адресу.",
+    "Please enter a valid link.": "Будь ласка, введіть правильне посилання.",
+    "Please enter a valid number.": "Будь ласка, введіть правильний номер.",
+    "Please enter a valid phone number.": "Будь ласка, введіть правильний номер телефона.",
+    "Please select an option.": "Будь ласка, оберіть варіант.",
+    "Privacy Policy": "Політика конфіденційності",
+    "required": "необхідно",
+    "Something went wrong validating your input": "Щось пішло не так під час перевірки ваших даних",
+    "Submit": "Надіслати",
+    "This field is required.": "Це поле обов'язкове для заповнення.",
+    "Type your answer": "Введіть свою відповідь",
+    "You have exceeded the maximum number of characters allowed.": "Ви перевищили максимально допустиму кількість символів.",
+    "hints": {
+        "edit": "Натисніть {0} щоб відредагувати",
+        "confirm": "{0} щоб підтвердити"
+    },
+    "validation": {
+        "consent_required": "Щоб продовжити, ви повинні погодитися з умовами та положеннями."
+    }
+}
