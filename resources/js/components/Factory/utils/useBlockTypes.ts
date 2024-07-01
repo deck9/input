@@ -17,6 +17,7 @@ export const useBlockTypes = (): {
         { label: "Rating", value: "rating", icon: "star" },
         { label: "Scale", value: "scale", icon: "signal" },
         { label: "Date", value: "date", icon: "calendar" },
+        { label: "File", value: "input-file", icon: "cloud-arrow-up" },
         { label: "Consent", value: "consent", icon: "user-shield" },
     ];
 

@@ -26,5 +26,6 @@ it('can_get_a_mapping_for_which_block_type_uses_which_interaction_type', functio
         'rating' => 'range',
         'scale' => 'range',
         'date' => 'date',
+        'input-file' => 'file',
     ]);
 });

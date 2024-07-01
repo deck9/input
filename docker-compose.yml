@@ -79,10 +79,10 @@ services:
       MINIO_ROOT_USER: "sail"
       MINIO_ROOT_PASSWORD: "password"
     volumes:
-      - "./storage/minio:/data/export"
+      - "sail-minio:/data/minio"
     networks:
       - sail
-    command: minio server /data/export --console-address ":8900"
+    command: minio server /data/minio --console-address ":8900"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       retries: 3

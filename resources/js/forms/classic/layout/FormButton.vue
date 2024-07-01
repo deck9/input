@@ -16,6 +16,9 @@
           class="absolute inset-0 flex items-center justify-center"
         >
           <D9Icon class="animate-spin" icon="circle-notch" />
+          <span v-if="uploadProgress" class="text-xs ml-2"
+            >{{ uploadProgress }}%</span
+          >
         </span>
       </button>
 
@@ -39,6 +42,7 @@ import { useI18n } from "vue-i18n";
 defineProps<{
   isDisabled?: boolean;
   isProcessing?: boolean;
+  uploadProgress?: number | false;
   label: string;
   enableInputMode?: boolean;
 }>();

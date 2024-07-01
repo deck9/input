@@ -45,9 +45,9 @@ import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
 
-const label: Ref<FormBlockInteractionModel["label"]> = ref("");
-const rows = <Ref<number>>ref(5);
-const maxChars = <Ref<number>>ref(500);
+const label = ref<FormBlockInteractionModel["label"]>("");
+const rows = ref<number>(5);
+const maxChars = ref<number>(500);
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
