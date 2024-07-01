@@ -26,6 +26,7 @@
     <FormButton
       :isDisabled="!validator.valid"
       :isProcessing="store.isProcessing"
+      :uploadProgress="store.uploadProgress"
       ref="submitButton"
       :label="submitButtonLabel"
       v-bind="{ ...actionProps }"

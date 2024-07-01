@@ -237,6 +237,11 @@ type FormSubmitPayload = Record<
     FormBlockInteractionPayload | FormBlockInteractionPayload[] | FormBlockUploadPayload
 >;
 
+type FormFileUploads = Record<string, {
+    total: number;
+    loaded: number;
+}>;
+
 type FormBlockInteractionPayload = {
     payload: any;
     actionId: string;

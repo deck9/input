@@ -18,6 +18,7 @@ type ConversationStore = {
     isProcessing: boolean;
     isSubmitted: boolean;
     isInputMode: boolean;
+    uploads: FormFileUploads;
 };
 
 export const useConversation = defineStore("form", {
@@ -32,6 +33,7 @@ export const useConversation = defineStore("form", {
             isProcessing: false,
             isSubmitted: false,
             isInputMode: false,
+            uploads: {},
         };
     },
 
@@ -181,6 +183,24 @@ export const useConversation = defineStore("form", {
                 }
             });
         },
+
+        uploadProgress(state): number | false {
+            if (Object.values(state.uploads).length === 0) {
+                return false;
+            }
+
+            const total = Object.values(state.uploads).reduce(
+                (acc, val) => acc + val.total,
+                0,
+            );
+
+            const loaded = Object.values(state.uploads).reduce(
+                (acc, val) => acc + val.loaded,
+                0,
+            );
+
+            return Math.round((loaded / total) * 100);
+        }
     },
 
     actions: {
@@ -285,7 +305,9 @@ export const useConversation = defineStore("form", {
          */
         async next(): Promise<boolean> {
             if (this.isLastBlock) {
+                this.uploads = {};
                 this.isProcessing = true;
+
 
                 if (this.form?.uuid && this.session?.token) {
                     await callSubmitForm(
@@ -295,11 +317,21 @@ export const useConversation = defineStore("form", {
                     );
 
                     if (this.hasFileUploads) {
+                        // init file upload state
+                        this.initFileUpload();
+
                         // upload files
                         await callUploadFiles(
                             this.form.uuid,
                             this.session.token,
                             this.uploadsPayload,
+                            (action, progressEvent) => {
+                                try {
+                                    this.uploads[action].loaded = progressEvent.loaded;
+                                } catch (e) {
+                                    console.warn('could not update upload progress', e)
+                                }
+                            },
                         );
                     }
 
@@ -331,6 +363,17 @@ export const useConversation = defineStore("form", {
 
                 return Promise.resolve(false);
             }
+        },
+
+        initFileUpload() {
+            Object.values(this.uploadsPayload).forEach((value) => {
+                value.payload.forEach((file: File, index: number) => {
+                    this.uploads[`${value.actionId}[${index}]`] = {
+                        total: file.size,
+                        loaded: 0,
+                    };
+                });
+            });
         },
 
         evaluateGroupBlock(currentBlock: PublicFormBlockModel) {

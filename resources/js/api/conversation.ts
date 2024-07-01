@@ -1,5 +1,5 @@
 /* eslint-disable no-async-promise-executor */
-import { AxiosResponse } from "axios";
+import { AxiosProgressEvent, AxiosResponse } from "axios";
 import handler from "./handler";
 import { useRoutes } from "@/utils/useRoutes";
 
@@ -107,6 +107,7 @@ export async function callUploadFiles(
     uuid: string,
     token: string,
     payload: FormSubmitPayload,
+    progressCallback: (file, axiosProgressEvent: AxiosProgressEvent) => void,
 ): Promise<AxiosResponse[]> {
     const { route } = await useRoutes();
 
@@ -125,7 +126,7 @@ export async function callUploadFiles(
             return;
         }
 
-        value.payload.forEach((file: any) => {
+        value.payload.forEach((file: any, index: number) => {
             const formData = new FormData();
             formData.append("file", file);
             formData.append("token", token);
@@ -136,6 +137,9 @@ export async function callUploadFiles(
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
+                    onUploadProgress: (progressEvent) => {
+                        progressCallback(`${value.actionId}[${index}]`, progressEvent);
+                    }
                 }),
             );
         });
