@@ -22,7 +22,6 @@
     "required": "obligatoire",
     "Something went wrong validating your input": "Une erreur s'est produite lors de la validation de votre saisie",
     "Submit": "Soumettre",
-    "This field is required.": "Ce champ est obligatoire.",
     "Type your answer": "Tapez votre réponse",
     "You have exceeded the maximum number of characters allowed.": "Vous avez dépassé le nombre maximum de caractères autorisés.",
     "hints": {
@@ -30,6 +29,7 @@
         "confirm": "{0} pour confirmer"
     },
     "validation": {
-        "consent_required": "Pour continuer, vous devez accepter les termes et conditions."
+        "consent_required": "Pour continuer, vous devez accepter les termes et conditions.",
+        "field_required": "Ce champ est obligatoire."
     }
 }

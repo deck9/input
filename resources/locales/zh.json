@@ -22,7 +22,6 @@
     "required": "必填",
     "Something went wrong validating your input": "验证您的输入时出错",
     "Submit": "提交",
-    "This field is required.": "此字段为必填项。",
     "Type your answer": "输入您的答案",
     "You have exceeded the maximum number of characters allowed.": "您已超过允许的最大字符数。",
     "hints": {
@@ -30,6 +29,7 @@
         "confirm": "按 {0} 确认"
     },
     "validation": {
-        "consent_required": "继续操作前，您必须同意条款和条件。"
+        "consent_required": "继续操作前，您必须同意条款和条件。",
+        "field_required": "此字段为必填项。"
     }
 }

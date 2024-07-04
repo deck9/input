@@ -19,7 +19,6 @@
     "required": "Povinné",
     "Something went wrong validating your input": "Niečo sa nepodarilo pri overení Vašich údajov",
     "Submit": "Odoslať",
-    "This field is required.": "Toto pole je povinné.",
     "Type your answer": "Zadajte Vašu odpoveď",
     "You have exceeded the maximum number of characters allowed.": "Prekročili ste maximálny povolený počet znakov.",
     "hints": {
@@ -27,6 +26,10 @@
         "confirm": "{0} pre potvrdenie"
     },
     "validation": {
-        "consent_required": "Pre pokračovanie je potrebný súhlas."
+        "consent_required": "Pre pokračovanie je potrebný súhlas.",
+        "field_required": "Toto pole je povinné."
+    },
+    "admin": {
+        "blocks": "žiadne bloky | 1 blok | {n} blokov"
     }
 }

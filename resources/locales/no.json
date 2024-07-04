@@ -22,7 +22,6 @@
     "required": "påkrevd",
     "Something went wrong validating your input": "Noe gikk galt under validering av inndataene dine",
     "Submit": "Send inn",
-    "This field is required.": "Dette feltet er påkrevd.",
     "Type your answer": "Skriv svaret ditt",
     "You have exceeded the maximum number of characters allowed.": "Du har overskredet det maksimale antallet tegn som er tillatt.",
     "hints": {
@@ -30,6 +29,7 @@
         "confirm": "{0} for å bekrefte"
     },
     "validation": {
-        "consent_required": "For å fortsette, må du godta vilkårene."
+        "consent_required": "For å fortsette, må du godta vilkårene.",
+        "field_required": "Dette feltet er påkrevd."
     }
 }

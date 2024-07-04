@@ -22,7 +22,6 @@
     "required": "необхідно",
     "Something went wrong validating your input": "Щось пішло не так під час перевірки ваших даних",
     "Submit": "Надіслати",
-    "This field is required.": "Це поле обов'язкове для заповнення.",
     "Type your answer": "Введіть свою відповідь",
     "You have exceeded the maximum number of characters allowed.": "Ви перевищили максимально допустиму кількість символів.",
     "hints": {
@@ -30,6 +29,7 @@
         "confirm": "{0} щоб підтвердити"
     },
     "validation": {
-        "consent_required": "Щоб продовжити, ви повинні погодитися з умовами та положеннями."
+        "consent_required": "Щоб продовжити, ви повинні погодитися з умовами та положеннями.",
+        "field_required": "Це поле обов'язкове для заповнення."
     }
 }

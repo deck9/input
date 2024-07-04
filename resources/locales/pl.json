@@ -22,7 +22,6 @@
     "required": "wymagane",
     "Something went wrong validating your input": "Coś poszło nie tak podczas sprawdzania poprawności danych wejściowych",
     "Submit": "Wyślij",
-    "This field is required.": "Tol pole jest wymagane.",
     "Type your answer": "Wprowadź swoją odpowiedź",
     "You have exceeded the maximum number of characters allowed.": "Przekroczyłeś maksymalną dozwoloną liczbę znaków.",
     "hints": {
@@ -30,6 +29,7 @@
         "confirm": "{0} aby potwierdzić"
     },
     "validation": {
-        "consent_required": "Aby kontynuować, musisz zaakceptować warunki."
+        "consent_required": "Aby kontynuować, musisz zaakceptować warunki.",
+        "field_required": "Tol pole jest wymagane."
     }
 }
