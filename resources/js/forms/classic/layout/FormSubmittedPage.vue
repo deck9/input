@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="text-lg font-medium">
-      {{ store.form?.eoc_headline || t("Form Submitted") }}
+      {{ store.form?.eoc_headline || t("form_submitted") }}
     </h2>
     <p v-if="store.form?.eoc_text" class="mt-2 text-base leading-6">
       {{ store.form?.eoc_text }}
@@ -9,7 +9,7 @@
     <CallToActionButton
       v-if="store.form?.show_cta_link && store.callToActionUrl"
       :href="store.callToActionUrl"
-      :label="store.form?.cta_label ?? t('Close')"
+      :label="store.form?.cta_label ?? t('close')"
     />
 
     <SocialLinks v-if="store.form?.show_social_links" class="mt-8" />

@@ -1,19 +1,5 @@
 {
-    "Accept & Submit": "Akzeptieren & Absenden",
-    "Accept": "Akzeptieren",
-    "Close": "Schliessen",
-    "Enter": "Enter",
-    "Find us here": "Finde uns hier",
-    "Form Submitted": "Formular abgeschickt",
-    "Go to next Page": "Zur nächsten Seite",
-    "Go to previous Page": "Zur vorherigen Seite",
-    "Legal Notice": "Impressum",
-    "Next": "Weiter",
-    "Other": "Andere",
-    "Privacy Policy": "Datenschutzerklärung",
     "required": "Pflichtfeld",
-    "Submit": "Absenden",
-    "Type your answer": "Gib deine Antwort ein",
     "hints": {
         "edit": "Drücke {0} um zu bearbeiten",
         "confirm": "{0} um zu bestätigen"
@@ -31,5 +17,20 @@
     },
     "admin": {
         "blocks": "keine Blöcke | 1 Block | {n} Blöcke"
-    }
+    },
+    "accept_submit": "Akzeptieren & Absenden",
+    "accept": "Akzeptieren",
+    "close": "Schliessen",
+    "type": "Gib deine Antwort ein",
+    "submit": "Absenden",
+    "privacy_policy": "Datenschutzerklärung",
+    "other": "Andere",
+    "next": "Weiter",
+    "legal_notice": "Impressum",
+    "page_previous": "Zur vorherigen Seite",
+    "page_next": "Zur nächsten Seite",
+    "form_submitted": "Formular abgeschickt",
+    "find_us": "Finde uns hier",
+    "enter": "Enter",
+    "continue": "Weiter"
 }

@@ -2,21 +2,7 @@
     "admin": {
         "blocks": "pas de blocs | 1 bloc | {n} blocs"
     },
-    "Accept & Submit": "Accepter et soumettre",
-    "Accept": "Accepter",
-    "Close": "Fermer",
-    "Enter": "Entrer",
-    "Find us here": "Retrouvez-nous ici",
-    "Form Submitted": "Formulaire soumis",
-    "Go to next Page": "Aller à la page suivante",
-    "Go to previous Page": "Aller à la page précédente",
-    "Legal Notice": "Mention légale",
-    "Next": "Suivant",
-    "Other": "Autre",
-    "Privacy Policy": "Politique de confidentialité",
     "required": "obligatoire",
-    "Submit": "Soumettre",
-    "Type your answer": "Tapez votre réponse",
     "hints": {
         "edit": "Appuyez sur {0} pour modifier",
         "confirm": "{0} pour confirmer"
@@ -31,5 +17,20 @@
         "option_required": "Veuillez sélectionner une option.",
         "error": "Une erreur s'est produite lors de la validation de votre saisie",
         "max_characters": "Vous avez dépassé le nombre maximum de caractères autorisés."
-    }
+    },
+    "accept_submit": "Accepter et soumettre",
+    "accept": "Accepter",
+    "close": "Fermer",
+    "type": "Tapez votre réponse",
+    "submit": "Soumettre",
+    "privacy_policy": "Politique de confidentialité",
+    "other": "Autre",
+    "next": "Suivant",
+    "legal_notice": "Mention légale",
+    "page_previous": "Aller à la page précédente",
+    "page_next": "Aller à la page suivante",
+    "form_submitted": "Formulaire soumis",
+    "find_us": "Retrouvez-nous ici",
+    "enter": "Entrer",
+    "continue": "Continuer"
 }

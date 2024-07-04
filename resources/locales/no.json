@@ -2,21 +2,7 @@
     "admin": {
         "blocks": "ingen blokker | 1 blokk | {n} blokker"
     },
-    "Accept & Submit": "Godkjenn og send inn",
-    "Accept": "Godkjenn",
-    "Close": "Lukk",
-    "Enter": "Legg inn",
-    "Find us here": "Finn oss her",
-    "Form Submitted": "Skjema sendt inn",
-    "Go to next Page": "Gå til neste side",
-    "Go to previous Page": "Gå til forrige side",
-    "Legal Notice": "Juridisk merknad",
-    "Next": "Neste",
-    "Other": "Annet",
-    "Privacy Policy": "Personvern",
     "required": "påkrevd",
-    "Submit": "Send inn",
-    "Type your answer": "Skriv svaret ditt",
     "hints": {
         "edit": "Trykk {0} for å redigere",
         "confirm": "{0} for å bekrefte"
@@ -31,5 +17,20 @@
         "option_required": "Vennligst velg et alternativ.",
         "error": "Noe gikk galt under validering av inndataene dine",
         "max_characters": "Du har overskredet det maksimale antallet tegn som er tillatt."
-    }
+    },
+    "accept_submit": "Godkjenn og send inn",
+    "accept": "Godkjenn",
+    "close": "Lukk",
+    "type": "Skriv svaret ditt",
+    "submit": "Send inn",
+    "privacy_policy": "Personvern",
+    "other": "Annet",
+    "next": "Neste",
+    "legal_notice": "Juridisk merknad",
+    "page_previous": "Gå til forrige side",
+    "page_next": "Gå til neste side",
+    "form_submitted": "Skjema sendt inn",
+    "find_us": "Finn oss her",
+    "enter": "Legg inn",
+    "continue": "Fortsett"
 }

@@ -2,21 +2,7 @@
     "admin": {
         "blocks": "no blocks | 1 block | {n} blocks"
     },
-    "Accept & Submit": "Accept & Submit",
-    "Accept": "Accept",
-    "Close": "Close",
-    "Enter": "Enter",
-    "Find us here": "Find us here",
-    "Form Submitted": "Form Submitted",
-    "Go to next Page": "Go to next Page",
-    "Go to previous Page": "Go to previous Page",
-    "Legal Notice": "Legal Notice",
-    "Next": "Next",
-    "Other": "Other",
-    "Privacy Policy": "Privacy Policy",
     "required": "required",
-    "Submit": "Submit",
-    "Type your answer": "Type your answer",
     "hints": {
         "edit": "Press {0} to edit",
         "confirm": "{0} to confirm"
@@ -31,5 +17,20 @@
         "option_required": "Please select an option.",
         "error": "Something went wrong validating your input",
         "max_characters": "You have exceeded the maximum number of characters allowed."
-    }
+    },
+    "accept_submit": "Accept & Submit",
+    "accept": "Accept",
+    "close": "Close",
+    "type": "Type your answer",
+    "submit": "Submit",
+    "privacy_policy": "Privacy Policy",
+    "other": "Other",
+    "next": "Next",
+    "legal_notice": "Legal Notice",
+    "page_previous": "Go to previous Page",
+    "page_next": "Go to next Page",
+    "form_submitted": "Form Submitted",
+    "find_us": "Find us here",
+    "enter": "Enter",
+    "continue": "Continue"
 }

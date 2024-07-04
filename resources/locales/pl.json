@@ -2,21 +2,7 @@
     "admin": {
         "blocks": "brak bloków | 1 blok | {n} bloków"
     },
-    "Accept & Submit": "Zaakceptuj i wyślij",
-    "Accept": "Akceptuj",
-    "Close": "Zamknij",
-    "Enter": "Enter",
-    "Find us here": "Znajdziesz nas tutaj",
-    "Form Submitted": "Formularz przesłany",
-    "Go to next Page": "Idź do następnej Strony",
-    "Go to previous Page": "Idź do poprzedniej Strony",
-    "Legal Notice": "Informacje Prawne",
-    "Next": "Następny",
-    "Other": "Inne",
-    "Privacy Policy": "Polityka Prywatności",
     "required": "wymagane",
-    "Submit": "Wyślij",
-    "Type your answer": "Wprowadź swoją odpowiedź",
     "hints": {
         "edit": "Naciśnij {0} aby edytować",
         "confirm": "{0} aby potwierdzić"
@@ -31,5 +17,20 @@
         "option_required": "Proszę wybrać opcję.",
         "error": "Coś poszło nie tak podczas sprawdzania poprawności danych wejściowych",
         "max_characters": "Przekroczyłeś maksymalną dozwoloną liczbę znaków."
-    }
+    },
+    "accept_submit": "Zaakceptuj i wyślij",
+    "accept": "Akceptuj",
+    "close": "Zamknij",
+    "type": "Wprowadź swoją odpowiedź",
+    "submit": "Wyślij",
+    "privacy_policy": "Polityka Prywatności",
+    "other": "Inne",
+    "next": "Następny",
+    "legal_notice": "Informacje Prawne",
+    "page_previous": "Idź do poprzedniej Strony",
+    "page_next": "Idź do następnej Strony",
+    "form_submitted": "Formularz przesłany",
+    "find_us": "Znajdziesz nas tutaj",
+    "enter": "Enter",
+    "continue": "Kontynuuj"
 }

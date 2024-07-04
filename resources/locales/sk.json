@@ -1,19 +1,5 @@
 {
-    "Accept & Submit": "Akceptovať a odoslať",
-    "Accept": "Akceptovať",
-    "Close": "Zavrieť",
-    "Enter": "Enter",
-    "Find us here": "Nájdete nás tu",
-    "Form Submitted": "Formulár odoslaný",
-    "Go to next Page": "Na ďalšiu stránku",
-    "Go to previous Page": "Na predošlú stránku",
-    "Legal Notice": "Pravidlá používania",
-    "Next": "Ďalej",
-    "Other": "Iné",
-    "Privacy Policy": "Ochrana osobných údajov",
     "required": "Povinné",
-    "Submit": "Odoslať",
-    "Type your answer": "Zadajte Vašu odpoveď",
     "hints": {
         "edit": "Stlač {0} pre úpravu",
         "confirm": "{0} pre potvrdenie"
@@ -31,5 +17,20 @@
     },
     "admin": {
         "blocks": "žiadne bloky | 1 blok | {n} blokov"
-    }
+    },
+    "accept_submit": "Akceptovať a odoslať",
+    "accept": "Akceptovať",
+    "close": "Zavrieť",
+    "type": "Zadajte Vašu odpoveď",
+    "submit": "Odoslať",
+    "privacy_policy": "Ochrana osobných údajov",
+    "other": "Iné",
+    "next": "Ďalej",
+    "legal_notice": "Pravidlá používania",
+    "page_previous": "Na predošlú stránku",
+    "page_next": "Na ďalšiu stránku",
+    "form_submitted": "Formulár odoslaný",
+    "find_us": "Nájdete nás tu",
+    "enter": "Enter",
+    "continue": "Pokračovať"
 }

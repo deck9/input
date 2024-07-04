@@ -9,7 +9,7 @@
         type="button"
         class="inline-flex items-center justify-center border-r border-content/10 py-1 hover:bg-content/10"
         :class="[{ 'pointer-events-none opacity-25': store.isFirstBlock }]"
-        :aria-label="t('Go to previous Page')"
+        :aria-label="t('previous_page')"
         :aria-disabled="store.isFirstBlock"
         :disabled="store.isFirstBlock"
         @click="store.back()"
@@ -29,7 +29,7 @@
           },
         ]"
         :disabled="!validator.valid || store.isLastBlock"
-        :aria-label="t('Go to next Page')"
+        :aria-label="t('page_next')"
         @click="!store.isLastBlock ? store.next() : false"
       >
         <D9Icon icon="chevron-right" />
