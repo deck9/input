@@ -1,6 +1,7 @@
 <template>
   <div class="relative">
     <div
+      v-if="!hasMaxFiles"
       class="border-2 border-dashed rounded px-4 text-center transition-all"
       :class="[
         isOverDropZone ? 'border-content/20 py-10' : 'border-primary',
@@ -53,6 +54,10 @@ const props = defineProps<{
   action: PublicFormBlockInteractionModel;
 }>();
 
+const emit = defineEmits<{
+  (event: "update"): void;
+}>();
+
 const dropZoneRef = ref<HTMLDivElement>();
 
 const currentFiles = computed<File[] | false>(() => {
@@ -69,14 +74,14 @@ const currentFiles = computed<File[] | false>(() => {
 const setFiles = (files: File[] | FileList | null) => {
   const currentFiles: File[] = [];
 
-  // first load the current files
+  // first load the current files if any. that are files that have been selected before
   if (!Array.isArray(store.currentPayload) && store.currentPayload?.payload) {
     for (const file of store.currentPayload.payload) {
       currentFiles.push(file);
     }
   }
 
-  // then add the new files
+  // add the new files, that are valid
   if (files) {
     for (const file of files) {
       // validate first if file type is allowed
@@ -100,6 +105,7 @@ const setFiles = (files: File[] | FileList | null) => {
 
   // set them as response
   store.setResponse(props.action, currentFiles);
+  emit("update");
 };
 
 const { isOverDropZone } = useDropZone(dropZoneRef, {
@@ -132,6 +138,14 @@ const allowedFileTypes = computed<string>(() => {
   }
 
   return "*";
+});
+
+const hasMaxFiles = computed<boolean>(() => {
+  if (props.action?.options?.allowedFiles) {
+    return currentFiles.value.length >= props.action.options.allowedFiles;
+  }
+
+  return false;
 });
 
 const { open, onChange } = useFileDialog({
