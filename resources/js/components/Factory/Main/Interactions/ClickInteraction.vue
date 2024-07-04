@@ -58,7 +58,7 @@ const props = withDefaults(
   }>(),
   {
     showReply: false,
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -68,11 +68,11 @@ const emit = defineEmits<{
   (e: "onDelete", index: number): void;
 }>();
 
-const labelElement = ref(null) as unknown as Ref<HTMLElement>;
+const labelElement = ref<D9Input | null>(null);
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
 const message: Ref<FormBlockInteractionModel["label"]> = ref(
-  props.item.message
+  props.item.message,
 );
 
 watch([label, message], (newValues) => {
@@ -111,7 +111,13 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 };
 
 const focus = () => {
-  labelElement.value.focus();
+  if (labelElement.value) {
+    try {
+      labelElement.value.$el.querySelector("input").focus();
+    } catch (e) {
+      console.error("Could not focus ClickInteraction input", e);
+    }
+  }
 };
 
 defineExpose({
