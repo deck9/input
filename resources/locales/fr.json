@@ -30,6 +30,7 @@
     },
     "validation": {
         "consent_required": "Pour continuer, vous devez accepter les termes et conditions.",
-        "field_required": "Ce champ est obligatoire."
+        "field_required": "Ce champ est obligatoire.",
+        "valid_email": "Veuillez saisir un email valide."
     }
 }

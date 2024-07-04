@@ -27,7 +27,8 @@
     },
     "validation": {
         "consent_required": "Um fortzufahren, musst Du den Bedingungen zustimmen.",
-        "field_required": "Dieses Feld ist erforderlich."
+        "field_required": "Dieses Feld ist erforderlich.",
+        "valid_email": "Bitte gib eine gültige E-Mail-Adresse ein."
     },
     "admin": {
         "blocks": "keine Blöcke | 1 Block | {n} Blöcke"

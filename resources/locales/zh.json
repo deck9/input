@@ -30,6 +30,7 @@
     },
     "validation": {
         "consent_required": "继续操作前，您必须同意条款和条件。",
-        "field_required": "此字段为必填项。"
+        "field_required": "此字段为必填项。",
+        "valid_email": "请输入有效的邮箱。"
     }
 }

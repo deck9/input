@@ -30,6 +30,7 @@
     },
     "validation": {
         "consent_required": "For å fortsette, må du godta vilkårene.",
-        "field_required": "Dette feltet er påkrevd."
+        "field_required": "Dette feltet er påkrevd.",
+        "valid_email": "Vennligst skriv inn en gyldig e-postadresse."
     }
 }
