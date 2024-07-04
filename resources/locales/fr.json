@@ -13,17 +13,10 @@
     "Legal Notice": "Mention légale",
     "Next": "Suivant",
     "Other": "Autre",
-    "Please enter a valid email.": "Veuillez saisir un email valide.",
-    "Please enter a valid link.": "Veuillez entrer un lien valide.",
-    "Please enter a valid number.": "S'il vous plait, entrez un nombre valide.",
-    "Please enter a valid phone number.": "S'il vous plaît entrer un numéro de téléphone valide.",
-    "Please select an option.": "Veuillez sélectionner une option.",
     "Privacy Policy": "Politique de confidentialité",
     "required": "obligatoire",
-    "Something went wrong validating your input": "Une erreur s'est produite lors de la validation de votre saisie",
     "Submit": "Soumettre",
     "Type your answer": "Tapez votre réponse",
-    "You have exceeded the maximum number of characters allowed.": "Vous avez dépassé le nombre maximum de caractères autorisés.",
     "hints": {
         "edit": "Appuyez sur {0} pour modifier",
         "confirm": "{0} pour confirmer"
@@ -31,6 +24,12 @@
     "validation": {
         "consent_required": "Pour continuer, vous devez accepter les termes et conditions.",
         "field_required": "Ce champ est obligatoire.",
-        "valid_email": "Veuillez saisir un email valide."
+        "valid_email": "Veuillez saisir un email valide.",
+        "valid_link": "Veuillez entrer un lien valide.",
+        "valid_number": "S'il vous plait, entrez un nombre valide.",
+        "valid_phone": "S'il vous plaît entrer un numéro de téléphone valide.",
+        "option_required": "Veuillez sélectionner une option.",
+        "error": "Une erreur s'est produite lors de la validation de votre saisie",
+        "max_characters": "Vous avez dépassé le nombre maximum de caractères autorisés."
     }
 }

@@ -13,17 +13,10 @@
     "Legal Notice": "Legal Notice",
     "Next": "Next",
     "Other": "Other",
-    "Please enter a valid email.": "Please enter a valid email.",
-    "Please enter a valid link.": "Please enter a valid link.",
-    "Please enter a valid number.": "Please enter a valid number.",
-    "Please enter a valid phone number.": "Please enter a valid phone number.",
-    "Please select an option.": "Please select an option.",
     "Privacy Policy": "Privacy Policy",
     "required": "required",
-    "Something went wrong validating your input": "Something went wrong validating your input",
     "Submit": "Submit",
     "Type your answer": "Type your answer",
-    "You have exceeded the maximum number of characters allowed.": "You have exceeded the maximum number of characters allowed.",
     "hints": {
         "edit": "Press {0} to edit",
         "confirm": "{0} to confirm"
@@ -31,6 +24,12 @@
     "validation": {
         "consent_required": "To continue, you must agree to the terms and conditions.",
         "field_required": "This field is required.",
-        "valid_email": "Please enter a valid email."
+        "valid_email": "Please enter a valid email.",
+        "valid_link": "Please enter a valid link.",
+        "valid_number": "Please enter a valid number.",
+        "valid_phone": "Please enter a valid phone number.",
+        "option_required": "Please select an option.",
+        "error": "Something went wrong validating your input",
+        "max_characters": "You have exceeded the maximum number of characters allowed."
     }
 }

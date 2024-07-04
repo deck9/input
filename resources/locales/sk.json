@@ -10,17 +10,10 @@
     "Legal Notice": "Pravidlá používania",
     "Next": "Ďalej",
     "Other": "Iné",
-    "Please enter a valid email.": "Prosíme, zadajte správnu e-mailovú adresu.",
-    "Please enter a valid link.": "Prosíme, zadajte sprvány link.",
-    "Please enter a valid number.": "Prosíme, zadajte správne číslo.",
-    "Please enter a valid phone number.": "Prosíme, zadajte správne telefónne číslo.",
-    "Please select an option.": "Prosíme, vyberte nejakú možnosť.",
     "Privacy Policy": "Ochrana osobných údajov",
     "required": "Povinné",
-    "Something went wrong validating your input": "Niečo sa nepodarilo pri overení Vašich údajov",
     "Submit": "Odoslať",
     "Type your answer": "Zadajte Vašu odpoveď",
-    "You have exceeded the maximum number of characters allowed.": "Prekročili ste maximálny povolený počet znakov.",
     "hints": {
         "edit": "Stlač {0} pre úpravu",
         "confirm": "{0} pre potvrdenie"
@@ -28,7 +21,13 @@
     "validation": {
         "consent_required": "Pre pokračovanie je potrebný súhlas.",
         "field_required": "Toto pole je povinné.",
-        "valid_email": "Prosíme, zadajte správnu e-mailovú adresu."
+        "valid_email": "Prosíme, zadajte správnu e-mailovú adresu.",
+        "valid_link": "Prosíme, zadajte sprvány link.",
+        "valid_number": "Prosíme, zadajte správne číslo.",
+        "valid_phone": "Prosíme, zadajte správne telefónne číslo.",
+        "option_required": "Prosíme, vyberte nejakú možnosť.",
+        "error": "Niečo sa nepodarilo pri overení Vašich údajov",
+        "max_characters": "Prekročili ste maximálny povolený počet znakov."
     },
     "admin": {
         "blocks": "žiadne bloky | 1 blok | {n} blokov"
