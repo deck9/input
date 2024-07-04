@@ -166,7 +166,7 @@ export const useConversation = defineStore("form", {
                     continue;
                 }
 
-                if (blockPayload.payload.some((f) => f instanceof File)) {
+                if (Array.isArray(blockPayload.payload) && blockPayload.payload.some((f) => f instanceof File)) {
                     uploads[block] = blockPayload;
                 }
             }
