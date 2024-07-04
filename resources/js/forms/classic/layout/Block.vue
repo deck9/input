@@ -10,6 +10,7 @@
       >
         <component
           :is="actionComponent"
+          @update="showValidationMessage = true"
           v-bind="{
             block,
             index,
