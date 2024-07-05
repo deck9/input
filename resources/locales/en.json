@@ -32,5 +32,7 @@
     "form_submitted": "Form Submitted",
     "find_us": "Find us here",
     "enter": "Enter",
-    "continue": "Continue"
+    "continue": "Continue",
+    "files_choose": "Choose files",
+    "files_drop": "or drop here"
 }

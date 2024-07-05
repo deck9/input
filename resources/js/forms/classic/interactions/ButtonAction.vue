@@ -29,9 +29,7 @@
         @keydown.enter="stopEditing($event, true)"
         type="text"
         :placeholder="
-          isChecked && !otherValue
-            ? t('Type your answer')
-            : action.label ?? t('Other')
+          isChecked && !otherValue ? t('type') : action.label ?? t('other')
         "
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0"
@@ -54,7 +52,9 @@
             <code class="rounded bg-content/10 px-1 py-px">e</code>
           </i18n-t>
           <i18n-t v-else keypath="hints.confirm" tag="span" scope="global">
-            <code class="rounded bg-content/10 px-1 py-px">Enter</code>
+            <code class="rounded bg-content/10 px-1 py-px">{{
+              t("enter")
+            }}</code>
           </i18n-t>
         </template>
       </div>

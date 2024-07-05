@@ -14,9 +14,11 @@
         type="button"
         class="underline text-primary px-5 py-1 rounded"
       >
-        Choose Files
+        {{ t("files_choose") }}
       </button>
-      <span class="block text-xs text-content/80 leading-0">or drop here</span>
+      <span class="block text-xs text-content/80 leading-0">{{
+        t("files_drop")
+      }}</span>
     </div>
 
     <div v-if="currentFiles" class="my-4 space-y-2">
@@ -45,8 +47,10 @@ import { useConversation } from "@/stores/conversation";
 import { useFileDialog, useDropZone } from "@vueuse/core";
 import UploadFileItem from "@/forms/classic/components/UploadFileItem.vue";
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const store = useConversation();
+const { t } = useI18n();
 
 const props = defineProps<{
   index: number;
@@ -98,6 +102,7 @@ const setFiles = (files: File[] | FileList | null) => {
       ) {
         currentFiles.push(file);
       } else {
+        // if validation fails, log an error and show it to the user
         console.error("File type not allowed");
       }
     }
@@ -142,7 +147,10 @@ const allowedFileTypes = computed<string>(() => {
 
 const hasMaxFiles = computed<boolean>(() => {
   if (props.action?.options?.allowedFiles) {
-    return currentFiles.value.length >= props.action.options.allowedFiles;
+    return (
+      currentFiles.value &&
+      currentFiles.value.length >= props.action.options.allowedFiles
+    );
   }
 
   return false;
