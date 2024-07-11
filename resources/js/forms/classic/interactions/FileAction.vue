@@ -89,7 +89,14 @@ const setFiles = (files: File[] | FileList | null) => {
   if (files) {
     for (const file of files) {
       // validate first if file type is allowed
+      // validate second that files names are unique
       if (
+        currentFiles.every(
+          (currentFile) =>
+            currentFile.name !== file.name ||
+            currentFile.type !== file.type ||
+            currentFile.size !== file.size,
+        ) &&
         allowedFileTypes.value
           .split(",")
           .some(
