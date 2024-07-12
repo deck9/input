@@ -16,7 +16,11 @@
         "valid_phone": "Please enter a valid phone number.",
         "option_required": "Please select an option.",
         "error": "Something went wrong validating your input",
-        "max_characters": "You have exceeded the maximum number of characters allowed."
+        "max_characters": "You have exceeded the maximum number of characters allowed.",
+        "no_file_interaction": "There is no valid configuration to accept files",
+        "too_many_files": "You have uploaded too many files. You can upload up to {maxFiles} files.",
+        "file_size": "The file '{fileName}' exceeds the maximum size of {maxFileSize} MB.",
+        "rating_required": "Please choose a rating"
     },
     "accept_submit": "Accept & Submit",
     "accept": "Accept",

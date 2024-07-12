@@ -58,7 +58,7 @@ export function useInputAction(block: PublicFormBlockModel) {
                     valid:
                         (!block.is_required && !input?.payload) ||
                         defaultValidator.isValidSync(input?.payload),
-                    message: t("Please enter a valid short text."),
+                    message: t("validation.field_required"),
                 };
         }
     };

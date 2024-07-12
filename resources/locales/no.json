@@ -16,7 +16,11 @@
         "valid_phone": "Vennligst skriv inn et gyldig telefonnummer.",
         "option_required": "Vennligst velg et alternativ.",
         "error": "Noe gikk galt under validering av inndataene dine",
-        "max_characters": "Du har overskredet det maksimale antallet tegn som er tillatt."
+        "max_characters": "Du har overskredet det maksimale antallet tegn som er tillatt.",
+        "no_file_interaction": "Det er ingen gyldig konfigurasjon for å akseptere filer",
+        "too_many_files": "Du har lastet opp for mange filer. Du kan laste opp opptil {maxFiles} filer.",
+        "file_size": "Filen '{fileName}' overskrider maksimal størrelse på {maxFileSize} MB.",
+        "rating_required": "Vennligst velg en vurdering"
     },
     "accept_submit": "Godkjenn og send inn",
     "accept": "Godkjenn",
@@ -32,5 +36,7 @@
     "form_submitted": "Skjema sendt inn",
     "find_us": "Finn oss her",
     "enter": "Legg inn",
-    "continue": "Fortsett"
+    "continue": "Fortsett",
+    "files_choose": "Velg filer",
+    "files_drop": "eller slipp her"
 }

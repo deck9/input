@@ -5,7 +5,7 @@ export function useRangeAction(block: PublicFormBlockModel) {
     const useThis = ["rating", "scale"].includes(block.type);
 
     const validator = (input: any) => {
-        const validationMessage = t("Please choose a rating.");
+        const validationMessage = t("validation.rating_required");
 
         if (block.is_required) {
             if (!input) {

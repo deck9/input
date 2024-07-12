@@ -13,7 +13,11 @@
         "valid_phone": "Prosíme, zadajte správne telefónne číslo.",
         "option_required": "Prosíme, vyberte nejakú možnosť.",
         "error": "Niečo sa nepodarilo pri overení Vašich údajov",
-        "max_characters": "Prekročili ste maximálny povolený počet znakov."
+        "max_characters": "Prekročili ste maximálny povolený počet znakov.",
+        "no_file_interaction": "Neexistuje platná konfigurácia na prijímanie súborov.",
+        "too_many_files": "Nahrali ste príliš veľa súborov. Môžete nahrať až {maxFiles} súborov.",
+        "file_size": "Súbor '{fileName}' prekračuje maximálnu veľkosť {maxFileSize} MB.",
+        "rating_required": "Prosím, vyberte si hodnotenie."
     },
     "admin": {
         "blocks": "žiadne bloky | 1 blok | {n} blokov"
@@ -32,5 +36,7 @@
     "form_submitted": "Formulár odoslaný",
     "find_us": "Nájdete nás tu",
     "enter": "Enter",
-    "continue": "Pokračovať"
+    "continue": "Pokračovať",
+    "files_choose": "Vyberte súbory",
+    "files_drop": "alebo sem spustiť"
 }

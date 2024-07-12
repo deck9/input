@@ -16,7 +16,11 @@
         "valid_phone": "Proszę wprowadzić prawidłowy numer telefonu.",
         "option_required": "Proszę wybrać opcję.",
         "error": "Coś poszło nie tak podczas sprawdzania poprawności danych wejściowych",
-        "max_characters": "Przekroczyłeś maksymalną dozwoloną liczbę znaków."
+        "max_characters": "Przekroczyłeś maksymalną dozwoloną liczbę znaków.",
+        "no_file_interaction": "Nie ma poprawnej konfiguracji do akceptowania plików",
+        "too_many_files": "Przesłałeś zbyt wiele plików. Możesz przesłać maksymalnie {maxFiles} plików.",
+        "file_size": "Plik '{fileName}' przekracza maksymalny rozmiar {maxFileSize} MB.",
+        "rating_required": "Proszę wybrać ocenę."
     },
     "accept_submit": "Zaakceptuj i wyślij",
     "accept": "Akceptuj",
@@ -32,5 +36,7 @@
     "form_submitted": "Formularz przesłany",
     "find_us": "Znajdziesz nas tutaj",
     "enter": "Enter",
-    "continue": "Kontynuuj"
+    "continue": "Kontynuuj",
+    "files_choose": "Wybierz pliki",
+    "files_drop": "lub upuść tutaj"
 }

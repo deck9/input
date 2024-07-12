@@ -16,7 +16,11 @@
         "valid_phone": "S'il vous plaît entrer un numéro de téléphone valide.",
         "option_required": "Veuillez sélectionner une option.",
         "error": "Une erreur s'est produite lors de la validation de votre saisie",
-        "max_characters": "Vous avez dépassé le nombre maximum de caractères autorisés."
+        "max_characters": "Vous avez dépassé le nombre maximum de caractères autorisés.",
+        "no_file_interaction": "Il n'y a aucune configuration valide pour accepter les fichiers",
+        "too_many_files": "Vous avez téléchargé trop de fichiers. Vous pouvez télécharger jusqu'à {maxFiles} fichiers.",
+        "file_size": "Le fichier '{fileName}' dépasse la taille maximale de {maxFileSize} Mo.",
+        "rating_required": "Veuillez choisir une note"
     },
     "accept_submit": "Accepter et soumettre",
     "accept": "Accepter",
@@ -32,5 +36,7 @@
     "form_submitted": "Formulaire soumis",
     "find_us": "Retrouvez-nous ici",
     "enter": "Entrer",
-    "continue": "Continuer"
+    "continue": "Continuer",
+    "files_choose": "Choisir des fichiers",
+    "files_drop": "ou déposez ici"
 }

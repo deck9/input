@@ -25,7 +25,7 @@ export function useFileAction(block: PublicFormBlockModel) {
         if (!interaction) {
             return {
                 valid: false,
-                message: t("No file interaction found"),
+                message: t("validation.no_file_interaction"),
             }
         }
 
@@ -36,7 +36,7 @@ export function useFileAction(block: PublicFormBlockModel) {
         if (maxFiles && input?.payload.length > maxFiles) {
             return {
                 valid: false,
-                message: t(`Too many files uploaded`),
+                message: t(`validation.too_many_files`, { maxFiles }),
             }
         }
 
@@ -47,7 +47,10 @@ export function useFileAction(block: PublicFormBlockModel) {
                 if (maxFileSize && file.size > maxFileSize) {
                     return {
                         valid: false,
-                        message: t(`File size of ${file.name} too large`),
+                        message: t(`validation.file_size`, {
+                            fileName: file.name,
+                            maxFileSize: interaction.options?.allowedFileSize
+                        }),
                     }
                 }
             }

@@ -16,7 +16,11 @@
         "valid_phone": "请输入有效的电话号码。",
         "option_required": "请选择一个选项。",
         "error": "验证您的输入时出错",
-        "max_characters": "您已超过允许的最大字符数。"
+        "max_characters": "您已超过允许的最大字符数。",
+        "no_file_interaction": "没有有效的配置来接受文件",
+        "too_many_files": "您已上传了太多文件。您最多可以上传 {maxFiles} 个文件。",
+        "file_size": "文件“{fileName}”超过了 {maxFileSize} MB 的最大大小。",
+        "rating_required": "请您选择一个评分"
     },
     "accept_submit": "接受并提交",
     "accept": "接受",
@@ -32,5 +36,7 @@
     "form_submitted": "表单已提交",
     "find_us": "在这里找到我们",
     "enter": "输入",
-    "continue": "继续"
+    "continue": "继续",
+    "files_choose": "选择文件",
+    "files_drop": "或者拖放到这里"
 }
