@@ -176,7 +176,7 @@ export const useConversation = defineStore("form", {
 
         hasFileUploads(state): boolean {
             return Object.values(state.payload).some((block) => {
-                if (!Array.isArray(block)) {
+                if (!Array.isArray(block) && Array.isArray(block.payload)) {
                     return block.payload.some((p) => {
                         return p instanceof File;
                     });
