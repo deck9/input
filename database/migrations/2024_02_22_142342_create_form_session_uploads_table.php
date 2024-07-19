@@ -21,5 +21,13 @@ return new class extends Migration
             $table->unsignedBigInteger('form_session_response_id');
             $table->timestamps();
         });
+
+        Schema::table('form_session_uploads', function (Blueprint $table) {
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->foreign('form_session_response_id')
+                    ->references('id')->on('form_session_responses')
+                    ->onDelete('CASCADE');
+            }
+        });
     }
 };

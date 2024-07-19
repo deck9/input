@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class FormSession extends Model
 {
@@ -26,6 +27,17 @@ class FormSession extends Model
         'is_completed',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (FormSession $session) {
+            $session->responses->each(function (FormSessionResponse $response) {
+                $response->formSessionUploads->each(function (FormSessionUpload $upload) {
+                    Storage::delete($upload->path);
+                });
+            });
+        });
+    }
+
     public function form()
     {
         return $this->belongsTo(Form::class, 'form_id', 'id');
@@ -34,6 +46,11 @@ class FormSession extends Model
     public function webhooks()
     {
         return $this->hasMany(FormSessionWebhook::class);
+    }
+
+    public function responses()
+    {
+        return $this->hasMany(FormSessionResponse::class);
     }
 
     public static function getByTokenAndForm(string $token, Form $form)
