@@ -12,6 +12,10 @@ class FormUploadsDownloadController extends Controller
     {
         $upload = FormSessionUpload::whereUuid($upload)->firstOrFail();
 
+        if (!Storage::fileExists($upload->path)) {
+            abort(404);
+        }
+
         return Storage::download($upload->path, $upload->name);
     }
 }
