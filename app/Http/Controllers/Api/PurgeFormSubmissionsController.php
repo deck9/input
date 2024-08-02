@@ -18,7 +18,7 @@ class PurgeFormSubmissionsController extends Controller
     {
         $this->authorize('update', $form);
 
-        $form->formSessions()->delete();
+        $form->formSessions->each(fn ($session) => $session->delete());
 
         return response()->json(null, 204);
     }
