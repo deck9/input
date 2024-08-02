@@ -78,7 +78,8 @@ export function callCreateFormSession(
 export function callSubmitForm(
     uuid: string,
     token: string,
-    payload: FormSubmitPayload,
+    payload: FormSubmitPayload | null,
+    is_uploading: boolean = false,
 ): Promise<AxiosResponse<null>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -92,6 +93,7 @@ export function callSubmitForm(
                 const response = await handler.post(resolvedRoute, {
                     token,
                     payload,
+                    is_uploading,
                 });
                 resolve(response as AxiosResponse<null>);
             } else {
@@ -138,8 +140,11 @@ export async function callUploadFiles(
                         "Content-Type": "multipart/form-data",
                     },
                     onUploadProgress: (progressEvent) => {
-                        progressCallback(`${value.actionId}[${index}]`, progressEvent);
-                    }
+                        progressCallback(
+                            `${value.actionId}[${index}]`,
+                            progressEvent,
+                        );
+                    },
                 }),
             );
         });

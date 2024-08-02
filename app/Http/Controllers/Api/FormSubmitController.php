@@ -37,15 +37,21 @@ class FormSubmitController extends Controller
     {
         $request->validate([
             'token' => 'required|string',
-            'payload' => 'array',
+            'is_uploading' => 'boolean',
+            'payload' => 'array|nullable',
         ]);
 
         $session = $form->formSessions()
             ->where('token', $request->input('token'))
-            ->firstOrFail()
-            ->submit($request->input('payload'));
+            ->firstOrFail();
 
-        event(new FormSessionCompletedEvent($session));
+        if (!is_null($request->payload)) {
+            $session->submit($request->input('payload'));
+        }
+
+        if (!$request->input('is_uploading', false)) {
+            event(new FormSessionCompletedEvent($session));
+        }
 
         return response()->json($session->setHidden(['form']), 200);
     }

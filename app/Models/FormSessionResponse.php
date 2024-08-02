@@ -47,13 +47,13 @@ class FormSessionResponse extends Model
 
     public function setValueAttribute($new)
     {
-        $this->attributes['value'] = encrypt($new);
+        $this->attributes['value'] = config('app.debug') ? $new : encrypt($new);
     }
 
     public function getValueAttribute()
     {
         try {
-            return decrypt($this->attributes['value']);
+            return config('app.debug') ? $this->attributes['value'] : decrypt($this->attributes['value']);
         } catch (\Throwable $th) {
             return $this->attributes['value'];
         }

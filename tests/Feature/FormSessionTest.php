@@ -173,6 +173,23 @@ test('when submitting a form an event is fired', function () {
     Event::assertListening(FormSessionCompletedEvent::class, FormSubmitWebhookListener::class);
 });
 
+
+test('when submitting a form with is_uploading set to true the form webhook listener is not fired', function () {
+    Event::fake();
+
+    $session = FormSession::factory()->create();
+
+    $this->json('POST', route('api.public.forms.submit', [
+        'form' => $session->form->uuid,
+    ]), [
+        'token' => $session->token,
+        'payload' => [],
+        'is_uploading' => true,
+    ])->assertStatus(200);
+
+    Event::assertNotDispatched(FormSessionCompletedEvent::class);
+});
+
 it('should delete old submissions if auto delete is enabled for the form after specified time', function ($template) {
     $form = Form::factory()->create([
         'is_auto_delete_enabled' => true,

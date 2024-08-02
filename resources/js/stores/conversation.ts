@@ -74,6 +74,32 @@ export const useConversation = defineStore("form", {
             return null;
         },
 
+        submittablePayload(): FormSubmitPayload {
+            const submittablePayload = Object.assign({}, this.payload);
+
+            for (const block in this.payload) {
+                const blockPayload = this.payload[block];
+
+                if (Array.isArray(blockPayload)) {
+                    continue;
+                }
+
+                if (
+                    Array.isArray(blockPayload.payload) &&
+                    blockPayload.payload.some((f) => f instanceof File)
+                ) {
+                    submittablePayload[block] = {
+                        ...blockPayload,
+                        payload: blockPayload.payload
+                            .map((f) => f.name)
+                            .join(", "),
+                    };
+                }
+            }
+
+            return submittablePayload;
+        },
+
         countCurrentSelections(): number {
             if (!this.currentPayload) return 0;
 
@@ -153,10 +179,7 @@ export const useConversation = defineStore("form", {
             return state.form.cta_link;
         },
 
-        uploadsPayload(state): Record<
-            string,
-            FormBlockUploadPayload
-        > {
+        uploadsPayload(state): Record<string, FormBlockUploadPayload> {
             const uploads = {};
 
             for (const block in state.payload) {
@@ -166,7 +189,10 @@ export const useConversation = defineStore("form", {
                     continue;
                 }
 
-                if (Array.isArray(blockPayload.payload) && blockPayload.payload.some((f) => f instanceof File)) {
+                if (
+                    Array.isArray(blockPayload.payload) &&
+                    blockPayload.payload.some((f) => f instanceof File)
+                ) {
                     uploads[block] = blockPayload;
                 }
             }
@@ -200,7 +226,7 @@ export const useConversation = defineStore("form", {
             );
 
             return Math.round((loaded / total) * 100);
-        }
+        },
     },
 
     actions: {
@@ -308,12 +334,12 @@ export const useConversation = defineStore("form", {
                 this.uploads = {};
                 this.isProcessing = true;
 
-
                 if (this.form?.uuid && this.session?.token) {
                     await callSubmitForm(
                         this.form.uuid,
                         this.session.token,
-                        this.payload,
+                        this.submittablePayload,
+                        this.hasFileUploads,
                     );
 
                     if (this.hasFileUploads) {
@@ -327,11 +353,22 @@ export const useConversation = defineStore("form", {
                             this.uploadsPayload,
                             (action, progressEvent) => {
                                 try {
-                                    this.uploads[action].loaded = progressEvent.loaded;
+                                    this.uploads[action].loaded =
+                                        progressEvent.loaded;
                                 } catch (e) {
-                                    console.warn('could not update upload progress', e)
+                                    console.warn(
+                                        "could not update upload progress",
+                                        e,
+                                    );
                                 }
                             },
+                        );
+
+                        await callSubmitForm(
+                            this.form.uuid,
+                            this.session.token,
+                            null,
+                            false,
                         );
                     }
 
