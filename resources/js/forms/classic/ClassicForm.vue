@@ -42,6 +42,7 @@
           v-bind="{
             hideNavigation: flags.hideNavigation,
             block: store.currentBlock,
+            key: store.currentBlock?.id,
           }"
           :class="{
             'pointer-events-none opacity-0': store.isSubmitted,

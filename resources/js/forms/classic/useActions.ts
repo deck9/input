@@ -6,7 +6,23 @@ import { useRangeAction } from "./interactions/useRangeAction";
 import { useDateAction } from "./interactions/useDateAction";
 import { useFileAction } from "./interactions/useFileAction";
 
-export function useActions(block: PublicFormBlockModel) {
+export type ActionValidatorType =
+    | ((input: any) =>
+          | {
+                valid: any;
+                message: string;
+            }
+          | {
+                valid: boolean;
+                message?: undefined;
+            })
+    | undefined;
+
+export function useActions(block: PublicFormBlockModel): {
+    actionValidator: ActionValidatorType;
+    actionComponent: any;
+    actionProps: any;
+} {
     const actionTypes = [
         useButtonAction(block),
         useConsentAction(block),
