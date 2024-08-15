@@ -225,7 +225,7 @@ export const useConversation = defineStore("form", {
                 0,
             );
 
-            return Math.round((loaded / total) * 100);
+            return Math.min(100, Math.round((loaded / total) * 100));
         },
     },
 
