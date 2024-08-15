@@ -9,7 +9,7 @@
         type="button"
         class="inline-flex items-center justify-center border-r border-content/10 py-1 hover:bg-content/10"
         :class="[{ 'pointer-events-none opacity-25': store.isFirstBlock }]"
-        :aria-label="t('previous_page')"
+        :aria-label="t('page_previous')"
         :aria-disabled="store.isFirstBlock"
         :disabled="store.isFirstBlock"
         @click="store.back()"
