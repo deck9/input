@@ -22,7 +22,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             HttpClientInterface::class,
             function ($app) {
-                return new NoPrivateNetworkHttpClient(HttpClient::create());
+                return new NoPrivateNetworkHttpClient(HttpClient::create([
+                    'headers' => [
+                        'user-agent' => 'Input-App/1.0',
+                    ],
+                ]));
             }
         );
 

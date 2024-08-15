@@ -75,7 +75,7 @@ test('can submit a form through a session token', function ($template) {
     ]), [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
@@ -105,7 +105,7 @@ test('submitting a session a second time does not create duplicate responses', f
     $request = [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
@@ -173,6 +173,23 @@ test('when submitting a form an event is fired', function () {
     Event::assertListening(FormSessionCompletedEvent::class, FormSubmitWebhookListener::class);
 });
 
+
+test('when submitting a form with is_uploading set to true the form webhook listener is not fired', function () {
+    Event::fake();
+
+    $session = FormSession::factory()->create();
+
+    $this->json('POST', route('api.public.forms.submit', [
+        'form' => $session->form->uuid,
+    ]), [
+        'token' => $session->token,
+        'payload' => [],
+        'is_uploading' => true,
+    ])->assertStatus(200);
+
+    Event::assertNotDispatched(FormSessionCompletedEvent::class);
+});
+
 it('should delete old submissions if auto delete is enabled for the form after specified time', function ($template) {
     $form = Form::factory()->create([
         'is_auto_delete_enabled' => true,
@@ -188,7 +205,7 @@ it('should delete old submissions if auto delete is enabled for the form after s
     ]), [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],
@@ -220,7 +237,7 @@ it('should not delete submissions when auto delete is not enabled', function ($t
     ]), [
         'token' => $session->token,
         'payload' => [
-            ...$form->formBlocks[0]->getSubmitPayload('tester@getubozt,ci'),
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
             ...$form->formBlocks[2]->getSubmitPayload([0]),
             ...$form->formBlocks[3]->getSubmitPayload([0, 1]),
         ],

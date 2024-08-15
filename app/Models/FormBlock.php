@@ -124,6 +124,9 @@ class FormBlock extends BaseModel
             case FormBlockType::long:
                 return FormBlockInteractionType::textarea;
 
+            case FormBlockType::file:
+                return FormBlockInteractionType::file;
+
             case FormBlockType::checkbox:
             case FormBlockType::radio:
                 return FormBlockInteractionType::button;

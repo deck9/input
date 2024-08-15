@@ -1,6 +1,8 @@
 import TextareaAction from "@/forms/classic/interactions/TextareaAction.vue";
+import { useI18n } from "vue-i18n";
 
 export function useTextareaAction(block: PublicFormBlockModel) {
+    const { t } = useI18n();
     const useThis = ["input-long"].includes(block.type);
 
     const validator = (input: any) => {
@@ -8,7 +10,7 @@ export function useTextareaAction(block: PublicFormBlockModel) {
             block.is_required &&
             (!input || input?.payload?.trim().length === 0)
         ) {
-            return { valid: false, message: "This field is required" };
+            return { valid: false, message: t("validation.field_required") };
         }
 
         const action = block.interactions[0];
@@ -22,7 +24,7 @@ export function useTextareaAction(block: PublicFormBlockModel) {
                 return {
                     valid: false,
                     message:
-                        "You have exceeded the maximum number of characters allowed.",
+                        t("validation.max_characters"),
                 };
             }
         }

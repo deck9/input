@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 class FormSessionResponse extends Model
 {
@@ -38,17 +40,33 @@ class FormSessionResponse extends Model
         return $this->belongsTo(FormSession::class, 'form_session_id');
     }
 
+    public function formSessionUploads()
+    {
+        return $this->hasMany(FormSessionUpload::class);
+    }
+
     public function setValueAttribute($new)
     {
-        $this->attributes['value'] = encrypt($new);
+        $this->attributes['value'] = config('app.debug') ? json_encode($new) : encrypt($new);
     }
 
     public function getValueAttribute()
     {
         try {
-            return decrypt($this->attributes['value']);
+            return config('app.debug') ? json_decode($this->attributes['value'], true) : decrypt($this->attributes['value']);
         } catch (\Throwable $th) {
             return $this->attributes['value'];
         }
+    }
+
+    public function saveUpload(UploadedFile $file)
+    {
+        return $this->formSessionUploads()->create([
+            'uuid' => Str::uuid(),
+            'name' => $file->getClientOriginalName(),
+            'path' => $file->store(implode('/', ['uploads', $this->id])),
+            'type' => $file->getClientMimeType(),
+            'size' => $file->getSize(),
+        ]);
     }
 }

@@ -29,15 +29,13 @@
         @keydown.enter="stopEditing($event, true)"
         type="text"
         :placeholder="
-          isChecked && !otherValue
-            ? t('Type your answer')
-            : action.label ?? t('Other')
+          isChecked && !otherValue ? t('type') : action.label ?? t('other')
         "
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0"
         :class="{ 'pointer-events-none': !isChecked }"
       />
-      <span data-testid="button-label" v-else class="inline-block">{{
+      <span v-else class="inline-block" data-testid="button-label">{{
         action.label
       }}</span>
       <div
@@ -54,7 +52,9 @@
             <code class="rounded bg-content/10 px-1 py-px">e</code>
           </i18n-t>
           <i18n-t v-else keypath="hints.confirm" tag="span" scope="global">
-            <code class="rounded bg-content/10 px-1 py-px">Enter</code>
+            <code class="rounded bg-content/10 px-1 py-px">{{
+              t("enter")
+            }}</code>
           </i18n-t>
         </template>
       </div>
@@ -94,6 +94,7 @@ const props = defineProps<{
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const buttonElement = ref<HTMLInputElement | null>(null);
 const otherInput = ref<HTMLInputElement | null>(null);
+const otherValue = ref<string>("");
 const inputType = props.block.type === "checkbox" ? "checkbox" : "radio";
 const shortcutKey = (props.index + 1).toString();
 
@@ -114,8 +115,6 @@ const isChecked = computed<boolean>(() => {
 const isOtherOption = computed<boolean>(() => {
   return props.action.name === "alt_response";
 });
-
-const otherValue = ref<string>("");
 
 const isVisible = computed<boolean>(() => {
   return (

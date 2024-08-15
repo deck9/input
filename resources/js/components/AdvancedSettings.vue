@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="text-xs text-grey-400" @click="open = !open">
+    <button class="text-xs font-medium text-grey-800" @click="open = !open">
       {{ title }}
       <D9Icon size="xs" :name="open ? 'chevron-down' : 'chevron-right'" />
     </button>

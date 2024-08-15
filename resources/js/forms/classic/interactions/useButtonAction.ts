@@ -1,10 +1,12 @@
 import ButtonAction from "@/forms/classic/interactions/ButtonAction.vue";
+import { useI18n } from "vue-i18n";
 
 export function useButtonAction(block: PublicFormBlockModel) {
+    const { t } = useI18n();
     const useThis = ["radio", "checkbox"].includes(block.type);
 
     const validator = (input: any) => {
-        const validationMessage = "Please select an option.";
+        const validationMessage = t("validation.option_required");
 
         if (block.is_required) {
             if (!input) {

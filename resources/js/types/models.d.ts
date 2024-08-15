@@ -92,6 +92,7 @@ type FormBlockType =
     | "input-link"
     | "input-phone"
     | "input-secret"
+    | "input-file"
     | "scale"
     | "rating"
     | "date";
@@ -102,6 +103,7 @@ type FormBlockInteractionType =
     | "textarea"
     | "consent"
     | "range"
+    | "file"
     | "date";
 
 type FormBlockInteractionSettings = {
@@ -119,6 +121,9 @@ type FormBlockInteractionSettings = {
     labelRight?: string;
     decimalPlaces?: number;
     useSymbol?: string;
+    allowedFiles ?: number;
+    allowedFileSize ?: number;
+    allowedFileTypes ?: Record<string, boolean>;
 };
 
 interface FormBlockInteractionModel extends BaseModel {
@@ -229,13 +234,23 @@ type FormSessionWebhookModel = {
 
 type FormSubmitPayload = Record<
     string,
-    FormBlockInteractionPayload | FormBlockInteractionPayload[]
+    FormBlockInteractionPayload | FormBlockInteractionPayload[] | FormBlockUploadPayload
 >;
+
+type FormFileUploads = Record<string, {
+    total: number;
+    loaded: number;
+}>;
 
 type FormBlockInteractionPayload = {
     payload: any;
     actionId: string;
 };
+
+type FormBlockUploadPayload = {
+    payload: File[];
+    actionId: string;
+}
 
 type EmbedFlags = {
     hideTitle?: boolean;

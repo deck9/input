@@ -10,7 +10,7 @@
       icon="chevron-right"
     />
 
-    <AdvancedSettings title="Block Settings">
+    <AdvancedSettings title="More Settings">
       <div>
         <D9Label
           label="Identifier"

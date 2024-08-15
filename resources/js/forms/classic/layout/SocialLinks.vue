@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="font-bold">{{ t("Find us here") }}:</h3>
+    <h3 class="font-bold">{{ t("find_us") }}:</h3>
     <ul class="mt-1 flex space-x-3">
       <li v-for="provider in socialLinkProviders" :key="provider">
         <a

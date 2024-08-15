@@ -10,6 +10,7 @@
       >
         <component
           :is="actionComponent"
+          @update="showValidationMessage = true"
           v-bind="{
             block,
             index,
@@ -26,6 +27,7 @@
     <FormButton
       :isDisabled="!validator.valid"
       :isProcessing="store.isProcessing"
+      :uploadProgress="store.uploadProgress"
       ref="submitButton"
       :label="submitButtonLabel"
       v-bind="{ ...actionProps }"
@@ -77,12 +79,12 @@ const showValidationMessage = ref(false);
 const submitButtonLabel = computed(() => {
   if (store.currentBlock?.type === "consent") {
     if (!store.hasRequiredFields && store.countCurrentSelections === 0) {
-      return store.isLastBlock ? t("Submit") : t("Continue");
+      return store.isLastBlock ? t("submit") : t("continue");
     } else {
-      return store.isLastBlock ? t("Accept & Submit") : t("Accept");
+      return store.isLastBlock ? t("accept_submit") : t("accept");
     }
   } else {
-    return store.isLastBlock ? t("Submit") : t("Next");
+    return store.isLastBlock ? t("submit") : t("next");
   }
 });
 

@@ -4,6 +4,7 @@ import {
     callGetFormStoryboard,
     callSubmitForm,
     callGetForm,
+    callUploadFiles,
 } from "@/api/conversation";
 import { Ref, ref } from "vue";
 
@@ -17,6 +18,7 @@ type ConversationStore = {
     isProcessing: boolean;
     isSubmitted: boolean;
     isInputMode: boolean;
+    uploads: FormFileUploads;
 };
 
 export const useConversation = defineStore("form", {
@@ -31,6 +33,7 @@ export const useConversation = defineStore("form", {
             isProcessing: false,
             isSubmitted: false,
             isInputMode: false,
+            uploads: {},
         };
     },
 
@@ -60,7 +63,7 @@ export const useConversation = defineStore("form", {
         },
 
         currentPayload(
-            state
+            state,
         ): FormBlockInteractionPayload | FormBlockInteractionPayload[] | null {
             if (!this.currentBlock) return null;
 
@@ -69,6 +72,32 @@ export const useConversation = defineStore("form", {
             }
 
             return null;
+        },
+
+        submittablePayload(): FormSubmitPayload {
+            const submittablePayload = Object.assign({}, this.payload);
+
+            for (const block in this.payload) {
+                const blockPayload = this.payload[block];
+
+                if (Array.isArray(blockPayload)) {
+                    continue;
+                }
+
+                if (
+                    Array.isArray(blockPayload.payload) &&
+                    blockPayload.payload.some((f) => f instanceof File)
+                ) {
+                    submittablePayload[block] = {
+                        ...blockPayload,
+                        payload: blockPayload.payload
+                            .map((f) => f.name)
+                            .join(", "),
+                    };
+                }
+            }
+
+            return submittablePayload;
         },
 
         countCurrentSelections(): number {
@@ -109,7 +138,7 @@ export const useConversation = defineStore("form", {
                 !state.isSubmitted &&
                     state.payload &&
                     Object.keys(state.payload).length > 0 &&
-                    state.current > 0
+                    state.current > 0,
             );
         },
 
@@ -149,12 +178,61 @@ export const useConversation = defineStore("form", {
 
             return state.form.cta_link;
         },
+
+        uploadsPayload(state): Record<string, FormBlockUploadPayload> {
+            const uploads = {};
+
+            for (const block in state.payload) {
+                const blockPayload = state.payload[block];
+
+                if (Array.isArray(blockPayload)) {
+                    continue;
+                }
+
+                if (
+                    Array.isArray(blockPayload.payload) &&
+                    blockPayload.payload.some((f) => f instanceof File)
+                ) {
+                    uploads[block] = blockPayload;
+                }
+            }
+
+            return uploads;
+        },
+
+        hasFileUploads(state): boolean {
+            return Object.values(state.payload).some((block) => {
+                if (!Array.isArray(block) && Array.isArray(block.payload)) {
+                    return block.payload.some((p) => {
+                        return p instanceof File;
+                    });
+                }
+            });
+        },
+
+        uploadProgress(state): number | false {
+            if (Object.values(state.uploads).length === 0) {
+                return false;
+            }
+
+            const total = Object.values(state.uploads).reduce(
+                (acc, val) => acc + val.total,
+                0,
+            );
+
+            const loaded = Object.values(state.uploads).reduce(
+                (acc, val) => acc + val.loaded,
+                0,
+            );
+
+            return Math.min(100, Math.round((loaded / total) * 100));
+        },
     },
 
     actions: {
         async initForm(
             initialPayload: string | PublicFormModel,
-            params: Record<string, string>
+            params: Record<string, string>,
         ) {
             const id =
                 typeof initialPayload === "string"
@@ -195,7 +273,7 @@ export const useConversation = defineStore("form", {
 
         setResponse(
             action: PublicFormBlockInteractionModel,
-            value: string | boolean | number | null
+            value: string | boolean | number | File[] | null,
         ) {
             if (!this.currentBlock) return;
 
@@ -211,7 +289,7 @@ export const useConversation = defineStore("form", {
                 | Record<string, string | boolean | null>
                 | string
                 | boolean
-                | null
+                | null,
         ) {
             if (!this.currentBlock) return;
 
@@ -225,7 +303,7 @@ export const useConversation = defineStore("form", {
                 this.payload[this.currentBlock.id] = [givenPayload];
             } else {
                 const foundIndex = currentPayload.findIndex(
-                    (p) => p.actionId === action.id
+                    (p) => p.actionId === action.id,
                 );
 
                 foundIndex === -1
@@ -253,14 +331,46 @@ export const useConversation = defineStore("form", {
          */
         async next(): Promise<boolean> {
             if (this.isLastBlock) {
+                this.uploads = {};
                 this.isProcessing = true;
 
                 if (this.form?.uuid && this.session?.token) {
                     await callSubmitForm(
                         this.form.uuid,
                         this.session.token,
-                        this.payload
+                        this.submittablePayload,
+                        this.hasFileUploads,
                     );
+
+                    if (this.hasFileUploads) {
+                        // init file upload state
+                        this.initFileUpload();
+
+                        // upload files
+                        await callUploadFiles(
+                            this.form.uuid,
+                            this.session.token,
+                            this.uploadsPayload,
+                            (action, progressEvent) => {
+                                try {
+                                    this.uploads[action].loaded =
+                                        progressEvent.loaded;
+                                } catch (e) {
+                                    console.warn(
+                                        "could not update upload progress",
+                                        e,
+                                    );
+                                }
+                            },
+                        );
+
+                        await callSubmitForm(
+                            this.form.uuid,
+                            this.session.token,
+                            null,
+                            false,
+                        );
+                    }
 
                     // If a redirect is configured, we redirect the user to the given url
                     if (this.form.use_cta_redirect && this.callToActionUrl) {
@@ -290,6 +400,17 @@ export const useConversation = defineStore("form", {
 
                 return Promise.resolve(false);
             }
+        },
+
+        initFileUpload() {
+            Object.values(this.uploadsPayload).forEach((value) => {
+                value.payload.forEach((file: File, index: number) => {
+                    this.uploads[`${value.actionId}[${index}]`] = {
+                        total: file.size,
+                        loaded: 0,
+                    };
+                });
+            });
         },
 
         evaluateGroupBlock(currentBlock: PublicFormBlockModel) {

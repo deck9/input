@@ -12,6 +12,8 @@ enum FormBlockType: string
     case checkbox = 'checkbox';
     case radio = 'radio';
 
+    case file = 'input-file';
+
     case long = 'input-long';
     case short = 'input-short';
     case email = 'input-email';

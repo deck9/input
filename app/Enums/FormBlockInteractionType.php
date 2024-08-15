@@ -8,6 +8,7 @@ enum FormBlockInteractionType: string
     case textarea = 'textarea';
     case button = 'button';
     case consent = 'consent';
+    case file = 'file';
 
     case range = 'range';
 

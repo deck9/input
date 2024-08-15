@@ -5,14 +5,14 @@
       v-if="form?.privacy_link"
       :href="form?.privacy_link"
       target="_blank"
-      >{{ t("Privacy Policy") }}</a
+      >{{ t("privacy_policy") }}</a
     >
     <a
       class="hover:text-content"
       v-if="form?.legal_notice_link"
       :href="form?.legal_notice_link"
       target="_blank"
-      >{{ t("Legal Notice") }}</a
+      >{{ t("legal_notice") }}</a
     >
   </div>
 </template>
