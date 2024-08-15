@@ -67,7 +67,7 @@
         "tailwindcss": "^3.4.4",
         "typescript": "^5.5.3",
         "vite-plugin-css-injected-by-js": "^3.5.1",
-        "vue": "^3.4.31",
+        "vue": "^3.4.38",
         "vue-i18n": "^9.13.1",
         "vue-tsc": "^2.0.26",
         "vue3-smooth-dnd": "^0.0.6",
