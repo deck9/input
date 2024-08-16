@@ -4,7 +4,7 @@
       v-if="!hasMaxFiles"
       class="border-2 border-dashed rounded px-4 text-center transition-all"
       :class="[
-        isOverDropZone ? 'border-content/20 py-10' : 'border-primary',
+        isOverDropZone ? 'border-content/20 py-10' : 'border-content/50',
         !isOverDropZone && !!currentFiles ? 'py-2' : 'py-10',
       ]"
       ref="dropZoneRef"
@@ -12,7 +12,7 @@
       <button
         @click="open()"
         type="button"
-        class="underline text-primary px-5 py-1 rounded"
+        class="underline text-content px-5 py-1 rounded"
       >
         {{ t("files_choose") }}
       </button>

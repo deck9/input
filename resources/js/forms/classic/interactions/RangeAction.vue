@@ -29,7 +29,7 @@
           :class="[
             selectedValue === index
               ? 'border-primary bg-primary font-bold text-contrast'
-              : 'border-grey-300',
+              : 'border-primary/50',
           ]"
           >{{ option.value }}</span
         >
@@ -39,14 +39,14 @@
           size="xl"
           class="custom-range-theme"
           :class="[
-            action.options.color ? 'text-range' : 'text-primary',
+            action.options.color ? 'text-range' : 'text-content',
             hoverValue !== false && hoverValue >= index
               ? 'opacity-100'
               : hoverValue === false &&
-                selectedValue !== false &&
-                selectedValue >= index
-              ? 'opacity-100'
-              : 'opacity-20',
+                  selectedValue !== false &&
+                  selectedValue >= index
+                ? 'opacity-100'
+                : 'opacity-30',
           ]"
         />
         <span class="sr-only">{{ option.value }}</span>
@@ -54,7 +54,7 @@
     </div>
     <div
       v-if="action.options.labelLeft || action.options.labelRight"
-      class="mt-1 flex justify-between text-sm text-grey-600"
+      class="mt-1 flex justify-between text-xs text-content/30"
     >
       <label :aria-label="action.options.labelLeft">{{
         action.options.labelLeft
@@ -151,7 +151,7 @@ onKeyStroke(
   },
   {
     target: document,
-  }
+  },
 );
 
 const rangeColor = useThemableColor(props.action?.options.color ?? "#000000");

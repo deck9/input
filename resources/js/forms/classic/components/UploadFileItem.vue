@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center justify-between gap-x-3 bg-grey-100 px-2 py-1 rounded"
+    class="flex items-center justify-between gap-x-3 bg-content/10 px-2 py-1 rounded"
   >
     <div class="w-10 h-10 shrink-0" v-if="hasRenderablePreview">
       <img
