@@ -60,6 +60,35 @@ test('can export a form as a json file', function () {
     $this->assertNotNull($action);
 });
 
+test('group blocks have an Id attribute and children have a parent Id', function () {
+    $form = Form::factory()
+        ->create([
+            'name' => 'Test Form',
+        ]);
+
+    $groupBlock = FormBlock::factory()->create([
+        'form_id' => $form->id,
+        'type' => FormBlockType::group,
+    ]);
+
+    $childBlock = FormBlock::factory()->create([
+        'form_id' => $form->id,
+        'type' => FormBlockType::none,
+        'parent_block' => $groupBlock->uuid,
+    ]);
+
+    $response = $this->actingAs($form->user)
+        ->json('GET', route('api.forms.template-export', [
+            'form' => $form->uuid,
+        ]))->assertStatus(200);
+
+    // assert that the group block has an id
+    $this->assertArrayHasKey('id', $response->json('blocks.0'));
+
+    // assert that the child block has a parent id
+    $this->assertArrayHasKey('parent_block', $response->json('blocks.1'));
+});
+
 test('can import a string template for an existing form', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
