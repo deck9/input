@@ -11,7 +11,7 @@ use Illuminate\Support\Arr;
 
 uses(RefreshDatabase::class);
 
-test('can_export_a_form_as_a_string', function () {
+test('can export a form as a string', function () {
     $form = Form::factory()
         ->has(
             FormBlock::factory(['type' => FormBlockType::short])
@@ -36,7 +36,7 @@ test('can_export_a_form_as_a_string', function () {
     $this->assertNotNull($response->json('blocks.0.formBlockInteractions'));
 });
 
-test('can_export_a_form_as_a_json_file', function () {
+test('can export a form as a json file', function () {
     $form = Form::factory()
         ->has(
             FormBlock::factory(['type' => FormBlockType::short])
@@ -60,7 +60,7 @@ test('can_export_a_form_as_a_json_file', function () {
     $this->assertNotNull($action);
 });
 
-test('can_import_a_string_template_for_an_existing_form', function () {
+test('can import a string template for an existing form', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 
@@ -93,7 +93,7 @@ test('can_import_a_string_template_for_an_existing_form', function () {
     $this->assertEquals(FormBlockType::radio, $form->formBlocks[2]->type);
 });
 
-test('can_import_a_file_template_for_an_existing_form', function () {
+test('can import a file template for an existing form', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 
