@@ -9,6 +9,7 @@
 /public/css
 /public/mix-manifest.json
 /storage/*.key
+/storage/*.sqlite
 /vendor
 .env
 .env.backup

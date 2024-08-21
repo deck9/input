@@ -11,7 +11,7 @@ use Illuminate\Support\Arr;
 
 uses(RefreshDatabase::class);
 
-test('can_export_a_form_as_a_string', function () {
+test('can export a form as a string', function () {
     $form = Form::factory()
         ->has(
             FormBlock::factory(['type' => FormBlockType::short])
@@ -36,7 +36,7 @@ test('can_export_a_form_as_a_string', function () {
     $this->assertNotNull($response->json('blocks.0.formBlockInteractions'));
 });
 
-test('can_export_a_form_as_a_json_file', function () {
+test('can export a form as a json file', function () {
     $form = Form::factory()
         ->has(
             FormBlock::factory(['type' => FormBlockType::short])
@@ -60,7 +60,83 @@ test('can_export_a_form_as_a_json_file', function () {
     $this->assertNotNull($action);
 });
 
-test('can_import_a_string_template_for_an_existing_form', function () {
+test('group blocks have an Id attribute and children have a parent Id', function () {
+    $form = Form::factory()
+        ->create([
+            'name' => 'Test Form',
+        ]);
+
+    $groupBlock = FormBlock::factory()->create([
+        'form_id' => $form->id,
+        'type' => FormBlockType::group,
+    ]);
+
+    FormBlock::factory()->create([
+        'form_id' => $form->id,
+        'type' => FormBlockType::none,
+        'parent_block' => $groupBlock->uuid,
+    ]);
+
+    $response = $this->actingAs($form->user)
+        ->json('GET', route('api.forms.template-export', [
+            'form' => $form->uuid,
+        ]))->assertStatus(200);
+
+    // assert that the group block has an id
+    $this->assertArrayHasKey('id', $response->json('blocks.0'));
+
+    // assert that the child block has a parent id
+    $this->assertArrayHasKey('parent_block', $response->json('blocks.1'));
+});
+
+test('can import a form that has a group block with a child block', function () {
+    $form = Form::factory()
+        ->create([
+            'name' => 'Test Form',
+        ]);
+
+    $groupBlock = FormBlock::factory()->create([
+        'form_id' => $form->id,
+        'type' => FormBlockType::group,
+    ]);
+
+    FormBlock::factory()->create([
+        'form_id' => $form->id,
+        'type' => FormBlockType::none,
+        'parent_block' => $groupBlock->uuid,
+    ]);
+
+    $importTemplateString = $this->actingAs($form->user)
+        ->json('GET', route('api.forms.template-export', [
+            'form' => $form->uuid,
+        ]))->assertStatus(200)->content();
+
+
+    // create a new form to import the template
+    $user = User::factory()->withTeam()->create();
+
+    $newForm = Form::factory()->create([
+        'name' => 'Test Form',
+        'description' => 'A template Import Test',
+        'user_id' => $user->id,
+    ]);
+
+    // import the template
+    $this->actingAs($user)->post(route('api.forms.template-import', [
+        'form' => $newForm->uuid,
+    ]), [
+        'template' => $importTemplateString,
+    ])->assertStatus(200);
+
+    $this->assertFalse($newForm->formBlocks[0]->uuid === $groupBlock->uuid);
+    $this->assertNull($newForm->formBlocks[0]->parent_block);
+    $this->assertNotNull($newForm->formBlocks[1]->parent_block);
+
+    // assert that the children reference the correct parent block
+    $this->assertEquals($newForm->formBlocks[1]->parent_block, $newForm->formBlocks[0]->uuid);
+});
+
+test('can import a string template for an existing form', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 
@@ -93,7 +169,7 @@ test('can_import_a_string_template_for_an_existing_form', function () {
     $this->assertEquals(FormBlockType::radio, $form->formBlocks[2]->type);
 });
 
-test('can_import_a_file_template_for_an_existing_form', function () {
+test('can import a file template for an existing form', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();
 

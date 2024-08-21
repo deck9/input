@@ -156,13 +156,18 @@ class FormBlock extends BaseModel
 
     public function toTemplate()
     {
-        $blocks = $this->only(self::TEMPLATE_ATTRIBUTES);
+        $attributes = $this->only(self::TEMPLATE_ATTRIBUTES);
+
+        // if the block is a group, we need to add an id attribute
+        if ($this->type === FormBlockType::group) {
+            $attributes['id'] = $this->uuid;
+        }
 
         $interactions = $this->formBlockInteractions->map(function ($interactions) {
             return $interactions->toTemplate();
         })->toArray();
 
-        return array_merge($blocks, [
+        return array_merge($attributes, [
             'formBlockInteractions' => $interactions,
         ]);
     }
