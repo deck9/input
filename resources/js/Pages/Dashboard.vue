@@ -1,9 +1,7 @@
 <template>
   <app-layout :title="'Dashboard for ' + $page.props.user.current_team.name">
     <div class="w-full py-12">
-      <div
-        class="mx-auto grid max-w-7xl grid-cols-12 gap-x-10 px-4 sm:px-6 lg:px-8"
-      >
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="col-span-12 lg:col-span-8">
           <div class="relative mb-6 flex items-center justify-between">
             <div class="flex items-center">
@@ -42,10 +40,10 @@
           </div>
 
           <div v-else>
-            <FormListItem :form="form" :key="form.id" v-for="form in forms" />
+            <FormListTable :forms="forms" />
+            <!-- <FormListItem :form="form" :key="form.id" v-for="form in forms" /> -->
           </div>
         </div>
-        <UpdatesContainer class="col-span-12 mt-6 lg:col-span-4 lg:mt-0" />
       </div>
     </div>
   </app-layout>
@@ -53,8 +51,8 @@
 
 <script lang="ts" setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import FormListItem from "@/components/Dashboard/FormListItem.vue";
-import UpdatesContainer from "@/components/Dashboard/UpdatesContainer.vue";
+// import FormListItem from "@/components/Dashboard/FormListItem.vue";
+import FormListTable from "@/components/Dashboard/FormListTable.vue";
 import CreateFormButton from "@/components/Dashboard/CreateFormButton.vue";
 import FilterControl from "@/components/Dashboard/FilterControl.vue";
 
