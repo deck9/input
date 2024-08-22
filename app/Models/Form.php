@@ -166,6 +166,20 @@ class Form extends BaseModel
         };
     }
 
+    public function scopeWithOrder(Builder $builder, ?string $order)
+    {
+        // split the order by : and get the first part
+        $attribute = explode(':', $order)[0];
+        $direction = explode(':', $order)[1] ?? 'asc';
+
+        if ($attribute) {
+            return $builder->orderBy($attribute, $direction);
+        }
+
+        return $builder;
+
+    }
+
     public function route()
     {
         return route('forms.show', $this->uuid);

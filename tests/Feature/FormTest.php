@@ -107,6 +107,33 @@ test('a user can filter for published/unpublished/trashed forms', function () {
         ->assertJsonFragment(['uuid' => $formC->uuid]);
 });
 
+test('a user can sort forms by name', function () {
+    $user = User::factory()->withTeam()->create();
+
+    Form::factory()->create(['user_id' => $user->id,
+        'team_id' => $user->current_team_id, 'name' => 'A Form']);
+    Form::factory()->create(['user_id' => $user->id,
+        'team_id' => $user->current_team_id, 'name' => 'Z Form']);
+    Form::factory()->create(['user_id' => $user->id,
+        'team_id' => $user->current_team_id, 'name' => 'H Form']);
+
+    $response = $this->actingAs($user)
+        ->get(route('api.forms.index', ['sort' => 'name']))
+        ->assertStatus(200);
+
+    expect($response->json('0.name'))->toBe('A Form');
+    expect($response->json('1.name'))->toBe('H Form');
+    expect($response->json('2.name'))->toBe('Z Form');
+
+    $response = $this->actingAs($user)
+        ->get(route('api.forms.index', ['sort' => 'name:desc']))
+        ->assertStatus(200);
+
+    expect($response->json('0.name'))->toBe('Z Form');
+    expect($response->json('1.name'))->toBe('H Form');
+    expect($response->json('2.name'))->toBe('A Form');
+});
+
 test('a user cannot return forms in other accounts', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();

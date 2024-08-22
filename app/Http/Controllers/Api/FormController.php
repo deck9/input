@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\Authenticated;
-use Knuckles\Scribe\Attributes\Endpoint;
 use Knuckles\Scribe\Attributes\Group;
 
 #[Group('Forms')]
@@ -28,6 +27,7 @@ class FormController extends Controller
             ->currentTeam
             ->forms()
             ->withFilter($request->filter ?? null)
+            ->withOrder($request->sort ?? null)
             ->get();
 
         return response()->json($forms);
