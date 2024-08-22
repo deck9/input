@@ -31,6 +31,7 @@
         :placeholder="
           isChecked && !otherValue ? t('type') : action.label ?? t('other')
         "
+        tabindex="-1"
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0 bg-background placeholder:text-content/30"
         :class="{ 'pointer-events-none': !isChecked }"
@@ -119,7 +120,7 @@ const isOtherOption = computed<boolean>(() => {
 const isVisible = computed<boolean>(() => {
   return (
     !isOtherOption.value ||
-    (isOtherOption.value && props.block.type === "radio")
+    (isOtherOption.value && ["radio", "checkbox"].includes(props.block.type))
   );
 });
 
