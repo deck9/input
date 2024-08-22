@@ -140,7 +140,7 @@ const startEditing = (force = false) => {
   }
 };
 
-const saveInput = (keepChecked = null) => {
+const saveInput = (keepChecked: boolean | null = null) => {
   const responseValue = isOtherOption.value
     ? otherValue.value
     : props.action.label;
