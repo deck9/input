@@ -66,3 +66,40 @@ test('a disabled group should not return its children', function () {
 
     expect($response->json('count'))->toBe(0);
 });
+
+
+test('interactions in a storyboard are sorted by sequence', function () {
+    $form = Form::factory()->create();
+
+    FormBlock::factory()->for($form)
+        ->has(FormBlockInteraction::factory(['label' => 'Button 2', 'sequence' => 2])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 1', 'sequence' => 1])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 3', 'sequence' => 3])->button())
+        ->create(['type' => FormBlockType::checkbox]);
+
+    $response = $this->json('GET', route('api.public.forms.storyboard', [
+        'form' => $form->uuid,
+    ]));
+
+    expect($response->json('blocks.0.interactions.0.label'))->toBe('Button 1');
+    expect($response->json('blocks.0.interactions.1.label'))->toBe('Button 2');
+    expect($response->json('blocks.0.interactions.2.label'))->toBe('Button 3');
+});
+
+test('can get a storyboard with a custom response interaction', function () {
+    $form = Form::factory()->create();
+
+    FormBlock::factory()->for($form)
+        ->has(FormBlockInteraction::factory(['label' => 'Custom Response', 'sequence' => 0])->customResponse())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 1'])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 2', 'sequence' => 100])->button())
+        ->create(['type' => FormBlockType::checkbox]);
+
+    $response = $this->json('GET', route('api.public.forms.storyboard', [
+        'form' => $form->uuid,
+    ]));
+
+    expect($response->json('blocks.0.interactions.0.label'))->toBe('Button 1');
+    expect($response->json('blocks.0.interactions.1.label'))->toBe('Button 2');
+    expect($response->json('blocks.0.interactions.2.label'))->toBe('Custom Response');
+});

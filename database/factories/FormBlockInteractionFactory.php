@@ -44,4 +44,11 @@ class FormBlockInteractionFactory extends Factory
             fn () => ['type' => FormBlockInteractionType::button]
         );
     }
+
+    public function customResponse()
+    {
+        return $this->state(
+            fn () => ['name' => 'alt_response', 'type' => FormBlockInteractionType::button]
+        );
+    }
 }

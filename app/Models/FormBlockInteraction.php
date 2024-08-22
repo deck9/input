@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Enums\FormBlockInteractionType;
 use Hashids\Hashids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ramsey\Uuid\Uuid;
+use App\Scopes\Sequence;
+use App\Enums\FormBlockInteractionType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FormBlockInteraction extends BaseModel
 {
@@ -35,6 +36,8 @@ class FormBlockInteraction extends BaseModel
     protected static function boot()
     {
         parent::boot();
+
+        self::addGlobalScope(new Sequence());
 
         self::creating(function ($model) {
             $model->uuid = Uuid::uuid4();
