@@ -31,6 +31,7 @@
         :placeholder="
           isChecked && !otherValue ? t('type') : action.label ?? t('other')
         "
+        tabindex="-1"
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0 bg-background placeholder:text-content/30"
         :class="{ 'pointer-events-none': !isChecked }"
@@ -119,7 +120,7 @@ const isOtherOption = computed<boolean>(() => {
 const isVisible = computed<boolean>(() => {
   return (
     !isOtherOption.value ||
-    (isOtherOption.value && props.block.type === "radio")
+    (isOtherOption.value && ["radio", "checkbox"].includes(props.block.type))
   );
 });
 
@@ -139,14 +140,14 @@ const startEditing = (force = false) => {
   }
 };
 
-const saveInput = () => {
+const saveInput = (keepChecked: boolean | null = null) => {
   const responseValue = isOtherOption.value
     ? otherValue.value
     : props.action.label;
 
   buttonElement.value?.focus();
   if (inputType === "checkbox") {
-    store.toggleResponse(props.action, responseValue);
+    store.toggleResponse(props.action, responseValue, keepChecked);
   } else {
     store.setResponse(props.action, responseValue);
   }
@@ -182,7 +183,7 @@ const stopEditing = (event: Event, focusButton = false) => {
   store.disableInputMode();
 
   // update the value stored for the action
-  saveInput();
+  saveInput(true);
 
   if (focusButton) {
     // focus the checkbox input, so navigation is possible

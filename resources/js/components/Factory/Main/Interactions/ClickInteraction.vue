@@ -19,7 +19,7 @@
               @keydown.meta.delete.prevent="keyboardCommands"
             />
             <span class="absolute inset-y-0 flex items-center px-3">
-              <IndexItem type="button" v-bind="{ index }" />
+              <IndexItem type="button" v-bind="{ index, showColors: false }" />
             </span>
           </div>
         </div>

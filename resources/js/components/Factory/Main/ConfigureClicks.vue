@@ -27,7 +27,12 @@
     </Container>
 
     <CustomResponseSettings
-      v-if="workbench.block?.type === 'radio'"
+      v-if="
+        editableInteractions &&
+        editableInteractions.length > 0 &&
+        workbench.block &&
+        ['radio', 'checkbox'].includes(workbench.block.type)
+      "
       class="mb-3 pt-3"
     />
 
@@ -57,7 +62,7 @@ import CustomResponseSettings from "./Interactions/CustomResponseSettings.vue";
 
 const workbench = useWorkbench();
 const { activeInteractions, editableInteractions } = useActiveInteractions(
-  workbench.block
+  workbench.block,
 );
 
 const isCreatingInteraction = ref(false);

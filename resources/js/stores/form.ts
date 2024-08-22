@@ -128,7 +128,7 @@ export const useForm = defineStore("form", {
 
             const response = await callGetFormBlocks(
                 this.form.uuid,
-                includeSubmissions
+                includeSubmissions,
             );
 
             this.blocks = response.data;
@@ -211,7 +211,7 @@ export const useForm = defineStore("form", {
 
         async createFormBlock(
             insertAfter: FormBlockModel | null = null,
-            type: FormBlockType | null = null
+            type: FormBlockType | null = null,
         ) {
             if (!this.form) {
                 return;
@@ -220,7 +220,7 @@ export const useForm = defineStore("form", {
             try {
                 const response = await callCreateFormBlock(
                     this.form.uuid,
-                    type
+                    type,
                 );
 
                 const newBlock = response.data;
@@ -311,7 +311,7 @@ export const useForm = defineStore("form", {
         async changeBlockSequence(
             parentBlock: string | false,
             to: number,
-            block: FormBlockModel
+            block: FormBlockModel,
         ) {
             if (!this.blocks || !this.form) {
                 return;
@@ -324,7 +324,7 @@ export const useForm = defineStore("form", {
                 return item.id === block.id;
             });
 
-            // target index is a bit more complicated, lets set it to 0 for now
+            // target index is a bit more complicated, lets set it to nothing for now
             let targetIndex = -1;
 
             // if we have a scope, we need to get all blocks in that scope
@@ -371,13 +371,13 @@ export const useForm = defineStore("form", {
             const saveSequenceRequestData: Array<any> = this.blocks.map(
                 (item) => {
                     return { id: item.id, scope: item.parent_block };
-                }
+                },
             );
 
             try {
                 await callUpdateBlockSequence(
                     this.form.uuid,
-                    saveSequenceRequestData
+                    saveSequenceRequestData,
                 );
             } catch (error) {
                 console.warn(error);

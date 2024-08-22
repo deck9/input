@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex h-5 w-6 items-center justify-center rounded-md bg-blue-500 text-xs text-white"
+    class="relative flex h-5 w-6 items-center justify-center rounded-md bg-grey-700 text-xs text-white"
     :style="indexColor"
   >
     <D9Icon v-if="iconName" :name="iconName" />
@@ -28,10 +28,16 @@ const colors = [
 
 const block: FormBlockModel | undefined = inject("block");
 
-const props = defineProps<{
-  type: FormBlockInteractionModel["type"];
-  index?: number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    type: FormBlockInteractionModel["type"];
+    index?: number;
+    showColors?: boolean;
+  }>(),
+  {
+    showColors: true,
+  },
+);
 
 const iconName = computed((): string | false => {
   const found = types.value?.find((setting) => {
@@ -56,6 +62,10 @@ const indexLetter = computed((): string => {
 });
 
 const indexColor = computed((): string => {
+  if (!props.showColors) {
+    return "";
+  }
+
   if (typeof props.index !== "undefined" && props.type === "button") {
     return `background-color: #${colors[props.index % colors.length]};`;
   }

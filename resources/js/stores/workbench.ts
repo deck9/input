@@ -48,7 +48,7 @@ export const useWorkbench = defineStore("workbench", {
         isCheckboxInput: (state): boolean => state.block?.type === "checkbox",
 
         currentInteractions: (
-            state
+            state,
         ): FormBlockInteractionModel[] | undefined => {
             if (!state.block) {
                 return undefined;
@@ -106,7 +106,7 @@ export const useWorkbench = defineStore("workbench", {
 
         async createInteraction(
             type: FormBlockInteractionModel["type"],
-            attributes?: Partial<FormBlockInteractionModel>
+            attributes?: Partial<FormBlockInteractionModel>,
         ): Promise<FormBlockInteractionModel | undefined> {
             if (!this.block) {
                 return;
@@ -116,7 +116,7 @@ export const useWorkbench = defineStore("workbench", {
                 const response = await callCreateFormBlockInteraction(
                     this.block?.id,
                     type,
-                    attributes
+                    attributes,
                 );
 
                 if (response.status === 201) {
@@ -130,7 +130,7 @@ export const useWorkbench = defineStore("workbench", {
         },
 
         updateInteraction(
-            interaction: { id: number } & Partial<FormBlockInteractionModel>
+            interaction: { id: number } & Partial<FormBlockInteractionModel>,
         ) {
             const index = this.block?.interactions?.findIndex((item) => {
                 return interaction.id === item.id;
@@ -180,7 +180,7 @@ export const useWorkbench = defineStore("workbench", {
 
             try {
                 await callDeleteFormBlockInteraction(
-                    interaction as FormBlockInteractionModel
+                    interaction as FormBlockInteractionModel,
                 );
 
                 this.block.interactions.splice(index, 1);
@@ -191,9 +191,8 @@ export const useWorkbench = defineStore("workbench", {
 
         async saveInteraction(interaction: FormBlockInteractionModel) {
             try {
-                const response = await callUpdateFormBlockInteraction(
-                    interaction
-                );
+                const response =
+                    await callUpdateFormBlockInteraction(interaction);
 
                 if (response.status === 200) {
                     console.info("saving interaction success");
@@ -209,13 +208,17 @@ export const useWorkbench = defineStore("workbench", {
             }
 
             const saveSequenceRequestData: Array<number> =
-                this.currentInteractions.map((i) => i.id);
+                this.currentInteractions
+                    .filter((i) => !i.name)
+                    .map((i) => i.id);
+
+            console.log("change", from, to, saveSequenceRequestData);
 
             // move item to target position
             saveSequenceRequestData.splice(
                 to,
                 0,
-                saveSequenceRequestData.splice(from, 1)[0]
+                saveSequenceRequestData.splice(from, 1)[0],
             );
 
             // set new sequence numbers to blocks
@@ -236,7 +239,7 @@ export const useWorkbench = defineStore("workbench", {
             try {
                 await callUpdateInteractionSequence(
                     this.block.id,
-                    saveSequenceRequestData
+                    saveSequenceRequestData,
                 );
             } catch (error) {
                 console.warn(error);

@@ -290,6 +290,7 @@ export const useConversation = defineStore("form", {
                 | string
                 | boolean
                 | null,
+            keepChecked: boolean | null = null,
         ) {
             if (!this.currentBlock) return;
 
@@ -308,7 +309,9 @@ export const useConversation = defineStore("form", {
 
                 foundIndex === -1
                     ? currentPayload.push(givenPayload)
-                    : currentPayload.splice(foundIndex, 1);
+                    : keepChecked
+                      ? currentPayload.splice(foundIndex, 1, givenPayload)
+                      : currentPayload.splice(foundIndex, 1);
             }
         },
 
