@@ -103,3 +103,70 @@ test('can get a storyboard with a custom response interaction', function () {
     expect($response->json('blocks.0.interactions.1.label'))->toBe('Button 2');
     expect($response->json('blocks.0.interactions.2.label'))->toBe('Custom Response');
 });
+
+test('can get a block with randomized responses', function () {
+    $form = Form::factory()->create();
+
+    FormBlock::factory()->for($form)
+        ->has(FormBlockInteraction::factory(['label' => 'Button 1'])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 2'])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 3'])->button())
+        ->create([
+            'type' => FormBlockType::checkbox,
+            'options' => [
+                'randomize_responses' => true,
+            ],
+        ]);
+
+    $results = [];
+
+    for ($i = 0; $i < 10; $i++) {
+        $response = $this->json('GET', route('api.public.forms.storyboard', [
+            'form' => $form->uuid,
+        ]))->assertStatus(200);
+
+        // Extract the interaction labels order from the response JSON
+        $results[] = collect($response->json('blocks.0.interactions'))
+            ->pluck('label')->toArray();
+    }
+
+    // Check that there's at least one variation in the order of interactions
+    $distinctOrders = collect($results)->unique();
+    $this->assertTrue($distinctOrders->count() > 1, 'The interactions are not randomized');
+});
+
+test('can get a block with randomized responses and a custom option that is not randomized', function () {
+    $form = Form::factory()->create();
+
+    FormBlock::factory()->for($form)
+        ->has(FormBlockInteraction::factory(['label' => 'Custom Option'])->customResponse())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 1'])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 2'])->button())
+        ->has(FormBlockInteraction::factory(['label' => 'Button 3'])->button())
+        ->create([
+            'type' => FormBlockType::checkbox,
+            'options' => [
+                'randomize_responses' => true,
+            ],
+        ]);
+
+    $results = [];
+
+    for ($i = 0; $i < 10; $i++) {
+        $response = $this->json('GET', route('api.public.forms.storyboard', [
+            'form' => $form->uuid,
+        ]))->assertStatus(200);
+
+        $order = collect($response->json('blocks.0.interactions'))
+            ->pluck('label')->toArray();
+
+        expect(array_pop($order))->toBe('Custom Option');
+
+        // Extract the interaction labels order from the response JSON
+        $results[] = $order;
+    }
+
+    // Check that there's at least one variation in the order of interactions
+    $distinctOrders = collect($results)->unique();
+    $this->assertTrue($distinctOrders->count() > 1, 'The interactions are not randomized');
+});

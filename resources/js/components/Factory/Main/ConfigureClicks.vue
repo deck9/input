@@ -26,6 +26,8 @@
       </Draggable>
     </Container>
 
+    <RandomizeResponsesSetting class="mb-3 pt-3" />
+
     <CustomResponseSettings
       v-if="
         editableInteractions &&
@@ -59,6 +61,7 @@ import EmptyState from "@/components/EmptyState.vue";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 import CustomResponseSettings from "./Interactions/CustomResponseSettings.vue";
+import RandomizeResponsesSetting from "./Interactions/RandomizeResponsesSetting.vue";
 
 const workbench = useWorkbench();
 const { activeInteractions, editableInteractions } = useActiveInteractions(

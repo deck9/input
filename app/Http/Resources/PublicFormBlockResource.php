@@ -14,6 +14,18 @@ class PublicFormBlockResource extends JsonResource
      */
     public function toArray($request)
     {
+        $interactions = $this->activeInteractions;
+
+        if ($this->options && $this->options['randomize_responses'] === true) {
+            $interactions = $this->activeInteractions->filter(fn ($value) => $value->name !== 'alt_response')->shuffle();
+
+            $customResponse = $this->activeInteractions->filter(fn ($value) => $value->name === 'alt_response')->first();
+
+            if ($customResponse) {
+                $interactions[] = $customResponse;
+            }
+        }
+
         return [
             'id' => $this->uuid,
             'type' => $this->type->value,
@@ -21,7 +33,7 @@ class PublicFormBlockResource extends JsonResource
             'message' => $this->message,
             'is_required' => $this->is_required,
             'parent_block' => $this->parent_block,
-            'interactions' => PublicFormBlockInteractionResource::collection($this->activeInteractions),
+            'interactions' => PublicFormBlockInteractionResource::collection($interactions),
         ];
     }
 }

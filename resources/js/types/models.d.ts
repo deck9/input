@@ -68,7 +68,7 @@ interface FormBlockModel extends BaseModel {
     type: FormBlockType;
     message: string | null;
     title: string | null;
-    options: string | null;
+    options: Record<string, any> | null;
     responses: string | null;
     parent_block: string | null;
     is_required: boolean | null;
@@ -121,9 +121,9 @@ type FormBlockInteractionSettings = {
     labelRight?: string;
     decimalPlaces?: number;
     useSymbol?: string;
-    allowedFiles ?: number;
-    allowedFileSize ?: number;
-    allowedFileTypes ?: Record<string, boolean>;
+    allowedFiles?: number;
+    allowedFileSize?: number;
+    allowedFileTypes?: Record<string, boolean>;
 };
 
 interface FormBlockInteractionModel extends BaseModel {
@@ -234,13 +234,18 @@ type FormSessionWebhookModel = {
 
 type FormSubmitPayload = Record<
     string,
-    FormBlockInteractionPayload | FormBlockInteractionPayload[] | FormBlockUploadPayload
+    | FormBlockInteractionPayload
+    | FormBlockInteractionPayload[]
+    | FormBlockUploadPayload
 >;
 
-type FormFileUploads = Record<string, {
-    total: number;
-    loaded: number;
-}>;
+type FormFileUploads = Record<
+    string,
+    {
+        total: number;
+        loaded: number;
+    }
+>;
 
 type FormBlockInteractionPayload = {
     payload: any;
@@ -250,7 +255,7 @@ type FormBlockInteractionPayload = {
 type FormBlockUploadPayload = {
     payload: File[];
     actionId: string;
-}
+};
 
 type EmbedFlags = {
     hideTitle?: boolean;

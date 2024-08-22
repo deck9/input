@@ -35,11 +35,6 @@ class SimpleFormSeeder extends Seeder
             'form_id' => $form,
         ]);
 
-        FormBlock::factory()->create([
-            'message' => 'Block with no message',
-            'form_id' => $form->id,
-        ]);
-
         $this->buildCheckbox($form, $sessions);
         $this->buildRadio($form, $sessions);
         $this->buildInput($form, $sessions, FormBlockType::short);
