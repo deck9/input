@@ -38,9 +38,9 @@ const otherOptionInteraction = computed(() => {
 });
 
 const useCustomResponse = ref(
-  otherOptionInteraction.value?.is_disabled === false
+  otherOptionInteraction.value?.is_disabled === false,
 );
-const customResponseLabel = ref("");
+const customResponseLabel = ref(otherOptionInteraction.value?.label ?? "");
 
 watch([customResponseLabel], (newValues) => {
   if (!otherOptionInteraction.value) {
