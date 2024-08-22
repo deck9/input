@@ -140,14 +140,14 @@ const startEditing = (force = false) => {
   }
 };
 
-const saveInput = () => {
+const saveInput = (keepChecked = null) => {
   const responseValue = isOtherOption.value
     ? otherValue.value
     : props.action.label;
 
   buttonElement.value?.focus();
   if (inputType === "checkbox") {
-    store.toggleResponse(props.action, responseValue);
+    store.toggleResponse(props.action, responseValue, keepChecked);
   } else {
     store.setResponse(props.action, responseValue);
   }
@@ -183,7 +183,7 @@ const stopEditing = (event: Event, focusButton = false) => {
   store.disableInputMode();
 
   // update the value stored for the action
-  saveInput();
+  saveInput(true);
 
   if (focusButton) {
     // focus the checkbox input, so navigation is possible
