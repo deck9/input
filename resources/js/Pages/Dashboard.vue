@@ -64,7 +64,7 @@ const params = useUrlSearchParams("history");
 const isLoading = ref(true);
 const forms = ref<Array<FormModel>>([]);
 const filter = ref<FilterSetting>(null);
-const sort = ref<SortSetting>("name:asc");
+const sort = ref<SortSetting>("created_at:desc");
 
 const updateList = async () => {
   isLoading.value = true;
