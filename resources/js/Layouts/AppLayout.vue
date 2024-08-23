@@ -88,6 +88,13 @@
                     >Help Center <D9Icon size="xs" name="external-link"
                   /></jet-dropdown-link>
 
+                  <jet-dropdown-link
+                    as="a"
+                    href="https://getinput.co/changelog"
+                    target="_blank"
+                    >Changelog <D9Icon size="xs" name="external-link"
+                  /></jet-dropdown-link>
+
                   <div class="border-t border-grey-100"></div>
 
                   <!-- Authentication -->

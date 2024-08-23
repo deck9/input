@@ -22,6 +22,20 @@ test('can create a new form', function () {
     $this->assertNotNull($form->name);
 });
 
+test('can create a form with a name', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $this->actingAs($user)
+        ->post(route('api.forms.create'), [
+            'name' => 'Test Form',
+        ])
+        ->assertSuccessful();
+
+    $form = Form::get()->last();
+
+    $this->assertEquals('Test Form', $form->name);
+});
+
 test('when creating a new form the data privacy mode should not be enabled', function () {
     /** @var User $user */
     $user = User::factory()->withTeam()->create();

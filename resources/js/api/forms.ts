@@ -3,15 +3,16 @@ import { AxiosResponse } from "axios";
 import handler from "./handler";
 
 export function callListForms(
-    filter: string | null = null
+    filter: string | null = null,
+    sort: string | null = null,
 ): Promise<AxiosResponse<FormModel[]>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
                 window.route("api.forms.index"),
                 {
-                    params: { filter },
-                }
+                    params: { filter, sort },
+                },
             );
 
             resolve(response as AxiosResponse<FormModel[]>);
@@ -21,11 +22,16 @@ export function callListForms(
     });
 }
 
-export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
+export function callCreateForm(
+    name?: string,
+): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.forms.create")
+                window.route("api.forms.create"),
+                {
+                    name,
+                },
             );
 
             resolve(response as AxiosResponse<FormModel>);
@@ -36,12 +42,12 @@ export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
 }
 
 export function callGetForm(
-    form: FormModel
+    form: FormModel,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
-                window.route("api.forms.show", { uuid: form.uuid })
+                window.route("api.forms.show", { uuid: form.uuid }),
             );
 
             resolve(response as AxiosResponse<FormModel>);
@@ -52,13 +58,13 @@ export function callGetForm(
 }
 
 export function callUpdateForm(
-    form: FormModel
+    form: FormModel,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
                 window.route("api.forms.update", { uuid: form.uuid }),
-                form
+                form,
             );
 
             resolve(response as AxiosResponse<FormModel>);
@@ -72,7 +78,7 @@ export function callDeleteForm(form: FormModel): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.delete(
-                window.route("api.forms.update", { uuid: form.uuid })
+                window.route("api.forms.update", { uuid: form.uuid }),
             );
 
             resolve(response.status === 200);
@@ -83,12 +89,12 @@ export function callDeleteForm(form: FormModel): Promise<boolean> {
 }
 
 export function callPublishForm(
-    form: FormModel
+    form: FormModel,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.forms.publish", { uuid: form.uuid })
+                window.route("api.forms.publish", { uuid: form.uuid }),
             );
 
             if (response.status === 200) {
@@ -103,12 +109,12 @@ export function callPublishForm(
 }
 
 export function callUnpublishForm(
-    form: FormModel
+    form: FormModel,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.forms.unpublish", { uuid: form.uuid })
+                window.route("api.forms.unpublish", { uuid: form.uuid }),
             );
 
             if (response.status === 200) {
@@ -125,7 +131,7 @@ export function callUnpublishForm(
 export function callUploadFormImage(
     form: FormModel,
     file: File,
-    type: ImageType
+    type: ImageType,
 ): Promise<AxiosResponse<FormModel>> {
     const requestData = new FormData();
     requestData.append("image", file);
@@ -135,7 +141,7 @@ export function callUploadFormImage(
         try {
             const response = await handler.post(
                 window.route("api.forms.images.store", { uuid: form.uuid }),
-                requestData
+                requestData,
             );
             if (response.status === 201) {
                 resolve(response as AxiosResponse<FormModel>);
@@ -148,13 +154,13 @@ export function callUploadFormImage(
 
 export function callDeleteFormImage(
     form: FormModel,
-    type: ImageType
+    type: ImageType,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.delete(
                 window.route("api.forms.images.delete", { uuid: form.uuid }),
-                { data: { type } }
+                { data: { type } },
             );
             if (response.status === 200) {
                 resolve(response as AxiosResponse<FormModel>);
@@ -171,7 +177,7 @@ export function callGetFormBlockMapping(): Promise<
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
-                window.route("api.form-blocks.mapping")
+                window.route("api.form-blocks.mapping"),
             );
             if (response.status === 200) {
                 resolve(
@@ -180,7 +186,7 @@ export function callGetFormBlockMapping(): Promise<
                             FormBlockType,
                             FormBlockInteractionType
                         >;
-                    }>
+                    }>,
                 );
             }
         } catch (error) {
@@ -190,18 +196,18 @@ export function callGetFormBlockMapping(): Promise<
 }
 
 export function callGetFormTemplate(
-    form
+    form,
 ): Promise<AxiosResponse<{ mapping: Record<string, string> }>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.get(
-                window.route("api.forms.template-export", { form: form })
+                window.route("api.forms.template-export", { form: form }),
             );
             if (response.status === 200) {
                 resolve(
                     response as AxiosResponse<{
                         mapping: Record<string, string>;
-                    }>
+                    }>,
                 );
             }
         } catch (error) {
@@ -212,7 +218,7 @@ export function callGetFormTemplate(
 
 export function callImportFormTemplate(
     form,
-    template: string | File
+    template: string | File,
 ): Promise<AxiosResponse<{ mapping: Record<string, string> }>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -227,13 +233,13 @@ export function callImportFormTemplate(
 
             const response = await handler.post(
                 window.route("api.forms.template-import", { form: form }),
-                requestData
+                requestData,
             );
             if (response.status === 200) {
                 resolve(
                     response as AxiosResponse<{
                         mapping: Record<string, string>;
-                    }>
+                    }>,
                 );
             }
         } catch (error) {
@@ -244,7 +250,7 @@ export function callImportFormTemplate(
 
 export function callGetFormSubmissions(
     form: FormModel,
-    page = 1
+    page = 1,
 ): Promise<PaginatedResponse<FormSessionModel>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -254,7 +260,7 @@ export function callGetFormSubmissions(
                     params: {
                         page,
                     },
-                }
+                },
             );
 
             if (response.status === 200) {
@@ -270,7 +276,7 @@ export function callPurgeSubmissions(form: FormModel): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
-                window.route("api.forms.purge-results", { uuid: form.uuid })
+                window.route("api.forms.purge-results", { uuid: form.uuid }),
             );
             if (response.status === 204) {
                 resolve(response as AxiosResponse);
@@ -283,7 +289,7 @@ export function callPurgeSubmissions(form: FormModel): Promise<AxiosResponse> {
 
 export function callDeleteFormSubmission(
     form: FormModel,
-    session: FormSessionModel
+    session: FormSessionModel,
 ): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -291,7 +297,7 @@ export function callDeleteFormSubmission(
                 window.route("api.forms.submissions.delete", {
                     form: form.uuid,
                     session: session.id,
-                })
+                }),
             );
             if (response.status === 204) {
                 resolve(response as AxiosResponse);
@@ -304,7 +310,7 @@ export function callDeleteFormSubmission(
 
 export function callDuplicateForm(
     form: FormModel,
-    newName: string
+    newName: string,
 ): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -314,7 +320,7 @@ export function callDuplicateForm(
                 }),
                 {
                     name: newName,
-                }
+                },
             );
 
             if (response.status === 201) {
@@ -332,7 +338,7 @@ export function callDeleteForeverForm(form: FormModel): Promise<AxiosResponse> {
             const response = await handler.delete(
                 window.route("api.forms.trashed.delete", {
                     form: form.uuid,
-                })
+                }),
             );
 
             resolve(response as AxiosResponse);
@@ -348,7 +354,7 @@ export function callRestoreForm(form: FormModel): Promise<AxiosResponse> {
             const response = await handler.post(
                 window.route("api.forms.trashed.restore", {
                     form: form.uuid,
-                })
+                }),
             );
 
             resolve(response as AxiosResponse);

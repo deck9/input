@@ -41,7 +41,7 @@ class FormController extends Controller
     public function create(Request $request)
     {
         $form = Form::create([
-            'name' => 'Untitled Form',
+            'name' => $request->name ?? 'Untitled Form',
             'user_id' => $request->user()->id,
             'team_id' => $request->user()->currentTeam->id,
             'has_data_privacy' => false,

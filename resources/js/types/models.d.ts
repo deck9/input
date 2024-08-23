@@ -267,3 +267,4 @@ type EmbedFlags = {
 type ImageType = "avatar" | "background";
 
 type FilterSetting = "published" | "unpublished" | "trashed" | null;
+type SortSetting = "name:asc" | "created_at:desc" | "updated_at:desc";
