@@ -22,11 +22,16 @@ export function callListForms(
     });
 }
 
-export function callCreateForm(): Promise<AxiosResponse<FormModel>> {
+export function callCreateForm(
+    name?: string,
+): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
                 window.route("api.forms.create"),
+                {
+                    name,
+                },
             );
 
             resolve(response as AxiosResponse<FormModel>);

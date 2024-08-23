@@ -17,10 +17,12 @@ import { Inertia } from "@inertiajs/inertia";
 const isSubmitting = ref(false);
 
 const createForm = async () => {
+  const formName = window.prompt("Give your form a name");
+
   try {
     isSubmitting.value = true;
 
-    let response = await callCreateForm();
+    let response = await callCreateForm(formName ?? undefined);
 
     if (response.status === 200) {
       Inertia.visit(window.route("forms.edit", { id: response.data.uuid }));
