@@ -11,6 +11,12 @@
           >
             {{ form.name }}
           </component>
+          <a
+            :href="route('forms.show', { uuid: form.uuid })"
+            target="_blank"
+            class="block text-xs text-grey-500 hover:text-blue-600"
+            >{{ route("forms.show", { uuid: form.uuid }) }}</a
+          >
         </div>
       </div>
     </td>
@@ -47,14 +53,14 @@
           </div>
           <div class="text-xs text-grey-500">Sessions</div>
         </div>
-        <div>
+        <a class="block group" :href="route('forms.submissions', form.uuid)">
           <div
-            class="font-heading text-lg font-medium leading-none text-grey-900"
+            class="font-heading text-lg font-medium leading-none text-grey-900 group-hover:text-blue-600"
           >
             {{ form.completed_sessions }}
           </div>
           <div class="text-xs text-grey-500">Submissions</div>
-        </div>
+        </a>
         <div>
           <div
             class="font-heading text-lg font-medium leading-none text-grey-900"
