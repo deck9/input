@@ -4,12 +4,11 @@
       <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="col-span-12 lg:col-span-8">
           <div class="relative mb-6 flex items-center justify-between">
-            <div class="flex items-center">
-              <h2 class="text-xl font-bold leading-8 text-grey-900">
-                Your Forms
-              </h2>
-            </div>
-            <div class="flex">
+            <h2 class="text-xl font-bold leading-8 text-grey-900 shrink-0">
+              Your Forms
+            </h2>
+            <div class="flex justify-end w-full space-x-2">
+              <SortControl :sort="sort" @changeSort="changeSort" />
               <FilterControl :filter="filter" @changeFilter="changeFilter" />
               <CreateFormButton />
             </div>
@@ -41,7 +40,6 @@
 
           <div v-else>
             <FormListTable :forms="forms" />
-            <!-- <FormListItem :form="form" :key="form.id" v-for="form in forms" /> -->
           </div>
         </div>
       </div>
@@ -51,10 +49,10 @@
 
 <script lang="ts" setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-// import FormListItem from "@/components/Dashboard/FormListItem.vue";
 import FormListTable from "@/components/Dashboard/FormListTable.vue";
 import CreateFormButton from "@/components/Dashboard/CreateFormButton.vue";
 import FilterControl from "@/components/Dashboard/FilterControl.vue";
+import SortControl from "@/components/Dashboard/SortControl.vue";
 
 import { ref } from "vue";
 import { callListForms } from "@/api/forms";
@@ -65,19 +63,25 @@ const params = useUrlSearchParams("history");
 
 const isLoading = ref(true);
 const forms = ref<Array<FormModel>>([]);
-const filter = ref<"published" | "unpublished" | "trashed" | null>(null);
+const filter = ref<FilterSetting>(null);
+const sort = ref<SortSetting>("name:asc");
 
-const changeFilter = async (setting: FilterSetting) => {
+const updateList = async () => {
   isLoading.value = true;
   try {
-    const response = await callListForms(setting);
-    filter.value = setting;
+    const response = await callListForms(filter.value, sort.value);
     forms.value = response.data;
 
-    if (setting) {
-      params.filter = setting;
+    if (filter.value) {
+      params.filter = filter.value;
     } else {
       delete params.filter;
+    }
+
+    if (sort.value) {
+      params.sort = sort.value;
+    } else {
+      delete params.sort;
     }
   } catch (e) {
     console.warn(e);
@@ -86,10 +90,23 @@ const changeFilter = async (setting: FilterSetting) => {
   }
 };
 
+const changeSort = (setting: SortSetting) => {
+  sort.value = setting;
+  updateList();
+};
+
+const changeFilter = async (setting: FilterSetting) => {
+  filter.value = setting;
+  updateList();
+};
+
 if (params.filter) {
   filter.value = params.filter as FilterSetting;
 }
+if (params.sort) {
+  sort.value = params.sort as SortSetting;
+}
 
 // init forms on load
-changeFilter(filter.value);
+updateList();
 </script>
