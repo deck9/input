@@ -104,7 +104,7 @@ import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 import { D9Input, D9Label, D9Checkbox, D9Button } from "@deck9/ui";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Head, Link } from "@inertiajs/vue3";
 
 export default defineComponent({
   components: {

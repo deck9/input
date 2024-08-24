@@ -51,7 +51,7 @@ import { defineComponent } from "vue";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 import { D9Button } from "@deck9/ui";
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Head, Link } from "@inertiajs/vue3";
 
 export default defineComponent({
   components: {

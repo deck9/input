@@ -127,7 +127,7 @@ import JetDropdown from "@/Jetstream/Dropdown.vue";
 import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
 import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
 import { D9Icon } from "@deck9/ui";
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Head, Link } from "@inertiajs/vue3";
 
 export default defineComponent({
   props: {

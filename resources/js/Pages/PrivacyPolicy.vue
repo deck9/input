@@ -19,7 +19,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { Head } from "@inertiajs/inertia-vue3";
+import { Head } from "@inertiajs/vue3";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 
 export default defineComponent({
