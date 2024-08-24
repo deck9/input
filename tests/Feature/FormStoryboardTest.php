@@ -31,6 +31,25 @@ test('a guest user can get the storyboard for a form', function () {
     $this->assertCount(4, $response->json('blocks.1.interactions'));
 });
 
+test('a guest user can not get the storyboard for an unpublished form', function () {
+    $form = Form::factory()->unpublished()->create();
+
+    $response = $this->json('GET', route('api.public.forms.storyboard', [
+        'form' => $form->uuid,
+    ]));
+
+    $this->assertEquals(404, $response->status());
+});
+
+test('a form owner can get the storyboard for an unpublished form', function () {
+    $form = Form::factory()->unpublished()->create();
+
+    $this->actingAs($form->user)
+        ->json('GET', route('api.public.forms.storyboard', [
+            'form' => $form->uuid,
+        ]))->assertStatus(200);
+});
+
 test('the storyboard should not return disabled blocks', function () {
     $form = Form::factory()->create();
 

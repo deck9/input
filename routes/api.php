@@ -51,11 +51,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-$router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
-$router->get('public/forms/{form}/storyboard', GetFormStoryboardController::class)->name('api.public.forms.storyboard');
-$router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
-$router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
-$router->post('public/forms/{form}/upload', FormUploadController::class)->name('api.public.forms.file-upload');
+$router->middleware(['check.form.access'])->group(function (Router $router) {
+    $router->get('public/forms/{form}', ShowFormController::class)->name('api.public.forms.show');
+    $router->get('public/forms/{form}/storyboard', GetFormStoryboardController::class)->name('api.public.forms.storyboard');
+    $router->post('public/forms/{form}/session', CreateFormSessionController::class)->name('api.public.forms.session.create');
+    $router->post('public/forms/{form}', FormSubmitController::class)->name('api.public.forms.submit');
+    $router->post('public/forms/{form}/upload', FormUploadController::class)->name('api.public.forms.file-upload');
+});
 
 $router->get('routes', ZiggyController::class);
 

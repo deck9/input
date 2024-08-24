@@ -35,4 +35,7 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
 
 $router->get('/images/{path}', [ImageController::class, 'show'])->where('path', '.*')->name('images.show');
 $router->get('/internal/meta-preview/{id}', [MetaPreviewController::class, 'show'])->name('internal.meta-preview');
-$router->get('/{uuid}', [ViewFormController::class, 'show'])->name('forms.show');
+
+$router->get('/{uuid}', [ViewFormController::class, 'show'])
+    ->middleware('check.form.access')
+    ->name('forms.show');
