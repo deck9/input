@@ -115,10 +115,12 @@
 import { useForm } from "@/stores/form";
 import { D9Label, D9Input, D9Switch } from "@deck9/ui";
 import { computed, ref } from "vue";
+import { usePage } from "@inertiajs/vue3";
 import Code from "@/components/Code.vue";
 import EmbedTypeButton from "@/components/Factory/Settings/partials/EmbedTypeButton.vue";
 
 const store = useForm();
+const page = usePage();
 
 type EmbedType = "native" | "iframe" | "link";
 
@@ -142,14 +144,14 @@ const embedCode = computed(() => {
         ["focusOnMount", focusOnMount.value ? "1" : "0"],
         ["alignLeft", alignLeft.value ? "1" : undefined],
         ["spacing", spacing.value ?? undefined],
-      ].filter((item) => item[1])
-    )
+      ].filter((item) => item[1]),
+    ),
   ).toString();
 
   const embedUrl = new URL(
     `${window.location.origin}/${store.form?.uuid}${
       embedParams.length > 0 ? "?" + embedParams : ""
-    }`
+    }`,
   );
 
   switch (embedType.value) {
@@ -164,6 +166,7 @@ const embedCode = computed(() => {
 <!-- Place this before the closing body tag -->
 <script src="${window.location.origin}/js/classic.js"
   data-form="${store.form?.uuid}"
+  data-server-url="${page.props.serverUrl}"
   data-hide-title="${hideTitle.value}"
   data-autofocus="${focusOnMount.value}"
   data-alignleft="${alignLeft.value}"
