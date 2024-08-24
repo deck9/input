@@ -242,8 +242,12 @@ export const useConversation = defineStore("form", {
             if (typeof initialPayload !== "string") {
                 this.form = initialPayload as PublicFormModel;
             } else {
-                const response = await callGetForm(id);
-                this.form = response.data;
+                try {
+                    const response = await callGetForm(id);
+                    this.form = response.data;
+                } catch (error) {
+                    return;
+                }
             }
 
             const storyboardResponse = await callGetFormStoryboard(id);
