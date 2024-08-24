@@ -17,7 +17,8 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["resources/js/*"],
-            "@i18n/*": ["resources/locales/*"]
+            "@i18n/*": ["resources/locales/*"],
+            "@inertiajs/*": ["node_modules/@inertiajs/*"]
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },

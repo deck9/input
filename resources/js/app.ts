@@ -2,8 +2,7 @@ import "floating-vue/dist/style.css";
 import "@css/app.css";
 import { createApp, h } from "vue";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import { createInertiaApp } from "@inertiajs/inertia-vue3";
-import { InertiaProgress } from "@inertiajs/progress";
+import { createInertiaApp } from "@inertiajs/vue3";
 import { createPinia } from "pinia";
 import { PiniaDebounce } from "@pinia/plugin-debounce";
 import { createI18n } from "vue-i18n";
@@ -26,15 +25,18 @@ const appName =
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
+    progress: {
+        color: "#4B5563",
+    },
     resolve: (name) =>
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         resolvePageComponent(
             `./Pages/${name}.vue`,
-            import.meta.glob("./Pages/**/*.vue")
+            import.meta.glob("./Pages/**/*.vue"),
         ),
-    setup({ el, app, props, plugin }) {
-        const vueApp = createApp({ render: () => h(app, props) });
+    setup({ el, App, props, plugin }) {
+        const vueApp = createApp({ render: () => h(App, props) });
 
         const pinia = createPinia();
         pinia.use(PiniaDebounce(debounce));
@@ -56,5 +58,3 @@ createInertiaApp({
             .mount(el);
     },
 });
-
-InertiaProgress.init({ color: "#4B5563" });

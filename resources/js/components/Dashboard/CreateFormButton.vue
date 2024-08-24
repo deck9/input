@@ -12,7 +12,7 @@
 import { D9Button } from "@deck9/ui";
 import { ref } from "vue";
 import { callCreateForm } from "@/api/forms";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 
 const isSubmitting = ref(false);
 
@@ -25,7 +25,7 @@ const createForm = async () => {
     let response = await callCreateForm(formName ?? undefined);
 
     if (response.status === 200) {
-      Inertia.visit(window.route("forms.edit", { id: response.data.uuid }));
+      router.visit(window.route("forms.edit", { id: response.data.uuid }));
     }
   } catch (error) {
     setTimeout(() => {

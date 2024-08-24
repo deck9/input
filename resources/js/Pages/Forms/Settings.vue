@@ -112,7 +112,7 @@ const tabChanged = (index: any) => {
 };
 
 const foundIndex = navigation.findIndex(
-  (item) => item.slug === location.hash.replace("#", "")
+  (item) => item.slug === location.hash.replace("#", ""),
 );
 
 if (foundIndex !== -1) {

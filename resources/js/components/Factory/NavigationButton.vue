@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { D9Icon } from "@deck9/ui";
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/vue3";
 import { useForm } from "@/stores";
 import { computed } from "vue";
 

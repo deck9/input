@@ -2,11 +2,12 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\CheckUserSetup;
+use Illuminate\Routing\Router;
 use App\Http\Middleware\EnsureHasTeam;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\CheckUserSetup;
+use App\Http\Middleware\CheckFormAccess;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Illuminate\Routing\Router;
 
 class Kernel extends HttpKernel
 {
@@ -72,6 +73,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check-user-setup' => CheckUserSetup::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'check.form.access' => CheckFormAccess::class,
     ];
 
     /**

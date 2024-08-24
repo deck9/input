@@ -67,7 +67,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { Head } from "@inertiajs/inertia-vue3";
+import { Head } from "@inertiajs/vue3";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 import { D9Button, D9Input, D9Label } from "@deck9/ui";
