@@ -6,6 +6,7 @@
     appear-to-class="opacity-100"
   >
     <div
+      v-if="store.form"
       class="conversation-theme flex min-h-full max-w-screen-sm flex-col justify-between text-content"
       :class="{
         'mx-auto': !flags.alignLeft,
@@ -51,6 +52,12 @@
 
         <FooterNavigation class="mt-5 sm:mt-0" :form="store.form" />
       </footer>
+    </div>
+    <div
+      v-else
+      class="flex min-h-full w-full mx-auto max-w-screen-sm flex-col justify-center items-center bg-grey-50"
+    >
+      <div class="font-medium text-lg">Form not found</div>
     </div>
   </transition>
 </template>
