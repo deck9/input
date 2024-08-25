@@ -26,19 +26,7 @@
       </Draggable>
     </Container>
 
-    <RandomizeResponsesSetting class="mb-3 pt-3" />
-
-    <CustomResponseSettings
-      v-if="
-        editableInteractions &&
-        editableInteractions.length > 0 &&
-        workbench.block &&
-        ['radio', 'checkbox'].includes(workbench.block.type)
-      "
-      class="mb-3 pt-3"
-    />
-
-    <div class="mt-4">
+    <div class="mt-2">
       <D9Button
         label="Add new option"
         icon="plus"
@@ -48,6 +36,18 @@
         @click="createClickInteraction"
       />
     </div>
+
+    <RandomizeResponsesSetting class="my-4" />
+
+    <CustomResponseSettings
+      v-if="
+        editableInteractions &&
+        editableInteractions.length > 0 &&
+        workbench.block &&
+        ['radio', 'checkbox'].includes(workbench.block.type)
+      "
+      class=""
+    />
   </div>
 </template>
 
