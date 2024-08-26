@@ -25,6 +25,7 @@
         "barryvdh/laravel-ide-helper": "^2.13",
         "fakerphp/faker": "^1.9.1",
         "knuckleswtf/scribe": "^4.25",
+        "laravel/dusk": "^8.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.0.1",
         "laravel/telescope": "^4.17",
