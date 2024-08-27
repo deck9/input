@@ -1,9 +1,9 @@
 <?php
 
 use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 
-uses(DatabaseMigrations::class);
+uses(DatabaseTruncation::class);
 
 test('visit the login page', function () {
     $this->browse(function (Browser $browser) {
@@ -21,12 +21,12 @@ test('visit the register page', function () {
 
         $browser->type('#email', 'philipp@deck9.co')
                 ->type('#password', 'password')
+                ->screenshot('register-form')
                 ->press('Register')
-                ->pause(1000)
-                ->screenshot('register-form');
+                ->pause(1000);
 
         $browser->assertRouteIs('teams.create')
-            ->type('#name', 'Test Team')
+            ->type('#name', 'My Input Team')
             ->screenshot('team-name')
             ->press('Create Team')
             ->pause(1000)
