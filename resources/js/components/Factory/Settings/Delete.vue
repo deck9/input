@@ -4,7 +4,7 @@
       <D9Button
         type="submit"
         color="danger"
-        label="Delete Form"
+        label="Archive Form"
         :is-loading="isSaving"
       />
     </form>
