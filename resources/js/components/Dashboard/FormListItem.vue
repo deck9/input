@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td class="whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0">
+    <td class="whitespace-nowrap py-3 pl-4 pr-3 text-sm">
       <div class="flex items-center">
         <FormAvatar v-bind="{ form }" />
         <div class="ml-4">
@@ -72,7 +72,7 @@
       </div>
     </td>
     <td
-      class="relative whitespace-nowrap py-3 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
+      class="relative whitespace-nowrap py-3 pl-3 pr-4 text-right text-sm font-medium"
     >
       <div class="flex items-center justify-end space-x-2">
         <a v-if="!form.is_trashed" :href="route('forms.edit', form.uuid)">

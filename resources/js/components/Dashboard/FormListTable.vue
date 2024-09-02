@@ -7,7 +7,7 @@
             <tr>
               <th
                 scope="col"
-                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-grey-900 sm:pl-0"
+                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-grey-900"
               >
                 Name
               </th>
@@ -29,7 +29,7 @@
               >
                 Submissions
               </th>
-              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+              <th scope="col" class="relative py-3.5 pl-3 pr-4">
                 <span class="sr-only">Edit</span>
               </th>
             </tr>
