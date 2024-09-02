@@ -229,15 +229,17 @@ const unpublishForm = async () => {
 };
 
 const restoreForm = async () => {
-  const restored = await callRestoreForm(props.form);
+  await callRestoreForm(props.form);
 
-  window.location.href = window.route("forms.edit", {
-    uuid: restored.data.uuid,
-  });
+  window.location.reload();
 };
 
 const deleteForm = async () => {
-  window.confirm("Are you sure you want to delete your form?");
+  const result = window.confirm("Are you sure you want to delete your form?");
+
+  if (!result) {
+    return;
+  }
 
   await callDeleteForm(props.form);
 
@@ -245,9 +247,13 @@ const deleteForm = async () => {
 };
 
 const deleteForever = async () => {
-  window.confirm(
+  const result = window.confirm(
     "Are you sure you want to delete your form permanently. This action cannot be undone.",
   );
+
+  if (!result) {
+    return;
+  }
 
   await callDeleteForeverForm(props.form);
 
