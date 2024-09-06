@@ -1,5 +1,7 @@
 <template>
-  <app-layout :title="'Dashboard for ' + $page.props.user.current_team.name">
+  <app-layout
+    :title="'Dashboard for ' + $page.props.auth.user.current_team.name"
+  >
     <div class="w-full py-12">
       <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="col-span-12 lg:col-span-8">

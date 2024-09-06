@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Knuckles\Scribe\Attributes\Group;
-use Tightenco\Ziggy\Ziggy;
+use Tighten\Ziggy\Ziggy;
 
 class ZiggyController extends Controller
 {
@@ -16,7 +16,7 @@ class ZiggyController extends Controller
     #[Group('Utilities')]
     public function __invoke()
     {
-        return response()->json(new Ziggy)
+        return response()->json(new Ziggy())
             ->header('Cache-Control', 'max-age=360');
     }
 }

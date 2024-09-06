@@ -13,14 +13,14 @@
         <div class="mt-2 flex items-center">
           <img
             class="h-12 w-12 rounded-full object-cover"
-            :src="$page.props.user.profile_photo_url"
-            :alt="$page.props.user.name"
+            :src="$page.props.auth.user.profile_photo_url"
+            :alt="$page.props.auth.user.name"
           />
 
           <div class="ml-4 leading-tight">
-            <div>{{ $page.props.user.name }}</div>
+            <div>{{ $page.props.auth.user.name }}</div>
             <div class="text-sm text-grey-700">
-              {{ $page.props.user.email }}
+              {{ $page.props.auth.user.email }}
             </div>
           </div>
         </div>
