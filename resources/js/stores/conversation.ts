@@ -246,6 +246,7 @@ export const useConversation = defineStore("form", {
                     const response = await callGetForm(id);
                     this.form = response.data;
                 } catch (error) {
+                    console.warn(error);
                     return;
                 }
             }
@@ -311,11 +312,15 @@ export const useConversation = defineStore("form", {
                     (p) => p.actionId === action.id,
                 );
 
-                foundIndex === -1
-                    ? currentPayload.push(givenPayload)
-                    : keepChecked
-                      ? currentPayload.splice(foundIndex, 1, givenPayload)
-                      : currentPayload.splice(foundIndex, 1);
+                if (foundIndex === -1) {
+                    currentPayload.push(givenPayload);
+                } else {
+                    if (keepChecked) {
+                        currentPayload.splice(foundIndex, 1, givenPayload);
+                    } else {
+                        currentPayload.splice(foundIndex, 1);
+                    }
+                }
             }
         },
 

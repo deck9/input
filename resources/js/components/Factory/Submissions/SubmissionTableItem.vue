@@ -96,7 +96,7 @@ const copySessionId = () => {
   try {
     copy(props.submission.uid);
   } catch (e) {
-    console.warn("could not copy session id");
+    console.warn("could not copy session id", e);
   }
 };
 

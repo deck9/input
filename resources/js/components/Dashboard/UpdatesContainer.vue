@@ -46,8 +46,8 @@ onMounted(async () => {
     setTimeout(() => {
       posts.value = strapi.data;
     }, DELAY);
-  } catch (e) {
-    console.warn("Could not fetch changelog");
+  } catch (error) {
+    console.warn("Could not fetch changelog", error);
   } finally {
     setTimeout(() => {
       isLoading.value = false;

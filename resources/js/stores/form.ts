@@ -61,7 +61,7 @@ export const useForm = defineStore("form", {
                 ?.map((i) => i.parent_block)
                 .reduce((acc, item) => {
                     if (item) {
-                        acc[item] ? (acc[item] += 1) : (acc[item] = 1);
+                        acc[item] = acc[item] ? acc[item] + 1 : 1;
                     } else {
                         acc["root"] += 1;
                     }

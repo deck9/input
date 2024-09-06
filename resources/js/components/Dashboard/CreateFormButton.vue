@@ -28,6 +28,7 @@ const createForm = async () => {
       router.visit(window.route("forms.edit", { id: response.data.uuid }));
     }
   } catch (error) {
+    console.warn(error);
     setTimeout(() => {
       isSubmitting.value = false;
     }, 200);
