@@ -78,7 +78,9 @@ const getGhostParent = () => {
 };
 
 const shouldAcceptDrop = (sourceContainerOptions: any, payload: any) => {
-  if (props.groupId) {
+  if (sourceContainerOptions.groupName !== "storyboard") return false;
+
+  if (props.groupId && payload) {
     // do not allow groups to be dropped into groups
     return payload.type !== "group";
   }

@@ -212,8 +212,6 @@ export const useWorkbench = defineStore("workbench", {
                     .filter((i) => !i.name)
                     .map((i) => i.id);
 
-            console.log("change", from, to, saveSequenceRequestData);
-
             // move item to target position
             saveSequenceRequestData.splice(
                 to,
