@@ -20,7 +20,9 @@
                 v-for="header in submissionTableHeaders"
                 :key="header.id"
               >
-                {{ header.label }}
+                <div class="text-pretty line-clamp-5" :alt="header.label">
+                  {{ header.label }}
+                </div>
               </th>
             </tr>
           </thead>
@@ -70,7 +72,7 @@ const removeItem = (sessionId) => {
   // modify the submissions array to remove the deleted item
   if (submissions.value) {
     submissions.value.data = submissions.value.data.filter(
-      (item) => item.id !== sessionId
+      (item) => item.id !== sessionId,
     );
   }
 };
