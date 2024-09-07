@@ -11,7 +11,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('form_session_responses', function (Blueprint $table) {
-            $table->text('value')->change();
+            $table->text('value')->nullable()->change();
         });
     }
 };

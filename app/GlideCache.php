@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
-use League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\Responses\SymfonyResponseFactory;
 use League\Glide\ServerFactory;
 
 class GlideCache
@@ -17,7 +17,7 @@ class GlideCache
         $adapter = new InMemoryFilesystemAdapter();
 
         $this->server = ServerFactory::create([
-            'response' => new LaravelResponseFactory(app('request')),
+            'response' => new SymfonyResponseFactory(app('request')),
             'source' => Storage::getDriver(),
             'cache' => config('filesystems.default') === 'minio' ? new Filesystem($adapter) : Storage::getDriver(),
             'cache_path_prefix' => '.cache',
