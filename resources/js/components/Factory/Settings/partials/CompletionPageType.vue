@@ -10,7 +10,7 @@
       >
         <div
           :class="[
-            checked ? 'border-transparent' : 'border-gray-300',
+            checked ? 'border-transparent' : 'border-grey-300',
             active ? 'border-blue-600 ring-2 ring-blue-600' : '',
             'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none',
           ]"
@@ -19,12 +19,12 @@
             <span class="flex flex-col">
               <RadioGroupLabel
                 as="span"
-                class="text-gray-900 block text-sm font-medium"
+                class="text-grey-900 block text-sm font-medium"
                 >{{ mailingList.title }}</RadioGroupLabel
               >
               <RadioGroupDescription
                 as="span"
-                class="text-gray-500 mt-1 flex items-center text-sm"
+                class="text-grey-500 mt-1 flex items-center text-sm"
                 >{{ mailingList.description }}</RadioGroupDescription
               >
             </span>

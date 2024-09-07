@@ -16,7 +16,7 @@
                 <span
                   class="ml-3 text-white text-xs uppercase font-bold leading-none"
                 >
-                  {{ $page.props.user.current_team.name }}
+                  {{ $page.props.auth.user.current_team.name }}
                 </span>
               </Link>
             </div>
@@ -34,7 +34,7 @@
                     >
                       <D9Icon class="md:hidden" name="cog" />
                       <span class="hidden md:inline-block">
-                        {{ $page.props.user.name || "Account" }}
+                        {{ $page.props.auth.user.name || "Account" }}
                       </span>
                       <svg
                         class="-mr-0.5 ml-2 h-4 w-4"
@@ -63,7 +63,9 @@
                   >
 
                   <jet-dropdown-link
-                    :href="route('teams.show', $page.props.user.current_team)"
+                    :href="
+                      route('teams.show', $page.props.auth.user.current_team)
+                    "
                   >
                     Manage Team
                   </jet-dropdown-link>

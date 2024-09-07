@@ -1,4 +1,4 @@
-FROM trafex/php-nginx:3.3.0 as php_base
+FROM trafex/php-nginx:3.6.0 as php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
 LABEL org.opencontainers.image.licenses="GNU Affero General Public License v3.0"
@@ -14,22 +14,22 @@ ENV LOG_CHANNEL=stderr
 ENV MAIL_MAILER=log
 
 RUN apk add --no-cache \
-    php82-exif \
-    php82-fileinfo \
-    php82-iconv \
-    php82-simplexml \
-    php82-tokenizer \
-    php82-xmlwriter \
-    php82-redis \
-    php82-pdo \
-    php82-pdo_mysql \
-    php82-pdo_sqlite \
-    php82-bcmath \
+    php83-exif \
+    php83-fileinfo \
+    php83-iconv \
+    php83-simplexml \
+    php83-tokenizer \
+    php83-xmlwriter \
+    php83-redis \
+    php83-pdo \
+    php83-pdo_mysql \
+    php83-pdo_sqlite \
+    php83-bcmath \
     sqlite
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.default.conf /etc/nginx/conf.d/default.conf
-COPY php.conf.ini /etc/php82/conf.d/99-input.ini
+COPY php.conf.ini /etc/php83/conf.d/99-input.ini
 
 USER nobody
 WORKDIR /var/www/html

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -31,8 +30,8 @@ return new class extends Migration
 
         Schema::table('form_session_responses', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned()->change();
-            $table->bigInteger('form_block_id')->unsigned()->change();
-            $table->bigInteger('form_block_interaction_id')->unsigned()->change();
+            $table->bigInteger('form_block_id')->default(1)->unsigned()->change();
+            $table->bigInteger('form_block_interaction_id')->default(1)->unsigned()->change();
             $table->bigInteger('form_session_id')->unsigned()->change();
         });
 

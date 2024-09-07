@@ -1,4 +1,4 @@
-import route, { RouteName, RouteParams } from "ziggy-js";
+import { route, RouteName, RouteParams } from "ziggy-js";
 
 // Cache Ziggy routes
 let Ziggy: any = null;
