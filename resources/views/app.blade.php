@@ -39,7 +39,11 @@
 
         <!-- Scripts -->
         @routes
+
+        <!-- Inertia -->
         @inertiaHead
+
+        <!-- Vite -->
         @vite('resources/js/app.ts', 'build/app')
     </head>
 

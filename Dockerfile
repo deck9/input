@@ -27,9 +27,10 @@ RUN apk add --no-cache \
     php83-bcmath \
     sqlite
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.default.conf /etc/nginx/conf.d/default.conf
-COPY php.conf.ini /etc/php83/conf.d/99-input.ini
+COPY ./scripts/nginx/fastcgi_params /etc/nginx/fastcgi_params
+COPY ./scripts/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./scripts/nginx/nginx.default.conf /etc/nginx/conf.d/default.conf
+COPY ./scripts/php.conf.ini /etc/php83/conf.d/99-input.ini
 
 USER nobody
 WORKDIR /var/www/html
@@ -45,7 +46,7 @@ USER root
 RUN rm -rf /root/.composer /usr/bin/composer
 
 # Copy Supervisor Config for Scheduler
-COPY scheduler.conf /tmp/scheduler.conf
+COPY ./scripts/scheduler.conf /tmp/scheduler.conf
 RUN cat /tmp/scheduler.conf >> /etc/supervisor/conf.d/supervisord.conf && rm -f /tmp/scheduler.conf
 
 USER nobody
@@ -79,7 +80,7 @@ RUN php artisan storage:link
 RUN php artisan scribe:generate --env doc
 
 USER root
-COPY --chown=nobody:nobody ./start-container.sh /opt/input/start-container.sh
+COPY --chown=nobody:nobody ./scripts/start-container.sh /opt/input/start-container.sh
 RUN chmod +x /opt/input/start-container.sh
 USER nobody
 
