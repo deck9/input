@@ -1,4 +1,4 @@
-FROM trafex/php-nginx:3.6.0 as php_base
+FROM trafex/php-nginx:3.6.0 AS php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
 LABEL org.opencontainers.image.licenses="GNU Affero General Public License v3.0"
@@ -52,9 +52,9 @@ USER nobody
 
 # ---
 
-FROM node:18-alpine as asset_builder
+FROM node:18-alpine AS asset_builder
 WORKDIR /var/www/html
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY --from=php_base /var/www/html ./
 RUN npm ci && npm cache clean --force
@@ -64,7 +64,7 @@ RUN rm -rf node_modules
 
 # ---
 
-FROM php_base as final_image
+FROM php_base AS final_image
 WORKDIR /var/www/html
 
 COPY --from=asset_builder /var/www/html/public/build ./public/build
@@ -75,14 +75,8 @@ RUN php artisan migrate --force
 
 RUN php artisan storage:link
 
-RUN echo "APP_KEY=" > .env
-RUN php artisan key:generate
-
 # Generate the API Documentation
 RUN php artisan scribe:generate --env doc
-
-RUN php artisan route:cache
-RUN php artisan view:cache
 
 USER root
 COPY --chown=nobody:nobody ./start-container.sh /opt/input/start-container.sh

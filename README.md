@@ -78,26 +78,41 @@ sail composer {args} # use composer
 
 ### Quick Start
 
+Please copy the `.env.example` file from this repository and fill in the missing values. To generate your `APP_KEY` you can use the following command in your terminal:
+
+```bash
+echo -n 'base64:'; openssl rand -base64 32
+```
+
+Save the generated key in the `.env` file and run the following commands to start the container:
+
 ```bash
 # Create Docker Volume
 docker volume create input-data
-
-# Run the container using port 8080 on the host
-docker run -d -p 8080:8080 --name input \
-    -v input-data:/var/www/html/storage \
-    -e APP_URL=https://hostname.domain.tld:8080 \
-    ghcr.io/deck9/input:main
 ```
 
-or as `docker-compose.yml`:
+```bash
+# Run the container using port 8080 on the host
+docker run -d -p 8080:8080 --name input \
+ -v input-data:/var/www/html/storage \
+ --env-file .env \
+ ghcr.io/deck9/input:main
+
+```
+
+### Docker Compose
+
+You can also use Docker Compose to run the application. Please copy the `.env.example` file from this repository and fill in the missing values. To generate your `APP_KEY` you can use the following command in your terminal:
+
+```bash
+echo -n 'base64:'; openssl rand -base64 32
+```
 
 ```docker-compose
 version: '3.2'
 services:
     input:
       image: ghcr.io/deck9/input:main
-      container_name: input
-      hostname: <hostname>
       volumes:
         - input-data:/var/www/html/storage
       ports:
@@ -105,6 +120,10 @@ services:
       restart: unless-stopped
       environment:
         - APP_URL="https://<hostname>:8080"
+        - APP_KEY="<your-app-key>"
+        - DB_CONNECTION="sqlite"
+        - SESSION_DRIVER="file"
+        - CACHE_DRIVER="file"
 
 volumes:
   input-data:
@@ -113,13 +132,6 @@ volumes:
 ### Behind a Proxy
 
 Make sure to set the `APP_URL` env to the domain you want to use for your proxy.
-
-```bash
-docker run -d -p 8080:8080 --name input \
-    -v input-data:/var/www/html/storage \
-    -e APP_URL=https://domain.tld \
-    ghcr.io/deck9/input:main
-```
 
 Also make sure that the proxy is configured to pass forward important request information like the scheme, host and IP.
 
@@ -140,29 +152,13 @@ location / {
 
 ### With MySQL
 
-```bash
-docker run -d -p 8080:8080 --name input \
-    -e DB_CONNECTION=mysql \
-    -e DB_DATABASE=input \
-    -e DB_HOST=<MySQL-Host> \
-    -e DB_USERNAME=<MySQL-User> \
-    -e DB_PASSWORD=<MySQL-Password> \
-    ghcr.io/deck9/input:main
-```
+To use MySQL as database, you need to set the following environment variables in your `.env` file:
 
-### Sending Emails
-
-Setting up an SMTP email service is mandatory for some features, as team invitations or email notifications. Please use the following environment variables when running the container.
-
-```bash
-docker run -d -p 8080:8080 --name input \
-    -e MAIL_MAILER=smtp \
-    -e MAIL_HOST=<Mail-Host> \
-    -e MAIL_USERNAME=<Mail-Username> \
-    -e MAIL_PASSWORD=<Mail-Password> \
-    -e MAIL_FROM_ADDRESS=<Mail-From-Address> \
-    -e MAIL_FROM_NAME=<Mail-From-Name> \
-    -e MAIL_PORT=1025 \
-    -e MAIL_ENCRYPTION=tls \
-    ghcr.io/deck9/input:main
+```dotEnv
+# Database Config
+DB_CONNECTION=mysql
+DB_DATABASE=input
+DB_HOST=<MySQL-Host>
+DB_USERNAME=<MySQL-User>
+DB_PASSWORD=<MySQL-Password>
 ```
