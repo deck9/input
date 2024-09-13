@@ -38,3 +38,13 @@ store.$patch({
   form: props.form,
 });
 </script>
+
+<style>
+:root {
+  --color-primary: 59, 130, 246;
+  --color-contrast: 239, 246, 255;
+  --color-background: 255, 255, 255;
+  --color-content: 0, 0, 0;
+  --brightness-user: 59, 130, 246;
+}
+</style>

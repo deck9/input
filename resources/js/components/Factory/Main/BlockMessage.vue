@@ -2,60 +2,138 @@
   <div>
     <h2 class="mb-4 text-base font-bold">Message</h2>
     <div>
-      <div class="w-full rounded border-0">
-        <div class="mb-1">
-          <button
-            :class="[
-              'rounded px-2 py-1 text-sm',
-              editor?.isActive('bold')
-                ? 'font-bold text-grey-900'
-                : 'text-grey-500 hover:text-grey-800',
-            ]"
+      <div
+        class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex items-center divide-x divide-grey-400"
+      >
+        <div class="px-1">
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('bold') ?? false,
+              icon: 'bold',
+              label: 'Bold',
+            }"
             @click="editor?.chain().focus().toggleBold().run()"
-          >
-            <D9Icon name="bold" />
-            Bold
-          </button>
-          <button
-            :class="[
-              'rounded px-2 py-1 text-sm',
-              editor?.isActive('italic')
-                ? 'font-bold text-grey-900'
-                : 'text-grey-500 hover:text-grey-800',
-            ]"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('italic') ?? false,
+              icon: 'italic',
+              label: 'Italic',
+            }"
             @click="editor?.chain().focus().toggleItalic().run()"
-          >
-            <D9Icon name="italic" />
-            Italic
-          </button>
-          <button
-            :class="[
-              'rounded px-2 py-1 text-sm',
-              editor?.isActive('link')
-                ? 'font-bold text-grey-900'
-                : 'text-grey-500 hover:text-grey-800',
-            ]"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('underline') ?? false,
+              icon: 'underline',
+              label: 'Underline',
+            }"
+            @click="editor?.chain().focus().toggleUnderline().run()"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('link') ?? false,
+              icon: 'link',
+              label: 'Link',
+            }"
             @click="setLink()"
-          >
-            <D9Icon name="link" />
-            Link
-          </button>
+          />
         </div>
-        <editor-content :editor="editor" />
-        <div class="mt-1 text-xs text-grey-600">
-          {{ chars }} chars, {{ words }} words
+        <div class="px-1">
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('heading', { level: 1 }) ?? false,
+              icon: 'heading',
+              label: 'Heading 1',
+              subLabel: '1',
+            }"
+            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('heading', { level: 2 }) ?? false,
+              icon: 'heading',
+              label: 'Heading 2',
+              subLabel: '2',
+            }"
+            @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('heading', { level: 3 }) ?? false,
+              icon: 'heading',
+              label: 'Heading 3',
+              subLabel: '3',
+            }"
+            @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
+          />
         </div>
+        <div class="px-1">
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('bulletList') ?? false,
+              icon: 'list-ul',
+              label: 'Bullet List',
+            }"
+            @click="editor?.chain().focus().toggleBulletList().run()"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('orderedList') ?? false,
+              icon: 'list-ol',
+              label: 'Ordered List',
+            }"
+            @click="editor?.chain().focus().toggleOrderedList().run()"
+          />
+        </div>
+        <div class="px-1">
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('code') ?? false,
+              icon: 'code',
+              label: 'Code',
+            }"
+            @click="editor?.chain().focus().toggleCode().run()"
+          />
+          <EditorButton
+            v-bind="{
+              isActive: editor?.isActive('blockquote') ?? false,
+              icon: 'quote-right',
+              label: 'Blockquote',
+            }"
+            @click="editor?.chain().focus().toggleBlockquote().run()"
+          />
+        </div>
+        <div class="px-1">
+          <EditorButton
+            v-bind="{
+              isActive: false,
+              icon: 'remove-format',
+              label: 'Remove Formatting',
+            }"
+            @click="editor?.chain().focus().clearNodes().unsetAllMarks().run()"
+          />
+        </div>
+      </div>
+      <editor-content :editor="editor" />
+      <div class="mt-1 text-xs text-grey-600">
+        {{ chars }} chars, {{ words }} words
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { D9Icon } from "@deck9/ui";
 import { useWorkbench } from "@/stores";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
+import FontFamily from "@tiptap/extension-font-family";
+import TextStyle from "@tiptap/extension-text-style";
+import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
+
+import EditorButton from "@/components/Factory/Shared/EditorButton.vue";
 import { ref } from "vue";
 import { useContentLength } from "@/utils/useContentLength";
 
@@ -81,10 +159,20 @@ const editor = useEditor({
     });
   },
   extensions: [
-    StarterKit,
+    FontFamily,
     Link.configure({
       openOnClick: false,
     }),
+    Placeholder.configure({
+      placeholder: "Type your message here...",
+    }),
+    StarterKit.configure({
+      heading: {
+        levels: [1, 2, 3],
+      },
+    }),
+    TextStyle,
+    Underline,
   ],
 });
 
@@ -117,3 +205,14 @@ const setLink = () => {
     .run();
 };
 </script>
+
+<style>
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+
+  @apply text-grey-400;
+}
+</style>
