@@ -46,7 +46,7 @@ class FormSubmissionNotification extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'email.form-submitted',
+            view: 'emails.form-submitted',
         );
     }
 
