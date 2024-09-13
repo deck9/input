@@ -15,12 +15,12 @@
     >
       <D9Icon size="lg" :name="iconName" />
     </div>
-    <div class="flex items-center justify-between w-full">
-      <div class="truncate max-w-72">
+    <div class="flex items-center justify-between w-full overflow-hidden">
+      <div class="truncate w-full">
         {{ file.name }}
       </div>
 
-      <div class="flex items-center">
+      <div class="flex items-center justify-end shrink-0">
         <div class="whitespace-nowrap text-xs font-mono">{{ fileSize }}</div>
         <button type="button" @click="emits('remove')" class="px-2">
           <D9Icon name="times" />

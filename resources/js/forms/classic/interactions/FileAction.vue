@@ -7,18 +7,21 @@
         isOverDropZone ? 'border-content/20 py-10' : 'border-content/50',
         !isOverDropZone && !!currentFiles ? 'py-2' : 'py-10',
       ]"
+      @click="isMobileDevice ? open() : null"
       ref="dropZoneRef"
     >
       <button
-        @click="open()"
         type="button"
         class="underline text-content px-5 py-1 rounded"
+        @click="open()"
       >
         {{ t("files_choose") }}
       </button>
-      <span class="block text-xs text-content/80 leading-0">{{
-        t("files_drop")
-      }}</span>
+      <span
+        v-if="!isMobileDevice"
+        class="block text-xs text-content/80 leading-0"
+        >{{ t("files_drop") }}</span
+      >
     </div>
 
     <div v-if="currentFiles" class="my-4 space-y-2">
@@ -48,6 +51,7 @@ import { useFileDialog, useDropZone } from "@vueuse/core";
 import UploadFileItem from "@/forms/classic/components/UploadFileItem.vue";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { useMobileDetection } from "@/utils/useMobileDetection";
 
 const store = useConversation();
 const { t } = useI18n();
@@ -61,6 +65,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (event: "update"): void;
 }>();
+
+const { isMobileDevice } = useMobileDetection();
 
 const dropZoneRef = ref<HTMLDivElement>();
 
