@@ -42,19 +42,10 @@
         <div class="px-1">
           <EditorButton
             v-bind="{
-              isActive: editor?.isActive('heading', { level: 1 }) ?? false,
+              isActive: editor?.isActive('heading', { level: 2 }) ?? false,
               icon: 'heading',
               label: 'Heading 1',
               subLabel: '1',
-            }"
-            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
-          />
-          <EditorButton
-            v-bind="{
-              isActive: editor?.isActive('heading', { level: 2 }) ?? false,
-              icon: 'heading',
-              label: 'Heading 2',
-              subLabel: '2',
             }"
             @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
           />
@@ -62,8 +53,8 @@
             v-bind="{
               isActive: editor?.isActive('heading', { level: 3 }) ?? false,
               icon: 'heading',
-              label: 'Heading 3',
-              subLabel: '3',
+              label: 'Heading 2',
+              subLabel: '2',
             }"
             @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
           />

@@ -5,7 +5,7 @@ function withOpacityValue(variable) {
         if (opacityValue === undefined) {
             return `rgb(var(${variable}))`;
         }
-        return `rgba(var(${variable}), ${opacityValue}%)`;
+        return `rgba(var(${variable}), ${opacityValue})`;
     };
 }
 
@@ -54,85 +54,11 @@ module.exports = {
             animation: {
                 spinner: "spinner 1.3s ease-in-out infinite",
             },
-
-            typography: (theme) => ({
-                DEFAULT: {
-                    css: {
-                        'code': {
-                            backgroundColor: theme('colors.content/80'),
-                            color: theme('colors.contrast'),
-                            padding: '.25em',
-                        },
-                        'code::before': {
-                                display: 'none',
-                        },
-                        'code::after': {
-                            display: 'none',
-                        },
-                        'blockquote code': {
-                            color: theme('colors.contrast'),
-                        },
-                        '> ol > li p': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ul > li p': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ul > li > p:first-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ul > li > p:last-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ol > li > p:first-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ol > li > p:last-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                    }
-                },
-                'sm': {
-                    css: {
-                        '> ol > li p': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ul > li p': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ul > li > p:first-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ul > li > p:last-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ol > li > p:first-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                        '> ol > li > p:last-child': {
-                            marginTop: 0,
-                            marginBottom: 0,
-                        },
-                    }
-                }
-            })
         },
     },
 
     plugins: [
         require("@tailwindcss/forms"),
-        require("@tailwindcss/typography"),
     ],
 
     corePlugins: {
