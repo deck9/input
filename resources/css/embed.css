@@ -1,13 +1,10 @@
-/* TAILWIND */
 @import "./_embedded-preflight.css";
+
 @import "tailwindcss/base";
+
+@import "./_typography.css";
+
 @import "tailwindcss/components";
-
-/* CUSTOM */
-@import "./_scrollbar.css";
-@import "./_smooth-dnd.css";
-
-/* TAILWIND */
 @import "tailwindcss/utilities";
 
 .conversation-theme {

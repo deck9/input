@@ -1,0 +1,63 @@
+.form-message-prose {
+    --color-primary: 50, 50, 255;
+    --color-secondary: 2, 10, 5;
+    --color-background: 244, 244, 244;
+    --color-content: 10, 10, 10;
+    --brightness-user: 1;
+
+    @apply text-base;
+
+    h1,
+    h2,
+    h3 {
+        @apply text-2xl font-bold mb-3;
+    }
+
+    a,
+    a:visited {
+        @apply text-primary underline;
+    }
+
+    a:hover {
+        @apply brightness-125;
+    }
+
+    p {
+        @apply mb-4;
+    }
+
+    blockquote {
+        @apply pl-4 mb-4 text-lg relative leading-relaxed;
+
+        &::before {
+            content: "\201C";
+            @apply mr-px text-primary font-bold;
+        }
+
+        &::after {
+            content: "\201D";
+            @apply ml-px text-primary font-bold;
+        }
+
+        p {
+            @apply inline;
+        }
+    }
+
+    code {
+        @apply bg-content/90 text-background px-1 text-sm py-px rounded;
+    }
+
+    ul {
+        @apply list-disc pl-5 text-content;
+    }
+
+    ol {
+        @apply list-decimal pl-5 text-content;
+    }
+
+    ul p,
+    ol p {
+        @apply mb-2;
+    }
+}

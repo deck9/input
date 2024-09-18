@@ -106,7 +106,7 @@
           />
         </div>
       </div>
-      <editor-content :editor="editor" />
+      <editor-content class="form-message-prose" :editor="editor" />
       <div class="mt-1 text-xs text-grey-600">
         {{ chars }} chars, {{ words }} words
       </div>

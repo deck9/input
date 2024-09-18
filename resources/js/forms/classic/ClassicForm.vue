@@ -127,17 +127,4 @@ const brightness = store.form?.use_brighter_inputs ? 1.5 : 1;
   --color-content: v-bind(textColor);
   --brightness-user: v-bind(brightness);
 }
-
-.form-message-prose {
-  @apply text-base;
-}
-
-.form-message-prose a,
-.form-message-prose a:visited {
-  @apply text-primary underline;
-}
-
-.form-message-prose a:hover {
-  @apply brightness-125;
-}
 </style>

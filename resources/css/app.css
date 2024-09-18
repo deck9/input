@@ -1,8 +1,8 @@
-/* TAILWIND */
-
-/** Preflight is disabled in tailwind.config to create different build for embed script.
+/** Tailwind Preflight is disabled in tailwind.config to create different build for embed script.
     Therefore we are importing it manually here */
 @import "tailwindcss/src/css/preflight.css";
+
+/* TAILWIND */
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
@@ -10,11 +10,14 @@
 @import "./_scrollbar.css";
 @import "./_smooth-dnd.css";
 @import "./_tooltip.css";
+@import "./_typography.css";
 
-/* TAILWIND */
 @import "tailwindcss/utilities";
 
 .conversation-theme {
-    --color-primary: 0, 0, 0;
+    --color-primary: 50, 50, 255;
     --color-secondary: 2, 10, 5;
+    --color-background: 244, 244, 244;
+    --color-content: 10, 10, 10;
+    --brightness-user: 1;
 }
