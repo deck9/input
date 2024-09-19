@@ -38,6 +38,14 @@
             }"
             @click="setLink()"
           />
+          <EditorButton
+            v-bind="{
+              isActive: false,
+              icon: 'image',
+              label: 'Image',
+            }"
+            @click="setImage()"
+          />
         </div>
         <div class="px-1">
           <EditorButton
@@ -106,7 +114,7 @@
           />
         </div>
       </div>
-      <editor-content class="form-message-prose" :editor="editor" />
+      <editor-content :editor="editor" />
       <div class="mt-1 text-xs text-grey-600">
         {{ chars }} chars, {{ words }} words
       </div>
@@ -118,10 +126,11 @@
 import { useWorkbench } from "@/stores";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
 import FontFamily from "@tiptap/extension-font-family";
-import TextStyle from "@tiptap/extension-text-style";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 
 import EditorButton from "@/components/Factory/Shared/EditorButton.vue";
@@ -138,7 +147,7 @@ const editor = useEditor({
   editorProps: {
     attributes: {
       class:
-        "prose prose-sm sm:prose focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
+        "form-message-prose focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
     },
   },
   onUpdate: () => {
@@ -159,11 +168,12 @@ const editor = useEditor({
     }),
     StarterKit.configure({
       heading: {
-        levels: [1, 2, 3],
+        levels: [2, 3],
       },
     }),
     TextStyle,
     Underline,
+    Image,
   ],
 });
 
@@ -194,6 +204,29 @@ const setLink = () => {
     .extendMarkRange("link")
     .setLink({ href: url })
     .run();
+};
+
+const setImage = () => {
+  if (typeof editor.value === "undefined") {
+    return;
+  }
+
+  const previousUrl = editor.value.getAttributes("image").src;
+  const url = window.prompt("URL", previousUrl);
+
+  // cancelled
+  if (url === null || url === "") {
+    return;
+  }
+
+  if (!url.startsWith("https")) {
+    window.alert("Please enter a valid secure URL");
+    return;
+  }
+
+  if (url) {
+    editor.value.chain().focus().setImage({ src: url }).run();
+  }
 };
 </script>
 
