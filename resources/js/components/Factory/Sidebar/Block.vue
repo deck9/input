@@ -44,7 +44,7 @@
           <ConsentBlockMessage v-if="block.type === 'consent'" />
           <div
             v-if="block.message"
-            class="prose prose-sm mb-2"
+            class="form-message-prose conversation-theme mb-2"
             v-html="block.message"
           />
           <div v-else class="mb-2 font-light text-grey-400">--empty--</div>

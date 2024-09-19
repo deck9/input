@@ -147,7 +147,7 @@ const editor = useEditor({
   editorProps: {
     attributes: {
       class:
-        "form-message-prose focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
+        "form-message-prose conversation-theme focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
     },
   },
   onUpdate: () => {
@@ -169,6 +169,10 @@ const editor = useEditor({
     StarterKit.configure({
       heading: {
         levels: [2, 3],
+      },
+      dropcursor: {
+        color: "#ff0000",
+        width: 3,
       },
     }),
     TextStyle,

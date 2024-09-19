@@ -1,16 +1,10 @@
 .form-message-prose {
-    --color-primary: 50, 50, 255;
-    --color-secondary: 2, 10, 5;
-    --color-background: 244, 244, 244;
-    --color-content: 10, 10, 10;
-    --brightness-user: 1;
-
-    @apply text-base;
+    @apply text-base text-content;
 
     h1,
     h2,
     h3 {
-        @apply text-2xl font-bold mb-3;
+        @apply text-2xl font-bold mb-3 text-content;
     }
 
     a,
@@ -59,5 +53,9 @@
     ul p,
     ol p {
         @apply mb-2;
+    }
+
+    img {
+        @apply max-w-full my-4;
     }
 }
