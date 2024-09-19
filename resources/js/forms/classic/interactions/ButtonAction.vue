@@ -29,16 +29,16 @@
         @keydown.enter="stopEditing($event, true)"
         type="text"
         :placeholder="
-          isChecked && !otherValue ? t('type') : action.label ?? t('other')
+          isChecked && !otherValue ? t('type') : (action.label ?? t('other'))
         "
         tabindex="-1"
         v-model="otherValue"
         class="block w-full border-0 focus:ring-0 bg-background placeholder:text-content/30"
         :class="{ 'pointer-events-none': !isChecked }"
       />
-      <span v-else class="inline-block" data-testid="button-label">{{
-        action.label
-      }}</span>
+      <span v-else class="inline-block" data-testid="button-label">
+        <InlineMarkdown :content="action.label ?? ''" />
+      </span>
       <div
         v-if="isOtherOption"
         class="absolute inset-y-0 right-12 flex items-center whitespace-nowrap text-sm"
@@ -81,6 +81,7 @@ import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref, computed, ComputedRef, inject } from "vue";
 import { useConversation } from "@/stores/conversation";
 import { useMobileDetection } from "@/utils/useMobileDetection";
+import InlineMarkdown from "@/forms/classic/layout/InlineMarkdown.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
