@@ -1,10 +1,16 @@
 .form-message-prose {
     @apply text-base text-content;
 
-    h1,
-    h2,
+    h1 {
+        @apply text-3xl font-bold mb-3;
+    }
+
+    h2 {
+        @apply text-2xl font-bold mb-3;
+    }
+
     h3 {
-        @apply text-2xl font-bold mb-3 text-content;
+        @apply text-xl font-bold mb-3;
     }
 
     a,

@@ -133,11 +133,11 @@ import { useContentLength } from "@/utils/useContentLength";
 import { ref } from "vue";
 
 const { modelValue, counter = false } = defineProps<{
-  modelValue: string;
+  modelValue?: string;
   counter?: boolean;
 }>();
 
-const content = ref(modelValue);
+const content = ref(modelValue ?? "");
 
 const { chars, words } = useContentLength(content);
 
