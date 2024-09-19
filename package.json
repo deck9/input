@@ -32,13 +32,14 @@
         "vitest": "^2.1.0"
     },
     "dependencies": {
-        "@deck9/ui": "^0.14.12",
+        "@deck9/ui": "^0.14.13",
         "@headlessui/vue": "^1.7.23",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@inertiajs/vue3": "^1.2.0",
         "@pinia/plugin-debounce": "^1.0.1",
         "@tailwindcss/forms": "^0.5.9",
         "@tiptap/extension-font-family": "^2.6.6",
+        "@tiptap/extension-image": "^2.7.2",
         "@tiptap/extension-link": "^2.6.6",
         "@tiptap/extension-placeholder": "^2.6.6",
         "@tiptap/extension-text-style": "^2.6.6",
