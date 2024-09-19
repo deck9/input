@@ -45,7 +45,7 @@
     }
 
     code {
-        @apply bg-content/90 text-background px-1 text-sm py-px rounded;
+        @apply bg-background brightness-80 text-content/75 px-1 text-sm py-px rounded;
     }
 
     ul {

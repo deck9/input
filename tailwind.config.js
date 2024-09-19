@@ -47,6 +47,9 @@ module.exports = {
             },
             brightness: {
                 user: "var(--brightness-user)",
+                60: '.6',
+                70: '.7',
+                80: '.8',
             },
             keyframes: {
                 spinner: {
