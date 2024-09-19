@@ -3,7 +3,7 @@
     <h2 class="mb-4 text-base font-bold">Message</h2>
     <div>
       <div
-        class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex items-center divide-x divide-grey-400"
+        class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex flex-wrap gap-y-2 items-center"
       >
         <div class="px-1">
           <EditorButton

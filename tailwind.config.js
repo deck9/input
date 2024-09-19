@@ -27,6 +27,9 @@ module.exports = {
 
     theme: {
         extend: {
+            fontSize: {
+                xxs: "0.625rem",
+            },
             colors: {
                 gray: null,
                 slate: null,

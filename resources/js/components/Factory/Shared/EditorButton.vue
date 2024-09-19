@@ -1,7 +1,7 @@
 <template>
   <button
     :class="[
-      'rounded px-3 mx-px py-1 relative text-sm',
+      'rounded px-2 mx-px py-1 relative text-sm',
       isActive
         ? 'bg-grey-300 text-grey-700'
         : 'text-grey-500 hover:bg-grey-200 bg-white',
@@ -11,7 +11,7 @@
     <D9Icon :name="icon" />
     <small
       v-if="subLabel"
-      class="absolute bottom-1 text-xs font-bold leading-none rounded-full"
+      class="absolute bottom-1 text-xxs font-bold leading-none rounded-full"
       >{{ subLabel }}</small
     >
   </button>
