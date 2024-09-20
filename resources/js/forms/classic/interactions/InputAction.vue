@@ -41,7 +41,7 @@
     </div>
     <div
       v-else-if="useIcon"
-      class="absolute inset-y-0 left-3 flex items-center text-grey-700"
+      class="absolute inset-y-0 left-3 flex items-center text-primary"
     >
       <D9Icon :name="useIcon" />
     </div>

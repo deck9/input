@@ -42,11 +42,8 @@
       <div class="relative mt-3 flex items-start">
         <div class="pr-4">
           <ConsentBlockMessage v-if="block.type === 'consent'" />
-          <div
-            v-if="block.message"
-            class="prose prose-sm mb-2"
-            v-html="block.message"
-          />
+
+          <DefaultBlockMessage v-if="block.message" :content="block.message" />
           <div v-else class="mb-2 font-light text-grey-400">--empty--</div>
         </div>
       </div>
@@ -72,6 +69,7 @@
 <script setup lang="ts">
 import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
+import DefaultBlockMessage from "./DefaultBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
 import Label from "@/components/Label.vue";
 import { useWorkbench, useForm } from "@/stores";

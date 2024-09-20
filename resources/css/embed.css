@@ -1,17 +1,16 @@
-/* TAILWIND */
 @import "./_embedded-preflight.css";
+
 @import "tailwindcss/base";
+
+@import "./_typography.css";
+
 @import "tailwindcss/components";
-
-/* CUSTOM */
-@import "./_scrollbar.css";
-@import "./_smooth-dnd.css";
-
-/* TAILWIND */
 @import "tailwindcss/utilities";
 
 .conversation-theme {
-    /* --color-primary: 236, 72, 153; */
-    --color-primary: 0, 0, 0;
+    --color-primary: 50, 50, 255;
     --color-secondary: 2, 10, 5;
+    --color-background: 244, 244, 244;
+    --color-content: 10, 10, 10;
+    --brightness-user: 1;
 }

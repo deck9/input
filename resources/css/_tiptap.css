@@ -1,0 +1,9 @@
+.tiptap {
+    img {
+        @apply block max-w-full;
+
+        &.ProseMirror-selectednode {
+            @apply outline outline-2 outline-blue-500;
+        }
+    }
+}

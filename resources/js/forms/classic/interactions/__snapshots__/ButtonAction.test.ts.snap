@@ -2,7 +2,7 @@
 
 exports[`ButtonAction > should mount correctly 1`] = `
 "<label for="1" class="relative block cursor-pointer rounded border py-2 pl-6 pr-3 bg-background brightness-user border-content/20">
-  <div class="absolute inset-y-0 left-2 flex items-center"><span data-testid="button-action-index" class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium bg-content/70 text-background">1</span></div><span class="block w-full pl-4 pr-6"><span class="inline-block" data-testid="button-label">Test Button</span>
+  <div class="absolute inset-y-0 left-2 flex items-center"><span data-testid="button-action-index" class="flex h-5 w-5 items-center justify-center rounded-sm text-xs font-medium bg-content/70 text-background">1</span></div><span class="block w-full pl-4 pr-6"><span class="inline-block" data-testid="button-label"><span class="form-message-prose">Test Button</span></span>
   <!--v-if--></span>
   <div class="absolute inset-y-0 right-4 flex items-center"><input class="border-content/30 bg-transparent checked:border-primary checked:bg-primary checked:hover:bg-primary focus:ring-primary focus:checked:bg-primary focus:checked:outline-none focus:checked:ring-0 focus:checked:ring-offset-0" type="radio" name="1" id="1" value="Test Button"></div>
 </label>"

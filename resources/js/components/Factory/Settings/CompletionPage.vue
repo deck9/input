@@ -42,7 +42,7 @@
           </div>
           <div class="mb-4">
             <D9Label label="Message" />
-            <D9Input type="text" block v-model="outroMessage" />
+            <Editor class="" v-model="outroMessage" />
           </div>
         </div>
       </div>
@@ -150,14 +150,15 @@ import { useForm } from "@/stores";
 import { D9Label, D9Input, D9Switch, D9Button } from "@deck9/ui";
 import { ref } from "vue";
 import CompletionPageType from "@/components/Factory/Settings/partials/CompletionPageType.vue";
+import Editor from "@/components/Factory/Shared/Editor.vue";
 
 const store = useForm();
 const isSaving = ref(false);
 
 console.log(store.form);
 
-const outroHeadline = ref(store.form?.eoc_headline);
-const outroMessage = ref(store.form?.eoc_text);
+const outroHeadline = ref(store.form?.eoc_headline ?? "");
+const outroMessage = ref(store.form?.eoc_text ?? "");
 
 const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);

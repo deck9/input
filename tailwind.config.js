@@ -27,6 +27,9 @@ module.exports = {
 
     theme: {
         extend: {
+            fontSize: {
+                xxs: "0.625rem",
+            },
             colors: {
                 gray: null,
                 slate: null,
@@ -44,6 +47,9 @@ module.exports = {
             },
             brightness: {
                 user: "var(--brightness-user)",
+                60: '.6',
+                70: '.7',
+                80: '.8',
             },
             keyframes: {
                 spinner: {
@@ -58,8 +64,9 @@ module.exports = {
     },
 
     plugins: [
-        require("@tailwindcss/forms"),
-        require("@tailwindcss/typography"),
+        require("@tailwindcss/forms")({
+            strategy: "base",
+        }),
     ],
 
     corePlugins: {
