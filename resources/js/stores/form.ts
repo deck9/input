@@ -281,7 +281,11 @@ export const useForm = defineStore("form", {
             }
         },
 
-        async disableFormBlock(block: FormBlockModel, newValue: boolean) {
+        async updateFormBlockProperty(
+            block: FormBlockModel,
+            property: string,
+            newValue: boolean,
+        ) {
             if (!this.form) {
                 return;
             }
@@ -289,12 +293,12 @@ export const useForm = defineStore("form", {
             try {
                 const response = await callUpdateFormBlock({
                     ...block,
-                    is_disabled: newValue,
+                    [property]: newValue,
                 });
 
-                const index = this.blocks?.findIndex((item) => {
-                    return item.id === block.id;
-                });
+                const index = this.blocks?.findIndex(
+                    (item) => item.id === block.id,
+                );
 
                 if (
                     response.status === 200 &&

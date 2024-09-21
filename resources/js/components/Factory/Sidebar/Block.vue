@@ -1,6 +1,7 @@
 <template>
   <div class="relative pb-6 text-sm">
     <InsertAfterButton v-bind="{ block }" />
+
     <button
       class="group relative block w-full cursor-pointer overflow-visible rounded-md p-4 text-left"
       :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
@@ -54,13 +55,55 @@
         :key="interaction.id"
       />
 
-      <div class="flex space-x-1">
-        <div class="mt-2" v-if="block.is_disabled">
-          <Label color="grey">disabled</Label>
-        </div>
-        <div class="mt-2" v-if="block.is_required">
-          <Label color="red">required</Label>
-        </div>
+      <!-- Block Status -->
+      <div class="flex space-x-1 mt-4">
+        <button
+          class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
+          :class="[
+            block.has_logic
+              ? 'bg-blue-100 outline-blue-200'
+              : 'bg-grey-100 outline-grey-200',
+          ]"
+        >
+          <D9Icon name="code-branch" size="sm" />
+          <span>Block Logic</span>
+        </button>
+        <button
+          class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
+          :class="[
+            block.is_required
+              ? 'bg-red-100 outline-red-200'
+              : 'bg-grey-100 outline-grey-200',
+          ]"
+          @click="toggleRequired()"
+        >
+          <template v-if="block.is_required">
+            <D9Icon name="asterisk" size="sm" />
+            <span>Required</span>
+          </template>
+          <template v-else>
+            <D9Icon name="question" size="sm" />
+            <span>Optional</span>
+          </template>
+        </button>
+        <button
+          class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
+          :class="[
+            block.is_disabled
+              ? 'bg-grey-100 outline-grey-200'
+              : 'bg-green-50 outline-green-100',
+          ]"
+          @click="disableBlock()"
+        >
+          <template v-if="block.is_disabled">
+            <D9Icon name="circle-dot" size="sm" />
+            <span>Disabled</span>
+          </template>
+          <template v-else>
+            <D9Icon name="circle-check" size="sm" />
+            <span>Enabled</span>
+          </template>
+        </button>
       </div>
     </button>
   </div>
@@ -71,9 +114,8 @@ import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import DefaultBlockMessage from "./DefaultBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
-import Label from "@/components/Label.vue";
 import { useWorkbench, useForm } from "@/stores";
-import { D9Menu, D9MenuLink } from "@deck9/ui";
+import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 import { useActiveCard } from "@/utils/useActiveCard";
@@ -114,7 +156,19 @@ const deleteBlock = () => {
 };
 
 const disableBlock = () => {
-  store.disableFormBlock(props.block, !props.block.is_disabled);
+  store.updateFormBlockProperty(
+    props.block,
+    "is_disabled",
+    !props.block.is_disabled,
+  );
+};
+
+const toggleRequired = () => {
+  store.updateFormBlockProperty(
+    props.block,
+    "is_required",
+    !props.block.is_required,
+  );
 };
 
 const copyId = () => {
