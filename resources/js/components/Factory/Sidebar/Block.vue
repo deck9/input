@@ -64,6 +64,7 @@
               ? 'bg-blue-100 outline-blue-200'
               : 'bg-grey-100 outline-grey-200',
           ]"
+          @click="showLogicEditor"
         >
           <D9Icon name="code-branch" size="sm" />
           <span>Block Logic</span>
@@ -114,7 +115,7 @@ import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import DefaultBlockMessage from "./DefaultBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
-import { useWorkbench, useForm } from "@/stores";
+import { useWorkbench, useForm, useLogic } from "@/stores";
 import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
@@ -124,6 +125,7 @@ import { storeToRefs } from "pinia";
 
 const workbench = useWorkbench();
 const store = useForm();
+const logicStore = useLogic();
 
 const { showBlockMenus } = storeToRefs(store);
 
@@ -169,6 +171,10 @@ const toggleRequired = () => {
     "is_required",
     !props.block.is_required,
   );
+};
+
+const showLogicEditor = () => {
+  logicStore.showLogicEditor(props.block);
 };
 
 const copyId = () => {
