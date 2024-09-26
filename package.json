@@ -32,7 +32,7 @@
         "vitest": "^2.1.1"
     },
     "dependencies": {
-        "@deck9/ui": "^0.15.1",
+        "@deck9/ui": "^0.15.3",
         "@headlessui/vue": "^1.7.23",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@inertiajs/vue3": "^1.2.0",

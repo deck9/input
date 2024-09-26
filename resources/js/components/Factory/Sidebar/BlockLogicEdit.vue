@@ -16,7 +16,7 @@
             leave-from="translate-x-0"
             leave-to="-translate-x-full"
           >
-            <DialogPanel class="pointer-events-auto w-screen max-w-lg">
+            <DialogPanel class="pointer-events-auto w-screen max-w-xl">
               <form
                 class="flex h-full flex-col divide-y divide-grey-200 bg-white shadow-xl"
               >
@@ -43,10 +43,7 @@
                     </div>
                   </div>
                   <div class="relative mt-6 flex-1 px-4 sm:px-6">
-                    <p>This is the block logic editor.</p>
-                    <pre class="bg-black text-white p-4 rounded text-xxs">{{
-                      store.block
-                    }}</pre>
+                    <BlockHideLogic />
                   </div>
                 </div>
                 <div
@@ -54,13 +51,7 @@
                   :class="{ 'pointer-events-none opacity-50': isSaving }"
                 >
                   <D9Button
-                    label="Cancel"
-                    type="button"
-                    @click="close"
-                    color="light"
-                  />
-                  <D9Button
-                    label="Save"
+                    label="Close"
                     type="submit"
                     class="ml-4"
                     :is-loading="isSaving"
@@ -84,6 +75,7 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
+import BlockHideLogic from "./BlockHideLogic.vue";
 import { /* D9Label, D9Input, D9Select, */ D9Button, D9Icon } from "@deck9/ui";
 
 import { useLogic } from "@/stores";

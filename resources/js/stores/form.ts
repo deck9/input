@@ -81,6 +81,28 @@ export const useForm = defineStore("form", {
         showBlockMenus: (state): boolean => {
             return state.isBlockMenuEnabled;
         },
+
+        blocksTree: (state): TreeNode[] => {
+            const tree: TreeNode[] = [];
+            const map: Record<string, TreeNode> = {};
+
+            state.blocks?.forEach((block) => {
+                map[block.uuid] = { block, children: [] };
+            });
+
+            state.blocks?.forEach((block) => {
+                if (block.parent_block) {
+                    const parent = map[block.parent_block];
+                    if (parent) {
+                        parent.children.push(map[block.uuid]);
+                    }
+                } else {
+                    tree.push(map[block.uuid]);
+                }
+            });
+
+            return tree;
+        },
     },
 
     actions: {

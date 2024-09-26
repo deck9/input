@@ -64,6 +64,11 @@ interface FormWebhookModel extends BaseModel {
     headers: Record<string, string> | null;
 }
 
+interface TreeNode {
+    block: FormBlockModel;
+    children: TreeNode[];
+}
+
 interface FormBlockModel extends BaseModel {
     type: FormBlockType;
     message: string | null;
