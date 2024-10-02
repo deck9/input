@@ -19,6 +19,7 @@
             <DialogPanel class="pointer-events-auto w-screen max-w-xl">
               <form
                 class="flex h-full flex-col divide-y divide-grey-200 bg-white shadow-xl"
+                @submit.prevent="saveBlockLogic"
               >
                 <div
                   class="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6"
@@ -51,7 +52,13 @@
                   :class="{ 'pointer-events-none opacity-50': isSaving }"
                 >
                   <D9Button
-                    label="Close"
+                    label="Cancel"
+                    type="button"
+                    @click="close"
+                    color="light"
+                  />
+                  <D9Button
+                    label="Save"
                     type="submit"
                     class="ml-4"
                     :is-loading="isSaving"
@@ -85,6 +92,17 @@ const store = useLogic();
 const isSaving = ref(false);
 
 const { isShowingLogicEditor } = storeToRefs(store);
+
+const saveBlockLogic = () => {
+  isSaving.value = true;
+
+  store.saveBlockLogic();
+
+  setTimeout(() => {
+    isSaving.value = false;
+    store.hideLogicEditor();
+  }, 2000);
+};
 
 const close = () => {
   store.hideLogicEditor();

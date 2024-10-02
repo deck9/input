@@ -5,101 +5,103 @@
       description="Hide this block based on one or more conditions"
     />
 
-    <div v-for="(condition, index) in conditions" :key="index" class="mt-2">
-      <div
-        class="flex justify-between font-mono uppercase text-xs tracking-widest text-blue-700"
-      >
-        <span
-          v-if="index === 0"
-          class="font-mono uppercase text-xs tracking-widest text-blue-700"
-          >When</span
-        >
+    <template v-if="availableSourceBlocks.length > 0">
+      <div v-for="(condition, index) in conditions" :key="index" class="mt-2">
         <div
-          class="font-mono uppercase text-xs tracking-widest text-blue-700"
-          v-else
+          class="flex justify-between font-mono uppercase text-xs tracking-widest text-blue-700"
         >
-          <input
-            v-model="condition.chainOperator"
-            :id="'chain-operator-and-' + index"
-            type="radio"
-            class="uppercase appearance-none peer/and hidden"
-            :name="'chain-operator-' + index"
-            value="and"
-          />
-          <label
-            class="cursor-pointer text-grey-300 peer-checked/and:text-blue-700 peer-checked/and:font-bold"
-            :for="'chain-operator-and-' + index"
-            >AND</label
+          <span
+            v-if="index === 0"
+            class="font-mono uppercase text-xs tracking-widest text-blue-700"
+            >When</span
           >
-          <span>/</span>
-          <input
-            v-model="condition.chainOperator"
-            :id="'chain-operator-or-' + index"
-            type="radio"
-            class="uppercase appearance-none hidden peer/or"
-            :name="'chain-operator-' + index"
-            value="or"
-          />
-          <label
-            class="cursor-pointer text-grey-300 peer-checked/or:text-blue-700 peer-checked/or:font-bold"
-            :for="'chain-operator-or-' + index"
-            >OR</label
+          <div
+            class="font-mono uppercase text-xs tracking-widest text-blue-700"
+            v-else
           >
+            <input
+              v-model="condition.chainOperator"
+              :id="'chain-operator-and-' + index"
+              type="radio"
+              class="uppercase appearance-none peer/and hidden"
+              :name="'chain-operator-' + index"
+              value="and"
+            />
+            <label
+              class="cursor-pointer text-grey-300 peer-checked/and:text-blue-700 peer-checked/and:font-bold"
+              :for="'chain-operator-and-' + index"
+              >AND</label
+            >
+            <span>/</span>
+            <input
+              v-model="condition.chainOperator"
+              :id="'chain-operator-or-' + index"
+              type="radio"
+              class="uppercase appearance-none hidden peer/or"
+              :name="'chain-operator-' + index"
+              value="or"
+            />
+            <label
+              class="cursor-pointer text-grey-300 peer-checked/or:text-blue-700 peer-checked/or:font-bold"
+              :for="'chain-operator-or-' + index"
+              >OR</label
+            >
+          </div>
+          <button
+            type="button"
+            class="text-xs font-mono tracking-normal text-red-500"
+            @click="removeCondition(index)"
+          >
+            Remove
+          </button>
         </div>
-        <button
-          type="button"
-          class="text-xs font-mono tracking-normal text-red-500"
-          @click="removeCondition(index)"
-        >
-          Remove
-        </button>
-      </div>
-      <D9Select
-        placeholder="Select a block"
-        v-model="condition.source"
-        size="small"
-        :options="availableSourceBlocks"
-      />
-
-      <div class="flex items-center space-x-2 mt-1">
         <D9Select
-          class="w-64"
-          placeholder="Select an operator"
-          v-model="condition.operator"
+          placeholder="Select a block"
+          v-model="condition.source"
           size="small"
-          :options="operators"
+          :options="availableSourceBlocks"
         />
-        <D9Input
-          class="w-full"
-          v-model="condition.value"
-          placeholer="Enter a value"
+
+        <div class="flex items-center space-x-2 mt-1">
+          <D9Select
+            class="w-64"
+            placeholder="Select an operator"
+            v-model="condition.operator"
+            size="small"
+            :options="operators"
+          />
+          <D9Input
+            class="w-full"
+            v-model="condition.value"
+            placeholer="Enter a value"
+            size="small"
+            block
+          />
+        </div>
+      </div>
+
+      <div class="mt-1">
+        <button
+          v-if="hasConditions"
+          type="button"
+          class="text-sm underline"
+          @click="addCondition"
+        >
+          Add another condition
+        </button>
+        <D9Button
+          v-else
+          label="Add condition"
+          color="dark"
           size="small"
-          block
+          @click="addCondition"
         />
       </div>
-    </div>
 
-    <div class="mt-1">
-      <button
-        v-if="hasConditions"
-        type="button"
-        class="text-sm underline"
-        @click="addCondition"
-      >
-        Add another condition
-      </button>
-      <D9Button
-        v-else
-        label="Add condition"
-        color="dark"
-        size="small"
-        @click="addCondition"
-      />
-    </div>
-
-    <pre class="text-xxs bg-black text-white p-2 rounded mt-4">{{
-      conditions
-    }}</pre>
+      <pre class="text-xxs bg-black text-white p-2 rounded mt-4">{{
+        conditions
+      }}</pre>
+    </template>
   </div>
 </template>
 

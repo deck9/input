@@ -24,6 +24,10 @@ export const useLogic = defineStore("logic", {
             this.block = null;
             this.isShowingLogicEditor = false;
         },
+
+        saveBlockLogic() {
+            console.log("save block logic");
+        },
     },
 
     getters: {
