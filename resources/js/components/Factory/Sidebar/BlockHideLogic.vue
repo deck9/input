@@ -107,7 +107,7 @@
 
 <script lang="ts" setup>
 import { D9Label, D9Input, D9Select, D9Button } from "@deck9/ui";
-import { computed, Ref, ref, watch, watchEffect } from "vue";
+import { computed, Ref, ref, watch } from "vue";
 import { useLogic } from "@/stores";
 import { getTextFromHtml } from "@/utils";
 

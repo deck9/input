@@ -110,7 +110,7 @@ const groupCount = computed(() => {
 
 const deleteBlock = () => {
   let result = window.confirm(
-    "Do you really want to delete this group? All blocks inside this group will be deleted as well."
+    "Do you really want to delete this group? All blocks inside this group will be deleted as well.",
   );
 
   if (result) {
@@ -127,7 +127,11 @@ const disableBlock = () => {
     isCollapsed.value = true;
   }
 
-  store.disableFormBlock(props.block, !props.block.is_disabled);
+  store.updateFormBlockProperty(
+    props.block,
+    "is_disabled",
+    !props.block.is_disabled,
+  );
 };
 
 const copyId = () => {
