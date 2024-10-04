@@ -69,6 +69,30 @@ interface TreeNode {
     children: TreeNode[];
 }
 
+type Operator =
+    | "equals"
+    | "equalsNot"
+    | "contains"
+    | "containsNot"
+    | "isLowerThan"
+    | "isGreaterThan";
+
+interface FormBlockCondition {
+    source?: { key: FormBlockModel["uuid"] };
+    operator: { key: Operator };
+    value: string;
+    chainOperator: "or" | "and";
+}
+
+interface FormBlockRule {
+    form_block_id: number;
+    name: string;
+    conditions: Array<FormBlockCondition>;
+    action: "show" | "hide" | "goto";
+    actionPayload: string | null;
+    evaluate: "before" | "after";
+}
+
 interface FormBlockModel extends BaseModel {
     type: FormBlockType;
     message: string | null;

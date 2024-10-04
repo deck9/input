@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 interface LogicStore {
     block: FormBlockModel | null;
     isShowingLogicEditor: boolean;
+    hideRule: FormBlockRule | null;
 }
 
 export const useLogic = defineStore("logic", {
@@ -11,6 +12,7 @@ export const useLogic = defineStore("logic", {
         return {
             block: null,
             isShowingLogicEditor: false,
+            hideRule: null,
         };
     },
 
@@ -26,7 +28,26 @@ export const useLogic = defineStore("logic", {
         },
 
         saveBlockLogic() {
-            console.log("save block logic");
+            console.log("save rules", [this.hideRule]);
+        },
+
+        updateHideRule(conditions: Array<FormBlockCondition>) {
+            if (!this.block) {
+                return;
+            }
+
+            if (!this.hideRule) {
+                this.hideRule = {
+                    form_block_id: this.block?.id,
+                    name: "Hide block",
+                    conditions,
+                    action: "hide",
+                    actionPayload: null,
+                    evaluate: "before",
+                };
+            } else {
+                this.hideRule.conditions = conditions;
+            }
         },
     },
 

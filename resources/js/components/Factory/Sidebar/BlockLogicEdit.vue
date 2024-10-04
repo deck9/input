@@ -100,8 +100,9 @@ const saveBlockLogic = () => {
 
   setTimeout(() => {
     isSaving.value = false;
-    store.hideLogicEditor();
-  }, 2000);
+    // TODO hide when saving is done
+    // store.hideLogicEditor();
+  }, 250);
 };
 
 const close = () => {

@@ -107,19 +107,11 @@
 
 <script lang="ts" setup>
 import { D9Label, D9Input, D9Select, D9Button } from "@deck9/ui";
-import { computed, Ref, ref } from "vue";
+import { computed, Ref, ref, watch, watchEffect } from "vue";
 import { useLogic } from "@/stores";
 import { getTextFromHtml } from "@/utils";
 
 const logicStore = useLogic();
-
-type Operator =
-  | "equals"
-  | "equalsNot"
-  | "contains"
-  | "containsNot"
-  | "isLowerThan"
-  | "isGreaterThan";
 
 const operators: Array<{ key: Operator; label: string }> = [
   { key: "equals", label: "is equal to" },
@@ -130,14 +122,7 @@ const operators: Array<{ key: Operator; label: string }> = [
   { key: "isGreaterThan", label: "is greater than" },
 ];
 
-const conditions: Ref<
-  Array<{
-    source?: { key: FormBlockModel["uuid"] };
-    operator: { key: Operator };
-    value: string;
-    chainOperator: "or" | "and";
-  }>
-> = ref([]);
+const conditions: Ref<Array<FormBlockCondition>> = ref([]);
 
 const addCondition = () => {
   conditions.value.push({
@@ -168,4 +153,12 @@ const availableSourceBlocks = computed(() => {
       };
     });
 });
+
+watch(
+  conditions,
+  () => {
+    logicStore.updateHideRule(conditions.value);
+  },
+  { deep: true },
+);
 </script>
