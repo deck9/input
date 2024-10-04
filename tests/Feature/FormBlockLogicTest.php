@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Form;
 use App\Models\FormBlock;
 use App\Models\FormBlockLogic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,7 +25,7 @@ test('can create a rule for a form block', function () {
             'evaluate' => 'before',
         ]);
 
-    $response->assertStatus(200);
+    $response->assertStatus(201);
 });
 
 test('can update an existing form block logic', function () {
@@ -56,4 +55,3 @@ test('can update an existing form block logic', function () {
     $this->assertCount(1, $logic->conditions);
     $this->assertEquals($block->uuid, $logic->conditions[0]['source']);
 });
-

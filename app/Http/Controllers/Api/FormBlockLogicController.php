@@ -11,7 +11,7 @@ class FormBlockLogicController extends Controller
 {
     public function create(FormBlockLogicRequest $request, FormBlock $block)
     {
-        return response()->json($block->formBlockLogics()->create($request->validated()));
+        return response()->json($block->formBlockLogics()->create($request->validated()), 201);
     }
 
     public function update(FormBlockLogicRequest $request, FormBlockLogic $logic)

@@ -122,7 +122,7 @@ const operators: Array<{ key: Operator; label: string }> = [
   { key: "isGreaterThan", label: "is greater than" },
 ];
 
-const conditions: Ref<Array<FormBlockCondition>> = ref([]);
+const conditions: Ref<Array<EditableFormBlockBlockLogicCondition>> = ref([]);
 
 const addCondition = () => {
   conditions.value.push({

@@ -27,7 +27,7 @@ class FormBlock extends BaseModel
 
     protected $guarded = [];
 
-    protected $with = ['formBlockInteractions'];
+    protected $with = ['formBlockInteractions', 'formBlockLogics'];
 
     protected $casts = [
         'is_required' => 'boolean',
@@ -39,10 +39,12 @@ class FormBlock extends BaseModel
 
     protected $appends = [
         'interactions',
+        'logics',
     ];
 
     protected $hidden = [
         'formBlockInteractions',
+        'formBlockLogics',
     ];
 
     protected static function boot()
@@ -110,6 +112,11 @@ class FormBlock extends BaseModel
     public function getInteractionsAttribute()
     {
         return $this->formBlockInteractions;
+    }
+
+    public function getLogicsAttribute()
+    {
+        return $this->formBlockLogics;
     }
 
     public function getSessionCountAttribute()

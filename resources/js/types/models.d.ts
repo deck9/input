@@ -77,17 +77,22 @@ type Operator =
     | "isLowerThan"
     | "isGreaterThan";
 
-interface FormBlockCondition {
-    source?: { key: FormBlockModel["uuid"] };
-    operator: { key: Operator };
+interface FormBlockLogicCondition {
+    source?: FormBlockModel["uuid"];
+    operator?: Operator;
     value: string;
     chainOperator: "or" | "and";
 }
 
-interface FormBlockRule {
+interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {
+    source?: { key: FormBlockModel["uuid"] };
+    operator: { key: Operator };
+}
+
+interface FormBlockLogic {
     form_block_id: number;
     name: string;
-    conditions: Array<FormBlockCondition>;
+    conditions: Array<FormBlockLogicCondition>;
     action: "show" | "hide" | "goto";
     actionPayload: string | null;
     evaluate: "before" | "after";
@@ -106,6 +111,7 @@ interface FormBlockModel extends BaseModel {
     sequence: number;
     form_id: number;
     interactions: FormBlockInteractionModel[] | undefined;
+    logics: FormBlockLogic[] | undefined;
 }
 
 type FormBlockType =

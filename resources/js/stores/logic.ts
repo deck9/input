@@ -1,11 +1,23 @@
 import { useForm } from "@/stores";
 import { defineStore } from "pinia";
 
+import { callCreateFormBlockLogic } from "@/api/logics";
+
 interface LogicStore {
     block: FormBlockModel | null;
     isShowingLogicEditor: boolean;
-    hideRule: FormBlockRule | null;
+    hideRule: FormBlockLogic | null;
 }
+
+const transformConditionForBackend = (
+    condition: EditableFormBlockBlockLogicCondition,
+): FormBlockLogicCondition => {
+    return {
+        ...condition,
+        source: condition.source?.key,
+        operator: condition.operator.key,
+    };
+};
 
 export const useLogic = defineStore("logic", {
     state: (): LogicStore => {
@@ -27,26 +39,51 @@ export const useLogic = defineStore("logic", {
             this.isShowingLogicEditor = false;
         },
 
-        saveBlockLogic() {
-            console.log("save rules", [this.hideRule]);
-        },
-
-        updateHideRule(conditions: Array<FormBlockCondition>) {
+        async saveBlockLogic() {
             if (!this.block) {
                 return;
             }
+
+            try {
+                console.log("save rules", [this.hideRule]);
+                // create new logic on backend
+                const response = await callCreateFormBlockLogic(
+                    this.block?.id,
+                    {
+                        ...this.hideRule,
+                    },
+                );
+
+                if (response.status === 201) {
+                    this.hideRule = response.data;
+                }
+            } catch (error) {
+                console.warn(error);
+            }
+        },
+
+        updateHideRule(
+            conditions: Array<EditableFormBlockBlockLogicCondition>,
+        ) {
+            if (!this.block) {
+                return;
+            }
+
+            const transformedConditions = conditions.map((c) =>
+                transformConditionForBackend(c),
+            );
 
             if (!this.hideRule) {
                 this.hideRule = {
                     form_block_id: this.block?.id,
                     name: "Hide block",
-                    conditions,
+                    conditions: transformedConditions,
                     action: "hide",
                     actionPayload: null,
                     evaluate: "before",
                 };
             } else {
-                this.hideRule.conditions = conditions;
+                this.hideRule.conditions = transformedConditions;
             }
         },
     },
