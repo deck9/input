@@ -90,9 +90,13 @@ interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {
 }
 
 interface FormBlockLogic {
+    id?: number;
+    uuid?: string;
     form_block_id: number;
     name: string;
-    conditions: Array<FormBlockLogicCondition>;
+    conditions:
+        | Array<FormBlockLogicCondition>
+        | Array<EditableFormBlockBlockLogicCondition>;
     action: "show" | "hide" | "goto";
     actionPayload: string | null;
     evaluate: "before" | "after";

@@ -17,9 +17,8 @@
             leave-to="-translate-x-full"
           >
             <DialogPanel class="pointer-events-auto w-screen max-w-xl">
-              <form
+              <div
                 class="flex h-full flex-col divide-y divide-grey-200 bg-white shadow-xl"
-                @submit.prevent="saveBlockLogic"
               >
                 <div
                   class="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6"
@@ -31,6 +30,7 @@
                       >
                         Block Logic
                       </DialogTitle>
+
                       <div class="ml-3 flex h-7 items-center">
                         <button
                           type="button"
@@ -43,8 +43,21 @@
                       </div>
                     </div>
                   </div>
-                  <div class="relative mt-6 flex-1 px-4 sm:px-6">
-                    <BlockHideLogic />
+                  <div class="relative mt-6 flex-1 px-4 sm:px-6" v-if="block">
+                    <BlockLogicRule
+                      class="mb-2"
+                      v-for="(rule, index) in block.logics"
+                      v-bind="{ rule, index }"
+                      :key="index"
+                    />
+                    <D9Button
+                      type="button"
+                      label="Add rule"
+                      @click="store.addRule()"
+                      icon="plus"
+                      color="dark"
+                      icon-position="left"
+                    />
                   </div>
                 </div>
                 <div
@@ -59,12 +72,13 @@
                   />
                   <D9Button
                     label="Save"
-                    type="submit"
+                    type="button"
+                    @click="save"
                     class="ml-4"
                     :is-loading="isSaving"
                   />
                 </div>
-              </form>
+              </div>
             </DialogPanel>
           </TransitionChild>
         </div>
@@ -82,8 +96,8 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import BlockHideLogic from "./BlockHideLogic.vue";
-import { /* D9Label, D9Input, D9Select, */ D9Button, D9Icon } from "@deck9/ui";
+import BlockLogicRule from "./BlockLogicRule.vue";
+import { D9Button, D9Icon } from "@deck9/ui";
 
 import { useLogic } from "@/stores";
 import { storeToRefs } from "pinia";
@@ -91,12 +105,12 @@ import { storeToRefs } from "pinia";
 const store = useLogic();
 const isSaving = ref(false);
 
-const { isShowingLogicEditor } = storeToRefs(store);
+const { isShowingLogicEditor, block } = storeToRefs(store);
 
-const saveBlockLogic = () => {
+const save = async () => {
   isSaving.value = true;
 
-  store.saveBlockLogic();
+  await store.saveBlockLogic();
 
   setTimeout(() => {
     isSaving.value = false;

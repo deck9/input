@@ -4,10 +4,8 @@ import handler from "./handler";
 
 export function callCreateFormBlockLogic(
     id: number,
-    attributes?: Partial<FormBlockLogic>,
+    attributes: Partial<FormBlockLogic>,
 ): Promise<AxiosResponse<FormBlockLogic>> {
-    console.log("create logic", id, attributes);
-
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
@@ -15,6 +13,41 @@ export function callCreateFormBlockLogic(
                 {
                     ...attributes,
                 },
+            );
+
+            resolve(response as AxiosResponse<FormBlockLogic>);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callUpdateFormBlockLogic(
+    attributes: Partial<FormBlockLogic>,
+): Promise<AxiosResponse<FormBlockLogic>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.post(
+                window.route("api.logics.update", { logic: attributes.id }),
+                {
+                    ...attributes,
+                },
+            );
+
+            resolve(response as AxiosResponse<FormBlockLogic>);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export function callDeleteFormBlockLogic(
+    attributes: Partial<FormBlockLogic>,
+): Promise<AxiosResponse<FormBlockLogic>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await handler.delete(
+                window.route("api.logics.delete", { logic: attributes.id }),
             );
 
             resolve(response as AxiosResponse<FormBlockLogic>);
