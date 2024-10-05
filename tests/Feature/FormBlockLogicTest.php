@@ -55,3 +55,14 @@ test('can update an existing form block logic', function () {
     $this->assertCount(1, $logic->conditions);
     $this->assertEquals($block->uuid, $logic->conditions[0]['source']);
 });
+
+
+test('can delete a logic rule', function () {
+    $logic = FormBlockLogic::factory()->create();
+
+    $this->actingAs($logic->formBlock->form->user)
+        ->json('DELETE', route('api.logics.delete', $logic->id))
+        ->assertStatus(200);
+
+    $this->assertNull($logic->fresh());
+});

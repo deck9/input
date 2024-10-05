@@ -104,6 +104,7 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     // Logic API Routes
     $router->post('{block}/logic', [FormBlockLogicController::class, 'create'])->name('api.logics.create');
     $router->post('logic/{logic}', [FormBlockLogicController::class, 'update'])->name('api.logics.update');
+    $router->delete('logic/{logic}', [FormBlockLogicController::class, 'delete'])->name('api.logics.delete');
 
     // Sequence Routes
     $router->post('{form}/blocks/sequence', FormBlockSequenceController::class)->name('api.blocks.sequence');

@@ -11,8 +11,9 @@
       />
     </div>
 
-    <div class="font-mono uppercase text-xs tracking-widest text-blue-700 mb-2">
+    <div class="font-mono text-sm tracking-widest text-blue-700 mb-2">
       <LabelToggle
+        class="inline-block mr-1 uppercase"
         v-bind="{
           options: [
             { label: 'Before', value: 'before' },
@@ -80,14 +81,15 @@
       </button>
     </div>
 
-    <div class="mt-2 font-mono uppercase text-xs">
-      <span class="tracking-widest text-grey-700 mb-1">Then</span>
+    <div class="mt-3 font-mono text-sm">
+      <span class="tracking-widest text-grey-700 mb-1">then</span>
       <LabelToggle
+        class="text-sm inline-block mx-1 uppercase"
         v-bind="{
           options: [
             { label: 'Hide', value: 'hide' },
             { label: 'Show', value: 'show' },
-            { label: 'Go to', value: 'goto' },
+            // { label: 'Go to', value: 'goto' },
           ],
         }"
         v-model="action"

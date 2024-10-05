@@ -1,5 +1,5 @@
 <template>
-  <div class="font-mono uppercase text-xs tracking-widest text-blue-700">
+  <div>
     <span v-for="(option, index) in options" :key="option.value">
       <input
         :id="`label-toggle-${uid}-${index}`"

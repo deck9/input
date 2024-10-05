@@ -18,4 +18,11 @@ class FormBlockLogicController extends Controller
     {
         return response()->json($logic->update($request->validated()));
     }
+
+    public function delete(FormBlockLogic $logic)
+    {
+        $logic->delete();
+
+        return response()->json(null, 200);
+    }
 }
