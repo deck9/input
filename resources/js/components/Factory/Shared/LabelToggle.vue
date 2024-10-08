@@ -1,32 +1,45 @@
 <template>
-  <div>
-    <span v-for="(option, index) in options" :key="option.value">
-      <input
-        :id="`label-toggle-${uid}-${index}`"
-        type="radio"
-        class="uppercase appearance-none peer hidden"
-        :class="`peer`"
-        :name="`label-toggle-${uid}`"
-        :value="option.value"
-        :checked="modelValue === option.value"
-        @change="updateValue(option.value)"
-      />
-      <label
-        class="cursor-pointer text-grey-300"
-        :class="`peer-checked:text-blue-700 peer-checked:font-bold`"
-        :for="`label-toggle-${uid}-${index}`"
-        >{{ option.label }}</label
+  <RadioGroup
+    v-model="value"
+    class="flex w-fit justify-start rounded-md -space-x-px"
+  >
+    <RadioGroupOption
+      as="template"
+      v-for="(option, index) in options"
+      :key="option.value"
+      :value="option.value"
+      v-slot="{ active, checked }"
+    >
+      <div
+        :class="[
+          'cursor-pointer focus:outline-none',
+          checked
+            ? 'bg-white text-blue-700 ring-blue-600'
+            : 'bg-white text-grey-500 hover:text-grey-900 hover:ring-blue-600',
+          !active && !checked ? 'ring-inset' : '',
+          index === 0 ? 'rounded-l-md' : 'rounded-r-md',
+          'group flex items-center justify-center px-3 py-2 leading-none text-sm border border-grey-300',
+        ]"
       >
-      <span class="mx-1" v-if="index < options.length - 1">/</span>
-    </span>
-  </div>
+        <span
+          class="h-2 w-2 rounded-full ring-1 ring-offset-2 mr-2"
+          :class="[
+            checked
+              ? 'bg-blue-600 ring-blue-600'
+              : 'bg-white group-hover:ring-blue-300',
+            active ? 'ring-2 ring-blue-600 ring-offset-2' : '',
+            active && checked ? 'ring-2 ring-blue-600' : '',
+          ]"
+        ></span>
+        {{ option.label }}
+      </div>
+    </RadioGroupOption>
+  </RadioGroup>
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance } from "vue";
-
-const instance = getCurrentInstance();
-const uid = instance?.uid;
+import { ref, watch } from "vue";
+import { RadioGroup, RadioGroupOption } from "@headlessui/vue";
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
@@ -37,7 +50,7 @@ interface ToggleOption {
   value: string;
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue: string;
     options: ToggleOption[];
@@ -50,7 +63,9 @@ withDefaults(
   },
 );
 
-const updateValue = (value: string) => {
+const value = ref(props.modelValue);
+
+watch(value, (value) => {
   emit("update:modelValue", value);
-};
+});
 </script>
