@@ -50,6 +50,14 @@
                       v-bind="{ rule, index }"
                       :key="index"
                     />
+
+                    <EmptyState
+                      v-if="!block.logics.length"
+                      class="mb-4"
+                      title="No rules setup"
+                      description="Add a rule to get started"
+                    />
+
                     <D9Button
                       type="button"
                       label="Add rule"
@@ -97,6 +105,7 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import BlockLogicRule from "./BlockLogicRule.vue";
+import EmptyState from "@/components/EmptyState.vue";
 import { D9Button, D9Icon } from "@deck9/ui";
 
 import { useLogic } from "@/stores";
@@ -114,8 +123,7 @@ const save = async () => {
 
   setTimeout(() => {
     isSaving.value = false;
-    // TODO hide when saving is done
-    // store.hideLogicEditor();
+    store.hideLogicEditor();
   }, 250);
 };
 

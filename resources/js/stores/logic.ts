@@ -76,6 +76,11 @@ export const useLogic = defineStore("logic", {
                 return;
             }
 
+            if (this.block.logics[index].id === undefined) {
+                this.block.logics.splice(index, 1);
+                return;
+            }
+
             try {
                 const response = await callDeleteFormBlockLogic(
                     this.block.logics[index],
