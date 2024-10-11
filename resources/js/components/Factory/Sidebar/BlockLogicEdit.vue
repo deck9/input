@@ -52,7 +52,7 @@
                     />
 
                     <EmptyState
-                      v-if="!block.logics.length"
+                      v-if="!block.logics?.length"
                       class="mb-4"
                       title="No rules setup"
                       description="Add a rule to get started"
@@ -123,7 +123,7 @@ const save = async () => {
 
   setTimeout(() => {
     isSaving.value = false;
-    store.hideLogicEditor();
+    // store.hideLogicEditor();
   }, 250);
 };
 

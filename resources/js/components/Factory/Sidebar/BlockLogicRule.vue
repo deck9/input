@@ -113,6 +113,12 @@
         />
       </div>
     </div>
+
+    <ValidationErrors
+      v-if="validation"
+      v-bind="{ errors: [validation.message] }"
+      class="mb-2"
+    />
   </div>
 </template>
 
@@ -122,6 +128,7 @@ import { computed, Ref, ref, watch } from "vue";
 import { useLogic, operators } from "@/stores";
 import { getTextFromHtml } from "@/utils";
 import LabelToggle from "@/components/Factory/Shared/LabelToggle.vue";
+import ValidationErrors from "@/components/ValidationErrors.vue";
 
 const logicStore = useLogic();
 
@@ -129,6 +136,10 @@ const props = defineProps<{
   rule: FormBlockLogic;
   index: number;
 }>();
+
+const validation = computed(() => {
+  return logicStore.validation[props.index];
+});
 
 const evaluate = ref<FormBlockLogic["evaluate"]>(props.rule.evaluate);
 const action = ref<FormBlockLogic["action"]>(props.rule.action);

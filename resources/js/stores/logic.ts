@@ -6,9 +6,14 @@ import {
     callUpdateFormBlockLogic,
     callDeleteFormBlockLogic,
 } from "@/api/logics";
+interface ValidationError {
+    message: string;
+    errors: Record<string, string[]>;
+}
 
 interface LogicStore {
     block: FormBlockModel | null;
+    validation: ValidationError[];
     isShowingLogicEditor: boolean;
     hideRule: FormBlockLogic | null;
 }
@@ -38,6 +43,7 @@ export const useLogic = defineStore("logic", {
             block: null,
             isShowingLogicEditor: false,
             hideRule: null,
+            validation: [],
         };
     },
 
@@ -99,23 +105,32 @@ export const useLogic = defineStore("logic", {
                 return;
             }
 
+            // reset validation before each request
+            this.validation = [];
+
             const results = await Promise.allSettled(
-                this.block.logics.map((logic) => this.saveSingleRule(logic)),
+                this.block.logics.map((logic, index) =>
+                    this.saveSingleRule(logic).then((result) => ({
+                        result,
+                        index,
+                    })),
+                ),
             );
 
-            const failedSaves = results.filter(
-                (result) => result.status === "rejected",
-            );
+            const failedSaves = results
+                .map((result, index) => ({ ...result, originalIndex: index }))
+                .filter(
+                    (
+                        result,
+                    ): result is PromiseRejectedResult & {
+                        originalIndex: number;
+                    } => result.status === "rejected",
+                );
 
             if (failedSaves.length > 0) {
-                console.warn(`Failed to save ${failedSaves.length} rule(s):`);
-                failedSaves.forEach((failure, index) => {
-                    if (failure.status === "rejected") {
-                        console.warn(
-                            `Rule ${index + 1} failed:`,
-                            failure.reason,
-                        );
-                    }
+                failedSaves.forEach((failure) => {
+                    this.validation[failure.originalIndex] =
+                        failure.reason.response.data;
                 });
             }
 
