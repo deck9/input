@@ -9,7 +9,7 @@
     >
       <div
         v-if="showBlockMenus"
-        class="absolute right-3 top-3 hover:opacity-100"
+        class="absolute right-3 top-3 hover:opacity-100 z-20"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
         <D9Menu
@@ -40,8 +40,14 @@
         </D9Menu>
       </div>
 
-      <div class="relative mt-3 flex items-start">
+      <div class="relative flex items-start">
         <div class="pr-4">
+          <div
+            class="bg-grey-700 text-grey-100 inline-block px-2 text-xxs leading-5 rounded mb-1"
+          >
+            {{ block.title && block.title.length ? block.title : block.uuid }}
+          </div>
+
           <ConsentBlockMessage v-if="block.type === 'consent'" />
 
           <DefaultBlockMessage v-if="block.message" :content="block.message" />

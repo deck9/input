@@ -158,7 +158,7 @@ const getBlockOption = (block: FormBlockModel) => {
 
   return {
     key: block.uuid,
-    label: `<div class="inline-flex items-center text-xs"><span class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-12 truncate inline-block text-center">${block.title ?? block.uuid}</span><span class="inline-block truncate">${text}</span></div>`,
+    label: `<div class="inline-flex items-center text-xs"><span class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center">${block.title && block.title.length ? block.title : block.uuid}</span><span class="inline-block truncate">${text}</span></div>`,
   };
 };
 
