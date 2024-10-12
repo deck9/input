@@ -65,7 +65,7 @@
               <D9Input
                 class="w-full"
                 v-model="condition.value"
-                placeholer="Enter a value"
+                placeholder="Enter a value"
                 size="small"
                 block
               />
@@ -115,9 +115,9 @@
     </div>
 
     <ValidationErrors
-      v-if="validation"
-      v-bind="{ errors: [validation.message] }"
-      class="mb-2"
+      v-if="validation.length > 0"
+      v-bind="{ errors: validation, title: 'Your rule is invalid' }"
+      class="my-2 px-4 pb-4 placeholder:text-grey-400"
     />
   </div>
 </template>
@@ -138,7 +138,15 @@ const props = defineProps<{
 }>();
 
 const validation = computed(() => {
-  return logicStore.validation[props.index];
+  if (!logicStore.validation[props.index]) {
+    return [];
+  }
+
+  return Object.keys(logicStore.validation[props.index].errors).flatMap(
+    (key) => {
+      return [...logicStore.validation[props.index].errors[key]];
+    },
+  );
 });
 
 const evaluate = ref<FormBlockLogic["evaluate"]>(props.rule.evaluate);
