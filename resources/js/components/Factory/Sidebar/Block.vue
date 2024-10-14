@@ -112,12 +112,43 @@
           </template>
         </button>
       </div>
+
+      <!-- Block Logic -->
+      <div class="mt-4" v-if="block.logics && block.logics.length > 0">
+        <button
+          class="font-semibold mb-2"
+          @click="showBlockLogic = !showBlockLogic"
+        >
+          <D9Icon
+            name="chevron-right"
+            size="sm"
+            class="mr-1"
+            :class="[showBlockLogic ? 'rotate-90' : '']"
+          />
+          {{ t("admin.logicTitle") }}
+        </button>
+        <div class="pl-4" v-show="showBlockLogic">
+          <div class="leading-5">
+            <span class="text-purple-500 font-semibold mr-1">If</span>
+            <span>the response for block</span>
+            <span class="text-grey-700 font-bold ml-1">jR</span>
+            <span class="text-purple-500 font-semibold mx-1">contains</span>
+            <span class="text-grey-700 font-bold">Köln</span>
+          </div>
+          <div class="pl-4">
+            <D9Icon name="chevron-right" size="sm" />
+            <span class="text-green-500 font-semibold ml-2"
+              >hide this block</span
+            >
+          </div>
+        </div>
+      </div>
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, provide } from "vue";
+import { computed, provide, ref } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import DefaultBlockMessage from "./DefaultBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
@@ -128,12 +159,15 @@ import useActiveInteractions from "../Shared/useActiveInteractions";
 import { useActiveCard } from "@/utils/useActiveCard";
 import InsertAfterButton from "./InsertAfterButton.vue";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 
 const workbench = useWorkbench();
 const store = useForm();
 const logicStore = useLogic();
 
 const { showBlockMenus } = storeToRefs(store);
+
+const { t } = useI18n();
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -142,6 +176,8 @@ const props = defineProps<{
 provide("block", props.block);
 
 const { editableInteractions } = useActiveInteractions(props.block);
+
+const showBlockLogic = ref(false);
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id
