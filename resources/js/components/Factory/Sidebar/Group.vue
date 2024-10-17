@@ -6,25 +6,22 @@
       :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
       @click.stop="workbench.putOnWorkbench(block)"
     >
-      <h1
-        class="-ml-2 mr-4 rounded px-2 py-1 font-bold text-grey-400 hover:bg-grey-100"
+      <button
+        class="-ml-2 rounded pl-2 pr-5 py-1 font-bold text-grey-400 hover:bg-grey-100 block text-left"
         :class="[{ 'mb-3': !isCollapsed }]"
+        @click.prevent="toggleGroup"
       >
-        <button
-          class="mr-1 cursor-pointer hover:text-blue-400"
-          @click.prevent="toggleGroup"
-        >
-          <D9Icon
-            class="transition-transform duration-150"
-            :class="[{ '-rotate-90': isCollapsed }]"
-            name="chevron-down"
-          />
-        </button>
+        <D9Icon
+          class="transition-transform duration-150 mr-2"
+          :class="[{ '-rotate-90': isCollapsed }]"
+          name="chevron-down"
+        />
+        <D9Icon name="layer-group" size="sm" />
         {{ block.title ?? "Group" }}
         <span class="font-light italic" v-show="isCollapsed"
           >({{ t("admin.blocks", groupCount) }})</span
         >
-      </h1>
+      </button>
       <div
         v-if="showBlockMenus"
         class="absolute right-3 top-2 hover:opacity-100"

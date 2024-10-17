@@ -49,18 +49,25 @@
       class="flex items-center justify-center gap-x-2 border-t border-grey-200 bg-white px-4 py-3"
     >
       <D9Button
-        label="Create Block"
+        label="Block"
         color="dark"
         icon="plus"
         icon-position="right"
         @click="store.createFormBlock()"
       />
       <D9Button
-        label="Create Group"
+        label="Group"
         color="light"
-        icon="file-lines"
+        icon="layer-group"
         icon-position="right"
         @click="store.createFormBlock(null, 'group')"
+      />
+      <D9Button
+        :label="store.showLogicInStoryboard ? 'Hide Logic' : 'Show Logic'"
+        color="light"
+        icon="code-branch"
+        icon-position="right"
+        @click="store.toggleLogicInStoryboard()"
       />
     </div>
   </div>

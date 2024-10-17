@@ -9,7 +9,7 @@
     >
       <div
         v-if="showBlockMenus"
-        class="absolute right-3 top-3 hover:opacity-100 z-20"
+        class="absolute right-3 top-3 hover:opacity-100 z-10"
         :class="isActive ? 'opacity-100' : 'opacity-25'"
       >
         <D9Menu
@@ -74,6 +74,10 @@
         >
           <D9Icon name="code-branch" size="sm" />
           <span>Block Logic</span>
+          <span v-if="block?.logics && block.logics.length > 0"
+            >(<strong>{{ block.logics?.length }}</strong
+            >)</span
+          >
         </button>
         <button
           class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
@@ -114,44 +118,17 @@
       </div>
 
       <!-- Block Logic -->
-      <div class="mt-4" v-if="block.logics && block.logics.length > 0">
-        <button
-          class="font-semibold mb-2"
-          @click="showBlockLogic = !showBlockLogic"
-        >
-          <D9Icon
-            name="chevron-right"
-            size="sm"
-            class="mr-1"
-            :class="[showBlockLogic ? 'rotate-90' : '']"
-          />
-          {{ t("admin.logicTitle") }}
-        </button>
-        <div class="pl-4" v-show="showBlockLogic">
-          <div class="leading-5">
-            <span class="text-purple-500 font-semibold mr-1">If</span>
-            <span>the response for block</span>
-            <span class="text-grey-700 font-bold ml-1">jR</span>
-            <span class="text-purple-500 font-semibold mx-1">contains</span>
-            <span class="text-grey-700 font-bold">Köln</span>
-          </div>
-          <div class="pl-4">
-            <D9Icon name="chevron-right" size="sm" />
-            <span class="text-green-500 font-semibold ml-2"
-              >hide this block</span
-            >
-          </div>
-        </div>
-      </div>
+      <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref } from "vue";
+import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import DefaultBlockMessage from "./DefaultBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
+import BlockLogicVisualizer from "./BlockLogicVisualizer.vue";
 import { useWorkbench, useForm, useLogic } from "@/stores";
 import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
@@ -159,15 +136,12 @@ import useActiveInteractions from "../Shared/useActiveInteractions";
 import { useActiveCard } from "@/utils/useActiveCard";
 import InsertAfterButton from "./InsertAfterButton.vue";
 import { storeToRefs } from "pinia";
-import { useI18n } from "vue-i18n";
 
 const workbench = useWorkbench();
 const store = useForm();
 const logicStore = useLogic();
 
 const { showBlockMenus } = storeToRefs(store);
-
-const { t } = useI18n();
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -176,8 +150,6 @@ const props = defineProps<{
 provide("block", props.block);
 
 const { editableInteractions } = useActiveInteractions(props.block);
-
-const showBlockLogic = ref(false);
 
 const isActive = computed((): boolean => {
   return workbench.block && workbench.block.id === props.block.id

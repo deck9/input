@@ -60,7 +60,7 @@
 
                     <D9Button
                       type="button"
-                      label="Add rule"
+                      label="Rule"
                       @click="store.addRule()"
                       icon="plus"
                       color="dark"
@@ -119,11 +119,16 @@ const { isShowingLogicEditor, block } = storeToRefs(store);
 const save = async () => {
   isSaving.value = true;
 
-  await store.saveBlockLogic();
+  const result = await store.saveBlockLogic();
+
+  if (result && result.failed > 0) {
+    isSaving.value = false;
+    return;
+  }
 
   setTimeout(() => {
     isSaving.value = false;
-    // store.hideLogicEditor();
+    store.hideLogicEditor();
   }, 250);
 };
 

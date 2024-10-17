@@ -24,6 +24,7 @@ interface FormStore {
     mapping: Record<FormBlockType, FormBlockInteractionType> | null;
     isCssTransitionEnabled: boolean;
     isBlockMenuEnabled: boolean;
+    showLogicInStoryboard: boolean;
 }
 
 export const useForm = defineStore("form", {
@@ -34,6 +35,7 @@ export const useForm = defineStore("form", {
             blocks: null,
             isCssTransitionEnabled: true,
             isBlockMenuEnabled: true,
+            showLogicInStoryboard: false,
         };
     },
 
@@ -121,6 +123,10 @@ export const useForm = defineStore("form", {
 
         disableBlockMenu() {
             this.isBlockMenuEnabled = false;
+        },
+
+        toggleLogicInStoryboard() {
+            this.showLogicInStoryboard = !this.showLogicInStoryboard;
         },
 
         async refreshForm(includeSubmissions = false) {

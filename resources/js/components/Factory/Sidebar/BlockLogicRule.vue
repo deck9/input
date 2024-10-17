@@ -92,9 +92,11 @@
 
       <D9Button
         class="mt-3"
-        :label="hasConditions ? 'Add another condition' : 'Add condition'"
+        label="Condition"
         icon="plus"
         size="small"
+        color="dark"
+        icon-position="left"
         @click="addCondition"
       />
 
