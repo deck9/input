@@ -64,7 +64,7 @@
       />
     </div>
   </div>
-  <BlockLogicEdit />
+  <BlockLogicEditor />
 </template>
 
 <script setup lang="ts">
@@ -76,7 +76,7 @@ import BlockContainer from "./BlockContainer.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import ScrollShadow from "@/components/ScrollShadow.vue";
 import _throttle from "lodash/throttle";
-import BlockLogicEdit from "@/components/Factory/Sidebar/BlockLogicEdit.vue";
+import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 
 const isLoaded = ref(false);
 const store = useForm();

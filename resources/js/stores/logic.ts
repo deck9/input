@@ -16,6 +16,7 @@ interface LogicStore {
     validation: ValidationError[];
     isShowingLogicEditor: boolean;
     hideRule: FormBlockLogic | null;
+    backup: FormBlockLogic[] | null;
 }
 
 export const operators: Array<{ key: Operator; label: string }> = [
@@ -44,6 +45,7 @@ export const useLogic = defineStore("logic", {
             isShowingLogicEditor: false,
             hideRule: null,
             validation: [],
+            backup: null,
         };
     },
 
@@ -56,6 +58,18 @@ export const useLogic = defineStore("logic", {
         hideLogicEditor() {
             this.block = null;
             this.isShowingLogicEditor = false;
+        },
+
+        backupLogic() {
+            this.backup = this.block?.logics ?? null;
+        },
+
+        restoreLogic() {
+            if (!this.block) {
+                return;
+            }
+
+            this.block.logics = this.backup ?? undefined;
         },
 
         addRule() {
