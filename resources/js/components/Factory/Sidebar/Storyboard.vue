@@ -62,13 +62,6 @@
         icon-position="right"
         @click="store.createFormBlock(null, 'group')"
       />
-      <D9Button
-        :label="store.showLogicInStoryboard ? 'Hide Logic' : 'Show Logic'"
-        color="light"
-        icon="code-branch"
-        icon-position="right"
-        @click="store.toggleLogicInStoryboard()"
-      />
     </div>
   </div>
   <BlockLogicEdit />

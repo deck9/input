@@ -35,7 +35,7 @@ export const useForm = defineStore("form", {
             blocks: null,
             isCssTransitionEnabled: true,
             isBlockMenuEnabled: true,
-            showLogicInStoryboard: false,
+            showLogicInStoryboard: true,
         };
     },
 
