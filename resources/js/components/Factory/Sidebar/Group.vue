@@ -43,12 +43,6 @@
           <D9MenuLink
             as="button"
             class="block w-full text-left"
-            :label="block.is_disabled ? 'Enable Block' : 'Disable Block'"
-            @click="disableBlock"
-          />
-          <D9MenuLink
-            as="button"
-            class="block w-full text-left"
             label="Delete"
             @click.stop="deleteBlock"
           />
@@ -60,11 +54,11 @@
         class="transition duration-200"
       />
 
-      <div class="flex space-x-1">
-        <div class="mt-2" v-if="block.is_disabled">
-          <Label color="grey">disabled</Label>
-        </div>
-      </div>
+      <!-- Block Status -->
+      <BlockFooter class="mt-2" :block="block" />
+
+      <!-- Block Logic -->
+      <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
     </button>
   </div>
 </template>
@@ -72,18 +66,21 @@
 <script lang="ts" setup>
 import BlockContainer from "@/components/Factory/Sidebar/BlockContainer.vue";
 import InsertAfterButton from "./InsertAfterButton.vue";
-import Label from "@/components/Label.vue";
+import BlockFooter from "./BlockFooter.vue";
+import BlockLogicVisualizer from "./BlockLogicVisualizer.vue";
 import copy from "copy-text-to-clipboard";
 import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
 import { useActiveCard } from "@/utils/useActiveCard";
 import { useWorkbench, useForm } from "@/stores";
-import { computed, ref } from "vue";
+import { computed, provide, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 
 const props = defineProps<{
   block: FormBlockModel;
 }>();
+
+provide("block", props.block);
 
 const { t } = useI18n();
 

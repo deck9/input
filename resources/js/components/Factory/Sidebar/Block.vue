@@ -28,12 +28,6 @@
           <D9MenuLink
             as="button"
             class="block w-full text-left"
-            :label="block.is_disabled ? 'Enable Block' : 'Disable Block'"
-            @click="disableBlock"
-          />
-          <D9MenuLink
-            as="button"
-            class="block w-full text-left"
             label="Delete"
             @click.stop="deleteBlock"
           />
@@ -62,60 +56,7 @@
       />
 
       <!-- Block Status -->
-      <div class="flex space-x-1 mt-4">
-        <button
-          class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
-          :class="[
-            block.has_logic
-              ? 'bg-blue-100 outline-blue-200'
-              : 'bg-grey-100 outline-grey-200',
-          ]"
-          @click="showLogicEditor"
-        >
-          <D9Icon name="code-branch" size="sm" />
-          <span>Block Logic</span>
-          <span v-if="block?.logics && block.logics.length > 0"
-            >(<strong>{{ block.logics?.length }}</strong
-            >)</span
-          >
-        </button>
-        <button
-          class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
-          :class="[
-            block.is_required
-              ? 'bg-red-100 outline-red-200'
-              : 'bg-grey-100 outline-grey-200',
-          ]"
-          @click="toggleRequired()"
-        >
-          <template v-if="block.is_required">
-            <D9Icon name="asterisk" size="sm" />
-            <span>Required</span>
-          </template>
-          <template v-else>
-            <D9Icon name="question" size="sm" />
-            <span>Optional</span>
-          </template>
-        </button>
-        <button
-          class="flex items-center space-x-1 rounded-lg px-2 py-1 leading-none text-xs hover:text-black hover:outline text-grey-700"
-          :class="[
-            block.is_disabled
-              ? 'bg-grey-100 outline-grey-200'
-              : 'bg-green-50 outline-green-100',
-          ]"
-          @click="disableBlock()"
-        >
-          <template v-if="block.is_disabled">
-            <D9Icon name="circle-dot" size="sm" />
-            <span>Disabled</span>
-          </template>
-          <template v-else>
-            <D9Icon name="circle-check" size="sm" />
-            <span>Enabled</span>
-          </template>
-        </button>
-      </div>
+      <BlockFooter class="mt-4" :block="block" />
 
       <!-- Block Logic -->
       <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
@@ -128,18 +69,18 @@ import { computed, provide } from "vue";
 import ConsentBlockMessage from "./ConsentBlockMessage.vue";
 import DefaultBlockMessage from "./DefaultBlockMessage.vue";
 import BlockInteraction from "./BlockInteraction.vue";
+import BlockFooter from "./BlockFooter.vue";
 import BlockLogicVisualizer from "./BlockLogicVisualizer.vue";
-import { useWorkbench, useForm, useLogic } from "@/stores";
-import { D9Menu, D9MenuLink, D9Icon } from "@deck9/ui";
+import InsertAfterButton from "./InsertAfterButton.vue";
+import { useWorkbench, useForm } from "@/stores";
+import { D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import useActiveInteractions from "../Shared/useActiveInteractions";
 import { useActiveCard } from "@/utils/useActiveCard";
-import InsertAfterButton from "./InsertAfterButton.vue";
 import { storeToRefs } from "pinia";
 
 const workbench = useWorkbench();
 const store = useForm();
-const logicStore = useLogic();
 
 const { showBlockMenus } = storeToRefs(store);
 
@@ -169,26 +110,6 @@ const deleteBlock = () => {
       workbench.clearWorkbench();
     }
   }
-};
-
-const disableBlock = () => {
-  store.updateFormBlockProperty(
-    props.block,
-    "is_disabled",
-    !props.block.is_disabled,
-  );
-};
-
-const toggleRequired = () => {
-  store.updateFormBlockProperty(
-    props.block,
-    "is_required",
-    !props.block.is_required,
-  );
-};
-
-const showLogicEditor = () => {
-  logicStore.showLogicEditor(props.block);
 };
 
 const copyId = () => {
