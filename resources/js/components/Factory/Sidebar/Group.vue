@@ -116,18 +116,6 @@ const deleteBlock = () => {
   }
 };
 
-const disableBlock = () => {
-  if (!props.block.is_disabled) {
-    isCollapsed.value = true;
-  }
-
-  store.updateFormBlockProperty(
-    props.block,
-    "is_disabled",
-    !props.block.is_disabled,
-  );
-};
-
 const copyId = () => {
   copy(props.block.uuid);
 };
