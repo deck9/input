@@ -203,6 +203,7 @@ type PublicFormBlockModel = {
     parent_block: string | null;
     is_required: boolean | null;
     interactions: Array<PublicFormBlockInteractionModel>;
+    logics: Array<FormBlockLogic> | undefined;
 };
 
 type PublicFormModel = {

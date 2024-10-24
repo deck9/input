@@ -13,6 +13,8 @@
       }"
     >
       <div>
+        <pre class="text-xs leading-none mb-4">{{ store.processedQueue }}</pre>
+
         <Header v-if="!flags.hideTitle" :form="store.form" />
 
         <div class="h-full w-full max-w-screen-sm py-10">
@@ -42,7 +44,6 @@
         <Navigator
           v-bind="{
             hideNavigation: flags.hideNavigation,
-            block: store.currentBlock,
             key: store.currentBlock?.id,
           }"
           :class="{
