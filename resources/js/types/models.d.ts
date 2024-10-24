@@ -64,6 +64,44 @@ interface FormWebhookModel extends BaseModel {
     headers: Record<string, string> | null;
 }
 
+interface TreeNode {
+    block: FormBlockModel;
+    children: TreeNode[];
+}
+
+type Operator =
+    | "equals"
+    | "equalsNot"
+    | "contains"
+    | "containsNot"
+    | "isLowerThan"
+    | "isGreaterThan";
+
+interface FormBlockLogicCondition {
+    source?: FormBlockModel["uuid"];
+    operator?: Operator;
+    value: string;
+    chainOperator: "or" | "and";
+}
+
+interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {
+    source?: { key: FormBlockModel["uuid"] };
+    operator: { key: Operator };
+}
+
+interface FormBlockLogic {
+    id?: number;
+    uuid?: string;
+    form_block_id: number;
+    name: string;
+    conditions:
+        | Array<FormBlockLogicCondition>
+        | Array<EditableFormBlockBlockLogicCondition>;
+    action: "show" | "hide" | "goto";
+    actionPayload: string | null;
+    evaluate: "before" | "after";
+}
+
 interface FormBlockModel extends BaseModel {
     type: FormBlockType;
     message: string | null;
@@ -77,6 +115,7 @@ interface FormBlockModel extends BaseModel {
     sequence: number;
     form_id: number;
     interactions: FormBlockInteractionModel[] | undefined;
+    logics: FormBlockLogic[] | undefined;
 }
 
 type FormBlockType =
@@ -164,6 +203,7 @@ type PublicFormBlockModel = {
     parent_block: string | null;
     is_required: boolean | null;
     interactions: Array<PublicFormBlockInteractionModel>;
+    logics: Array<FormBlockLogic> | undefined;
 };
 
 type PublicFormModel = {
