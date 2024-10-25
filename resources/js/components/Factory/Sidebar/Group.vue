@@ -1,13 +1,13 @@
 <template>
   <div class="relative pb-6 text-sm">
     <InsertAfterButton v-bind="{ block }" />
-    <button
+    <div
       class="relative block w-full rounded-md border-dashed px-4 py-3 text-left"
       :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
       @click.stop="workbench.putOnWorkbench(block)"
     >
       <button
-        class="-ml-2 rounded pl-2 pr-5 py-1 font-bold text-grey-400 hover:bg-grey-100 block text-left"
+        class="rounded pl-2 pr-5 py-1 font-bold text-grey-400 hover:bg-grey-100 block text-left"
         :class="[{ 'mb-3': !isCollapsed }]"
         @click.prevent="toggleGroup"
       >
@@ -59,7 +59,7 @@
 
       <!-- Block Logic -->
       <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
-    </button>
+    </div>
   </div>
 </template>
 

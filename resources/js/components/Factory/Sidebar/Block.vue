@@ -2,8 +2,8 @@
   <div class="relative pb-6 text-sm">
     <InsertAfterButton v-bind="{ block }" />
 
-    <button
-      class="group relative block w-full cursor-pointer overflow-visible rounded-md p-4 text-left"
+    <div
+      class="group relative block w-full overflow-visible rounded-md p-4 text-left"
       :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
       @click.stop="workbench.putOnWorkbench(block)"
     >
@@ -60,7 +60,7 @@
 
       <!-- Block Logic -->
       <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
-    </button>
+    </div>
   </div>
 </template>
 
