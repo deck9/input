@@ -82,6 +82,10 @@ const currentPage = computed(() => {
 });
 
 const progress = computed(() => {
-  return Math.round((store.currentBlockIndex / totalPages.value) * 100);
+  if (store.currentBlockIndex <= 0) {
+    return 0;
+  }
+
+  return Math.round(((store.currentBlockIndex + 1) / totalPages.value) * 100);
 });
 </script>
