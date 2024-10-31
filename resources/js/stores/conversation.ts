@@ -7,6 +7,7 @@ import {
     callUploadFiles,
 } from "@/api/conversation";
 import { Ref, ref } from "vue";
+import { isBlock } from "typescript";
 
 type ConversationStore = {
     form?: PublicFormModel;
@@ -41,19 +42,96 @@ function createFlatQueue(
 
 function isBlockVisible(
     block: PublicFormBlockModel,
-    payload: FormSubmitPayload,
+    responses: FormSubmitPayload,
 ): boolean {
     if (!block.logics?.length) {
         return true;
     }
 
+    // block is visible by default
+    let isBlockVisible = true;
+
     block.logics
         ?.filter((logic) => logic.evaluate === "before")
         .forEach((logic) => {
-            console.log(logic, payload);
+            // each logic result is false by default
+
+            // check if the logic is true for the current payload
+            const evaluatedConditions = logic.conditions.map((condition) => {
+                let result = false;
+
+                if (condition.source && responses[condition.source]) {
+                    const response = responses[condition.source];
+
+                    // get payload value or combine to string if it is an array
+                    const responseValue =
+                        "payload" in response
+                            ? response.payload
+                            : response.map((p) => p.payload).join(", ");
+
+                    switch (condition.operator) {
+                        case "equals":
+                            result = responseValue === condition.value;
+                            break;
+                        case "equalsNot":
+                            result = responseValue !== condition.value;
+                            break;
+                        case "contains":
+                            result = responseValue.includes(condition.value);
+                            break;
+                        case "containsNot":
+                            result = !responseValue.includes(condition.value);
+                            break;
+                        case "isLowerThan":
+                            result = responseValue < condition.value;
+                            break;
+                        case "isGreaterThan":
+                            result = responseValue > condition.value;
+                            break;
+                    }
+                }
+
+                return {
+                    ...condition,
+                    result,
+                };
+            });
+
+            let currentIndex = 0;
+            const conditionGroups: any[] = [];
+
+            // split conditions each time an "or" operator is found
+            evaluatedConditions.forEach((condition, index) => {
+                if (index === 0) {
+                    conditionGroups[currentIndex] = [condition];
+                } else {
+                    if (condition.chainOperator === "or") {
+                        currentIndex++;
+                    }
+
+                    if (!conditionGroups[currentIndex]) {
+                        conditionGroups[currentIndex] = [];
+                    }
+
+                    conditionGroups[currentIndex].push(condition);
+                }
+            });
+
+            const finalResult = conditionGroups.some((group) => {
+                return group.every((condition) => {
+                    return condition.result;
+                });
+            });
+
+            // if the logic is true, then execute the block aciton
+            if (logic.action === "show") {
+                isBlockVisible = finalResult;
+            } else if (logic.action === "hide") {
+                isBlockVisible = !finalResult;
+            }
         });
 
-    return true; // Default to visible
+    return isBlockVisible;
 }
 
 export const useConversation = defineStore("form", {
