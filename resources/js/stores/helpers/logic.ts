@@ -1,3 +1,5 @@
+import { should } from "vitest";
+
 export const operators: Array<{ key: Operator; label: string }> = [
     { key: "equals", label: "is equal to" },
     { key: "equalsNot", label: "is not equal to" },
@@ -88,7 +90,13 @@ export function evaluateLogicRule(
         group.every((condition) => condition.result),
     );
 
-    return logic.action === "show" ? finalResult : !finalResult;
+    switch (logic.action) {
+        case "show":
+        case "goto":
+            return finalResult;
+        case "hide":
+            return !finalResult;
+    }
 }
 
 export function isBlockVisible(
@@ -111,21 +119,21 @@ export function isBlockVisible(
 }
 
 export function evaluateGotoLogic(
-    currentBlock: PublicFormBlockModel,
+    block: PublicFormBlockModel,
     payload: FormSubmitPayload,
 ): { target: string } | null {
-    if (!currentBlock?.logics) return null;
+    if (!block?.logics) return null;
 
     // Find goto actions that should be evaluated after block interaction
-    const gotoLogics = currentBlock.logics.filter(
+    const gotoLogics = block.logics.filter(
         (logic) => logic.action === "goto" && logic.evaluate === "after",
     );
 
     for (const logic of gotoLogics) {
         const shouldExecute = evaluateLogicRule(logic, payload);
 
-        if (shouldExecute && logic.actionPayload) {
-            return { target: logic.actionPayload };
+        if (shouldExecute && logic.action_payload) {
+            return { target: logic.action_payload };
         }
     }
 

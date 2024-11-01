@@ -29,7 +29,7 @@ class FormBlockLogicRequest extends FormRequest
             'conditions.*.value' => 'required|string',
             'conditions.*.chainOperator' => 'required|string|in:and,or',
             'action' => 'required|string|in:hide,show,goto',
-            'actionPayload' => 'nullable|string',
+            'action_payload' => 'nullable|string',
             'evaluate' => 'required|string|in:before,after',
         ];
     }

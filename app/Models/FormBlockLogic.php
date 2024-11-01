@@ -14,7 +14,7 @@ class FormBlockLogic extends Model
 
     protected $casts = [
         'conditions' => 'array',
-        'actionPayload' => 'array',
+        'action_payload' => 'array',
     ];
 
     protected static function boot()

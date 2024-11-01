@@ -104,7 +104,7 @@ interface FormBlockLogic {
         | Array<FormBlockLogicCondition>
         | Array<EditableFormBlockBlockLogicCondition>;
     action: "show" | "hide" | "goto";
-    actionPayload: string | null;
+    action_payload: string | null;
     evaluate: "before" | "after";
 }
 

@@ -29,7 +29,7 @@ class FormBlockLogicFactory extends Factory
                     'chainOperator' => 'and',
                 ]
             ],
-            'actionPayload' => [],
+            'action_payload' => [],
             'form_block_id' => FormBlock::factory(),
         ];
     }

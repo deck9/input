@@ -176,9 +176,9 @@ const getBlockOption = (block: FormBlockModel) => {
   };
 };
 
-if (props.rule.actionPayload) {
+if (props.rule.action_payload) {
   const found = logicStore.allBlocks?.find(
-    (block) => block.uuid === props.rule.actionPayload,
+    (block) => block.uuid === props.rule.action_payload,
   );
 
   if (found) {
@@ -234,7 +234,12 @@ const hasConditions = computed(() => {
 });
 
 const availableSourceBlocks = computed(() => {
-  return logicStore.availableSourceBlocks.map((block) => {
+  const blocks =
+    props.rule.action === "goto"
+      ? logicStore.availableSourceBlocksWithTarget
+      : logicStore.availableSourceBlocks;
+
+  return blocks.map((block) => {
     return getBlockOption(block);
   });
 });
@@ -262,7 +267,7 @@ watch(
         conditions: conditions.value,
         evaluate: evaluate.value,
         action: action.value,
-        actionPayload: target.value?.key ?? null,
+        action_payload: target.value?.key ?? null,
       },
       props.index,
     );

@@ -61,7 +61,7 @@
           <template v-else-if="rule.action === 'goto'">
             <D9Icon name="eye-slash" size="sm" />
             to to block
-            <span class="font-bold font-mono">{{ rule.actionPayload }}</span>
+            <span class="font-bold font-mono">{{ rule.action_payload }}</span>
           </template>
         </div>
       </div>

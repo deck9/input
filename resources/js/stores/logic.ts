@@ -66,7 +66,7 @@ export const useLogic = defineStore("logic", {
                 form_block_id: this.block.id,
                 name: "Rule #" + (this.block.logics.length + 1),
                 action: "hide",
-                actionPayload: null,
+                action_payload: null,
                 evaluate: "before",
                 conditions: [],
             });
@@ -194,6 +194,20 @@ export const useLogic = defineStore("logic", {
             const formStore = useForm();
 
             return formStore.blocks;
+        },
+
+        availableSourceBlocksWithTarget(state): Array<FormBlockModel> {
+            const formStore = useForm();
+
+            if (!state.block?.uuid) {
+                return [];
+            }
+
+            return findAllBlocksBeforeTarget(
+                formStore.blocksTree,
+                state.block.uuid,
+                { filterGroups: true, includeTarget: true },
+            );
         },
 
         availableSourceBlocks(state): Array<FormBlockModel> {
