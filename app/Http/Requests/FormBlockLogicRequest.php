@@ -28,7 +28,8 @@ class FormBlockLogicRequest extends FormRequest
             'conditions.*.operator' => 'required|string|in:equals,equalsNot,contains,containsNot,isLowerThan,isGreaterThan',
             'conditions.*.value' => 'required|string',
             'conditions.*.chainOperator' => 'required|string|in:and,or',
-            'action' => 'required|string|in:hide,show',
+            'action' => 'required|string|in:hide,show,goto',
+            'actionPayload' => 'nullable|string',
             'evaluate' => 'required|string|in:before,after',
         ];
     }

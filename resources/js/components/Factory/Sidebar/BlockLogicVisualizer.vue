@@ -54,9 +54,14 @@
             <D9Icon name="eye" size="sm" />
             show this block
           </template>
-          <template v-else>
+          <template v-else-if="rule.action === 'hide'">
             <D9Icon name="eye-slash" size="sm" />
             hide this block
+          </template>
+          <template v-else-if="rule.action === 'goto'">
+            <D9Icon name="eye-slash" size="sm" />
+            to to block
+            <span class="font-bold font-mono">{{ rule.actionPayload }}</span>
           </template>
         </div>
       </div>

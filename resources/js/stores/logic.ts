@@ -247,7 +247,7 @@ export const useLogic = defineStore("logic", {
                 result.pop();
             }
 
-            return result;
+            return result.filter((block) => block.type !== "group");
         },
     },
 });

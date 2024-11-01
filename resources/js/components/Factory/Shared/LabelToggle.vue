@@ -17,7 +17,7 @@
             ? 'bg-white text-blue-700 ring-blue-600'
             : 'bg-white text-grey-500 hover:text-grey-900 hover:ring-blue-600',
           !active && !checked ? 'ring-inset' : '',
-          index === 0 ? 'rounded-l-md' : 'rounded-r-md',
+          index === 0 ? 'rounded-l-md' : 'last:rounded-r-md',
           'group flex items-center justify-center px-3 py-2 leading-none text-sm border border-grey-300',
         ]"
       >
@@ -64,6 +64,12 @@ const props = withDefaults(
 );
 
 const value = ref(props.modelValue);
+
+watch(props, () => {
+  if (props.modelValue !== value.value) {
+    value.value = props.modelValue;
+  }
+});
 
 watch(value, (value) => {
   emit("update:modelValue", value);

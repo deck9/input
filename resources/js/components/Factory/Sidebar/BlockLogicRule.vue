@@ -16,7 +16,7 @@
     </div>
 
     <div class="px-4 py-2">
-      <div class="mb-3">
+      <div class="mb-3 hidden">
         <D9Label label="Rule Execution" />
         <LabelToggle
           v-bind="{
@@ -108,12 +108,24 @@
             options: [
               { label: 'Hide', value: 'hide' },
               { label: 'Show', value: 'show' },
-              // { label: 'Go to', value: 'goto' },
+              { label: 'Go to', value: 'goto' },
             ],
           }"
           v-model="action"
         />
       </div>
+
+      <div v-if="action === 'goto'" class="mt-3">
+        <D9Label label="Go to Block" />
+        <D9Select
+          placeholder="Select a block"
+          v-model="target"
+          size="small"
+          :options="availableTargetBlocks"
+        />
+      </div>
+
+      <pre>{{ rule }}</pre>
     </div>
 
     <ValidationErrors
@@ -154,6 +166,7 @@ const validation = computed(() => {
 const evaluate = ref<FormBlockLogic["evaluate"]>(props.rule.evaluate);
 const action = ref<FormBlockLogic["action"]>(props.rule.action);
 const conditions: Ref<Array<EditableFormBlockBlockLogicCondition>> = ref([]);
+const target = ref<Record<string, any> | null>(null);
 
 const getBlockOption = (block: FormBlockModel) => {
   const text = getTextFromHtml(block.message ?? "");
@@ -163,6 +176,16 @@ const getBlockOption = (block: FormBlockModel) => {
     label: `<div class="inline-flex items-center text-xs"><span class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center">${block.title && block.title.length ? block.title : block.uuid}</span><span class="inline-block truncate">${text}</span></div>`,
   };
 };
+
+if (props.rule.actionPayload) {
+  const found = logicStore.allBlocks?.find(
+    (block) => block.uuid === props.rule.actionPayload,
+  );
+
+  if (found) {
+    target.value = getBlockOption(found);
+  }
+}
 
 // if the loaded rule has already conditions, we should use those
 if (props.rule.conditions) {
@@ -212,22 +235,35 @@ const hasConditions = computed(() => {
 });
 
 const availableSourceBlocks = computed(() => {
-  return logicStore.availableSourceBlocks
-    .filter((block) => block.type !== "group")
+  return logicStore.availableSourceBlocks.map((block) => {
+    return getBlockOption(block);
+  });
+});
+
+const availableTargetBlocks = computed(() => {
+  return logicStore.allBlocks
+    ?.filter((block) => block.type !== "group")
     .map((block) => {
       return getBlockOption(block);
     });
 });
 
 watch(
-  [conditions, evaluate, action],
+  [conditions, evaluate, action, target],
   () => {
+    if (action.value === "hide" || action.value === "show") {
+      evaluate.value = "before";
+    } else if (action.value === "goto") {
+      evaluate.value = "after";
+    }
+
     logicStore.updateBlockLogic(
       {
         ...props.rule,
         conditions: conditions.value,
         evaluate: evaluate.value,
         action: action.value,
+        actionPayload: target.value?.key ?? null,
       },
       props.index,
     );

@@ -2,7 +2,7 @@
   <div class="relative pb-6 text-sm">
     <InsertAfterButton v-bind="{ block }" />
     <div
-      class="relative block w-full rounded-md border-dashed px-4 py-3 text-left"
+      class="relative block w-full rounded-md border-dotted px-4 py-3 text-left"
       :class="[cardStyle, { 'opacity-50': block.is_disabled }]"
       @click.stop="workbench.putOnWorkbench(block)"
     >
