@@ -90,6 +90,11 @@ interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {
     operator: { key: Operator };
 }
 
+interface ValidationError {
+    message: string;
+    errors: Record<string, string[]>;
+}
+
 interface FormBlockLogic {
     id?: number;
     uuid?: string;

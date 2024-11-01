@@ -6,6 +6,8 @@ import {
     callGetForm,
     callUploadFiles,
 } from "@/api/conversation";
+import { isBlockVisible } from "./helpers/logic";
+import { createFlatQueue } from "./helpers/queue";
 import { Ref, ref } from "vue";
 
 type ConversationStore = {
@@ -20,127 +22,6 @@ type ConversationStore = {
     isInputMode: boolean;
     uploads: FormFileUploads;
 };
-
-function createFlatQueue(
-    blocks: PublicFormBlockModel[],
-    parent_block: string | null = null,
-): PublicFormBlockModel[] {
-    return blocks
-        .filter((block) => block.parent_block === parent_block)
-        .flatMap((block) => {
-            const queueItem = block;
-            if (block.type === "group") {
-                const children = blocks.filter(
-                    (b) => b.parent_block === block.id,
-                );
-                return [queueItem, ...createFlatQueue(children, block.id)];
-            }
-            return [queueItem];
-        });
-}
-
-function evaluateCondition(
-    condition: FormBlockLogicCondition,
-    responseValue: any,
-): boolean {
-    switch (condition.operator) {
-        case "equals":
-            return responseValue === condition.value;
-        case "equalsNot":
-            return responseValue !== condition.value;
-        case "contains":
-            return responseValue.includes(condition.value);
-        case "containsNot":
-            return !responseValue.includes(condition.value);
-        case "isLowerThan":
-            return responseValue < condition.value;
-        case "isGreaterThan":
-            return responseValue > condition.value;
-        default:
-            return false;
-    }
-}
-
-function getResponseValue(response: any): any {
-    return "payload" in response
-        ? response.payload
-        : response.map((p) => p.payload).join(", ");
-}
-
-function groupConditions(
-    evaluatedConditions: FormBlockLogicCondition[],
-): FormBlockLogicCondition[][] {
-    const groups: FormBlockLogicCondition[][] = [];
-    let currentIndex = 0;
-
-    evaluatedConditions.forEach((condition, index) => {
-        if (index === 0) {
-            groups[currentIndex] = [condition];
-        } else {
-            if (condition.chainOperator === "or") {
-                currentIndex++;
-            }
-            if (!groups[currentIndex]) {
-                groups[currentIndex] = [];
-            }
-            groups[currentIndex].push(condition);
-        }
-    });
-
-    return groups;
-}
-
-function evaluateConditions(
-    conditions: FormBlockLogicCondition[],
-    responses: FormSubmitPayload,
-): FormBlockLogicCondition[] {
-    return conditions.map((condition) => ({
-        ...condition,
-        result:
-            condition.source && responses[condition.source]
-                ? evaluateCondition(
-                      condition,
-                      getResponseValue(responses[condition.source]),
-                  )
-                : false,
-    }));
-}
-
-function evaluateLogicRule(
-    logic: FormBlockLogic,
-    responses: FormSubmitPayload,
-): boolean {
-    const evaluatedConditions = evaluateConditions(
-        logic.conditions as FormBlockLogicCondition[],
-        responses,
-    );
-    const conditionGroups = groupConditions(evaluatedConditions);
-
-    const finalResult = conditionGroups.some((group) =>
-        group.every((condition) => condition.result),
-    );
-
-    return logic.action === "show" ? finalResult : !finalResult;
-}
-
-function isBlockVisible(
-    block: PublicFormBlockModel,
-    responses: FormSubmitPayload,
-): boolean {
-    if (!block.logics?.length) {
-        return true;
-    }
-
-    const beforeLogics = block.logics.filter(
-        (logic) =>
-            logic.evaluate === "before" ||
-            logic.action === "show" ||
-            logic.action === "hide",
-    );
-
-    // If any logic rule returns false, the block is not visible
-    return beforeLogics.every((logic) => evaluateLogicRule(logic, responses));
-}
 
 export const useConversation = defineStore("form", {
     state: (): ConversationStore => {
@@ -550,24 +431,6 @@ export const useConversation = defineStore("form", {
                     };
                 });
             });
-        },
-
-        evaluateGroupBlock(currentBlock: PublicFormBlockModel) {
-            // we first should remove all blocks related to that group
-            this.queue =
-                this.queue?.filter((block) => {
-                    return block.parent_block !== currentBlock?.id;
-                }) ?? [];
-
-            // now we find all children from the storyboard
-            const children = this.storyboard?.filter((block) => {
-                return block.parent_block === currentBlock?.id;
-            });
-
-            // we add the children to the queue
-            if (children && children?.length > 0) {
-                this.queue?.splice(this.current + 1, 0, ...children);
-            }
         },
     },
 });

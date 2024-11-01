@@ -137,7 +137,8 @@
 <script lang="ts" setup>
 import { D9Input, D9Select, D9Icon, D9Label, D9Button } from "@deck9/ui";
 import { computed, Ref, ref, watch } from "vue";
-import { useLogic, operators } from "@/stores";
+import { useLogic } from "@/stores";
+import { operators } from "@/stores/helpers/logic";
 import { getTextFromHtml } from "@/utils";
 import LabelToggle from "@/components/Factory/Shared/LabelToggle.vue";
 import ValidationErrors from "@/components/ValidationErrors.vue";

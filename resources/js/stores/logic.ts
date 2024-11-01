@@ -1,15 +1,14 @@
 import { useForm } from "@/stores";
 import { defineStore } from "pinia";
+import { findAllBlocksBeforeTarget } from "./helpers/queue";
 
 import {
     callCreateFormBlockLogic,
     callUpdateFormBlockLogic,
     callDeleteFormBlockLogic,
 } from "@/api/logics";
-interface ValidationError {
-    message: string;
-    errors: Record<string, string[]>;
-}
+
+import { transformConditionForBackend } from "./helpers/logic";
 
 interface LogicStore {
     block: FormBlockModel | null;
@@ -18,25 +17,6 @@ interface LogicStore {
     hideRule: FormBlockLogic | null;
     backup: FormBlockLogic[] | null;
 }
-
-export const operators: Array<{ key: Operator; label: string }> = [
-    { key: "equals", label: "is equal to" },
-    { key: "equalsNot", label: "is not equal to" },
-    { key: "contains", label: "contains" },
-    { key: "containsNot", label: "does not contain" },
-    { key: "isLowerThan", label: "is lower than" },
-    { key: "isGreaterThan", label: "is greater than" },
-];
-
-const transformConditionForBackend = (
-    condition: EditableFormBlockBlockLogicCondition,
-): FormBlockLogicCondition => {
-    return {
-        ...condition,
-        source: condition.source?.key,
-        operator: condition.operator.key,
-    };
-};
 
 export const useLogic = defineStore("logic", {
     state: (): LogicStore => {
@@ -219,36 +199,15 @@ export const useLogic = defineStore("logic", {
         availableSourceBlocks(state): Array<FormBlockModel> {
             const formStore = useForm();
 
-            const result: FormBlockModel[] = [];
-            let found = false;
-
-            const traverse = (node: TreeNode) => {
-                if (found) return;
-
-                result.push(node.block);
-
-                if (node.block.uuid === state.block?.uuid) {
-                    found = true;
-                    return;
-                }
-
-                for (const child of node.children) {
-                    traverse(child);
-                    if (found) break;
-                }
-            };
-
-            for (const rootNode of formStore.blocksTree) {
-                traverse(rootNode);
-                if (found) break;
+            if (!state.block?.uuid) {
+                return [];
             }
 
-            // Remove the last element (the found block) from the result
-            if (found) {
-                result.pop();
-            }
-
-            return result.filter((block) => block.type !== "group");
+            return findAllBlocksBeforeTarget(
+                formStore.blocksTree,
+                state.block.uuid,
+                { filterGroups: true, includeTarget: false },
+            );
         },
     },
 });
