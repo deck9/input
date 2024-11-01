@@ -110,6 +110,28 @@ export function isBlockVisible(
     return beforeLogics.every((logic) => evaluateLogicRule(logic, responses));
 }
 
+export function evaluateGotoLogic(
+    currentBlock: PublicFormBlockModel,
+    payload: FormSubmitPayload,
+): { target: string } | null {
+    if (!currentBlock?.logics) return null;
+
+    // Find goto actions that should be evaluated after block interaction
+    const gotoLogics = currentBlock.logics.filter(
+        (logic) => logic.action === "goto" && logic.evaluate === "after",
+    );
+
+    for (const logic of gotoLogics) {
+        const shouldExecute = evaluateLogicRule(logic, payload);
+
+        if (shouldExecute && logic.actionPayload) {
+            return { target: logic.actionPayload };
+        }
+    }
+
+    return null;
+}
+
 export function transformConditionForBackend(
     condition: EditableFormBlockBlockLogicCondition,
 ): FormBlockLogicCondition {

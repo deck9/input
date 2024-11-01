@@ -6,7 +6,7 @@ import {
     callGetForm,
     callUploadFiles,
 } from "@/api/conversation";
-import { isBlockVisible } from "./helpers/logic";
+import { evaluateGotoLogic, isBlockVisible } from "./helpers/logic";
 import { createFlatQueue } from "./helpers/queue";
 import { Ref, ref } from "vue";
 
@@ -337,11 +337,28 @@ export const useConversation = defineStore("form", {
             }
         },
 
+        findBlockIndex(blockId: string): number {
+            return this.processedQueue.findIndex(
+                (block) => block.id === blockId,
+            );
+        },
+
         goToIndex(index: number) {
             if (index >= 0 && index < this.processedQueue.length) {
                 this.current = this.processedQueue[index].id;
             } else {
                 console.warn("Index out of bounds", index);
+            }
+        },
+
+        executeGotoAction(targetBlockId: string) {
+            const targetIndex = this.findBlockIndex(targetBlockId);
+            if (targetIndex !== -1) {
+                this.goToIndex(targetIndex);
+            } else {
+                console.warn(
+                    `Target block ${targetBlockId} not found in processed queue`,
+                );
             }
         },
 
@@ -358,6 +375,15 @@ export const useConversation = defineStore("form", {
          * @returns {Promise<boolean>}
          */
         async next(): Promise<boolean> {
+            const gotoAction = this.currentBlock
+                ? evaluateGotoLogic(this.currentBlock, this.payload)
+                : null;
+
+            if (gotoAction && gotoAction.target) {
+                this.executeGotoAction(gotoAction.target);
+                return Promise.resolve(false);
+            }
+
             if (this.isLastBlock) {
                 this.uploads = {};
                 this.isProcessing = true;
