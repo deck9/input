@@ -52,6 +52,7 @@ export const useLogic = defineStore("logic", {
     actions: {
         showLogicEditor(block: FormBlockModel) {
             this.block = block;
+            this.backupLogic();
             this.isShowingLogicEditor = true;
         },
 

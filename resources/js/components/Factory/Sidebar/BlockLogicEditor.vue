@@ -116,9 +116,6 @@ const isSaving = ref(false);
 
 const { isShowingLogicEditor, block } = storeToRefs(store);
 
-// on mount, backup the current logic to restore in case of cancel
-store.backupLogic();
-
 const save = async () => {
   isSaving.value = true;
 
