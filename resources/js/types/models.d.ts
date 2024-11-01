@@ -82,6 +82,7 @@ interface FormBlockLogicCondition {
     operator?: Operator;
     value: string;
     chainOperator: "or" | "and";
+    result?: boolean;
 }
 
 interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {

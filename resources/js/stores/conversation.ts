@@ -7,7 +7,6 @@ import {
     callUploadFiles,
 } from "@/api/conversation";
 import { Ref, ref } from "vue";
-import { isBlock } from "typescript";
 
 type ConversationStore = {
     form?: PublicFormModel;
@@ -40,6 +39,90 @@ function createFlatQueue(
         });
 }
 
+function evaluateCondition(
+    condition: FormBlockLogicCondition,
+    responseValue: any,
+): boolean {
+    switch (condition.operator) {
+        case "equals":
+            return responseValue === condition.value;
+        case "equalsNot":
+            return responseValue !== condition.value;
+        case "contains":
+            return responseValue.includes(condition.value);
+        case "containsNot":
+            return !responseValue.includes(condition.value);
+        case "isLowerThan":
+            return responseValue < condition.value;
+        case "isGreaterThan":
+            return responseValue > condition.value;
+        default:
+            return false;
+    }
+}
+
+function getResponseValue(response: any): any {
+    return "payload" in response
+        ? response.payload
+        : response.map((p) => p.payload).join(", ");
+}
+
+function groupConditions(
+    evaluatedConditions: FormBlockLogicCondition[],
+): FormBlockLogicCondition[][] {
+    const groups: FormBlockLogicCondition[][] = [];
+    let currentIndex = 0;
+
+    evaluatedConditions.forEach((condition, index) => {
+        if (index === 0) {
+            groups[currentIndex] = [condition];
+        } else {
+            if (condition.chainOperator === "or") {
+                currentIndex++;
+            }
+            if (!groups[currentIndex]) {
+                groups[currentIndex] = [];
+            }
+            groups[currentIndex].push(condition);
+        }
+    });
+
+    return groups;
+}
+
+function evaluateConditions(
+    conditions: FormBlockLogicCondition[],
+    responses: FormSubmitPayload,
+): FormBlockLogicCondition[] {
+    return conditions.map((condition) => ({
+        ...condition,
+        result:
+            condition.source && responses[condition.source]
+                ? evaluateCondition(
+                      condition,
+                      getResponseValue(responses[condition.source]),
+                  )
+                : false,
+    }));
+}
+
+function evaluateLogicRule(
+    logic: FormBlockLogic,
+    responses: FormSubmitPayload,
+): boolean {
+    const evaluatedConditions = evaluateConditions(
+        logic.conditions as FormBlockLogicCondition[],
+        responses,
+    );
+    const conditionGroups = groupConditions(evaluatedConditions);
+
+    const finalResult = conditionGroups.some((group) =>
+        group.every((condition) => condition.result),
+    );
+
+    return logic.action === "show" ? finalResult : !finalResult;
+}
+
 function isBlockVisible(
     block: PublicFormBlockModel,
     responses: FormSubmitPayload,
@@ -48,90 +131,15 @@ function isBlockVisible(
         return true;
     }
 
-    // block is visible by default
-    let isBlockVisible = true;
+    const beforeLogics = block.logics.filter(
+        (logic) =>
+            logic.evaluate === "before" ||
+            logic.action === "show" ||
+            logic.action === "hide",
+    );
 
-    block.logics
-        ?.filter((logic) => logic.evaluate === "before")
-        .forEach((logic) => {
-            // each logic result is false by default
-
-            // check if the logic is true for the current payload
-            const evaluatedConditions = logic.conditions.map((condition) => {
-                let result = false;
-
-                if (condition.source && responses[condition.source]) {
-                    const response = responses[condition.source];
-
-                    // get payload value or combine to string if it is an array
-                    const responseValue =
-                        "payload" in response
-                            ? response.payload
-                            : response.map((p) => p.payload).join(", ");
-
-                    switch (condition.operator) {
-                        case "equals":
-                            result = responseValue === condition.value;
-                            break;
-                        case "equalsNot":
-                            result = responseValue !== condition.value;
-                            break;
-                        case "contains":
-                            result = responseValue.includes(condition.value);
-                            break;
-                        case "containsNot":
-                            result = !responseValue.includes(condition.value);
-                            break;
-                        case "isLowerThan":
-                            result = responseValue < condition.value;
-                            break;
-                        case "isGreaterThan":
-                            result = responseValue > condition.value;
-                            break;
-                    }
-                }
-
-                return {
-                    ...condition,
-                    result,
-                };
-            });
-
-            let currentIndex = 0;
-            const conditionGroups: any[] = [];
-
-            // split conditions each time an "or" operator is found
-            evaluatedConditions.forEach((condition, index) => {
-                if (index === 0) {
-                    conditionGroups[currentIndex] = [condition];
-                } else {
-                    if (condition.chainOperator === "or") {
-                        currentIndex++;
-                    }
-
-                    if (!conditionGroups[currentIndex]) {
-                        conditionGroups[currentIndex] = [];
-                    }
-
-                    conditionGroups[currentIndex].push(condition);
-                }
-            });
-
-            const finalResult = conditionGroups.some((group) => {
-                return group.every((condition) => {
-                    return condition.result;
-                });
-            });
-
-            // if the logic is true, then execute the block aciton
-            if (logic.action === "show") {
-                isBlockVisible = finalResult;
-            } else if (logic.action === "hide") {
-                isBlockVisible = !finalResult;
-            }
-        });
-
-    return isBlockVisible;
+    // If any logic rule returns false, the block is not visible
+    return beforeLogics.every((logic) => evaluateLogicRule(logic, responses));
 }
 
 export const useConversation = defineStore("form", {
