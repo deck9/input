@@ -124,8 +124,6 @@
           :options="availableTargetBlocks"
         />
       </div>
-
-      <pre>{{ rule }}</pre>
     </div>
 
     <ValidationErrors
