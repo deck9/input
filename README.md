@@ -20,6 +20,7 @@ We are using [Laravel Sail](https://laravel.com/docs/master/sail) to develop Inp
 
 -   [Docker](https://www.docker.com/get-started/)
 -   [NodeJS](https://nodejs.org/) (v16 LTS preferred)
+-   [mise-en-place](https://mise.jdx.dev/) (for task automation)
 
 ### Download
 
@@ -39,10 +40,10 @@ cp .env.dev.example .env
 
 ### Running
 
-Make sure that your Docker agent is running. There are several steps necessary to build the app for the first time. To simplify these tasks, we have a Makefile in place. Just run the following command, and all build steps will run automatically:
+Make sure that your Docker agent is running. There are several steps necessary to build the app for the first time. To simplify these tasks, we use mise-en-place. Just run the following command, and all build steps will run automatically:
 
 ```bash
-make up
+mise task up
 ```
 
 ### Webpack (Mix)

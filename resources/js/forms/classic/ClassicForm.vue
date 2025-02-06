@@ -42,7 +42,6 @@
         <Navigator
           v-bind="{
             hideNavigation: flags.hideNavigation,
-            block: store.currentBlock,
             key: store.currentBlock?.id,
           }"
           :class="{
@@ -75,6 +74,7 @@ import { computed, onMounted, provide, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { useRouteParams } from "@/utils/useRouteParams";
+import { useRoutes } from "@/utils/useRoutes";
 
 const props = defineProps<{
   settings: PublicFormModel;
@@ -87,6 +87,10 @@ const focusDisabled = computed(() => {
 });
 provide("disableFocus", focusDisabled);
 
+// init routes
+await useRoutes();
+
+// init conversation store
 const store = useConversation();
 await store.initForm(
   props.settings,
