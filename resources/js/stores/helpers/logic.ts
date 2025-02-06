@@ -1,5 +1,3 @@
-import { should } from "vitest";
-
 export const operators: Array<{ key: Operator; label: string }> = [
     { key: "equals", label: "is equal to" },
     { key: "equalsNot", label: "is not equal to" },
