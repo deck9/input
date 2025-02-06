@@ -10,7 +10,7 @@
 
         <div
           v-html="policy"
-          class="prose mt-6 w-full overflow-hidden bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
+          class="form-message-prose mt-6 w-full overflow-hidden bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
         ></div>
       </div>
     </div>

@@ -22,7 +22,7 @@
     </h1>
 
     <div
-      class="border-indigo-80 mb-6 rounded border border-indigo-700 bg-indigo-900 px-4 py-6 text-indigo-300 prose"
+      class="border-indigo-80 mb-6 rounded border border-indigo-700 bg-indigo-900 px-4 py-6 text-indigo-300 form-message-prose"
     >
       <p>
         To begin using Input, you need to be part of a team. Currently, you're

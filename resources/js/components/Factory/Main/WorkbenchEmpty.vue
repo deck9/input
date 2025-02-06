@@ -1,6 +1,8 @@
 <template>
   <div class="flex h-full items-center justify-center">
-    <div class="prose w-full max-w-xl rounded bg-white px-6 py-8 shadow">
+    <div
+      class="form-message-prose w-full max-w-xl rounded bg-white px-6 py-8 shadow"
+    >
       <h2><D9Icon class="" name="circle-info" /> Welcome to the Editor</h2>
 
       <h3>Storyboard</h3>
