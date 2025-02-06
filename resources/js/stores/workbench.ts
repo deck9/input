@@ -97,7 +97,7 @@ export const useWorkbench = defineStore("workbench", {
                 const response = await callUpdateFormBlock(block);
 
                 if (response.status === 200) {
-                    console.log("saved block success");
+                    console.info("saved block success");
                 }
             } catch (error) {
                 console.warn(error);

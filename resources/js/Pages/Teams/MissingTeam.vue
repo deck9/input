@@ -57,7 +57,6 @@ export default defineComponent({
 
   methods: {
     logout() {
-      console.log("logout");
       this.$inertia.post(this.route("logout"));
     },
   },

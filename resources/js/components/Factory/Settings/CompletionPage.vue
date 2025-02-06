@@ -155,8 +155,6 @@ import Editor from "@/components/Factory/Shared/Editor.vue";
 const store = useForm();
 const isSaving = ref(false);
 
-console.log(store.form);
-
 const outroHeadline = ref(store.form?.eoc_headline ?? "");
 const outroMessage = ref(store.form?.eoc_text ?? "");
 
