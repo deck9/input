@@ -34,7 +34,7 @@ const i18n = createI18n({
 
 const formId = document.currentScript?.getAttribute("data-form");
 let mountElement: Element | string | null = document.querySelector(
-    `#${formId}-wrapper`
+    `#${formId}-wrapper`,
 );
 
 if (!mountElement) {
