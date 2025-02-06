@@ -351,14 +351,16 @@ export const useConversation = defineStore("form", {
             }
         },
 
-        executeGotoAction(targetBlockId: string) {
+        executeGotoAction(targetBlockId: string): boolean {
             const targetIndex = this.findBlockIndex(targetBlockId);
             if (targetIndex !== -1) {
                 this.goToIndex(targetIndex);
+                return true;
             } else {
                 console.warn(
-                    `Target block ${targetBlockId} not found in processed queue`,
+                    `Target block ${targetBlockId} not found in processed queue. Please review your block logic to ensure the target block is visible.`,
                 );
+                return false;
             }
         },
 
@@ -380,8 +382,9 @@ export const useConversation = defineStore("form", {
                 : null;
 
             if (gotoAction && gotoAction.target) {
-                this.executeGotoAction(gotoAction.target);
-                return Promise.resolve(false);
+                if (this.executeGotoAction(gotoAction.target)) {
+                    return Promise.resolve(false);
+                }
             }
 
             if (this.isLastBlock) {

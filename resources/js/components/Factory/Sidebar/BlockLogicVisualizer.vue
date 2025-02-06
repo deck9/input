@@ -59,8 +59,8 @@
             hide this block
           </template>
           <template v-else-if="rule.action === 'goto'">
-            <D9Icon name="eye-slash" size="sm" />
-            to to block
+            <D9Icon name="location-arrow" size="sm" />
+            go to block
             <span class="font-bold font-mono">{{ rule.action_payload }}</span>
           </template>
         </div>
