@@ -1,4 +1,4 @@
-# File Upload =�
+# File Upload 📁
 
 The File Upload input type allows users to attach files to their form responses. It supports multiple file types and offers a user-friendly drag-and-drop interface.
 

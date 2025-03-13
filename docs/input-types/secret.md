@@ -1,4 +1,4 @@
-# Secret Input
+# Secret 🔒
 
 The Secret input type lets you securely collect sensitive information from users. It works like a password field, masking the entered text to protect it from view.
 

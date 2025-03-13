@@ -1,10 +1,10 @@
-# No Interaction 📝
+# Information Block 📝
 
-The No Interaction input type displays information without requiring any user input. It's perfect for instructions, introductions, explanations, or content that doesn't need a response.
+The Information Block displays information without requiring any user input. It's perfect for instructions, introductions, explanations, or content that doesn't need a response.
 
 ## How to use:
 
-1. Choose **No Interaction** as the block type
+1. Choose **Information Block** as the block type
 2. Enter the content you want to display
 3. Format your text using markdown for headings, lists, links, and emphasis
 4. Add buttons if you want users to acknowledge the information or make a choice
@@ -29,7 +29,7 @@ The No Interaction input type displays information without requiring any user in
 🌟 Keep information blocks concise and visually structured. Use headings, bullet points, and formatting to make content scannable and easy to understand.
 :::
 
-## When to use No Interaction blocks:
+## When to use Information Blocks:
 
 -   When you need to provide context before asking questions
 -   For introductory or concluding information
@@ -38,5 +38,5 @@ The No Interaction input type displays information without requiring any user in
 -   For any informational content that doesn't require user input
 
 ::: warning Note
-Since No Interaction blocks don't collect any data, they won't appear in your submission results. They're purely for communication with your users.
+Since Information Blocks don't collect any data, they won't appear in your submission results. They're purely for communication with your users.
 :::

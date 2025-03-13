@@ -1,4 +1,4 @@
-# Multiple Choice (Radio) 🔘
+# Multiple Choice 🔘
 
 This input type allows users to select one option from a list of choices, perfect for questions with mutually exclusive answers.
 

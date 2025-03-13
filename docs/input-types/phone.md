@@ -1,4 +1,4 @@
-# Phone Number ☎️
+# Phone ☎️
 
 This input type is specifically designed for collecting phone numbers with appropriate formatting and validation.
 

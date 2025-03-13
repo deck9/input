@@ -1,4 +1,4 @@
-# Date Input
+# Date 📅
 
 The Date input type allows users to select dates from a calendar interface, making it easy to collect date information in a consistent format.
 

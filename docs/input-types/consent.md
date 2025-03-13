@@ -1,4 +1,4 @@
-# Consent Input
+# Consent ✓
 
 The Consent input type is designed specifically for gathering agreement from users for terms, conditions, privacy policies, or other consent-based information.
 
