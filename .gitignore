@@ -21,6 +21,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /.idea
+/.vitepress/cache
 /.vscode
 /.scribe
 coverage

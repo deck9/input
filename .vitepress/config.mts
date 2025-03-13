@@ -4,6 +4,7 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
     title: "Input.co Documentation",
     description: "The open-source form builder",
+    srcDir: "docs",
     head: [["link", { rel: "icon", href: "https://getinput.co/favicon.ico" }]],
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
@@ -60,7 +61,10 @@ export default defineConfig({
                     { text: "Secret 🔒", link: "/input-types/secret" },
                     { text: "Rating ⭐", link: "/input-types/rating" },
                     { text: "Scale 📊", link: "/input-types/scale" },
-                    { text: "File Upload 📁", link: "/input-types/file-upload" },
+                    {
+                        text: "File Upload 📁",
+                        link: "/input-types/file-upload",
+                    },
                     { text: "Consent ✓", link: "/input-types/consent" },
                 ],
             },
