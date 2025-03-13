@@ -1,0 +1,37 @@
+- Getting Started
+  - Introduction
+  - Quick Start
+- Form Builder
+  - Managing Forms
+    - on the dashboard the user has an overview of all the forms they have created
+    - the forms can filtered by status (draft, published, deleted)
+    - the forms can be sorted by name, created date, or last updated date
+    - each form has a actions menu with options to edit, publish, delete, and duplicate
+    - the forms show statistics about views and submissions
+  - Workbench
+    - the workbench is where the user edits the form
+    - the workbench has a sidebar with the form blocks which is also referenced as storyboard
+    - if a form block is selected in the
+  - Storyboard
+  - Form Blocks
+- Input Types
+  - No Interaction
+    - this is a form block with just the message. the user can just click next to get to the next form block
+  - Multiple Choice (Radio)
+  - Checkboxes
+  - Short Text
+  - Long Text
+  - Number
+  - Email
+  - Link
+  - Phone Number
+  - Date
+  - Secret
+  - Rating
+  - Scale
+  - File Upload
+  - Consent
+- Self-Hosting
+  - Feature Limitations
+  - Docker Compose
+  - Proxy Setup / TLS
