@@ -32,4 +32,4 @@ _Illustration: Your data, your control_
 
 ## Getting Started
 
-Ready to take control of your forms and data? Check out our [Getting Started Section](/getting-started) to begin your journey with Input.
+Ready to take control of your forms and data? Check out our [Quick Start Guide](/quick-start) to begin your journey with Input.

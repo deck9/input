@@ -16,7 +16,7 @@ If you prefer a hassle-free setup, you can use our hosted version of Input. This
 2. The server is provided by Hetzner, a German cloud provider.
 3. The servers are located in Nürnberg, Germany.
 4. The hosted version is always up-to-date with the latest version of Input.
-   :::
+:::
 
 ## Option 2: Self-Hosting Input
 
@@ -71,7 +71,7 @@ volumes:
   input-data:
 ```
 
-2. Run the contrainer:
+2. Run the container:
 
 ```bash
 docker compose up -d
@@ -79,4 +79,44 @@ docker compose up -d
 
 3. Access Input at http://localhost:8080
 
-For advanced setups (MySQL, email configuration), see our [Advanced Configuration Guide](/docker-advanced-configuration).
+For production setups with MySQL, Redis, and MinIO, see our [Docker Compose for Production](/hosting/docker-compose) guide.
+
+## Getting Started After Installation
+
+Once you have Input up and running, follow these steps to create your first form:
+
+### Initial Setup
+
+1. **Create an account**: Register with your email and password
+2. **Create a team**: Input organizes forms by teams, so you'll need to create one
+3. **Dashboard access**: After logging in, you'll see the dashboard where you can manage all your forms
+
+![Input Dashboard](/assets/dashboard.png)
+
+### Creating Your First Form
+
+1. Click the "Create Form" button on the dashboard
+2. Give your form a name and description
+3. Use the intuitive drag-and-drop builder to add form blocks
+4. Configure each block with questions, options, and settings
+5. Preview your form to ensure it looks and works as expected
+6. Publish your form when it's ready to share
+
+![Multiple Choice Example](/assets/multiplechoice.gif)
+_Example: Adding a multiple choice question to your form_
+
+## Troubleshooting Common Issues
+
+### Installation Problems
+
+- **Container not starting**: Check Docker logs with `docker logs input`
+- **Cannot access Input**: Verify the port mapping in your Docker configuration
+- **Database errors**: Ensure volume permissions are set correctly
+
+### Form Creation Issues
+
+- **Changes not saving**: Refresh the page and try again
+- **Upload errors**: Check file size limits and permissions
+- **Preview not working**: Clear browser cache and cookies
+
+Need more help? Check our documentation or reach out to our community forum.
