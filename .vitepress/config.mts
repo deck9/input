@@ -69,6 +69,15 @@ export default defineConfig({
                 ],
             },
             {
+                text: "Working with Forms",
+                collapsed: false,
+                items: [
+                    { text: "Managing Submissions", link: "/managing-submissions" },
+                    { text: "Webhooks & Integrations", link: "/webhooks-integrations" },
+                    { text: "Embedding Forms", link: "/embedding-forms" },
+                ],
+            },
+            {
                 text: "Self-Hosting",
                 collapsed: true,
                 items: [
