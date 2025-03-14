@@ -5,7 +5,7 @@ export default defineConfig({
     title: "Input.co Documentation",
     description: "The open-source form builder",
     srcDir: "docs",
-    head: [["link", { rel: "icon", href: "https://getinput.co/favicon.ico" }]],
+    head: [["link", { rel: "icon", href: "/assets/input-icon.png" }]],
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
