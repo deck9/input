@@ -2,7 +2,7 @@
 
 Input is an open-source, no-code form builder designed to give you full control over your forms and data. Whether you're using our hosted plans or self-hosting, Input ensures your information remains secure and accessible only to you.
 
-![Input Dashboard](https://placehold.co/600x400?text=Input+Dashboard)
+![Input Dashboard](/assets/dashboard.png)
 _The Input dashboard: Your central hub for form management_
 
 ## Why We Created Input
@@ -27,7 +27,7 @@ As an open-source platform, Input gives you the freedom to examine the code, con
 
 Unlike proprietary form builders, Input doesn't tie you to a single vendor. You're free to export your data and forms at any time, ensuring you're never stuck with a service that no longer meets your needs.
 
-![Data Freedom](https://placehold.co/600x400?text=Your+data,+your+control)
+![Data Freedom](/assets/export-data.png)
 _Illustration: Your data, your control_
 
 ## Getting Started
