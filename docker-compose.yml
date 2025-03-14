@@ -24,6 +24,7 @@ services:
       - mariadb
       - redis
       - minio
+      - selenium
   mariadb:
     image: "mariadb:10"
     ports:
@@ -92,6 +93,14 @@ services:
     ports:
       - "${FORWARD_MAILHOG_PORT:-1025}:1025"
       - "${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025"
+    networks:
+      - sail
+  selenium:
+    image: "seleniarm/standalone-chromium"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "/dev/shm:/dev/shm"
     networks:
       - sail
 networks:
