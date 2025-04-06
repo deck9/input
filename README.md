@@ -136,6 +136,7 @@ Make sure to set the `APP_URL` env to the domain you want to use for your proxy.
 
 Also make sure that the proxy is configured to pass forward important request information like the scheme, host and IP.
 
+#### Nginx
 ```nginx
 location / {
     proxy_set_header Connection "";
@@ -151,6 +152,13 @@ location / {
 }
 ```
 
+#### Caddy
+```caddy
+input.example.com {
+    reverse_proxy 127.0.0.1:8080
+}
+```
+
 ### With MySQL
 
 To use MySQL as database, you need to set the following environment variables in your `.env` file:
@@ -163,3 +171,20 @@ DB_HOST=<MySQL-Host>
 DB_USERNAME=<MySQL-User>
 DB_PASSWORD=<MySQL-Password>
 ```
+
+### With e-mail
+
+To allow input to send e-mails, you need to set the following environment variables in your `.env` file:
+```dotEnv
+### Mail Config
+MAIL_MAILER=smtp
+MAIL_HOST=
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_PORT=1025
+MAIL_ENCRYPTION=tls
+```
+The different mailers are defined in [config/mail.php](config/mail.php), but may require additional configuration (see [config/services.php](config/services.php))
+
+### Without e-mail
+In case you do not wish to use e-mail, buit still want to invite someone: setting `MAIL_MAILER=log` in your `.env` file will send the invite links (or any e-mails for that matter) to the logs. Note that this the default option for **Docker** configurations.
