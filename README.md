@@ -136,6 +136,7 @@ Make sure to set the `APP_URL` env to the domain you want to use for your proxy.
 
 Also make sure that the proxy is configured to pass forward important request information like the scheme, host and IP.
 
+#### Nginx
 ```nginx
 location / {
     proxy_set_header Connection "";
@@ -148,6 +149,13 @@ location / {
 
     # Pass the request to the address of the docker container
     proxy_pass http://127.0.0.1:8080;
+}
+```
+
+#### Caddy
+```caddy
+input.example.com {
+    reverse_proxy 127.0.0.1:8080
 }
 ```
 
