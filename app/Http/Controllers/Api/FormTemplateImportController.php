@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Knuckles\Scribe\Attributes\Group;
 
 class FormTemplateImportController extends Controller
@@ -35,6 +36,19 @@ class FormTemplateImportController extends Controller
 
         // image paths point to files of the form that uploaded them, the form keeps its own
         unset($template['avatar_path'], $template['background_path']);
+
+        // same link rule as FormController::update()
+        $link = ['nullable', 'regex:~^(https?://|mailto:)~i'];
+        Validator::make($template, [
+            'cta_link' => $link,
+            'privacy_link' => $link,
+            'legal_notice_link' => $link,
+            'twitter' => $link,
+            'facebook' => $link,
+            'instagram' => $link,
+            'github' => $link,
+            'linkedin' => $link,
+        ])->validate();
 
         $form->applyTemplate($template);
 
