@@ -57,22 +57,20 @@ test('can get all submissions for a form via api', function () {
         ->for($form)
         ->create();
 
+    // fixed completion times: the newest submission comes first
     FormSession::factory()
-        ->completed()
         ->has(FormSessionResponse::factory()->count(2))
         ->for($form)
-        ->create();
+        ->create(['is_completed' => now()]);
 
     FormSession::factory()
-        ->completed()
         ->has(FormSessionResponse::factory()->count(1))
         ->for($form)
-        ->create();
+        ->create(['is_completed' => now()->subMinute()]);
 
     FormSession::factory()
-        ->completed()
         ->for($form)
-        ->create();
+        ->create(['is_completed' => now()->subMinutes(2)]);
 
     FormSession::factory()
         ->for($form)
@@ -89,6 +87,24 @@ test('can get all submissions for a form via api', function () {
     $this->assertCount(2, $response->json('data.0.responses'));
     $this->assertCount(1, $response->json('data.1.responses'));
     $this->assertCount(0, $response->json('data.2.responses'));
+});
+
+test('submissions completed in the same second are listed newest first', function () {
+    $form = Form::factory()->create();
+
+    $sessions = FormSession::factory()
+        ->times(3)
+        ->for($form)
+        ->create(['is_completed' => now()]);
+
+    $response = $this->actingAs($form->user)
+        ->json('get', route('api.forms.submissions', ['form' => $form->uuid]))
+        ->assertStatus(200);
+
+    $this->assertEquals(
+        $sessions->pluck('id')->reverse()->values()->all(),
+        collect($response->json('data'))->pluck('id')->all()
+    );
 });
 
 test('returned submission has responses keyed by form block uuid', function () {
