@@ -56,20 +56,84 @@ test('can_update_an_interaction_of_this_type', function ($blockType, $interactio
     $this->assertEquals('This is my message', $response->json('message'));
 })->with('interactions');
 
-test('the_unique_id_cannot_be_changed', function ($blockType, $interactionType) {
+test('can_set_a_unique_id', function ($blockType, $interactionType) {
     $interaction = FormBlockInteraction::factory()->create([
         'type' => $interactionType,
     ]);
-    $uuid = $interaction->uuid;
 
     $response = $this->actingAs($interaction->formBlock->form->user)
         ->json('post', route('api.interactions.update', $interaction->id), [
             'uuid' => 'i-10',
         ]);
 
-    $this->assertEquals($uuid, $response->json('uuid'));
-    $this->assertEquals($uuid, $interaction->fresh()->uuid);
+    $this->assertEquals('i-10', $response->json('uuid'));
 })->with('interactions');
+
+test('a_unique_id_used_in_the_same_form_is_rejected', function () {
+    $taken = FormBlockInteraction::factory()->create();
+    $interaction = FormBlockInteraction::factory()->create([
+        'form_block_id' => FormBlock::factory()->create(['form_id' => $taken->formBlock->form_id])->id,
+    ]);
+    $uuid = $interaction->uuid;
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'uuid' => $taken->uuid,
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('uuid');
+
+    $this->assertEquals($uuid, $interaction->fresh()->uuid);
+});
+
+test('a_unique_id_used_in_another_form_is_allowed', function () {
+    $other = FormBlockInteraction::factory()->create();
+    $interaction = FormBlockInteraction::factory()->create();
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'uuid' => $other->uuid,
+        ])
+        ->assertSuccessful();
+
+    $this->assertEquals($other->uuid, $interaction->fresh()->uuid);
+});
+
+test('a_unique_id_must_be_letters_numbers_dashes_or_underscores', function () {
+    $interaction = FormBlockInteraction::factory()->create();
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'uuid' => 'i/10',
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('uuid');
+});
+
+test('a_unique_id_can_have_at_most_36_characters', function () {
+    $interaction = FormBlockInteraction::factory()->create();
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'uuid' => str_repeat('a', 37),
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('uuid');
+});
+
+test('an_unchanged_unique_id_is_not_validated', function () {
+    $interaction = FormBlockInteraction::factory()->create();
+    $interaction->update(['uuid' => 'legacy id']);
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'uuid' => 'legacy id',
+            'label' => 'Click me',
+        ])
+        ->assertSuccessful();
+
+    $this->assertEquals('Click me', $interaction->fresh()->label);
+});
 
 test('can_delete_an_interaction_of_this_type', function ($blockType, $interactionType) {
     $interaction = FormBlockInteraction::factory()->create([
