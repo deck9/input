@@ -48,7 +48,7 @@ When a form is submitted, Input sends a JSON payload to your webhook URL with th
 
 ```json
 {
-    "id": "123",
+    "id": 123,
     "uid": "unique-session-token",
     "form": "form-uuid",
     "started_at": "2023-06-15 09:32:45",
