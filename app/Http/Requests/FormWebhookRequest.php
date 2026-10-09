@@ -13,6 +13,11 @@ class FormWebhookRequest extends FormRequest
      */
     public function authorize()
     {
+        $webhook = $this->route('webhook');
+
+        // on update, the webhook must belong to the form in the url
+        abort_if($webhook && ! $webhook->form()->is($this->route('form')), 404);
+
         return $this->user()->can('update', $this->route('form'));
     }
 

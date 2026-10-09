@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Actions\Jetstream\DeleteTeam;
 use App\Mail\FormSubmissionNotification;
 use App\Models\Form;
 use App\Models\FormSession;
@@ -55,4 +56,27 @@ it('send an email notification for a submitted form', function () {
     ])->assertStatus(200);
 
     Mail::assertQueued(FormSubmissionNotification::class);
+});
+
+it('stores a submission without a mail when the form\'s team was deleted', function () {
+    Mail::fake();
+
+    $form = Form::factory()->create([
+        'is_notification_via_mail' => true,
+    ]);
+
+    $session = FormSession::factory()->create([
+        'form_id' => $form->id,
+    ]);
+
+    app(DeleteTeam::class)->delete($form->team);
+
+    $this->json('POST', route('api.public.forms.submit', [
+        'form' => $form->uuid,
+    ]), [
+        'token' => $session->token,
+        'payload' => [],
+    ])->assertStatus(200);
+
+    Mail::assertNothingQueued();
 });

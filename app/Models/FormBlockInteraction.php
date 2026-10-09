@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Hashids\Hashids;
-use Ramsey\Uuid\Uuid;
 use App\Scopes\Sequence;
+use Illuminate\Support\Str;
 use App\Enums\FormBlockInteractionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -39,18 +38,13 @@ class FormBlockInteraction extends BaseModel
 
         self::addGlobalScope(new Sequence());
 
+        // random public id, not derived from the row id; stored ids never change
         self::creating(function ($model) {
-            $model->uuid = Uuid::uuid4();
+            $model->uuid = Str::random(16);
 
             if (! $model->sequence) {
                 $model->sequence = self::where('form_block_id', $model->form_block_id)->count();
             }
-        });
-
-        self::created(function ($model) {
-            $model->update([
-                'uuid' => (new Hashids())->encode($model->id),
-            ]);
         });
 
         self::deleted(function ($model) {

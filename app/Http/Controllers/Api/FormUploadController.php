@@ -17,13 +17,10 @@ class FormUploadController extends Controller
             'file' => 'file',
         ]);
 
+        // only look at the interactions of this form
         $interaction = FormBlockInteraction::withUuid($request->input('actionId'))
+            ->whereHas('formBlock', fn ($query) => $query->where('form_id', $form->id))
             ->firstOrFail();
-
-        // Validate that action belongs to the form
-        if ($interaction->formBlock->form->id !== $form->id) {
-            abort(404, 'Action not found');
-        }
 
         $session = $form->formSessions()
             ->where('token', $request->input('token'))

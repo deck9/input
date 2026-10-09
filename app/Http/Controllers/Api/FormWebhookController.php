@@ -62,6 +62,7 @@ class FormWebhookController extends Controller
     public function delete(Form $form, FormWebhook $webhook): JsonResponse
     {
         $this->authorize('update', $form);
+        abort_unless($webhook->form()->is($form), 404);
 
         $webhook->delete();
 

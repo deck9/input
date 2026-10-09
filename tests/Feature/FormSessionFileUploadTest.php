@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Form;
+use App\Models\FormBlockInteraction;
 use App\Models\FormSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -47,4 +48,33 @@ test('can upload a file through special endpoint and attach it to the session', 
             ->formSessionResponses[0]
             ->formSessionUploads
     );
+})->with('uploadForm');
+
+test('an upload finds the interaction of its own form when another form uses the same id', function ($template) {
+    $otherInteraction = FormBlockInteraction::factory()->create();
+
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $interaction = $form->formBlocks[0]->formBlockInteractions[0];
+
+    $otherInteraction->update(['uuid' => $interaction->uuid]);
+
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+
+    $this->json('POST', route('api.public.forms.submit', [
+        'form' => $form->uuid,
+    ]), [
+        'token' => $session->token,
+        'payload' => [
+            ...$form->formBlocks[0]->getSubmitPayload(1),
+        ],
+    ])->assertStatus(200);
+
+    $this->json('POST', route('api.public.forms.file-upload', [
+        'form' => $form->uuid,
+    ]), [
+        'token' => $session->token,
+        'actionId' => $interaction->uuid,
+        'file' => UploadedFile::fake()->image('face.png'),
+    ])->assertStatus(201);
 })->with('uploadForm');

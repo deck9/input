@@ -2,7 +2,6 @@
 
 use App\Models\Form;
 use App\Models\User;
-use Hashids\Hashids;
 use App\Models\FormBlock;
 use App\Enums\FormBlockType;
 use App\Models\FormBlockLogic;
@@ -21,9 +20,8 @@ test('can create new blocks', function () {
         ->assertSuccessful();
 
     $block = FormBlock::get()->last();
-    $hashed = (new Hashids())->encode($block->id);
 
-    $this->assertEquals($hashed, $response->json('uuid'));
+    $this->assertEquals($block->uuid, $response->json('uuid'));
     $this->assertEquals($form->id, $response->json('form_id'));
     $this->assertEquals($block->type, FormBlockType::none);
 });
@@ -38,9 +36,8 @@ test('can create a new block of type group', function () {
         ->assertSuccessful();
 
     $block = FormBlock::get()->last();
-    $hashed = (new Hashids())->encode($block->id);
 
-    $this->assertEquals($hashed, $response->json('uuid'));
+    $this->assertEquals($block->uuid, $response->json('uuid'));
     $this->assertEquals($form->id, $response->json('form_id'));
     $this->assertEquals($block->type, FormBlockType::group);
 });

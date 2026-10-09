@@ -6,7 +6,6 @@ use App\Enums\FormBlockType;
 use App\Http\Resources\PublicFormBlockResource;
 use App\Http\Resources\PublicFormResource;
 use App\Models\Traits\TemplateExportsAndImports;
-use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
-use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
 
 class Form extends BaseModel
 {
@@ -105,14 +104,9 @@ class Form extends BaseModel
     {
         parent::boot();
 
+        // random public id, not derived from the row id; stored ids never change
         self::creating(function ($model) {
-            $model->uuid = (string) Uuid::uuid4();
-        });
-
-        self::created(function ($model) {
-            $model->update([
-                'uuid' => (new Hashids())->encode($model->id),
-            ]);
+            $model->uuid = Str::random(16);
         });
     }
 

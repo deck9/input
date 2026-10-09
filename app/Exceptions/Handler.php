@@ -40,7 +40,7 @@ class Handler extends ExceptionHandler
                 try {
                     $search = explode('\\', $e->getPrevious()->getModel());
                     $model = end($search);
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $model = 'Record';
                 }
 

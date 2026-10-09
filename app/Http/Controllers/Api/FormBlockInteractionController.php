@@ -57,6 +57,20 @@ class FormBlockInteractionController extends Controller
                 break;
         }
 
+        // the editor sends the stored uuid back on every save, so only check a changed one
+        $request->validate([
+            'uuid' => [
+                Rule::excludeIf($request->input('uuid') === $interaction->uuid),
+                'sometimes',
+                'string',
+                'alpha_dash',
+                'max:36',
+                Rule::unique('form_block_interactions')
+                    ->ignore($interaction)
+                    ->whereIn('form_block_id', $interaction->formBlock->form->formBlocks()->pluck('id')),
+            ],
+        ]);
+
         $interaction->fill($request->only(['label', 'message', 'uuid', 'options', 'is_editable', 'is_disabled', 'name']));
         $interaction->save();
 

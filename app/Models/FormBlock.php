@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Hashids\Hashids;
 use App\Scopes\Sequence;
-use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Str;
 use App\Enums\FormBlockType;
 use App\Models\FormBlockLogic;
 use App\Enums\FormBlockInteractionType;
@@ -53,14 +52,9 @@ class FormBlock extends BaseModel
 
         self::addGlobalScope(new Sequence());
 
+        // random public id, not derived from the row id; stored ids never change
         self::creating(function ($model) {
-            $model->uuid = (string) Uuid::generate(4);
-        });
-
-        self::created(function ($model) {
-            $model->update([
-                'uuid' => (new Hashids())->encode($model->id),
-            ]);
+            $model->uuid = Str::random(16);
         });
     }
 

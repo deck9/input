@@ -18,6 +18,7 @@ class DeleteFormSubmissionController extends Controller
     public function __invoke(Form $form, FormSession $session)
     {
         $this->authorize('update', $form);
+        abort_unless($session->form()->is($form), 404);
 
         $session->delete();
 
