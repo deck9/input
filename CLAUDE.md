@@ -4,12 +4,12 @@
 
 ## Build & Test Commands
 
--   First setup: `mise run up` (composer install, Sail up, migrate, key:generate, npm ci, Vite). Only once: it runs `key:generate`, which replaces APP_KEY.
--   Start: `./vendor/bin/sail up -d --no-deps laravel.test mariadb redis mailhog mariadb.test` (the `minio` image can no longer be pulled; the app stores files on the local disk). App: http://localhost:8500
+-   First setup: `cp .env.dev.example .env`, then set `FILESYSTEM_DRIVER=local` in `.env` (the `minio` image can no longer be pulled). Then `mise run up` (composer install, Sail up, migrate, key:generate, npm ci, Vite). Its plain `sail up -d` step fails on the missing `minio` image: run the Start line below instead and finish the remaining steps by hand. Only once: `key:generate` replaces APP_KEY.
+-   Start: `./vendor/bin/sail up -d --no-deps laravel.test mariadb redis mailhog mariadb.test`. App: http://localhost:8500
 -   Migrate: `./vendor/bin/sail artisan migrate`
 -   Dev: `npm run dev` (runs Vite development server)
 -   Build: `npm run build` (runs lint + type check + builds app)
--   Test JS: `npm run test` or `npm run test -- path/to/test.ts` (Vitest)
+-   Test JS: `npx vitest run` or `npx vitest run path/to/test.ts` (`npm run test` starts Vitest in watch mode)
 -   Test PHP: `./vendor/bin/sail test` or `./vendor/bin/sail test tests/Feature/SpecificTest.php`
 -   Lint: `npm run lint` (ESLint for JS/TS/Vue)
 -   Type check: `npm run vue-tsc` (TypeScript check)
