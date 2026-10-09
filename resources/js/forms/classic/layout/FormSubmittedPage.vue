@@ -4,11 +4,7 @@
       <h1>
         {{ store.form?.eoc_headline || t("form_submitted") }}
       </h1>
-      <div
-        v-if="store.form?.eoc_text"
-        class="mt-2"
-        v-html="store.form?.eoc_text"
-      ></div>
+      <div v-if="eocText" class="mt-2" v-html="eocText"></div>
     </div>
     <div>
       <CallToActionButton
@@ -25,9 +21,13 @@
 import CallToActionButton from "./CallToActionButton.vue";
 import { useConversation } from "@/stores/conversation";
 import SocialLinks from "@/forms/classic/layout/SocialLinks.vue";
+import { sanitizeHtml } from "@/utils/sanitize";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const store = useConversation();
+
+const eocText = computed(() => sanitizeHtml(store.form?.eoc_text));
 </script>

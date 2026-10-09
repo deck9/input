@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit" :title="`Form for section ${block.id}`">
-    <div class="text-content form-message-prose" v-html="block.message"></div>
+    <div class="text-content form-message-prose" v-html="message"></div>
 
     <div class="mt-6">
       <div
@@ -39,6 +39,7 @@
 import FormButton from "./FormButton.vue";
 import { useConversation } from "@/stores/conversation";
 import { useActions } from "@/forms/classic/useActions";
+import { sanitizeHtml } from "@/utils/sanitize";
 import { computed, ComputedRef, inject, onMounted, ref } from "vue";
 import { templateRef, onKeyStroke } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
@@ -48,6 +49,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+
+const message = computed(() => sanitizeHtml(props.block.message));
 
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
 const store = useConversation();

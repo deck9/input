@@ -6,7 +6,7 @@
         <RequiredMark v-if="action.options?.required" />
       </span>
 
-      <p v-html="action.message"></p>
+      <p v-html="message"></p>
     </div>
 
     <div class="absolute left-0 top-[5px] flex">
@@ -29,6 +29,7 @@ import { onKeyStroke } from "@vueuse/core";
 import { onMounted, ref, computed, ComputedRef, inject } from "vue";
 import { useConversation } from "@/stores/conversation";
 import RequiredMark from "@/forms/classic/layout/RequiredMark.vue";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 const store = useConversation();
 
@@ -38,6 +39,8 @@ const props = defineProps<{
   action: PublicFormBlockInteractionModel;
 }>();
 const disableFocus: ComputedRef<boolean> | undefined = inject("disableFocus");
+
+const message = computed(() => sanitizeHtml(props.action.message));
 
 const buttonElement = ref<HTMLInputElement | null>(null);
 const shortcutKey = (props.index + 1).toString();

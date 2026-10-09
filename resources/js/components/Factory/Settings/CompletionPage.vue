@@ -1,5 +1,5 @@
 <template>
-  <form @submit="saveFormSubmitSettings">
+  <form @submit.prevent="saveFormSubmitSettings">
     <CompletionPageType v-model="useCtaRedirect" />
 
     <template v-if="useCtaRedirect">
@@ -136,6 +136,8 @@
       </div>
     </template>
 
+    <ValidationErrors class="mt-8" v-if="errors.length > 0" :errors="errors" />
+
     <D9Button
       class="mt-8"
       type="submit"
@@ -151,9 +153,12 @@ import { D9Label, D9Input, D9Switch, D9Button } from "@deck9/ui";
 import { ref } from "vue";
 import CompletionPageType from "@/components/Factory/Settings/partials/CompletionPageType.vue";
 import Editor from "@/components/Factory/Shared/Editor.vue";
+import ValidationErrors from "@/components/ValidationErrors.vue";
+import { AxiosError } from "axios";
 
 const store = useForm();
 const isSaving = ref(false);
+const errors = ref<string[]>([]);
 
 const outroHeadline = ref(store.form?.eoc_headline ?? "");
 const outroMessage = ref(store.form?.eoc_text ?? "");
@@ -174,6 +179,7 @@ const twitter = ref(store?.form?.twitter);
 
 const saveFormSubmitSettings = async () => {
   isSaving.value = true;
+  errors.value = [];
   try {
     await store.updateForm({
       eoc_headline: outroHeadline.value,
@@ -194,7 +200,11 @@ const saveFormSubmitSettings = async () => {
       twitter: twitter.value,
     });
   } catch (e) {
-    console.error(e);
+    if (e instanceof AxiosError) {
+      errors.value = [e.response?.data?.message || "Unknown error"];
+    } else {
+      console.error(e);
+    }
   } finally {
     isSaving.value = false;
   }

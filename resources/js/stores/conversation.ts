@@ -8,6 +8,7 @@ import {
 } from "@/api/conversation";
 import { evaluateGotoLogic, isBlockVisible } from "./helpers/logic";
 import { createFlatQueue } from "./helpers/queue";
+import { isAllowedLink } from "@/utils/sanitize";
 import { Ref, ref } from "vue";
 
 type ConversationStore = {
@@ -169,7 +170,11 @@ export const useConversation = defineStore("form", {
         },
 
         callToActionUrl(state): string | null {
-            if (!state.form || !state.session) {
+            if (
+                !state.form ||
+                !state.session ||
+                !isAllowedLink(state.form.cta_link)
+            ) {
                 return null;
             }
 
@@ -430,7 +435,10 @@ export const useConversation = defineStore("form", {
                     }
 
                     // If a redirect is configured, we redirect the user to the given url
-                    if (this.form.use_cta_redirect && this.callToActionUrl) {
+                    if (
+                        this.form.use_cta_redirect &&
+                        isAllowedLink(this.callToActionUrl, ["http:", "https:"])
+                    ) {
                         window.location.href = this.callToActionUrl;
 
                         return Promise.resolve(true);
