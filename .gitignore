@@ -22,6 +22,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vitepress/cache
+/.vitepress/dist
 /.vscode
 /.scribe
 coverage

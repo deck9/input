@@ -4,12 +4,13 @@ When self-hosting Input, you may want to use your own domain and add TLS encrypt
 
 ## Docker Configuration
 
-When running the Input container, make sure to set the `APP_URL` environment variable to your domain:
+When running the Input container, make sure to set the `APP_URL` environment variable to your domain. `APP_KEY` is required too, see the [Quick Start](/quick-start) for how to generate it:
 
 ```bash
 docker run -d -p 8080:8080 --name input \
     -v input-data:/var/www/html/storage \
     -e APP_URL=https://your-domain.com \
+    -e APP_KEY=base64:your_generated_key \
     ghcr.io/deck9/input:main
 ```
 

@@ -16,8 +16,6 @@ The simplest way to embed a form is using an iFrame. This method works on any we
 4. Copy the generated iFrame code
 5. Paste the code into your website's HTML
 
-![iFrame Embedding Option - Screenshot Placeholder]
-
 Example iFrame code:
 
 ```html

@@ -37,20 +37,27 @@ Before you begin, make sure you have the following installed:
 docker volume create input-data
 ```
 
-2. Run the Input container:
+2. Generate an app key. Input does not work without one:
+
+```bash
+echo "base64:$(openssl rand -base64 32)"
+```
+
+3. Run the Input container with your key:
 
 ```bash
 docker run -d -p 8080:8080 --name input \
 -v input-data:/var/www/html/storage \
--e APP_URL=https://your-domain.com:8080 \
+-e APP_URL=http://localhost:8080 \
+-e APP_KEY=base64:your_generated_key \
 ghcr.io/deck9/input:main
 ```
 
-3. Access Input at http://localhost:8080
+4. Open Input at `http://localhost:8080`
 
 ### Using Docker Compose
 
-1. Create a docker-compose.yml file:
+1. Generate an app key as shown above, then create a docker-compose.yml file:
 
 ```yaml
 version: "3.2"
@@ -65,7 +72,8 @@ services:
       - 8080:8080
     restart: unless-stopped
     environment:
-      - APP_URL="https://your-domain.com:8080"
+      - APP_URL=http://localhost:8080
+      - APP_KEY=base64:your_generated_key
 
 volumes:
   input-data:
@@ -77,9 +85,9 @@ volumes:
 docker compose up -d
 ```
 
-3. Access Input at http://localhost:8080
+3. Open Input at `http://localhost:8080`
 
-For production setups with MySQL, Redis, and MinIO, see our [Docker Compose for Production](/hosting/docker-compose) guide.
+To run Input on your own domain, set `APP_URL` to that domain and see [Proxy Setup / TLS](/hosting/proxy-setup). For production setups with MySQL, Redis, and MinIO, see our [Docker Compose for Production](/hosting/docker-compose) guide.
 
 ## Getting Started After Installation
 

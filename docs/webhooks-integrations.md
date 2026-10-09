@@ -17,8 +17,6 @@ To set up webhooks for your form:
 3. Click "Integrations" in the main navigation
 4. You'll see the webhooks configuration page
 
-![Webhooks Configuration Page - Screenshot Placeholder]
-
 ### Creating a New Webhook
 
 To add a new webhook:
@@ -26,8 +24,7 @@ To add a new webhook:
 1. Click the "Add Webhook" button
 2. Enter the URL where submission data should be sent
 3. Select the HTTP method (typically POST)
-4. Add any custom headers if needed
-5. Save the webhook configuration
+4. Save the webhook configuration
 
 ::: info
 Your webhook endpoint should be able to receive JSON data and return a successful HTTP status code (200-299).
@@ -44,8 +41,6 @@ Make is a powerful automation platform that connects Input to hundreds of other 
 1. Click the "Connect with Make" button in the Integrations section
 2. Follow the setup instructions to create a new scenario in Make
 3. Use the provided webhook URL in your Input configuration
-
-![Make Integration - Screenshot Placeholder]
 
 ## Webhook Payload Format
 
@@ -73,7 +68,7 @@ When a form is submitted, Input sends a JSON payload to your webhook URL with th
                     "name": "Name field",
                     "value": "Jane Doe",
                     "original": "Jane Doe",
-                    "type": "input"
+                    "type": "input-short"
                 }
             ]
         },
@@ -87,7 +82,7 @@ When a form is submitted, Input sends a JSON payload to your webhook URL with th
                     "name": "Email field",
                     "value": "jane@example.com",
                     "original": "jane@example.com",
-                    "type": "email"
+                    "type": "input-email"
                 }
             ]
         },
@@ -134,8 +129,6 @@ Input provides status information for webhook calls made for each submission:
     - Status code returned
     - Response from the endpoint
     - Timestamp of the call
-
-![Webhook Status Indicator - Screenshot Placeholder]
 
 ## Common Integration Use Cases
 
@@ -184,12 +177,11 @@ If your webhook isn't receiving data:
 
 ### Handling Failed Webhooks
 
-If a webhook fails:
+Input sends each webhook once and does not retry it. If a webhook fails:
 
-1. Input will automatically retry the webhook up to 3 times
-2. Check the webhook status indicator in the submission table for error details
-3. Fix any issues with your endpoint
-4. Resubmit a test entry to verify the fix
+1. Check the webhook status indicator in the submission table for error details
+2. Fix any issues with your endpoint
+3. Resubmit a test entry to verify the fix
 
 ::: tip
 For development and testing, consider using a service like [Webhook.site](https://webhook.site) to create a temporary endpoint that shows all incoming requests.

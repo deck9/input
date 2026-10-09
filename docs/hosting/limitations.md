@@ -12,7 +12,7 @@ When self-hosting Input, be aware of the following limitations:
 
 ### User Registration
 
-- Only invited users can register and join the team.
-- Users attempting to register without an invitation will see a message that they need an invitation.
+- Anyone who can reach your Input instance can register an account.
+- Once the team exists, new users can only work with forms after the team admin invites them to the team.
 
 These limitations ensure that the self-hosted version of Input remains focused on single-team use. For multi-team functionality, consider our hosted version of Input.

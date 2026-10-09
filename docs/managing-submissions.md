@@ -24,8 +24,6 @@ The Table View displays each individual submission in a tabular format:
 -   The date and time of submission is displayed
 -   A unique submission ID is provided
 
-![Submissions Table View - Screenshot Placeholder]
-
 ### Summary View
 
 The Summary View provides an aggregated analysis of your submissions:
@@ -39,8 +37,6 @@ To switch between views:
 
 1. Click on "Submissions" button for the Table View
 2. Click on "Summary" button for the Summary View
-
-![Submissions Summary View - Screenshot Placeholder]
 
 ## Exporting Submissions
 

@@ -18,7 +18,7 @@ While the default Docker container uses SQLite, which is not suitable for produc
 APP_KEY=your_app_key
 APP_URL=https://your-domain.com
 
-QUEUE_CONNECTION=redis
+QUEUE_CONNECTION=sync
 SESSION_DRIVER=redis
 CACHE_DRIVER=redis
 
@@ -49,6 +49,10 @@ MAIL_USERNAME=your_smtp_username
 MAIL_PASSWORD=your_smtp_password
 MAIL_ENCRYPTION=tls
 ```
+
+::: warning Keep `QUEUE_CONNECTION=sync`
+The Input image runs no queue worker. With any other queue driver, webhooks and notification emails are never sent.
+:::
 
 ## Docker Compose YAML
 
@@ -114,5 +118,5 @@ volumes:
 
 1. Create the .env file with your configuration.
 2. Create the docker-compose.yml file as shown above.
-3. Generate an APP_KEY using Laravel's key generation command and add it to your .env file.
+3. Generate an APP_KEY with `echo "base64:$(openssl rand -base64 32)"` and add it to your .env file.
 4. Run docker compose up -d to start all services.
