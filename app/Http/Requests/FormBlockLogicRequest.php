@@ -11,7 +11,9 @@ class FormBlockLogicRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $block = $this->route('block') ?? $this->route('logic')->formBlock;
+
+        return $this->user()->can('update', $block);
     }
 
     /**

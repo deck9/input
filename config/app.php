@@ -126,6 +126,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Hashids Salt
+    |--------------------------------------------------------------------------
+    |
+    | Salt for the public ids of new forms, blocks and interactions. When it
+    | is empty, a salt is derived from the encryption key. Stored ids never
+    | change, so changing the salt only affects rows created afterwards.
+    |
+    */
+
+    'hashids_salt' => env('HASHIDS_SALT'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

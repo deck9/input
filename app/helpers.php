@@ -24,3 +24,14 @@ function has_string_keys(array $array)
 {
     return count(array_filter(array_keys($array), 'is_string')) > 0;
 }
+
+/**
+ * public id for a new form, block or interaction, stored once in its uuid column
+ */
+function hashid(int $id): string
+{
+    // never the raw app key: a hashids salt can be recovered from enough ids
+    $salt = config('app.hashids_salt') ?: hash_hmac('sha256', 'hashids', (string) config('app.key'));
+
+    return (new Hashids\Hashids($salt, 12))->encode($id);
+}

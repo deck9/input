@@ -12,16 +12,16 @@ class FormBlockInteractionPolicy
 
     public function view(User $user, FormBlockInteraction $interaction)
     {
-        return $user->id === $interaction->formBlock->form->user_id || $user->current_team_id === $interaction->formBlock->form->team_id;
+        return $user->can('view', $interaction->formBlock->form);
     }
 
     public function update(User $user, FormBlockInteraction $interaction)
     {
-        return $user->id === $interaction->formBlock->form->user_id || $user->current_team_id === $interaction->formBlock->form->team_id;
+        return $user->can('update', $interaction->formBlock->form);
     }
 
     public function delete(User $user, FormBlockInteraction $interaction)
     {
-        return $user->id === $interaction->formBlock->form->user_id || $user->current_team_id === $interaction->formBlock->form->team_id;
+        return $user->can('update', $interaction->formBlock->form);
     }
 }

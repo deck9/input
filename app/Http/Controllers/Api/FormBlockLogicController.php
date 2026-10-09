@@ -21,6 +21,8 @@ class FormBlockLogicController extends Controller
 
     public function delete(FormBlockLogic $logic)
     {
+        $this->authorize('update', $logic->formBlock);
+
         $logic->delete();
 
         return response()->json(null, 200);

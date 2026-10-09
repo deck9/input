@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Hashids\Hashids;
 use App\Scopes\Sequence;
 use Webpatser\Uuid\Uuid;
 use App\Enums\FormBlockType;
@@ -59,7 +58,7 @@ class FormBlock extends BaseModel
 
         self::created(function ($model) {
             $model->update([
-                'uuid' => (new Hashids())->encode($model->id),
+                'uuid' => hashid($model->id),
             ]);
         });
     }

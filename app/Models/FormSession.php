@@ -80,7 +80,7 @@ class FormSession extends Model
     public function submit($payload)
     {
         foreach ($payload as $blockUuid => $blockPayload) {
-            $block = FormBlock::withUuid($blockUuid)->firstOrFail();
+            $block = $this->form->formBlocks()->withUuid($blockUuid)->firstOrFail();
             $block->submit($this, $blockPayload);
         }
 

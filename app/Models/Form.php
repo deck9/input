@@ -6,7 +6,6 @@ use App\Enums\FormBlockType;
 use App\Http\Resources\PublicFormBlockResource;
 use App\Http\Resources\PublicFormResource;
 use App\Models\Traits\TemplateExportsAndImports;
-use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -111,7 +110,7 @@ class Form extends BaseModel
 
         self::created(function ($model) {
             $model->update([
-                'uuid' => (new Hashids())->encode($model->id),
+                'uuid' => hashid($model->id),
             ]);
         });
     }

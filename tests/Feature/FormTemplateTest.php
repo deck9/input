@@ -119,6 +119,7 @@ test('can import a form that has a group block with a child block', function () 
         'name' => 'Test Form',
         'description' => 'A template Import Test',
         'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
     ]);
 
     // import the template
@@ -144,6 +145,7 @@ test('can import a string template for an existing form', function () {
         'name' => 'Test Form',
         'description' => 'A template Import Test',
         'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
     ]);
 
     $importTemplateString = file_get_contents(base_path('tests/form.template.json'));
@@ -177,6 +179,7 @@ test('can import a file template for an existing form', function () {
         'name' => 'Test Form',
         'description' => 'A template Import Test',
         'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
     ]);
 
     $templateFile = UploadedFile::fake()->createWithContent(

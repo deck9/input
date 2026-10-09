@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Hashids\Hashids;
 use Ramsey\Uuid\Uuid;
 use App\Scopes\Sequence;
 use App\Enums\FormBlockInteractionType;
@@ -49,7 +48,7 @@ class FormBlockInteraction extends BaseModel
 
         self::created(function ($model) {
             $model->update([
-                'uuid' => (new Hashids())->encode($model->id),
+                'uuid' => hashid($model->id),
             ]);
         });
 
