@@ -20,9 +20,8 @@ test('can create new blocks', function () {
         ->assertSuccessful();
 
     $block = FormBlock::get()->last();
-    $hashed = hashid($block->id);
 
-    $this->assertEquals($hashed, $response->json('uuid'));
+    $this->assertEquals($block->uuid, $response->json('uuid'));
     $this->assertEquals($form->id, $response->json('form_id'));
     $this->assertEquals($block->type, FormBlockType::none);
 });
@@ -37,9 +36,8 @@ test('can create a new block of type group', function () {
         ->assertSuccessful();
 
     $block = FormBlock::get()->last();
-    $hashed = hashid($block->id);
 
-    $this->assertEquals($hashed, $response->json('uuid'));
+    $this->assertEquals($block->uuid, $response->json('uuid'));
     $this->assertEquals($form->id, $response->json('form_id'));
     $this->assertEquals($block->type, FormBlockType::group);
 });

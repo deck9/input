@@ -57,7 +57,7 @@ class FormBlockInteractionController extends Controller
                 break;
         }
 
-        $interaction->fill($request->only(['label', 'message', 'uuid', 'options', 'is_editable', 'is_disabled', 'name']));
+        $interaction->fill($request->only(['label', 'message', 'options', 'is_editable', 'is_disabled', 'name']));
         $interaction->save();
 
         return response()->json($interaction, 200);

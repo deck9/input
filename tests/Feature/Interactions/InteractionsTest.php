@@ -56,17 +56,19 @@ test('can_update_an_interaction_of_this_type', function ($blockType, $interactio
     $this->assertEquals('This is my message', $response->json('message'));
 })->with('interactions');
 
-test('can_set_a_unique_id', function ($blockType, $interactionType) {
+test('the_unique_id_cannot_be_changed', function ($blockType, $interactionType) {
     $interaction = FormBlockInteraction::factory()->create([
         'type' => $interactionType,
     ]);
+    $uuid = $interaction->uuid;
 
     $response = $this->actingAs($interaction->formBlock->form->user)
         ->json('post', route('api.interactions.update', $interaction->id), [
             'uuid' => 'i-10',
         ]);
 
-    $this->assertEquals('i-10', $response->json('uuid'));
+    $this->assertEquals($uuid, $response->json('uuid'));
+    $this->assertEquals($uuid, $interaction->fresh()->uuid);
 })->with('interactions');
 
 test('can_delete_an_interaction_of_this_type', function ($blockType, $interactionType) {
