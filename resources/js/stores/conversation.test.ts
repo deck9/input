@@ -13,6 +13,11 @@ vi.mock('./helpers/logic', async (importOriginal) => {
   };
 });
 
+vi.mock('@/api/conversation', async (importOriginal) => ({
+  ...(await importOriginal() as any),
+  callSubmitForm: vi.fn().mockResolvedValue({}),
+}));
+
 const makeBlocks = (...ids: string[]): PublicFormBlockModel[] =>
   ids.map((id) => ({
     id,
@@ -155,6 +160,44 @@ describe('Conversation Store', () => {
       expect(evaluateGotoLogicMock).toHaveBeenCalledWith(blocks[0], {});
       expect(executeGotoSpy).toHaveBeenCalledWith('nonExistentBlock');
       expect(goToIndexSpy).toHaveBeenCalledWith(1); // Should proceed to next block
+    });
+  });
+
+  describe('redirect after submit', () => {
+    const submitWithRedirectTo = async (cta_link: string) => {
+      const store = useConversation();
+      const blocks = makeBlocks('block1');
+
+      vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(blocks[0]);
+      vi.spyOn(store, 'isLastBlock', 'get').mockReturnValue(true);
+      vi.mocked(logicHelpers.evaluateGotoLogic).mockReturnValue(null);
+      store.form = { uuid: 'form', use_cta_redirect: true, cta_link } as PublicFormModel;
+      store.session = { token: 'session' } as FormSessionModel;
+
+      await store.next();
+
+      return store;
+    };
+
+    it.each(['javascript:void(0)', 'mailto:team@example.com'])(
+      'skips a stored link that is not http(s): %s',
+      async (link) => {
+        const store = await submitWithRedirectTo(link);
+
+        // no redirect, so the form shows its end page
+        expect(store.isSubmitted).toBe(true);
+      },
+    );
+
+    it('redirects to an https link', async () => {
+      // jsdom can't navigate and reports the attempt as an error
+      const navigation = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const store = await submitWithRedirectTo('https://example.com/thanks');
+
+      expect(store.isSubmitted).toBe(false);
+      expect(navigation).toHaveBeenCalled();
+      navigation.mockRestore();
     });
   });
 });

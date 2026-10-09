@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
 
@@ -76,9 +77,24 @@ class FormController extends Controller
     {
         $this->authorize('update', $form);
 
+        // the settings pages send every link back on save, so only check a changed one
+        $link = fn (string $key) => [
+            Rule::excludeIf($request->input($key) === $form->$key),
+            'nullable',
+            'regex:~^(https?://|mailto:)~i',
+        ];
+
         $request->validate([
             'is_auto_delete_enabled' => 'boolean',
             'data_retention_days' => 'required_if:is_auto_delete_enabled,true',
+            'cta_link' => $link('cta_link'),
+            'privacy_link' => $link('privacy_link'),
+            'legal_notice_link' => $link('legal_notice_link'),
+            'twitter' => $link('twitter'),
+            'facebook' => $link('facebook'),
+            'instagram' => $link('instagram'),
+            'github' => $link('github'),
+            'linkedin' => $link('linkedin'),
         ]);
 
         $form->update(

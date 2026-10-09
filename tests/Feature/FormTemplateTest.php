@@ -234,3 +234,22 @@ test('template import keeps the form\'s own image paths', function () {
     $this->assertEquals($form->uuid.'/avatar.png', $form->avatar_path);
     $this->assertNull($form->background_path);
 });
+
+test('template import only accepts http(s) and mailto links', function (string $key) {
+    $form = Form::factory()->create();
+    $import = fn (string $link) => $this->actingAs($form->user)->postJson(route('api.forms.template-import', [
+        'form' => $form->uuid,
+    ]), [
+        'template' => json_encode([$key => $link, 'blocks' => []]),
+    ]);
+
+    $import('javascript:alert(1)')
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect($form->fresh()->$key)->not->toBe('javascript:alert(1)');
+
+    $import('mailto:team@example.com')->assertOk();
+
+    expect($form->fresh()->$key)->toBe('mailto:team@example.com');
+})->with(['cta_link', 'privacy_link', 'legal_notice_link', 'twitter', 'facebook', 'instagram', 'github', 'linkedin']);

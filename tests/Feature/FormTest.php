@@ -216,11 +216,11 @@ test('can update the form data with api call', function () {
         'show_form_progress' => true,
 
         // Social Settings
-        'twitter' => 'philreinking',
-        'facebook' => 'philreinking',
-        'instagram' => 'philreinking',
-        'github' => 'philreinking',
-        'linkedin' => 'philreinking',
+        'twitter' => 'https://twitter.com/philreinking',
+        'facebook' => 'https://facebook.com/philreinking',
+        'instagram' => 'https://instagram.com/philreinking',
+        'github' => 'https://github.com/philreinking',
+        'linkedin' => 'https://linkedin.com/in/philreinking',
         'show_social_links' => true,
 
         // CTA / Completion Page Settings
@@ -268,11 +268,11 @@ test('can update the form data with api call', function () {
     $this->assertTrue($form->show_form_progress);
 
     $this->assertTrue($form->show_social_links);
-    $this->assertEquals('philreinking', $form->twitter);
-    $this->assertEquals('philreinking', $form->facebook);
-    $this->assertEquals('philreinking', $form->instagram);
-    $this->assertEquals('philreinking', $form->github);
-    $this->assertEquals('philreinking', $form->linkedin);
+    $this->assertEquals('https://twitter.com/philreinking', $form->twitter);
+    $this->assertEquals('https://facebook.com/philreinking', $form->facebook);
+    $this->assertEquals('https://instagram.com/philreinking', $form->instagram);
+    $this->assertEquals('https://github.com/philreinking', $form->github);
+    $this->assertEquals('https://linkedin.com/in/philreinking', $form->linkedin);
 
     $this->assertEquals('https://philreinking.de', $form->cta_link);
     $this->assertEquals('Proceed', $form->cta_label);
@@ -290,6 +290,34 @@ test('can update the form data with api call', function () {
 
     $this->assertEquals('Thank You', $form->eoc_headline);
     $this->assertEquals('You can close this window now', $form->eoc_text);
+});
+
+test('a changed form link must be http(s) or mailto', function (string $key) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => 'javascript:void(0)'])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => 'mailto:team@example.com'])
+        ->assertSuccessful();
+
+    expect($form->fresh()->$key)->toBe('mailto:team@example.com');
+})->with(['cta_link', 'privacy_link', 'legal_notice_link', 'twitter', 'facebook', 'instagram', 'github', 'linkedin']);
+
+test('an unchanged old form link does not block saving', function () {
+    $form = Form::factory()->create(['cta_link' => 'javascript:void(0)']);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [
+            'name' => 'New Name',
+            'cta_link' => 'javascript:void(0)',
+        ])
+        ->assertSuccessful();
+
+    expect($form->fresh()->name)->toBe('New Name');
 });
 
 test('can not update form of other users', function () {

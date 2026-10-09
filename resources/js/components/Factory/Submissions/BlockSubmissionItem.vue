@@ -9,7 +9,7 @@
         v-if="block.title"
         >{{ block.title }}</span
       >
-      <h4 class="text-lg font-medium" v-html="block.message"></h4>
+      <h4 class="text-lg font-medium" v-html="sanitizeHtml(block.message)"></h4>
     </div>
     <div class="px-4 py-5 sm:p-6">
       <div v-for="action in activeInteractions" :key="action.id">
@@ -50,6 +50,7 @@ import PercentageBar from "@/components/Factory/Submissions/PercentageBar.vue";
 import Counter from "@/components/Factory/Submissions/Counter.vue";
 import ResponseList from "@/components/Factory/Submissions/ResponseList.vue";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 const props = defineProps<{
   block: FormBlockModel;
