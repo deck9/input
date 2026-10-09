@@ -9,7 +9,7 @@ jobs:
 
     services:
       mariadb.test:
-        image: "mariadb:10"
+        image: "mirror.gcr.io/library/mariadb:10"
         env:
           MARIADB_ROOT_PASSWORD: "password"
           MARIADB_ROOT_HOST: "%"

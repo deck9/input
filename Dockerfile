@@ -1,4 +1,4 @@
-FROM trafex/php-nginx:3.6.0 AS php_base
+FROM mirror.gcr.io/trafex/php-nginx:3.6.0 AS php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
 LABEL org.opencontainers.image.licenses="GNU Affero General Public License v3.0"
@@ -35,7 +35,7 @@ COPY ./scripts/php.conf.ini /etc/php83/conf.d/99-input.ini
 USER nobody
 WORKDIR /var/www/html
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=mirror.gcr.io/library/composer /usr/bin/composer /usr/bin/composer
 COPY --chown=nobody . .
 
 RUN composer install --optimize-autoloader --no-interaction --no-progress
@@ -53,7 +53,7 @@ USER nobody
 
 # ---
 
-FROM node:18-alpine AS asset_builder
+FROM mirror.gcr.io/library/node:18-alpine AS asset_builder
 WORKDIR /var/www/html
 ENV NODE_ENV=production
 
