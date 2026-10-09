@@ -4,8 +4,9 @@
 
 ## Build & Test Commands
 
--   First setup: `cp .env.dev.example .env`, then set `FILESYSTEM_DRIVER=local` in `.env` (the `minio` image can no longer be pulled). Then `mise run up` (composer install, Sail up, migrate, key:generate, npm ci, Vite). Its plain `sail up -d` step fails on the missing `minio` image: run the Start line below instead and finish the remaining steps by hand. Only once: `key:generate` replaces APP_KEY.
--   Start: `./vendor/bin/sail up -d --no-deps laravel.test mariadb redis mailhog mariadb.test`. App: http://localhost:8500
+-   First setup: `cp .env.dev.example .env`, then `mise run up` (composer install, Sail up, migrate, APP_KEY only if empty, npm ci, Vite). Safe to run again.
+-   Start: `./vendor/bin/sail up -d`. App: http://localhost:8500
+-   S3 storage (optional): rustfs behind the compose profile `s3`, see "S3 Storage" in README.md
 -   Migrate: `./vendor/bin/sail artisan migrate`
 -   Dev: `npm run dev` (runs Vite development server)
 -   Build: `npm run build` (runs lint + type check + builds app)

@@ -19,7 +19,7 @@ We started Input out of a previous project called BotReach, which was already a 
 We are using [Laravel Sail](https://laravel.com/docs/master/sail) to develop Input. You need Docker already installed on your machine to run the entire app. We also recommend installing Node.JS and NPM directly on your host machine to make working with frontend assets more convenient.
 
 -   [Docker](https://www.docker.com/get-started/)
--   [NodeJS](https://nodejs.org/) (v16 LTS preferred)
+-   [NodeJS](https://nodejs.org/) v18 (mise installs it from `mise.toml`)
 -   [mise-en-place](https://mise.jdx.dev/) (for task automation)
 
 ### Download
@@ -32,7 +32,7 @@ git clone git@github.com:deck9/input.git
 
 ### Configuration
 
-Copy the `.env.dev.example` file to `.env` - the contents for the file should, in most cases, work out of the box. You may later generate and set the `APP_KEY` with the `sail artisan key:generate` command.
+Copy the `.env.dev.example` file to `.env`. The defaults work as they are. The `up` task below sets `APP_KEY` when it is empty.
 
 ```bash
 cp .env.dev.example .env
@@ -43,18 +43,29 @@ cp .env.dev.example .env
 Make sure that your Docker agent is running. There are several steps necessary to build the app for the first time. To simplify these tasks, we use mise-en-place. Just run the following command, and all build steps will run automatically:
 
 ```bash
-mise task up
+mise run up
 ```
 
-### Webpack (Mix)
+It installs the Composer packages, starts Sail and waits until the containers are healthy, runs the migrations, generates `APP_KEY` only if it is empty, installs the npm packages and starts Vite. You can run it again at any time. The app runs at http://localhost:8500.
 
-To compile the frontend assets, we use Laravel Mix. You can use watch mode to rerun Webpack each time a file changes.
-We also have a hot-reload enabled mode. Please note that this mode currently has a bug since we have defined multiple entry files for Webpack.
+### Vite
+
+The `up` task ends with the Vite dev server. To start it again later:
 
 ```bash
 npm run dev
-# or
-npm run dev # hot reload enabled
+```
+
+### S3 Storage
+
+Uploads are stored on the local disk by default. To test S3 storage, Sail can start [RustFS](https://github.com/rustfs/rustfs), an S3-compatible server, with the compose profile `s3`:
+
+1. In `.env`, set `FILESYSTEM_DRIVER=minio` and uncomment the S3 lines below it.
+2. Run `./vendor/bin/sail up -d`. `COMPOSE_PROFILES=s3` starts the `rustfs` service too.
+3. Create the bucket once:
+
+```bash
+./vendor/bin/sail artisan tinker --execute='Storage::disk("minio")->getClient()->createBucket(["Bucket" => "input"])'
 ```
 
 ### Sail Bash Alias

@@ -23,7 +23,6 @@ services:
     depends_on:
       - mariadb
       - redis
-      - minio
   mariadb:
     image: "mariadb:10"
     ports:
@@ -70,23 +69,32 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       retries: 3
       timeout: 5s
-  minio:
-    image: "minio/minio:latest"
+  rustfs:
+    image: "rustfs/rustfs:1.0.1"
+    profiles: ["s3"]
     ports:
-      - "${FORWARD_MINIO_PORT:-9000}:9000"
-      - "${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900"
+      - "${FORWARD_RUSTFS_PORT:-9000}:9000"
+      - "${FORWARD_RUSTFS_CONSOLE_PORT:-9001}:9001"
     environment:
-      MINIO_ROOT_USER: "sail"
-      MINIO_ROOT_PASSWORD: "password"
+      RUSTFS_VOLUMES: "/data"
+      RUSTFS_ADDRESS: "0.0.0.0:9000"
+      RUSTFS_CONSOLE_ADDRESS: "0.0.0.0:9001"
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_EXTERNAL_ADDRESS: ":9000"
+      RUSTFS_CORS_ALLOWED_ORIGINS: "*"
+      RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS: "*"
+      RUSTFS_ACCESS_KEY: "sail"
+      RUSTFS_SECRET_KEY: "password"
+      RUSTFS_LOG_LEVEL: "info"
     volumes:
-      - "sail-minio:/data/minio"
+      - "sail-rustfs:/data"
     networks:
       - sail
-    command: minio server /data/minio --console-address ":8900"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "sh", "-c", "curl -f http://127.0.0.1:9000/health && curl -f http://127.0.0.1:9001/health"]
+      interval: 30s
+      timeout: 10s
       retries: 3
-      timeout: 5s
   mailhog:
     image: "jcalonso/mailhog:latest"
     ports:
@@ -102,5 +110,5 @@ volumes:
     driver: local
   sail-redis:
     driver: local
-  sail-minio:
+  sail-rustfs:
     driver: local
