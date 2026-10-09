@@ -61,7 +61,7 @@ class FormSession extends Model
 
     public function isActive()
     {
-        return Carbon::now()->diffInMinutes($this->updated_at) <= 120;
+        return $this->updated_at->diffInMinutes(Carbon::now()) <= 120;
     }
 
     public function formSessionResponses()
