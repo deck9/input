@@ -53,6 +53,9 @@ return [
             'url' => env('MINIO_URL', 'http://localhost:8501/input'),
             'endpoint' => env('MINIO_ENDPOINT', 'http://minio:9000'),
             'use_path_style_endpoint' => env('MINIO_USE_PATH_STYLE_ENDPOINT', true),
+            // aws-sdk-php 3.337+ sends CRC32 checksums by default, which some S3-compatible stores reject
+            'request_checksum_calculation' => 'when_required',
+            'response_checksum_validation' => 'when_required',
             'throw' => false,
         ],
 

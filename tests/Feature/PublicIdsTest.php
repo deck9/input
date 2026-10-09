@@ -2,7 +2,6 @@
 
 use App\Models\Form;
 use App\Models\FormBlockInteraction;
-use Hashids\Hashids;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -18,7 +17,7 @@ test('new forms, blocks and interactions get random ids of 16 characters', funct
 
 test('an existing form keeps its stored id and public link', function () {
     $form = Form::factory()->create();
-    $legacyId = (new Hashids())->encode($form->id);
+    $legacyId = 'jR'; // old ids were short hashids, e.g. id 1 => jR
     $form->update(['uuid' => $legacyId]);
 
     $this->get(route('forms.show', $legacyId))->assertStatus(200);

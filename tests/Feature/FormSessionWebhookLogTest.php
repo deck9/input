@@ -80,6 +80,23 @@ it('will log webhook requests that are not successful', function () {
     ]);
 });
 
+it('blocks webhooks to internal addresses and logs the error', function (string $url) {
+    $form = Form::factory()->has(
+        FormWebhook::factory(['webhook_url' => $url])
+    )->create();
+    $session = FormSession::factory()->for($form)->create();
+
+    CallWebhookJob::dispatch($session, $form->formWebhooks->first());
+
+    $log = $session->webhooks()->first();
+    expect($log->status)->toBe(500)
+        ->and($log->response['error'])->toContain('is blocked');
+})->with([
+    'loopback' => 'http://127.0.0.1/hook',
+    '6to4' => 'http://[2002:7f00:1::]/hook',
+    'nat64' => 'http://[64:ff9b::7f00:1]/hook',
+]);
+
 it('submissions api endpoint will include the session webhook data', function () {
     app()->bind(HttpClientInterface::class, function () {
         return new MockHttpClient([
