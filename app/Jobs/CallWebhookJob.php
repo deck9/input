@@ -49,11 +49,12 @@ class CallWebhookJob implements ShouldQueue
             'headers' => $this->webhook->headers ?? [],
         ]);
 
-        $response = $client->request($this->webhook->webhook_method, $this->webhook->webhook_url, [
-            'json' => $payload,
-        ]);
-
         try {
+            // the private network guard throws here for internal addresses
+            $response = $client->request($this->webhook->webhook_method, $this->webhook->webhook_url, [
+                'json' => $payload,
+            ]);
+
             $status = $response->getStatusCode();
             $body = $response->getContent();
             $json = json_decode($body);
