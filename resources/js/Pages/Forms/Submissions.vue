@@ -33,8 +33,8 @@
       <EmptyState
         class="mt-6"
         v-else
-        title="No results found"
-        description="There are no results to show right now"
+        title="No submissions found"
+        description="There are no submissions to show right now"
       />
     </div>
   </app-layout>

@@ -11,7 +11,7 @@
         <span class="font-medium">{{ meta.to }}</span>
         of
         <span class="font-medium">{{ meta.total }}</span>
-        results
+        submissions
       </p>
     </div>
     <div

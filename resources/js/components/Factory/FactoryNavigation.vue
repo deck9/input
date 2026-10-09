@@ -26,7 +26,7 @@
     <NavigationButton
       icon="chart-pie"
       :href="route('forms.submissions', { uuid: store.formId })"
-      >Results</NavigationButton
+      >Submissions</NavigationButton
     >
     <!-- <NavigationButton
       icon="chart-pie"
