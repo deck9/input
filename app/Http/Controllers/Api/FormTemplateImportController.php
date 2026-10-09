@@ -28,12 +28,15 @@ class FormTemplateImportController extends Controller
             'template' => 'required_without:file|json',
         ]);
 
-        if ($request->has('file')) {
-            $template = file_get_contents($request->file('file'));
-            $form->applyTemplate($template);
-        } else {
-            $form->applyTemplate($request->input('template'));
-        }
+        $template = (array) json_decode(
+            $request->has('file') ? file_get_contents($request->file('file')) : $request->input('template'),
+            true
+        );
+
+        // image paths point to files of the form that uploaded them, the form keeps its own
+        unset($template['avatar_path'], $template['background_path']);
+
+        $form->applyTemplate($template);
 
         return response()->json([
             'message' => 'Template imported successfully',

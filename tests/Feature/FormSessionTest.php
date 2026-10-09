@@ -256,17 +256,23 @@ it('should not delete submissions when auto delete is not enabled', function ($t
 
 test('answers for a question of another form are rejected and not stored', function ($template) {
     $form = Form::factory()->create();
+    $form->applyTemplate($template);
     $session = FormSession::factory()->create(['form_id' => $form->id]);
 
     $otherForm = Form::factory()->create();
     $otherForm->applyTemplate($template);
 
+    // a valid answer first, so a partial write would show up
     $this->json('POST', route('api.public.forms.submit', [
         'form' => $form->uuid,
     ]), [
         'token' => $session->token,
-        'payload' => $otherForm->formBlocks[0]->getSubmitPayload('tester@example.com'),
+        'payload' => [
+            ...$form->formBlocks[0]->getSubmitPayload('tester@example.com'),
+            ...$otherForm->formBlocks[0]->getSubmitPayload('tester@example.com'),
+        ],
     ])->assertStatus(404);
 
     $this->assertCount(0, FormSessionResponse::all());
+    $this->assertNull($session->fresh()->getRawOriginal('is_completed'));
 })->with('templates');

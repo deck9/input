@@ -207,3 +207,30 @@ test('can import a file template for an existing form', function () {
     $this->assertCount(2, $form->formBlocks[2]->formBlockInteractions);
     $this->assertEquals(FormBlockType::radio, $form->formBlocks[2]->type);
 });
+
+test('template import keeps the form\'s own image paths', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $form = Form::factory()->create([
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
+    $form->update(['avatar_path' => $form->uuid.'/avatar.png']);
+
+    $this->actingAs($user)->post(route('api.forms.template-import', [
+        'form' => $form->uuid,
+    ]), [
+        'template' => json_encode([
+            'description' => 'Imported',
+            'avatar_path' => 'another-form/avatar.png',
+            'background_path' => 'another-form/background.png',
+            'blocks' => [],
+        ]),
+    ])->assertStatus(200);
+
+    $form->refresh();
+
+    $this->assertEquals('Imported', $form->description);
+    $this->assertEquals($form->uuid.'/avatar.png', $form->avatar_path);
+    $this->assertNull($form->background_path);
+});

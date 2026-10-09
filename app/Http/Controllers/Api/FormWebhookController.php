@@ -49,8 +49,6 @@ class FormWebhookController extends Controller
     #[BodyParam(name: 'provider', example: 'No-example', required: false, enum: ['make', 'zapier'])]
     public function update(FormWebhookRequest $request, Form $form, FormWebhook $webhook): JsonResponse
     {
-        abort_unless($webhook->form()->is($form), 404);
-
         $webhook->update($request->validated());
 
         return response()->json(FormWebhookResource::make($webhook));

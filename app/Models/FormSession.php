@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class FormSession extends Model
@@ -79,12 +80,14 @@ class FormSession extends Model
 
     public function submit($payload)
     {
-        foreach ($payload as $blockUuid => $blockPayload) {
-            $block = $this->form->formBlocks()->withUuid($blockUuid)->firstOrFail();
-            $block->submit($this, $blockPayload);
-        }
+        DB::transaction(function () use ($payload) {
+            foreach ($payload as $blockUuid => $blockPayload) {
+                $block = $this->form->formBlocks()->withUuid($blockUuid)->firstOrFail();
+                $block->submit($this, $blockPayload);
+            }
 
-        $this->update(['is_completed' => now()]);
+            $this->update(['is_completed' => now()]);
+        });
 
         return $this;
     }

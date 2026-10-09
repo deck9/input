@@ -107,6 +107,7 @@ test('a user from another team cannot read, change or delete team data', functio
     'update webhook' => ['post', fn () => route('api.forms.webhooks.update', [$this->form, $this->webhook]), $webhookPayload, 403],
     'delete webhook' => ['delete', fn () => route('api.forms.webhooks.delete', [$this->form, $this->webhook]), [], 403],
     'update webhook via own form' => ['post', fn () => route('api.forms.webhooks.update', [$this->intruderForm, $this->webhook]), $webhookPayload, 404],
+    'update webhook via own form, invalid body' => ['post', fn () => route('api.forms.webhooks.update', [$this->intruderForm, $this->webhook]), [], 404],
     'delete webhook via own form' => ['delete', fn () => route('api.forms.webhooks.delete', [$this->intruderForm, $this->webhook]), [], 404],
 
     // submissions

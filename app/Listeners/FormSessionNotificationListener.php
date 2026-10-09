@@ -24,10 +24,12 @@ class FormSessionNotificationListener
 
         if ($form->is_notification_via_mail) {
             // the creator may have left the team, then the team owner gets the mail
-            $recipient = $form->user?->belongsToTeam($form->team) ? $form->user : $form->team->owner;
+            $recipient = $form->user?->belongsToTeam($form->team) ? $form->user : $form->team?->owner;
 
-            Mail::to($recipient->email)
-                ->send(new FormSubmissionNotification($event->session));
+            if ($recipient) {
+                Mail::to($recipient->email)
+                    ->send(new FormSubmissionNotification($event->session));
+            }
         }
     }
 }
