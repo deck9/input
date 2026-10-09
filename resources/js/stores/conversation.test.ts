@@ -13,6 +13,18 @@ vi.mock('./helpers/logic', async (importOriginal) => {
   };
 });
 
+const makeBlocks = (...ids: string[]): PublicFormBlockModel[] =>
+  ids.map((id) => ({
+    id,
+    message: null,
+    title: null,
+    type: 'input-short',
+    parent_block: null,
+    is_required: false,
+    interactions: [],
+    logics: undefined,
+  }));
+
 describe('Conversation Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -24,11 +36,7 @@ describe('Conversation Store', () => {
       const store = useConversation();
       
       // Setup a processed queue with multiple blocks
-      const blocks = [
-        { id: 'block1', type: 'text' },
-        { id: 'block2', type: 'text' },
-        { id: 'targetBlock', type: 'text' }
-      ] as PublicFormBlockModel[];
+      const blocks = makeBlocks('block1', 'block2', 'targetBlock');
       
       // Mock the processedQueue getter
       vi.spyOn(store, 'processedQueue', 'get').mockReturnValue(blocks);
@@ -45,10 +53,7 @@ describe('Conversation Store', () => {
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
       // Setup a queue without the target block
-      const blocks = [
-        { id: 'block1', type: 'text' },
-        { id: 'block2', type: 'text' }
-      ] as PublicFormBlockModel[];
+      const blocks = makeBlocks('block1', 'block2');
       
       // Mock the processedQueue getter
       vi.spyOn(store, 'processedQueue', 'get').mockReturnValue(blocks);
@@ -68,40 +73,41 @@ describe('Conversation Store', () => {
     it('should execute goto action when evaluateGotoLogic returns a target', async () => {
       const store = useConversation();
       
-      // Mock blocks and current block
-      const blocks = [
-        { id: 'block1', type: 'text' },
-        { id: 'targetBlock', type: 'text' }
-      ] as PublicFormBlockModel[];
-      
+      // Mock blocks and current block; the target is not the next block
+      const blocks = makeBlocks('block1', 'block2', 'targetBlock');
+
       // Setup store state
       vi.spyOn(store, 'processedQueue', 'get').mockReturnValue(blocks);
       vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(blocks[0]);
       vi.spyOn(store, 'isLastBlock', 'get').mockReturnValue(false);
       store.current = 'block1';
-      
+
       // Mock evaluation to return a goto target
       const evaluateGotoLogicMock = vi.mocked(logicHelpers.evaluateGotoLogic);
       evaluateGotoLogicMock.mockReturnValue({ target: 'targetBlock' });
-      
-      // Spy on executeGotoAction
+
+      // Spy on executeGotoAction and goToIndex
       const executeGotoSpy = vi.spyOn(store, 'executeGotoAction');
-      
-      await store.next();
-      
+      const goToIndexSpy = vi.spyOn(store, 'goToIndex');
+
+      const result = await store.next();
+
       // Verify goto was executed
       expect(evaluateGotoLogicMock).toHaveBeenCalledWith(blocks[0], {});
       expect(executeGotoSpy).toHaveBeenCalledWith('targetBlock');
+
+      // Verify normal navigation stopped after the goto
+      expect(result).toBe(false);
+      expect(goToIndexSpy).toHaveBeenCalledTimes(1);
+      expect(goToIndexSpy).toHaveBeenCalledWith(2);
+      expect(store.current).toBe('targetBlock');
     });
     
     it('should proceed normally when evaluateGotoLogic returns null', async () => {
       const store = useConversation();
       
       // Mock blocks and state
-      const blocks = [
-        { id: 'block1', type: 'text' },
-        { id: 'block2', type: 'text' }
-      ] as PublicFormBlockModel[];
+      const blocks = makeBlocks('block1', 'block2');
       
       vi.spyOn(store, 'processedQueue', 'get').mockReturnValue(blocks);
       vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(blocks[0]);
@@ -126,10 +132,7 @@ describe('Conversation Store', () => {
       const store = useConversation();
       
       // Mock blocks and state
-      const blocks = [
-        { id: 'block1', type: 'text' },
-        { id: 'block2', type: 'text' }
-      ] as PublicFormBlockModel[];
+      const blocks = makeBlocks('block1', 'block2');
       
       vi.spyOn(store, 'processedQueue', 'get').mockReturnValue(blocks);
       vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(blocks[0]);
