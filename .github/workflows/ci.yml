@@ -76,6 +76,73 @@ jobs:
           DB_DATABASE: input
         run: vendor/bin/pest
 
+  browser-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      APP_URL: http://127.0.0.1:8000
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: bcmath,gd
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: npm
+
+      - name: Copy .env
+        run: cp .env.dusk.example .env
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - run: npm run build
+
+      - name: Create Database
+        run: touch database/dusk.sqlite
+
+      # The runner already has Chrome, so no Selenium here
+      - name: Install ChromeDriver
+        run: php artisan dusk:chrome-driver --detect
+
+      - name: Start the app
+        run: php artisan serve --no-reload > /dev/null 2>&1 &
+
+      - name: Run browser tests via Laravel Dusk
+        run: php artisan dusk
+
+      - name: Upload screenshots and console logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dusk-failures
+          path: |
+            tests/Browser/screenshots
+            tests/Browser/console
+            tests/Browser/source
+
   vitest:
     runs-on: ubuntu-latest
 

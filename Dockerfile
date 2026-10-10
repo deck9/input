@@ -49,7 +49,8 @@ COPY --from=mirror.gcr.io/library/composer /usr/bin/composer /usr/bin/composer
 COPY --chown=nobody . .
 COPY --chown=nobody --from=vendor /app/vendor ./vendor
 
-RUN composer install --optimize-autoloader --no-interaction --no-progress
+# Only the browser tests (Laravel Dusk) need ext-zip, and they never run in this image
+RUN composer install --optimize-autoloader --no-interaction --no-progress --ignore-platform-req=ext-zip
 
 USER root
 
