@@ -19,6 +19,10 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Docker builds pull their base images from Google's Docker Hub mirror, so they no longer fail on Docker Hub's pull limit. (#195)
 -   Checks on a pull request take about 3 minutes instead of 20. (#201)
 
+### Removed
+
+-   The preview-image feature, switched off since 2022, is gone. This drops the Browsershot package with its 6 security advisories, and `npm ci` no longer downloads Chrome when you build from source. (#215)
+
 ### Fixed
 
 -   Logic rules work with rating, scale and number answers, and number questions accept answers above 100. Greater and lower than compare only numbers and dates. A failed submit shows a retry message, and a double click no longer submits twice. (#198)
