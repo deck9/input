@@ -1,5 +1,5 @@
 [tools]
-node = "18"
+node = "22"
 
 [tasks.up]
 run = [
