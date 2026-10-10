@@ -23,7 +23,7 @@ The container runs the database migrations on every start. After an update, ther
 
 ## Queue Worker
 
-Webhooks, submission notification mails and form preview images run as jobs.
+Webhooks and submission notification mails run as jobs.
 
 The image runs a queue worker next to the scheduler, so jobs run in the background and a submit doesn't wait for them. You don't need a separate worker container.
 
