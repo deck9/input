@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateGotoLogic, isBlockVisible } from './logic';
+import { evaluateCondition, evaluateGotoLogic, isBlockVisible } from './logic';
 
 const makeBlock = (logics?: FormBlockLogic[]): PublicFormBlockModel => ({
   id: 'block1',
@@ -29,6 +29,44 @@ const equals = (
 ): FormBlockLogicCondition => ({ source, operator: 'equals', value, chainOperator });
 
 describe('Logic Helpers', () => {
+  describe('evaluateCondition', () => {
+    const condition = (operator: Operator, value: string): FormBlockLogicCondition => ({
+      source: 'block0',
+      operator,
+      value,
+      chainOperator: 'and',
+    });
+
+    // rule values are always text, rating, scale and number answers are numbers
+    it.each([
+      ['equals', '1', 1, true],
+      ['equalsNot', '1', 1, false],
+      ['contains', '5', 150, true],
+      ['containsNot', '5', 150, false],
+      ['isGreaterThan', '9', 10, true],
+      ['isLowerThan', '9', '10', false],
+      ['isGreaterThan', '5', 'abc', false],
+      ['isLowerThan', '1', '', false],
+      ['isLowerThan', '1', false, false],
+      ['isGreaterThan', 'abc', 5, false],
+      ['isGreaterThan', '2024-01-01', '2024-05-01', true],
+      ['isGreaterThan', '2024-01-01', '2023-12-31', false],
+      ['isLowerThan', '2024-01-01', '2023-12-31', true],
+      ['isGreaterThan', '2024-01-01', 'abc', false],
+      ['isLowerThan', '5', '2024-01-01', false],
+    ] as const)('%s "%s" on the answer %j is %s', (operator, value, answer, expected) => {
+      expect(evaluateCondition(condition(operator, value), answer)).toBe(expected);
+    });
+
+    it('fires "equals 1" for a rating answer of 1', () => {
+      const block = makeBlock([makeLogic({ conditions: [equals('block1', '1')] })]);
+
+      expect(evaluateGotoLogic(block, { block1: { payload: 1, actionId: '123' } })).toEqual({
+        target: 'targetBlock',
+      });
+    });
+  });
+
   describe('evaluateGotoLogic', () => {
     it('should return null if block has no logics', () => {
       const result = evaluateGotoLogic(makeBlock(), {});

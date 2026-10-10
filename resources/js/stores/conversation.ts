@@ -9,7 +9,7 @@ import {
 import { evaluateGotoLogic, isBlockVisible } from "./helpers/logic";
 import { createFlatQueue } from "./helpers/queue";
 import { isAllowedLink } from "@/utils/sanitize";
-import { Ref, ref } from "vue";
+import { nextTick, Ref, ref } from "vue";
 
 type ConversationStore = {
     form?: PublicFormModel;
@@ -20,8 +20,10 @@ type ConversationStore = {
     payload: FormSubmitPayload;
     isProcessing: boolean;
     isSubmitted: boolean;
+    submitFailed: boolean;
     isInputMode: boolean;
     uploads: FormFileUploads;
+    uploadedFiles: File[];
 };
 
 export const useConversation = defineStore("form", {
@@ -35,8 +37,10 @@ export const useConversation = defineStore("form", {
             payload: {},
             isProcessing: false,
             isSubmitted: false,
+            submitFailed: false,
             isInputMode: false,
             uploads: {},
+            uploadedFiles: [],
         };
     },
 
@@ -178,7 +182,8 @@ export const useConversation = defineStore("form", {
                 return null;
             }
 
-            const params = new URLSearchParams();
+            const url = new URL(state.form.cta_link);
+            const params = url.searchParams;
 
             // we should always attach the session id as a query parameter
             if (state.form.cta_append_session_id && state.session.token) {
@@ -196,7 +201,7 @@ export const useConversation = defineStore("form", {
             }
 
             if ([...params].length) {
-                return state.form.cta_link + "?" + params.toString();
+                return url.toString();
             }
 
             return state.form.cta_link;
@@ -216,7 +221,14 @@ export const useConversation = defineStore("form", {
                     Array.isArray(blockPayload.payload) &&
                     blockPayload.payload.some((f) => f instanceof File)
                 ) {
-                    uploads[block] = blockPayload;
+                    // skip files an earlier, failed submit already stored
+                    const files = blockPayload.payload.filter(
+                        (f) => !state.uploadedFiles.includes(f),
+                    );
+
+                    if (files.length) {
+                        uploads[block] = { ...blockPayload, payload: files };
+                    }
                 }
             }
 
@@ -382,6 +394,10 @@ export const useConversation = defineStore("form", {
          * @returns {Promise<boolean>}
          */
         async next(): Promise<boolean> {
+            if (this.isProcessing) {
+                return Promise.resolve(false);
+            }
+
             const gotoAction = this.currentBlock
                 ? evaluateGotoLogic(this.currentBlock, this.payload)
                 : null;
@@ -395,43 +411,56 @@ export const useConversation = defineStore("form", {
             if (this.isLastBlock) {
                 this.uploads = {};
                 this.isProcessing = true;
+                this.submitFailed = false;
 
                 if (this.form?.uuid && this.session?.token) {
-                    await callSubmitForm(
-                        this.form.uuid,
-                        this.session.token,
-                        this.submittablePayload,
-                        this.hasFileUploads,
-                    );
-
-                    if (this.hasFileUploads) {
-                        // init file upload state
-                        this.initFileUpload();
-
-                        // upload files
-                        await callUploadFiles(
-                            this.form.uuid,
-                            this.session.token,
-                            this.uploadsPayload,
-                            (action, progressEvent) => {
-                                try {
-                                    this.uploads[action].loaded =
-                                        progressEvent.loaded;
-                                } catch (e) {
-                                    console.warn(
-                                        "could not update upload progress",
-                                        e,
-                                    );
-                                }
-                            },
-                        );
-
+                    try {
                         await callSubmitForm(
                             this.form.uuid,
                             this.session.token,
-                            null,
-                            false,
+                            this.submittablePayload,
+                            this.hasFileUploads,
                         );
+
+                        if (this.hasFileUploads) {
+                            // init file upload state
+                            this.initFileUpload();
+
+                            // upload files
+                            await callUploadFiles(
+                                this.form.uuid,
+                                this.session.token,
+                                this.uploadsPayload,
+                                (action, progressEvent) => {
+                                    try {
+                                        this.uploads[action].loaded =
+                                            progressEvent.loaded;
+                                    } catch (e) {
+                                        console.warn(
+                                            "could not update upload progress",
+                                            e,
+                                        );
+                                    }
+                                },
+                                (file) => this.uploadedFiles.push(file),
+                            );
+
+                            await callSubmitForm(
+                                this.form.uuid,
+                                this.session.token,
+                                null,
+                                false,
+                            );
+                        }
+
+                        this.isSubmitted = true;
+                    } catch (error) {
+                        console.warn("could not submit the form", error);
+                        this.submitFailed = true;
+
+                        return Promise.resolve(false);
+                    } finally {
+                        this.isProcessing = false;
                     }
 
                     // If a redirect is configured, we redirect the user to the given url
@@ -439,13 +468,10 @@ export const useConversation = defineStore("form", {
                         this.form.use_cta_redirect &&
                         isAllowedLink(this.callToActionUrl, ["http:", "https:"])
                     ) {
+                        // let the "Leave site?" guard switch off first, the browser can ask while setting href
+                        await nextTick();
                         window.location.href = this.callToActionUrl;
-
-                        return Promise.resolve(true);
                     }
-
-                    this.isSubmitted = true;
-                    this.isProcessing = false;
 
                     return Promise.resolve(true);
                 } else {

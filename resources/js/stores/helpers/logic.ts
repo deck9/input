@@ -7,23 +7,44 @@ export const operators: Array<{ key: Operator; label: string }> = [
     { key: "isGreaterThan", label: "is greater than" },
 ];
 
+// rule values are text, while rating, scale and number answers are numbers
+const asText = (value: unknown): string => String(value ?? "");
+
+// NaN for anything that isn't a number, so comparisons with it are false
+const asNumber = (value: unknown): number =>
+    typeof value === "number" ||
+    (typeof value === "string" && value.trim() !== "")
+        ? Number(value)
+        : NaN;
+
+// date answers are YYYY-MM-DD, which sorts correctly as text
+const isDate = (value: string): boolean => /^\d{4}-\d{2}-\d{2}$/.test(value);
+
 export function evaluateCondition(
     condition: FormBlockLogicCondition,
     responseValue: any,
 ): boolean {
+    const answer = asText(responseValue);
+    const value = asText(condition.value);
+    const bothDates = isDate(answer) && isDate(value);
+
     switch (condition.operator) {
         case "equals":
-            return responseValue === condition.value;
+            return answer === value;
         case "equalsNot":
-            return responseValue !== condition.value;
+            return answer !== value;
         case "contains":
-            return responseValue.includes(condition.value);
+            return answer.includes(value);
         case "containsNot":
-            return !responseValue.includes(condition.value);
+            return !answer.includes(value);
         case "isLowerThan":
-            return responseValue < condition.value;
+            return bothDates
+                ? answer < value
+                : asNumber(responseValue) < asNumber(condition.value);
         case "isGreaterThan":
-            return responseValue > condition.value;
+            return bothDates
+                ? answer > value
+                : asNumber(responseValue) > asNumber(condition.value);
         default:
             return false;
     }

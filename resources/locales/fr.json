@@ -28,6 +28,7 @@
   "close": "Fermer",
   "type": "Tapez votre réponse",
   "submit": "Soumettre",
+  "submit_failed": "Vos réponses n'ont pas pu être envoyées. Veuillez réessayer.",
   "privacy_policy": "Politique de confidentialité",
   "other": "Autre",
   "next": "Suivant",

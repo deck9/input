@@ -28,6 +28,7 @@
     "close": "Close",
     "type": "Type your answer",
     "submit": "Submit",
+    "submit_failed": "Your answers could not be sent. Please try again.",
     "privacy_policy": "Privacy Policy",
     "other": "Other",
     "next": "Next",
