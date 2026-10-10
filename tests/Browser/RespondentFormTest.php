@@ -5,10 +5,7 @@ use App\Models\Form;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\FormBlockLogic;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
-
-uses(DatabaseMigrations::class);
 
 test('a respondent can fill in a form with a show rule and submit it', function () {
     $form = Form::factory()->create(['eoc_headline' => 'Thanks for your answers']);
@@ -34,10 +31,11 @@ test('a respondent can fill in a form with a show rule and submit it', function 
         ],
     ]);
 
-    // Before "Yes", the hidden question makes this the last one, so the button says "Submit"
+    // While the name question is hidden, the pet question is the last one, so the button says "Submit"
     $this->browse(fn (Browser $browser) => $browser
         ->visit('/'.$form->uuid)
         ->waitForText('Do you have a pet?')
+        ->waitForTextIn('button[type="submit"]', 'Submit')
         ->radio($pet->uuid, 'Yes')
         ->waitForTextIn('button[type="submit"]', 'Next')
         ->press('Next')

@@ -5,13 +5,24 @@ namespace Tests;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Collection;
 use Laravel\Dusk\TestCase as BaseTestCase;
 use PHPUnit\Framework\Attributes\BeforeClass;
 
 abstract class DuskTestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use CreatesApplication, DatabaseMigrations;
+
+    /**
+     * Stop before migrate:fresh can reach any database but the Dusk SQLite file.
+     */
+    protected function beforeRefreshingDatabase()
+    {
+        if (! str_ends_with((string) config('database.connections.'.config('database.default').'.database'), 'dusk.sqlite')) {
+            $this->fail('Browser tests run only on database/dusk.sqlite. Create .env.dusk.local first, see "Browser tests" in the README.');
+        }
+    }
 
     /**
      * Prepare for Dusk test execution.
