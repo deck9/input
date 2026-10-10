@@ -118,11 +118,22 @@ export const useConversation = defineStore("form", {
             return null;
         },
 
-        submittablePayload(): FormSubmitPayload {
-            const submittablePayload = Object.assign({}, this.payload);
+        // answers of the questions shown now; a hidden answer stays in payload in case its question shows again
+        shownPayload(state): FormSubmitPayload {
+            const shownIds = this.processedQueue.map((block) => block.id);
 
-            for (const block in this.payload) {
-                const blockPayload = this.payload[block];
+            return Object.fromEntries(
+                Object.entries(state.payload).filter(([block]) =>
+                    shownIds.includes(block),
+                ),
+            );
+        },
+
+        submittablePayload(): FormSubmitPayload {
+            const submittablePayload = Object.assign({}, this.shownPayload);
+
+            for (const block in this.shownPayload) {
+                const blockPayload = this.shownPayload[block];
 
                 if (Array.isArray(blockPayload)) {
                     continue;
@@ -222,8 +233,8 @@ export const useConversation = defineStore("form", {
         uploadsPayload(state): Record<string, FormBlockUploadPayload> {
             const uploads = {};
 
-            for (const block in state.payload) {
-                const blockPayload = state.payload[block];
+            for (const block in this.shownPayload) {
+                const blockPayload = this.shownPayload[block];
 
                 if (Array.isArray(blockPayload)) {
                     continue;
@@ -247,8 +258,8 @@ export const useConversation = defineStore("form", {
             return uploads;
         },
 
-        hasFileUploads(state): boolean {
-            return Object.values(state.payload).some((block) => {
+        hasFileUploads(): boolean {
+            return Object.values(this.shownPayload).some((block) => {
                 if (!Array.isArray(block) && Array.isArray(block.payload)) {
                     return block.payload.some((p) => {
                         return p instanceof File;
