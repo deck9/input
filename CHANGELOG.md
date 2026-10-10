@@ -9,6 +9,7 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Added
 
 -   **Upgrade step:** back up `APP_KEY` together with your database: answers are stored encrypted with it, and a new key can't read them. New hosting docs cover the database, queue worker, scheduler, mail, reverse proxy and backups. (#203)
+-   **Upgrade step:** if you deleted a team before this update, its forms are still online. Back up first, then run `php artisan input:prune-orphaned-forms` to list them, and add `--force` to delete them with their answers and files. The hosting docs on backups and updates show the full command. (#209)
 
 ### Changed
 
