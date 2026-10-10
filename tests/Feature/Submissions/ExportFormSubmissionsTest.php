@@ -115,18 +115,22 @@ test('export_of_a_form_without_submissions_has_the_header_row', function () {
     ]);
 });
 
-test('export_prefixes_cells_that_start_with_a_formula_character', function () {
+test('export_prefixes_cells_that_start_with_a_formula_character_but_not_plain_numbers', function () {
     $form = Form::factory()->create();
     $block = FormBlock::factory()->for($form)
         ->has(FormBlockInteraction::factory()->input())
         ->create(['type' => FormBlockType::short]);
 
-    foreach (['=HYPERLINK("https://evil.test")', '+1', '-1', '@SUM(A1)', 'safe'] as $value) {
+    $formulas = ['=HYPERLINK("https://evil.test")', '=1+1', '-1+1', '+1+1', '@SUM(1)', "-2+3+cmd|' /C calc'!A0"];
+    $plain = ['-5', '+49 30 1234567', '1.234,5', 'safe'];
+
+    foreach ([...$formulas, ...$plain] as $value) {
         answer(FormSession::factory()->for($form)->completed()->create(), $block, $value);
     }
 
     expect(array_column(array_slice(exportCsv($form), 1), 5))->toBe([
-        '\'=HYPERLINK("https://evil.test")', "'+1", "'-1", "'@SUM(A1)", 'safe',
+        ...array_map(fn ($value) => "'".$value, $formulas),
+        ...$plain,
     ]);
 });
 

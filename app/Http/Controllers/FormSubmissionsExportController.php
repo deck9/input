@@ -61,6 +61,9 @@ class FormSubmissionsExportController extends Controller
     // spreadsheet apps run a cell that starts with one of these as a formula
     private function escapeFormula($value)
     {
-        return is_string($value) && preg_match('/^[=+\-@\t\r]/', $value) ? "'".$value : $value;
+        $isFormula = is_string($value) && preg_match('/^[=+\-@\t\r]/', $value);
+
+        // a plain number or phone number can't run anything and should stay a number
+        return $isFormula && ! preg_match('/^[+-]?[\d .,]+$/', $value) ? "'".$value : $value;
     }
 }

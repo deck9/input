@@ -34,7 +34,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Answers to questions that a show/hide rule hides at submit are no longer saved, also inside a hidden group and when filled in from the link. A question that shows again before submit keeps its answer. (#210)
 -   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
--   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. (#217)
+-   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and phone numbers stay as they are. (#217)
 
 ### Security
 
