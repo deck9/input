@@ -35,6 +35,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Only answers on the way a respondent really took through the form are saved. A question skipped by a jump no longer saves its answer, also when filled in from the link. The answer of a skipped or hidden question no longer makes later questions show or hide. After a jump, Back returns to the question the respondent came from, not to a skipped one. (#216)
 -   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
+-   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and phone numbers stay as they are. (#217)
 
 ### Security
 

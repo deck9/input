@@ -7,6 +7,7 @@ use App\Http\Resources\PublicFormBlockResource;
 use App\Http\Resources\PublicFormResource;
 use App\Models\Traits\TemplateExportsAndImports;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -299,28 +300,25 @@ class Form extends BaseModel
             ->count();
     }
 
-    public function getTotalSessionsAttribute()
+    // cached per model, so the completion rate reuses both counts
+    protected function totalSessions(): Attribute
     {
-        return $this->formSessions()
-            ->count();
+        return Attribute::get(fn () => $this->formSessions()->count())->shouldCache();
     }
 
-    public function getCompletedSessionsAttribute()
+    protected function completedSessions(): Attribute
     {
-        return $this->formSessions()
+        return Attribute::get(fn () => $this->formSessions()
+            ->whereNotNull('is_completed')
             ->whereHas('formSessionResponses')
-            ->get()
-            ->where('is_completed', true)
-            ->count();
+            ->count())->shouldCache();
     }
 
-    public function getCompletionRateAttribute()
+    protected function completionRate(): Attribute
     {
-        try {
-            return round(($this->completedSessions / $this->totalSessions) * 100, 2);
-        } catch (\Throwable $th) {
-            return 0;
-        }
+        return Attribute::get(fn () => $this->total_sessions
+            ? round(($this->completed_sessions / $this->total_sessions) * 100, 2)
+            : 0);
     }
 
     public function isOwner(User $user = null)

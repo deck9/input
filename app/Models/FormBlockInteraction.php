@@ -68,11 +68,6 @@ class FormBlockInteraction extends BaseModel
         return $this->hasMany(FormSessionResponse::class, 'form_block_interaction_id');
     }
 
-    public function getResponsesCountAttribute()
-    {
-        return $this->formSessionResponses->count();
-    }
-
     public function toTemplate()
     {
         return $this->only(self::TEMPLATE_ATTRIBUTES);
