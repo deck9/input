@@ -44,7 +44,7 @@ test('a respondent can fill in a form with a show rule and submit it', function 
         ->waitForText('What is its name?')
         ->type("input[name='{$name->uuid}']", 'Mira')
         ->press('Submit')
-        ->waitForText('Thanks for your answers'));
+        ->waitForText('Thanks for all your answers'));
 
     $session = $form->formSessions()->sole();
 
