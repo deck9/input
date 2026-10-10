@@ -19,7 +19,9 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function beforeRefreshingDatabase()
     {
-        if (! str_ends_with((string) config('database.connections.'.config('database.default').'.database'), 'dusk.sqlite')) {
+        $connection = app('db')->connection();
+
+        if ($connection->getDriverName() !== 'sqlite' || basename($connection->getDatabaseName()) !== 'dusk.sqlite') {
             $this->fail('Browser tests run only on database/dusk.sqlite. Create .env.dusk.local first, see "Browser tests" in the README.');
         }
     }
