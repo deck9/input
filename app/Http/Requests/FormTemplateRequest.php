@@ -6,6 +6,7 @@ use App\Enums\FormBlockType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class FormTemplateRequest extends FormRequest
 {
@@ -65,6 +66,23 @@ class FormTemplateRequest extends FormRequest
             'github' => $link,
             'linkedin' => $link,
         ])->validate();
+
+        // same group check as FormBlockLogicRequest, children point to their group by its template id
+        $blocks = collect($template['blocks']);
+
+        foreach ($blocks->where('type', FormBlockType::group->value)->whereNotNull('id') as $i => $group) {
+            $inside = $blocks->whereStrict('parent_block', $group['id'])->pluck('id');
+
+            foreach ($group['formBlockLogics'] ?? [] as $j => $logic) {
+                foreach ($logic['conditions'] as $k => $condition) {
+                    if ($inside->containsStrict($condition['source'])) {
+                        throw ValidationException::withMessages([
+                            "blocks.$i.formBlockLogics.$j.conditions.$k.source" => 'A rule on a group can only use questions outside that group.',
+                        ]);
+                    }
+                }
+            }
+        }
 
         return $template;
     }

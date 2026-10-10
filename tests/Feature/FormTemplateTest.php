@@ -529,3 +529,28 @@ test('a form from a template refuses a name over 255 characters', function () {
 
     expect(Form::count())->toBe(0);
 });
+
+test('template import rejects a rule on a group that uses a question inside that group', function () {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+    $template = fn (string $source) => json_encode(['blocks' => [
+        ['id' => 'q', 'type' => 'input-short', 'message' => 'Outside', 'sequence' => 0],
+        ['id' => 'g', 'type' => 'group', 'message' => 'Group', 'sequence' => 1, 'formBlockLogics' => [
+            ['name' => 'Hide group', 'action' => 'hide', 'evaluate' => 'before', 'conditions' => [
+                ['source' => $source, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and'],
+            ]],
+        ]],
+        ['id' => 'c', 'type' => 'input-short', 'message' => 'Inside', 'sequence' => 2, 'parent_block' => 'g'],
+    ]]);
+
+    $this->actingAs($form->user)
+        ->postJson(route('api.forms.template-import', ['form' => $form->uuid]), ['template' => $template('c')])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('blocks.1.formBlockLogics.0.conditions.0.source');
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+
+    $this->postJson(route('api.forms.template-import', ['form' => $form->uuid]), ['template' => $template('q')])
+        ->assertOk();
+
+    expect($form->fresh()->formBlocks->firstWhere('type', FormBlockType::group)->formBlockLogics)->toHaveCount(1);
+});
