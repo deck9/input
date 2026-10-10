@@ -10,7 +10,7 @@
         "laravel/framework": "^11.0",
         "laravel/jetstream": "^5.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.5",
+        "laravel/tinker": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.0",
         "league/flysystem-memory": "^3.0",
         "league/glide-symfony": "^2.0",
