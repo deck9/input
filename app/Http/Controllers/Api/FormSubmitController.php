@@ -50,12 +50,6 @@ class FormSubmitController extends Controller
 
         if (!is_null($request->payload)) {
             $session->submit($request->input('payload'));
-
-            // the form page uploads all files again after this call, so a retry must not count the earlier ones
-            if ($request->boolean('is_uploading')) {
-                // strings, so MySQL can't match a numeric key against every uuid
-                $session->deleteUploads(array_map('strval', array_keys($request->input('payload'))));
-            }
         }
 
         if (!$request->input('is_uploading', false)) {

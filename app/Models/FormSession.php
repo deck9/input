@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\FormBlockType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -91,18 +90,5 @@ class FormSession extends Model
         });
 
         return $this;
-    }
-
-    public function deleteUploads(array $blockUuids): void
-    {
-        $this->formSessionResponses()
-            ->whereHas('formBlock', fn ($query) => $query->where('type', FormBlockType::file)->whereIn('uuid', $blockUuids))
-            ->with('formSessionUploads')
-            ->get()
-            ->flatMap->formSessionUploads
-            ->each(function (FormSessionUpload $upload) {
-                Storage::delete($upload->path);
-                $upload->delete();
-            });
     }
 }

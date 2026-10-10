@@ -232,96 +232,14 @@ test('limits uploads per visitor', function () {
     uploadFile($session, $interaction, null)->assertTooManyRequests();
 });
 
-test('submitting answers again before uploading removes the earlier files of that question', function () {
-    Storage::fake();
-    $interaction = fileQuestion(['allowedFiles' => 1]);
-    $session = answerFileQuestion($interaction);
-    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
-
-    answerFileQuestion($interaction, $session);
-    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
-
-    expect(FormSessionUpload::count())->toBe(1)
-        ->and(Storage::allFiles('uploads'))->toHaveCount(1);
-});
-
-test('submitting answers without uploading keeps the files', function () {
+test('submitting answers again keeps the files that already went through', function () {
     Storage::fake();
     $interaction = fileQuestion([]);
     $session = answerFileQuestion($interaction);
     uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
 
-    answerFileQuestion($interaction, $session, isUploading: false);
-    test()->json('POST', route('api.public.forms.submit', ['form' => $session->form->uuid]), [
-        'token' => $session->token,
-    ])->assertOk();
-
-    expect(FormSessionUpload::count())->toBe(1)
-        ->and(Storage::allFiles('uploads'))->toHaveCount(1);
-});
-
-test('submitting answers again keeps the files of other sessions', function () {
-    Storage::fake();
-    $interaction = fileQuestion([]);
-    $otherSession = answerFileQuestion($interaction);
-    uploadFile($otherSession, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
-
-    answerFileQuestion($interaction);
-
-    expect(FormSessionUpload::count())->toBe(1)
-        ->and(Storage::allFiles('uploads'))->toHaveCount(1);
-});
-
-test('submitting answers again keeps the files of questions not in the answers', function () {
-    Storage::fake();
-    $form = Form::factory()->create();
-    $interaction = fileQuestion([], $form);
-    $otherInteraction = fileQuestion([], $form);
-    $session = answerFileQuestion($otherInteraction);
-    uploadFile($session, $otherInteraction, UploadedFile::fake()->image('face.png'))->assertCreated();
-
+    // a retry after a failed upload: the form page sends only the files that failed
     answerFileQuestion($interaction, $session);
-
-    expect(FormSessionUpload::count())->toBe(1)
-        ->and(Storage::allFiles('uploads'))->toHaveCount(1);
-});
-
-test('submitting answers that fail to save keeps the files', function () {
-    Storage::fake();
-    $form = Form::factory()->create();
-    $interaction = fileQuestion([], $form);
-    $otherInteraction = fileQuestion([], $form);
-    $session = answerFileQuestion($interaction);
-    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
-
-    test()->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
-        'token' => $session->token,
-        'is_uploading' => true,
-        'payload' => [
-            $interaction->formBlock->uuid => ['actionId' => $interaction->uuid, 'payload' => 'upload'],
-            $otherInteraction->formBlock->uuid => ['actionId' => 'unknown', 'payload' => 'upload'],
-        ],
-    ])->assertNotFound();
-
-    expect(FormSessionUpload::count())->toBe(1)
-        ->and(Storage::allFiles('uploads'))->toHaveCount(1);
-});
-
-test('submitting answers with numeric keys keeps the files of questions not in the answers', function () {
-    Storage::fake();
-    $form = Form::factory()->create();
-    $interaction = fileQuestion([], $form);
-    $otherInteraction = fileQuestion([], $form);
-    $interaction->formBlock->update(['uuid' => 'aaaaaaaa']);
-    $otherInteraction->formBlock->update(['uuid' => 'bbbbbbbb']);
-    $session = answerFileQuestion($otherInteraction);
-    uploadFile($session, $otherInteraction, UploadedFile::fake()->image('face.png'))->assertCreated();
-
-    test()->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
-        'token' => $session->token,
-        'is_uploading' => true,
-        'payload' => [['actionId' => $interaction->uuid, 'payload' => 'upload']],
-    ])->assertOk();
 
     expect(FormSessionUpload::count())->toBe(1)
         ->and(Storage::allFiles('uploads'))->toHaveCount(1);
