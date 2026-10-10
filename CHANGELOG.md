@@ -43,6 +43,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
 -   A logo or background whose file is already gone, and shows as a broken image, can be removed again. (#219)
 -   The API and template import refuse a group inside a group, and a question in a group that belongs to another form or is missing from the template, so no questions disappear from the public form. Both also refuse a show/hide rule on a group that uses a question inside that group, which sent respondents back to the start. (#220)
+-   **Upgrade step:** on SQLite, deleting a team, form, question or submission kept rows in the database: upload records, and on installs set up before v2.0 also answers. The update adds the missing foreign keys, so this no longer happens. To remove what was left behind, back up first, then run `php artisan input:prune-orphaned-forms` and add `--force`. (#225)
 
 ### Security
 
