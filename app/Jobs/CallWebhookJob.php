@@ -67,6 +67,11 @@ class CallWebhookJob implements ShouldQueue
         } catch (\Exception $e) {
             $error = $e;
             $status = 500;
+            // the real reason goes to the server log only, also on the sync queue where nothing is thrown
+            Log::warning('Webhook call failed', [
+                'webhook_id' => $this->webhook->id,
+                'error' => $e->getMessage(),
+            ]);
             // the team sees this text, so it says nothing about the server's network
             $body = 'The webhook URL could not be reached.';
             $json = ['error' => $body];

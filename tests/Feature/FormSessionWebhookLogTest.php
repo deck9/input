@@ -6,6 +6,7 @@ use App\Models\FormSession;
 use App\Models\FormWebhook;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -97,6 +98,23 @@ it('blocks webhooks to internal addresses and logs the error', function (string 
     '6to4' => 'http://[2002:7f00:1::]/hook',
     'nat64' => 'http://[64:ff9b::7f00:1]/hook',
 ]);
+
+it('writes the real error of a failed webhook call to the server log only', function () {
+    Log::spy();
+    $form = Form::factory()->has(
+        FormWebhook::factory(['webhook_url' => 'http://127.0.0.1/hook'])
+    )->create();
+    $session = FormSession::factory()->for($form)->create();
+    $webhook = $form->formWebhooks->first();
+
+    CallWebhookJob::dispatch($session, $webhook);
+
+    Log::shouldHaveReceived('warning')->once()->withArgs(
+        fn ($message, $context) => $context['webhook_id'] === $webhook->id
+            && str_contains($context['error'], 'is blocked')
+    );
+    expect($session->webhooks()->first()->response['error'])->not->toContain('is blocked');
+});
 
 it('submissions api endpoint will include the session webhook data', function () {
     app()->bind(HttpClientInterface::class, function () {
