@@ -4,7 +4,7 @@ import { effectScope, nextTick } from 'vue';
 import { useConversation } from './conversation';
 import * as logicHelpers from './helpers/logic';
 import { createFlatQueue } from './helpers/queue';
-import { callSubmitForm } from '@/api/conversation';
+import { callGetFormStoryboard, callSubmitForm } from '@/api/conversation';
 import handler from '@/api/handler';
 import { useBeforeUnload } from '@/utils/useBeforeUnload';
 
@@ -21,6 +21,8 @@ vi.mock('./helpers/logic', async (importOriginal) => {
 vi.mock('@/api/conversation', async (importOriginal) => ({
   ...(await importOriginal() as any),
   callSubmitForm: vi.fn().mockResolvedValue({}),
+  callCreateFormSession: vi.fn().mockResolvedValue({ data: {} }),
+  callGetFormStoryboard: vi.fn(),
 }));
 
 vi.mock('@/utils/useRoutes', () => ({
@@ -286,6 +288,40 @@ describe('Conversation Store', () => {
 
     it('keeps the rule on a single question inside a shown group', () => {
       expect(visibleBlocks('no')).toEqual(['q0', 'q1', 'q3']);
+    });
+  });
+
+  describe('prefill from URL params', () => {
+    beforeEach(async () => {
+      const { isBlockVisible } = await vi.importActual<typeof logicHelpers>('./helpers/logic');
+      vi.mocked(logicHelpers.isBlockVisible).mockImplementation(isBlockVisible);
+    });
+
+    afterEach(() => {
+      vi.mocked(logicHelpers.isBlockVisible).mockReturnValue(true);
+    });
+
+    it('fills the question on load, keeps it shown and lets its answer fire a hide rule', async () => {
+      const store = useConversation();
+      const [email, company, q3] = makeBlocks('email', 'company', 'q3');
+      email.title = 'email';
+      email.interactions = [{ id: 'email-action' } as PublicFormBlockInteractionModel];
+      // "company" hides when the email is from b.de
+      company.logics = [{
+        form_block_id: 1,
+        name: 'Rule',
+        action: 'hide',
+        evaluate: 'before',
+        action_payload: null,
+        conditions: [{ source: 'email', operator: 'contains', value: '@b.de', chainOperator: 'and' }],
+      }];
+      vi.mocked(callGetFormStoryboard).mockResolvedValue({ data: { blocks: [email, company, q3] } } as any);
+
+      await store.initForm({ uuid: 'form' } as PublicFormModel, { email: 'a@b.de' });
+
+      expect(store.payload).toEqual({ email: { payload: 'a@b.de', actionId: 'email-action' } });
+      expect(store.current).toBe('email');
+      expect(store.processedQueue.map((block) => block.id)).toEqual(['email', 'q3']);
     });
   });
 
