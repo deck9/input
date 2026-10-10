@@ -70,3 +70,21 @@ docker compose up -d
 For a single container, run `docker pull ghcr.io/deck9/input:main`, remove the old container with `docker rm -f input`, and start it again with the same `docker run` command. Your data stays in the volume.
 
 The container runs the database migrations on start.
+
+## Forms of Deleted Teams
+
+Before v2.2, deleting a team left its forms behind. They stayed online, kept taking answers nobody could see, and their files stayed on disk. If you deleted a team before updating to v2.2, clean them up once after the update.
+
+First list them. This deletes nothing:
+
+```bash
+docker compose exec input php artisan input:prune-orphaned-forms
+```
+
+It shows each form with its ID, name, and number of submissions and uploaded files. Forms in the trash are included. Back up first, then delete them:
+
+```bash
+docker compose exec input php artisan input:prune-orphaned-forms --force
+```
+
+This deletes the forms for good, with their submissions, logic rules, uploaded files and images. An image that another form still uses stays. For a single container, use `docker exec input` instead of `docker compose exec input`.
