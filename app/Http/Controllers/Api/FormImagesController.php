@@ -56,15 +56,13 @@ class FormImagesController extends Controller
         ]);
 
         $fieldname = $request->input('type').'_path';
+        $oldPath = $form->$fieldname;
 
-        if ($form->hasImage($request->input('type'))) {
-            $oldPath = $form->$fieldname;
+        // clear the path even when its file is already gone, so a broken image can be removed
+        $form->$fieldname = null;
+        $form->save();
 
-            $form->$fieldname = null;
-            $form->save();
-
-            $deleteUnusedImages->delete(collect([$oldPath]));
-        }
+        $deleteUnusedImages->delete(collect([$oldPath]));
 
         return response()->json($form, 200);
     }

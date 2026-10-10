@@ -10,7 +10,7 @@ Create a `.env` file next to your `docker-compose.yml` and adjust the values:
 APP_KEY=base64:your_generated_key
 APP_URL=https://your-domain.com
 
-QUEUE_CONNECTION=sync
+QUEUE_CONNECTION=database
 SESSION_DRIVER=redis
 CACHE_DRIVER=redis
 

@@ -203,7 +203,6 @@ const saveIntegration = async () => {
         name: name.value,
         webhook_method: webhookMethod.value?.value,
         webhook_url: webhookUrl.value,
-        headers: {},
       });
     } else {
       await callCreateformWebhooks(props.form, {
