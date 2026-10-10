@@ -1,3 +1,4 @@
+/// <reference types="vitest/jsdom" />
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { setActivePinia, createPinia, storeToRefs } from 'pinia';
 import { effectScope, nextTick } from 'vue';
@@ -213,13 +214,14 @@ describe('Conversation Store', () => {
     it.each(['javascript:void(0)', 'mailto:team@example.com'])(
       'skips a stored link that is not http(s): %s',
       async (link) => {
-        const navigation = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const navigation = vi.fn();
+        jsdom.virtualConsole.on('jsdomError', navigation);
         const store = await submitWithRedirectTo(link);
 
         // no redirect, so the form shows its end page
         expect(store.isSubmitted).toBe(true);
         expect(navigation).not.toHaveBeenCalled();
-        navigation.mockRestore();
+        jsdom.virtualConsole.off('jsdomError', navigation);
       },
     );
 
@@ -235,15 +237,16 @@ describe('Conversation Store', () => {
       let promptOffAtRedirect = false;
 
       // jsdom can't navigate and reports the attempt as an error
-      const navigation = vi.spyOn(console, 'error').mockImplementation(() => {
+      const navigation = vi.fn(() => {
         promptOffAtRedirect = removeListener.mock.calls.some(([type]) => type === 'beforeunload');
       });
+      jsdom.virtualConsole.on('jsdomError', navigation);
 
       await submitWithRedirectTo('https://example.com/thanks');
 
       expect(navigation).toHaveBeenCalled();
       expect(promptOffAtRedirect).toBe(true);
-      navigation.mockRestore();
+      jsdom.virtualConsole.off('jsdomError', navigation);
       removeListener.mockRestore();
       scope.stop();
     });

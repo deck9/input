@@ -19,7 +19,7 @@ We started Input out of a previous project called BotReach, which was already a 
 We are using [Laravel Sail](https://laravel.com/docs/master/sail) to develop Input. You need Docker already installed on your machine to run the entire app. We also recommend installing Node.JS and NPM directly on your host machine to make working with frontend assets more convenient.
 
 -   [Docker](https://www.docker.com/get-started/)
--   [NodeJS](https://nodejs.org/) v18 (mise installs it from `mise.toml`)
+-   [NodeJS](https://nodejs.org/) v22 (mise installs it from `mise.toml`)
 -   [mise-en-place](https://mise.jdx.dev/) (for task automation)
 
 ### Download
