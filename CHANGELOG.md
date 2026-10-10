@@ -9,11 +9,12 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Added
 
 -   **Upgrade step:** back up `APP_KEY` together with your database: answers are stored encrypted with it, and a new key can't read them. New hosting docs cover the database, queue worker, scheduler, mail, reverse proxy and backups. (#203)
+-   **Upgrade step:** if you deleted a team before this update, its forms are still online. Back up first, then run `php artisan input:prune-orphaned-forms` to list them, and add `--force` to delete them with their answers and files. The hosting docs on backups and updates show the full command. (#209)
 -   Fill in text questions from the link: a URL parameter named like a question's Identifier, such as `?email=ada@example.com`, prefills that answer, and the visitor can still change it. The embedding docs show how this works with links, iframes and the native embed. (#208)
 
 ### Changed
 
--   **Upgrade step:** importing a template into a form that already has answers is refused. Import it into a new form instead. Auto-delete needs a retention of at least 1 day (before, a missing retention deleted everything) and also cleans up trashed forms. Deleting an account hands its forms to each team's owner, and deleting a team deletes its forms for good, with their answers and files. Forms of teams deleted before this update stay online. (#202)
+-   **Upgrade step:** importing a template into a form that already has answers is refused. Import it into a new form instead. Auto-delete needs a retention of at least 1 day (before, a missing retention deleted everything) and also cleans up trashed forms. Deleting an account hands its forms to each team's owner, and deleting a team deletes its forms for good, with their answers and files. Forms of teams deleted before this update stay online until you remove them with `php artisan input:prune-orphaned-forms` (#209). (#202)
 -   **Upgrade step:** the minio image can no longer be pulled, so the production compose example now uses RustFS. On the old example, `docker compose pull` fails on the minio service, but a running install keeps working, and `docker compose pull --ignore-pull-failures` gets past the error. A new host, or one without the cached minio image, needs the RustFS setup from the hosting docs. Moving existing files over is a manual copy the docs don't cover. (#203)
 -   Docker builds pull their base images from Google's Docker Hub mirror, so they no longer fail on Docker Hub's pull limit. (#195)
 -   Checks on a pull request take about 3 minutes instead of 20. (#201)
