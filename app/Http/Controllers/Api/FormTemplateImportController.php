@@ -52,10 +52,15 @@ class FormTemplateImportController extends Controller
         $logicRules = collect((new FormBlockLogicRequest())->rules())
             ->mapWithKeys(fn ($rule, $key) => ["blocks.*.formBlockLogics.*.$key" => $rule]);
 
+        // same retention rule as FormController::update(), against the value the form ends up with
+        $autoDelete = filter_var($template['is_auto_delete_enabled'] ?? $form->is_auto_delete_enabled, FILTER_VALIDATE_BOOLEAN);
+
         Validator::make($template, [
             'blocks' => 'present|array',
             'blocks.*.id' => 'nullable|string',
             'blocks.*.type' => ['required', Rule::enum(FormBlockType::class)],
+            'is_auto_delete_enabled' => 'boolean',
+            'data_retention_days' => [Rule::excludeIf(! $autoDelete), 'required_with:is_auto_delete_enabled', 'integer', 'min:1'],
             ...$logicRules->all(),
             'cta_link' => $link,
             'privacy_link' => $link,

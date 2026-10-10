@@ -419,6 +419,21 @@ test('turning auto delete on needs a retention period of at least one day', func
     'negative' => [-1],
 ]);
 
+test('a form with auto delete on cannot get a retention period below one day', function ($days) {
+    $form = Form::factory()->create(['is_auto_delete_enabled' => true, 'data_retention_days' => 30]);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['data_retention_days' => $days])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('data_retention_days');
+
+    $this->assertEquals(30, $form->fresh()->data_retention_days);
+})->with([
+    'empty' => [null],
+    'zero' => [0],
+    'negative' => [-5],
+]);
+
 test('with auto delete off, the retention period is not checked', function () {
     $form = Form::factory()->create();
 

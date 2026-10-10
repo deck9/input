@@ -86,8 +86,13 @@ class FormController extends Controller
 
         $request->validate([
             'is_auto_delete_enabled' => 'boolean',
-            // the settings page also sends the hidden field while auto delete is off
-            'data_retention_days' => 'exclude_unless:is_auto_delete_enabled,true|required|integer|min:1',
+            // checked against the value the form ends up with; the settings page also sends the hidden field while auto delete is off
+            'data_retention_days' => [
+                Rule::excludeIf(! $request->boolean('is_auto_delete_enabled', $form->is_auto_delete_enabled)),
+                'required_with:is_auto_delete_enabled',
+                'integer',
+                'min:1',
+            ],
             'cta_link' => $link('cta_link'),
             'privacy_link' => $link('privacy_link'),
             'legal_notice_link' => $link('legal_notice_link'),

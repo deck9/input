@@ -384,6 +384,21 @@ test('template import rejects a block id that is not text before it changes the 
     'a list' => [['a']],
 ]);
 
+test('template import rejects auto delete with a retention period below one day', function (array $form, array $template) {
+    $form = Form::factory()->create($form);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode([...$template, 'data_retention_days' => 0, 'blocks' => []]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('data_retention_days');
+
+    expect($form->fresh()->data_retention_days)->not->toBe(0);
+})->with([
+    'auto delete on in the template' => [[], ['is_auto_delete_enabled' => true]],
+    'auto delete already on in the form' => [['is_auto_delete_enabled' => true, 'data_retention_days' => 30], []],
+]);
+
 test('a template import that fails halfway leaves the form unchanged', function () {
     $form = Form::factory()->has(FormBlock::factory())->create(['description' => 'Original']);
 
