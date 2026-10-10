@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\FormPublished;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Knuckles\Scribe\Attributes\Authenticated;
@@ -24,8 +23,6 @@ class PublishFormController extends Controller
         $form->update([
             'published_at' => now(),
         ]);
-
-        event(new FormPublished($form));
 
         return response()->json($form, 200);
     }

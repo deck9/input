@@ -5,8 +5,6 @@ use App\Models\User;
 use App\Models\FormBlock;
 use App\Enums\FormBlockType;
 use App\Models\FormBlockLogic;
-use App\Events\FormBlocksUpdated;
-use Illuminate\Support\Facades\Event;
 use Database\Seeders\SimpleFormSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -151,25 +149,6 @@ test('cannot create or update blocks of not owned form', function () {
 
     $this->assertEquals('Hey there', $block->fresh()->message);
     $this->assertEquals(FormBlockType::none, $block->fresh()->type);
-});
-
-test('when blocks are updated an event is fired', function () {
-    Event::fake();
-
-    $block = FormBlock::factory()->create([
-        'message' => 'Hey there',
-        'type' => FormBlockType::none,
-    ]);
-
-    $this->actingAs($block->form->user)
-        ->json('post', route('api.blocks.update', $block->id), [
-            'message' => 'Ok?',
-            'type' => FormBlockType::radio,
-        ]);
-
-    Event::assertDispatched(FormBlocksUpdated::class, function ($event) use ($block) {
-        return $event->form->id === $block->form->id;
-    });
 });
 
 test('can delete a block', function () {
