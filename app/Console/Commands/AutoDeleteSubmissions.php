@@ -33,21 +33,20 @@ class AutoDeleteSubmissions extends Command
      */
     public function handle(): void
     {
-        Form::has('formSessions')->lazyById()->each(function (Form $form) {
-            if ($form->is_auto_delete_enabled === false) {
-                return;
-            }
-
-            $form->formSessions()->lazyById()->each(function ($session) use ($form) {
-                $retentionDays = $form->data_retention_days;
-
-                if ($session->updated_at->diffInDays(now()) > $retentionDays) {
-                    $session->delete();
-                    $this->cleaned++;
-                }
-
+        Form::withTrashed()
+            ->where('is_auto_delete_enabled', true)
+            ->where('data_retention_days', '>=', 1)
+            ->lazyById()
+            ->each(function (Form $form) {
+                // one by one, so each session also deletes its uploaded files
+                $form->formSessions()
+                    ->where('updated_at', '<', now()->subDays($form->data_retention_days))
+                    ->lazyById()
+                    ->each(function ($session) {
+                        $session->delete();
+                        $this->cleaned++;
+                    });
             });
-        });
 
         $this->info("Cleaned {$this->cleaned} submissions.");
     }

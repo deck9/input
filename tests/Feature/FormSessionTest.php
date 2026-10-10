@@ -254,6 +254,41 @@ it('should not delete submissions when auto delete is not enabled', function ($t
     $this->assertCount(4, FormSessionResponse::all());
 })->with('templates');
 
+test('auto delete removes only submissions older than the retention period, also for trashed forms', function () {
+    $settings = ['is_auto_delete_enabled' => true, 'data_retention_days' => 30];
+    $form = Form::factory()->create($settings);
+    $trashedForm = Form::factory()->deleted()->create($settings);
+
+    $old = FormSession::factory()->for($form)->create();
+    $oldOfTrashed = FormSession::factory()->for($trashedForm)->create();
+
+    $this->travel(31)->days();
+
+    $recent = FormSession::factory()->for($form)->create();
+    $recentOfTrashed = FormSession::factory()->for($trashedForm)->create();
+
+    $this->artisan('input:auto-delete-submissions');
+
+    expect($old->fresh())->toBeNull()
+        ->and($oldOfTrashed->fresh())->toBeNull()
+        ->and($recent->fresh())->not->toBeNull()
+        ->and($recentOfTrashed->fresh())->not->toBeNull();
+});
+
+test('auto delete without a valid retention period deletes nothing', function ($days) {
+    $form = Form::factory()->create(['is_auto_delete_enabled' => true, 'data_retention_days' => $days]);
+    $session = FormSession::factory()->for($form)->create();
+
+    $this->travel(2)->days();
+    $this->artisan('input:auto-delete-submissions');
+
+    expect($session->fresh())->not->toBeNull();
+})->with([
+    'empty' => [null],
+    'zero' => [0],
+    'negative' => [-1],
+]);
+
 test('answers for a question of another form are rejected and not stored', function ($template) {
     $form = Form::factory()->create();
     $form->applyTemplate($template);
