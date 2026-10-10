@@ -24,6 +24,12 @@ test('a respondent can fill in a form with a show rule and submit it', function 
         'sequence' => 1,
     ]);
     FormBlockInteraction::factory()->for($name)->input()->create(['label' => 'Name']);
+    FormBlockLogic::factory()->for($name)->create([
+        'action' => 'show',
+        'conditions' => [
+            ['source' => $pet->uuid, 'operator' => 'equals', 'value' => 'Yes', 'chainOperator' => 'and'],
+        ],
+    ]);
 
     // While the name question is hidden, the pet question is the last one, so the button says "Submit"
     $this->browse(fn (Browser $browser) => $browser
