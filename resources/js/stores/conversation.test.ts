@@ -41,6 +41,15 @@ const makeBlocks = (...ids: string[]): PublicFormBlockModel[] =>
     logics: undefined,
   }));
 
+const rule = (action: 'show' | 'hide', value: string): FormBlockLogic[] => [{
+  form_block_id: 1,
+  name: 'Rule',
+  action,
+  evaluate: 'before',
+  action_payload: null,
+  conditions: [{ source: 'q0', operator: 'equals', value, chainOperator: 'and' }],
+}];
+
 describe('Conversation Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -245,15 +254,6 @@ describe('Conversation Store', () => {
   });
 
   describe('show/hide rules on a group', () => {
-    const rule = (action: 'show' | 'hide', value: string): FormBlockLogic[] => [{
-      form_block_id: 1,
-      name: 'Rule',
-      action,
-      evaluate: 'before',
-      action_payload: null,
-      conditions: [{ source: 'q0', operator: 'equals', value, chainOperator: 'and' }],
-    }];
-
     // q0, then a group with q1 and q2, then q3; q2 hides itself when q0 is "no"
     const visibleBlocks = (answer: string, groupRule = rule('hide', 'yes')) => {
       const store = useConversation();
@@ -325,10 +325,102 @@ describe('Conversation Store', () => {
     });
   });
 
+  describe('answers of hidden questions at submit', () => {
+    beforeEach(async () => {
+      const { isBlockVisible } = await vi.importActual<typeof logicHelpers>('./helpers/logic');
+      vi.mocked(logicHelpers.isBlockVisible).mockImplementation(isBlockVisible);
+      vi.mocked(logicHelpers.evaluateGotoLogic).mockReturnValue(null);
+    });
+
+    afterEach(() => {
+      vi.mocked(logicHelpers.isBlockVisible).mockReturnValue(true);
+    });
+
+    const answers = (q0: string): FormSubmitPayload => ({
+      q0: { payload: q0, actionId: 'a0' },
+      q1: { payload: 'one', actionId: 'a1' },
+      q2: { payload: 'two', actionId: 'a2' },
+      q3: { payload: 'three', actionId: 'a3' },
+    });
+
+    // q1 hides when q0 is "a", the group with q2 hides when q0 is "b"; q3 is the last question
+    const setupForm = (payload: FormSubmitPayload) => {
+      const store = useConversation();
+      const [q0, q1, group, q2, q3] = makeBlocks('q0', 'q1', 'group', 'q2', 'q3');
+      q1.logics = rule('hide', 'a');
+      group.type = 'group';
+      group.logics = rule('hide', 'b');
+      q2.parent_block = 'group';
+
+      store.queue = createFlatQueue([q0, q1, group, q2, q3]);
+      store.payload = payload;
+      store.current = 'q3';
+      store.form = { uuid: 'form' } as PublicFormModel;
+      store.session = { token: 'session' } as FormSessionModel;
+
+      return store;
+    };
+
+    const sentAnswers = () => vi.mocked(callSubmitForm).mock.calls[0][2] as FormSubmitPayload;
+
+    it('leaves out the answer of a question a rule hides', async () => {
+      await setupForm(answers('a')).next();
+
+      expect(Object.keys(sentAnswers())).toEqual(['q0', 'q2', 'q3']);
+    });
+
+    it('leaves out the answer of a question in a hidden group', async () => {
+      await setupForm(answers('b')).next();
+
+      expect(Object.keys(sentAnswers())).toEqual(['q0', 'q1', 'q3']);
+    });
+
+    it('keeps the answer while hidden and sends it once the question shows again', async () => {
+      const store = setupForm(answers('a'));
+
+      expect(store.submittablePayload).not.toHaveProperty('q1');
+
+      store.payload.q0 = { payload: 'c', actionId: 'a0' };
+      await store.next();
+
+      expect(sentAnswers().q1).toEqual({ payload: 'one', actionId: 'a1' });
+    });
+
+    it('leaves out a prefilled answer of a question a rule hides', async () => {
+      const store = useConversation();
+      const [q0, company] = makeBlocks('q0', 'company');
+      q0.title = 'q0';
+      q0.interactions = [{ id: 'a0' } as PublicFormBlockInteractionModel];
+      company.title = 'company';
+      company.interactions = [{ id: 'company-action' } as PublicFormBlockInteractionModel];
+      company.logics = rule('hide', 'a');
+      vi.mocked(callGetFormStoryboard).mockResolvedValue({ data: { blocks: [q0, company] } } as any);
+
+      await store.initForm({ uuid: 'form' } as PublicFormModel, { q0: 'a', company: 'ACME' });
+      store.session = { token: 'session' } as FormSessionModel;
+      await store.next();
+
+      expect(sentAnswers()).toEqual({ q0: { payload: 'a', actionId: 'a0' } });
+      expect(store.payload.company).toEqual({ payload: 'ACME', actionId: 'company-action' });
+    });
+
+    it('does not upload the files of a hidden question', async () => {
+      const store = setupForm({ ...answers('a'), q1: { payload: [new File(['a'], 'a.txt')], actionId: 'a1' } });
+      const upload = vi.spyOn(handler, 'post').mockResolvedValue({});
+
+      await store.next();
+
+      expect(vi.mocked(callSubmitForm).mock.calls[0][3]).toBe(false);
+      expect(upload).not.toHaveBeenCalled();
+    });
+  });
+
   describe('submit on the last block', () => {
     const setupLastBlock = () => {
       const store = useConversation();
 
+      // only answers of questions in the queue are sent
+      store.queue = makeBlocks('block1');
       vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(makeBlocks('block1')[0]);
       vi.spyOn(store, 'isLastBlock', 'get').mockReturnValue(true);
       vi.mocked(logicHelpers.evaluateGotoLogic).mockReturnValue(null);
