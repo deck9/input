@@ -35,7 +35,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   **Upgrade step:** form links must start with http(s):// or mailto:. Saved links that don't (like a bare social handle or a www. address) are hidden on the public form: enter them again as full URLs. Templates with such links don't import. Form texts are cleaned before they show. (#193)
 -   Webhook responses show as plain text in the submissions view. (#196)
 -   Question labels in the logic editor's pickers show as plain text. (#199)
--   Public forms have limits: images load only in the sizes the form uses, uploads must match the question's file types, size and count (at most 8 MB per file, also in the editor), answers can be up to 30 KB and form link parameters up to 8 KB. Images and uploads are rate-limited per visitor, so behind a proxy check that `TRUSTED_PROXIES` lists it. (#212)
+-   Public forms have limits: the image address only serves form logos and backgrounds, in the sizes the form uses. Uploads must match the question's file types, size and count (at most 8 MB per file, also in the editor), answers can be up to 30 KB and form link parameters up to 8 KB. Images and uploads are rate-limited per visitor, so behind a proxy check that `TRUSTED_PROXIES` lists it. (#212)
 
 ## [2.1.0] - 2026-10-09
 
