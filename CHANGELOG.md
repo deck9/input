@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-10-10
+
+All installs should update: this release limits the public form endpoints and fixes how links and hosts are checked. It has 7 upgrade steps, marked **Upgrade step** below. Read them before you update, and back up your database and `APP_KEY` first.
+
 ### Added
 
 -   **Upgrade step:** back up `APP_KEY` together with your database: answers are stored encrypted with it, and a new key can't read them. New hosting docs cover the database, queue worker, scheduler, mail, reverse proxy and backups. (#203)
@@ -18,9 +22,9 @@ Lines marked **Upgrade step** need you to act after updating.
 
 -   **Upgrade step:** importing a template into a form that already has answers is refused. Import it into a new form instead. Auto-delete needs a retention of at least 1 day (before, a missing retention deleted everything) and also cleans up trashed forms. Deleting an account hands its forms to each team's owner, and deleting a team deletes its forms for good, with their answers and files. Forms of teams deleted before this update stay online until you remove them with `php artisan input:prune-orphaned-forms` (#209). (#202)
 -   **Upgrade step:** the minio image can no longer be pulled, so the production compose example now uses RustFS. On the old example, `docker compose pull` fails on the minio service, but a running install keeps working, and `docker compose pull --ignore-pull-failures` gets past the error. A new host, or one without the cached minio image, needs the RustFS setup from the hosting docs. Moving existing files over is a manual copy the docs don't cover. (#203)
+-   **Upgrade step:** webhooks and notification mails run in the background, so a submit no longer waits for them. The Docker image runs its own queue worker on the database queue, and a separate worker container is no longer needed. If you pass `QUEUE_CONNECTION=sync` to the container (with `-e`, `environment:` or `env_file:`, as the old Docker Compose example did), change it to `database`, or to `redis` if you run Redis. (#218)
 -   Docker builds pull their base images from Google's Docker Hub mirror, so they no longer fail on Docker Hub's pull limit. (#195)
 -   Checks on a pull request take about 3 minutes instead of 20. (#201)
--   **Upgrade step:** webhooks and notification mails run in the background, so a submit no longer waits for them. The Docker image runs its own queue worker on the database queue, and a separate worker container is no longer needed. If you pass `QUEUE_CONNECTION=sync` to the container (with `-e`, `environment:` or `env_file:`, as the old Docker Compose example did), change it to `database`, or to `redis` if you run Redis. (#218)
 
 ### Removed
 
@@ -37,7 +41,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Only answers on the way a respondent really took through the form are saved. A question skipped by a jump no longer saves its answer, also when filled in from the link. The answer of a skipped or hidden question no longer makes later questions show or hide. After a jump, Back returns to the question the respondent came from, not to a skipped one. (#216)
 -   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
--   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and phone numbers stay as they are. (#217)
+-   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and simple phone numbers like +49 30 1234567 stay as they are. (#217)
 -   Webhooks send their custom headers again, such as `Authorization` or an API key, and saving a webhook in the editor keeps headers set through the API. (#218)
 -   A webhook whose receiver is down or answers with a server error is tried up to 5 times in all, over about 1 hour 20 minutes. A webhook call stops after 10 seconds, a webhook URL must start with http:// or https://, and the webhook log shows a plain error text when the URL can't be reached. (#218)
 -   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
@@ -76,5 +80,6 @@ Lines marked **Upgrade step** need you to act after updating.
 
 See [GitHub Releases](https://github.com/deck9/input/releases).
 
-[Unreleased]: https://github.com/deck9/input/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/deck9/input/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/deck9/input/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/deck9/input/compare/v2.0.1...v2.1.0
