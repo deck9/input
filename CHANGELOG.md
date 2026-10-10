@@ -27,6 +27,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Changing or removing the logo or background on a duplicated form keeps the original form's image. (#205)
 -   A show/hide rule on a group now hides or shows all questions in that group in the public form. Group rules you already set up start working after the update, so respondents skip those questions when the rule hides the group. (#206)
 -   Answers to questions that a show/hide rule hides at submit are no longer saved, also inside a hidden group and when filled in from the link. A question that shows again before submit keeps its answer. (#210)
+-   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
 
 ### Security
