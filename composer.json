@@ -4,10 +4,10 @@
     "description": "Input is a no-code application to create simple & clean forms. With our customization options, you can let the forms shine in your brands colors.",
     "license": "GNU Affero General Public License v3.0",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^2.0",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^13.0",
         "laravel/jetstream": "^5.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
