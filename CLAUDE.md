@@ -36,3 +36,7 @@
 
 -   Frontend: Promise-based error handling with try/catch
 -   Backend: Custom exception handling in Handler.php for API responses
+
+## Changelog
+
+-   Every PR adds a one-line entry under `## [Unreleased]` in CHANGELOG.md (Added / Changed / Fixed / Security), in words a user notices, with the PR number.
