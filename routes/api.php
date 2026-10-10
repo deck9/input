@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\UnpublishFormController;
 use App\Http\Controllers\Api\FormBlockLogicController;
 use App\Http\Controllers\Api\FormSubmissionsController;
 use App\Http\Controllers\Api\FormBlockMappingController;
+use App\Http\Controllers\Api\CreateFormFromTemplateController;
 use App\Http\Controllers\Api\CreateFormSessionController;
 use App\Http\Controllers\Api\FormBlockSequenceController;
 use App\Http\Controllers\Api\GetFormStoryboardController;
@@ -66,6 +67,7 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     // Form Routes
     $router->get('forms', [FormController::class, 'index'])->name('api.forms.index');
     $router->post('forms', [FormController::class, 'create'])->name('api.forms.create');
+    $router->post('forms/template', CreateFormFromTemplateController::class)->name('api.forms.create-from-template');
     $router->get('forms/{form}', [FormController::class, 'show'])->name('api.forms.show');
     $router->post('forms/{form}', [FormController::class, 'update'])->name('api.forms.update');
     $router->delete('forms/{form}', [FormController::class, 'delete'])->name('api.forms.delete');

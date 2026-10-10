@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\FormBlockType;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FormBlockLogicRequest;
+use App\Http\Requests\FormTemplateRequest;
 use App\Models\Form;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Knuckles\Scribe\Attributes\Group;
 
 class FormTemplateImportController extends Controller
@@ -21,58 +17,14 @@ class FormTemplateImportController extends Controller
      * @hideFromAPIDocumentation
      */
     #[Group('Templates')]
-    public function __invoke(Request $request, Form $form)
+    public function __invoke(FormTemplateRequest $request, Form $form)
     {
-        if ($request->user()->cannot('update', $form)) {
-            abort(403);
-        }
-
-        $request->validate([
-            'file' => 'required_without:template|file|mimetypes:application/json',
-            'template' => 'required_without:file|json',
-        ]);
-
         // the import replaces all questions, and their answers would go with them
         if ($form->formSessionResponses()->exists()) {
             abort(422, 'This form already has submissions. Import the template into a new form instead.');
         }
 
-        $template = (array) json_decode(
-            $request->has('file') ? file_get_contents($request->file('file')) : $request->input('template'),
-            true
-        );
-
-        // image paths point to files of the form that uploaded them, the form keeps its own
-        unset($template['avatar_path'], $template['background_path']);
-
-        // same link rule as FormController::update()
-        $link = ['nullable', 'regex:~^(https?://|mailto:)~i'];
-
-        // same rules as creating a logic rule through the API
-        $logicRules = collect((new FormBlockLogicRequest())->rules())
-            ->mapWithKeys(fn ($rule, $key) => ["blocks.*.formBlockLogics.*.$key" => $rule]);
-
-        // same retention rule as FormController::update(), against the value the form ends up with
-        $autoDelete = filter_var($template['is_auto_delete_enabled'] ?? $form->is_auto_delete_enabled, FILTER_VALIDATE_BOOLEAN);
-
-        Validator::make($template, [
-            'blocks' => 'present|array',
-            'blocks.*.id' => 'nullable|string',
-            'blocks.*.type' => ['required', Rule::enum(FormBlockType::class)],
-            'is_auto_delete_enabled' => 'boolean',
-            'data_retention_days' => [Rule::excludeIf(! $autoDelete), 'required_with:is_auto_delete_enabled', 'integer', 'min:1'],
-            ...$logicRules->all(),
-            'cta_link' => $link,
-            'privacy_link' => $link,
-            'legal_notice_link' => $link,
-            'twitter' => $link,
-            'facebook' => $link,
-            'instagram' => $link,
-            'github' => $link,
-            'linkedin' => $link,
-        ])->validate();
-
-        $form->applyTemplate($template);
+        $form->applyTemplate($request->template());
 
         return response()->json([
             'message' => 'Template imported successfully',
