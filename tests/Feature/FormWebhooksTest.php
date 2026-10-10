@@ -72,6 +72,21 @@ test('can_update_a_created_webhook', function () {
     ]);
 });
 
+test('a webhook url must use http or https', function () {
+    $webhook = FormWebhook::factory()->create();
+    $data = ['name' => 'Test', 'webhook_url' => 'ftp://example.com/hook', 'webhook_method' => 'POST'];
+
+    $this->actingAs($webhook->form->user)
+        ->json('POST', route('api.forms.webhooks.create', $webhook->form), $data)
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('webhook_url');
+
+    $this->actingAs($webhook->form->user)
+        ->json('POST', route('api.forms.webhooks.update', [$webhook->form, $webhook]), $data)
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('webhook_url');
+});
+
 test('can_delete_a_form_webhook', function () {
     $webhook = FormWebhook::factory()->create();
 

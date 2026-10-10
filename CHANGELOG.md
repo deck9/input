@@ -19,6 +19,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   **Upgrade step:** the minio image can no longer be pulled, so the production compose example now uses RustFS. On the old example, `docker compose pull` fails on the minio service, but a running install keeps working, and `docker compose pull --ignore-pull-failures` gets past the error. A new host, or one without the cached minio image, needs the RustFS setup from the hosting docs. Moving existing files over is a manual copy the docs don't cover. (#203)
 -   Docker builds pull their base images from Google's Docker Hub mirror, so they no longer fail on Docker Hub's pull limit. (#195)
 -   Checks on a pull request take about 3 minutes instead of 20. (#201)
+-   **Upgrade step:** webhooks and notification mails run in the background, so a submit no longer waits for them. The Docker image runs its own queue worker on the database queue, and a separate worker container is no longer needed. If you pass `QUEUE_CONNECTION=sync` to the container (with `-e`, `environment:` or `env_file:`, as the old Docker Compose example did), change it to `database`, or to `redis` if you run Redis. (#218)
 
 ### Removed
 
@@ -36,6 +37,9 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
 -   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and phone numbers stay as they are. (#217)
+-   Webhooks send their custom headers again, such as `Authorization` or an API key, and saving a webhook in the editor keeps headers set through the API. (#218)
+-   A webhook whose receiver is down or answers with a server error is tried up to 5 times in all, over about 1 hour 20 minutes. A webhook call stops after 10 seconds, a webhook URL must start with http:// or https://, and the webhook log shows a plain error text when the URL can't be reached. (#218)
+-   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
 -   A logo or background whose file is already gone, and shows as a broken image, can be removed again. (#219)
 
 ### Security

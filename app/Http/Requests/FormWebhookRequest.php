@@ -30,7 +30,7 @@ class FormWebhookRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'webhook_url' => 'required|url',
+            'webhook_url' => 'required|url:http,https',
             'webhook_method' => 'required|in:GET,POST,PUT,PATCH',
             'provider' => 'nullable|string|in:zapier,make',
             'is_enabled' => 'boolean',
