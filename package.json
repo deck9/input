@@ -4,7 +4,7 @@
     "private": true,
     "license": "GNU Affero General Public License v3.0",
     "engines": {
-        "node": ">= 16 <=18"
+        "node": ">=22"
     },
     "scripts": {
         "lint": "eslint --ext .js,.ts,.vue resources/js",

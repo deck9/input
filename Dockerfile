@@ -66,7 +66,7 @@ USER nobody
 # ---
 
 # Built JS and CSS are the same for every platform: build them once, natively
-FROM --platform=$BUILDPLATFORM mirror.gcr.io/library/node:18-alpine AS asset_builder
+FROM --platform=$BUILDPLATFORM mirror.gcr.io/library/node:22-alpine AS asset_builder
 WORKDIR /var/www/html
 ENV NODE_ENV=production
 

@@ -6,7 +6,7 @@ This folder contains the documentation for INPUT, built using [VitePress](https:
 
 ### Prerequisites
 
--   Node.js 18 (see `mise.toml`)
+-   Node.js 22 (see `mise.toml`)
 -   npm
 
 ### Installation
