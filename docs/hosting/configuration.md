@@ -25,29 +25,11 @@ The container runs the database migrations on every start. After an update, ther
 
 Webhooks, submission notification mails and form preview images run as jobs.
 
-With `QUEUE_CONNECTION=sync` (the default), each job runs right away, inside the request that starts it. This needs no extra setup.
+The image runs a queue worker next to the scheduler, so jobs run in the background and a submit doesn't wait for them. You don't need a separate worker container.
 
-To run jobs in the background, set `QUEUE_CONNECTION=redis` and start a queue worker. The image does not run a worker by itself. Add a second service with the same image to your `docker-compose.yml`:
+With `QUEUE_CONNECTION=database` (the default in the image), jobs wait in your database until the worker picks them up. This needs no extra setup. If you run Redis, as in the [Docker Compose setup](/hosting/docker-compose), `QUEUE_CONNECTION=redis` works too.
 
-```yaml
-  worker:
-    image: ghcr.io/deck9/input:main
-    container_name: input-worker
-    depends_on:
-      - input
-    env_file: .env
-    entrypoint: ["php", "/var/www/html/artisan", "queue:work"]
-    volumes:
-      - input-data:/var/www/html/storage
-    # the image's health check pings the web server, which the worker doesn't run
-    healthcheck:
-      disable: true
-    restart: unless-stopped
-```
-
-::: warning
-With `QUEUE_CONNECTION=redis` and no worker, webhooks and notification mails are never sent.
-:::
+With `QUEUE_CONNECTION=sync`, each job runs inside the request that starts it: a slow webhook receiver makes the submit wait, and a failed webhook is not tried again.
 
 Failed jobs are stored in the `failed_jobs` table. To retry them:
 
