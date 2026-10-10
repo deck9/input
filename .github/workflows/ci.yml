@@ -7,6 +7,16 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - db: mysql
+            database: input
+          # most Docker installs run on SQLite
+          - db: sqlite
+            database: database/database.sqlite
+
     services:
       mariadb.test:
         image: "mirror.gcr.io/library/mariadb:10"
@@ -69,11 +79,12 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PestPHP
         env:
+          DB_CONNECTION: ${{ matrix.db }}
           DB_PORT: 3306
           DB_HOST: 127.0.0.1
           DB_USERNAME: sail
           DB_PASSWORD: password
-          DB_DATABASE: input
+          DB_DATABASE: ${{ matrix.database }}
         run: vendor/bin/pest
 
   browser-tests:
