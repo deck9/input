@@ -9,6 +9,7 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Added
 
 -   **Upgrade step:** back up `APP_KEY` together with your database: answers are stored encrypted with it, and a new key can't read them. New hosting docs cover the database, queue worker, scheduler, mail, reverse proxy and backups. (#203)
+-   Fill in text questions from the link: a URL parameter named like a question's Identifier, such as `?email=ada@example.com`, prefills that answer, and the visitor can still change it. The embedding docs show how this works with links, iframes and the native embed. (#208)
 
 ### Changed
 
