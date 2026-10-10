@@ -4,6 +4,7 @@ import { effectScope, nextTick } from 'vue';
 import { useConversation } from './conversation';
 import * as logicHelpers from './helpers/logic';
 import { callSubmitForm } from '@/api/conversation';
+import handler from '@/api/handler';
 import { useBeforeUnload } from '@/utils/useBeforeUnload';
 
 // Mock the logic helpers
@@ -19,6 +20,10 @@ vi.mock('./helpers/logic', async (importOriginal) => {
 vi.mock('@/api/conversation', async (importOriginal) => ({
   ...(await importOriginal() as any),
   callSubmitForm: vi.fn().mockResolvedValue({}),
+}));
+
+vi.mock('@/utils/useRoutes', () => ({
+  useRoutes: async () => ({ route: () => '/upload' }),
 }));
 
 const makeBlocks = (...ids: string[]): PublicFormBlockModel[] =>
@@ -282,6 +287,72 @@ describe('Conversation Store', () => {
 
       expect(callSubmitForm).toHaveBeenCalledTimes(1);
       expect(store.isSubmitted).toBe(true);
+    });
+
+    describe('retry with files', () => {
+      const [fileA, fileB] = [new File(['a'], 'a.txt'), new File(['b'], 'b.txt')];
+      const uploadedNames = (upload) =>
+        upload.mock.calls.map(([, formData]) => (formData.get('file') as File).name);
+
+      const setupWithFiles = () => {
+        const store = setupLastBlock();
+        vi.spyOn(console, 'warn').mockImplementation(() => {});
+        store.payload = { block1: { payload: [fileA, fileB], actionId: 'files' } };
+
+        return store;
+      };
+
+      it('uploads each file once when the last call fails', async () => {
+        const store = setupWithFiles();
+        const upload = vi.spyOn(handler, 'post').mockResolvedValue({});
+        vi.mocked(callSubmitForm)
+          .mockResolvedValueOnce({} as any)
+          .mockRejectedValueOnce(new Error('Network Error'));
+
+        await store.next();
+        await store.next();
+
+        expect(store.isSubmitted).toBe(true);
+        expect(uploadedNames(upload)).toEqual(['a.txt', 'b.txt']);
+      });
+
+      it('uploads only the failed file again', async () => {
+        const store = setupWithFiles();
+        const upload = vi
+          .spyOn(handler, 'post')
+          .mockResolvedValueOnce({})
+          .mockRejectedValueOnce(new Error('Network Error'))
+          .mockResolvedValue({});
+
+        await store.next();
+        await store.next();
+
+        expect(store.isSubmitted).toBe(true);
+        expect(uploadedNames(upload)).toEqual(['a.txt', 'b.txt', 'b.txt']);
+      });
+
+      it('keeps the spinner until every upload has finished', async () => {
+        const store = setupWithFiles();
+        let finishUpload = () => {};
+        vi.spyOn(handler, 'post')
+          .mockRejectedValueOnce(new Error('Network Error'))
+          .mockReturnValueOnce(
+            new Promise((resolve) => {
+              finishUpload = () => resolve({});
+            }),
+          );
+
+        const submit = store.next();
+        await new Promise((resolve) => setTimeout(resolve));
+
+        expect(store.isProcessing).toBe(true);
+
+        finishUpload();
+        await submit;
+
+        expect(store.isProcessing).toBe(false);
+        expect(store.submitFailed).toBe(true);
+      });
     });
   });
 });

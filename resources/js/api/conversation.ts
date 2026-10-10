@@ -101,6 +101,7 @@ export async function callUploadFiles(
     token: string,
     payload: FormSubmitPayload,
     progressCallback: (file, axiosProgressEvent: AxiosProgressEvent) => void,
+    uploadedCallback: (file: File) => void,
 ): Promise<AxiosResponse[]> {
     const { route } = await useRoutes();
 
@@ -126,20 +127,28 @@ export async function callUploadFiles(
             formData.append("actionId", value.actionId);
 
             requests.push(
-                handler.post(resolvedRoute, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    onUploadProgress: (progressEvent) => {
-                        progressCallback(
-                            `${value.actionId}[${index}]`,
-                            progressEvent,
-                        );
-                    },
-                }),
+                handler
+                    .post(resolvedRoute, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        onUploadProgress: (progressEvent) => {
+                            progressCallback(
+                                `${value.actionId}[${index}]`,
+                                progressEvent,
+                            );
+                        },
+                    })
+                    .then((response) => {
+                        uploadedCallback(file);
+                        return response;
+                    }),
             );
         });
     });
+
+    // let every upload finish before failing, so a retry knows what is stored
+    await Promise.allSettled(requests);
 
     return await Promise.all(requests);
 }

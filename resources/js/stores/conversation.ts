@@ -23,6 +23,7 @@ type ConversationStore = {
     submitFailed: boolean;
     isInputMode: boolean;
     uploads: FormFileUploads;
+    uploadedFiles: File[];
 };
 
 export const useConversation = defineStore("form", {
@@ -39,6 +40,7 @@ export const useConversation = defineStore("form", {
             submitFailed: false,
             isInputMode: false,
             uploads: {},
+            uploadedFiles: [],
         };
     },
 
@@ -219,7 +221,14 @@ export const useConversation = defineStore("form", {
                     Array.isArray(blockPayload.payload) &&
                     blockPayload.payload.some((f) => f instanceof File)
                 ) {
-                    uploads[block] = blockPayload;
+                    // skip files an earlier, failed submit already stored
+                    const files = blockPayload.payload.filter(
+                        (f) => !state.uploadedFiles.includes(f),
+                    );
+
+                    if (files.length) {
+                        uploads[block] = { ...blockPayload, payload: files };
+                    }
                 }
             }
 
@@ -433,6 +442,7 @@ export const useConversation = defineStore("form", {
                                         );
                                     }
                                 },
+                                (file) => this.uploadedFiles.push(file),
                             );
 
                             await callSubmitForm(
