@@ -13,8 +13,8 @@
       <span class="font-bold">HTTP {{ webhook.status }}</span>
       <pre
         class="mt-1 max-w-md border-t border-dashed border-grey-700 pt-1 font-mono text-xs"
-        v-html="prettyPrintedResponse"
-      ></pre>
+        >{{ prettyPrintedResponse }}</pre
+      >
     </template>
   </VTooltip>
 </template>
