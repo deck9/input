@@ -41,6 +41,32 @@ export function callCreateForm(
     });
 }
 
+export function callCreateFormFromTemplate(
+    template: File,
+    name: string,
+): Promise<AxiosResponse<FormModel>> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const requestData = new FormData();
+            requestData.append("file", template);
+
+            // no name: the server picks its default
+            if (name) {
+                requestData.append("name", name);
+            }
+
+            const response = await handler.post(
+                window.route("api.forms.create-from-template"),
+                requestData,
+            );
+
+            resolve(response as AxiosResponse<FormModel>);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export function callGetForm(
     form: FormModel,
 ): Promise<AxiosResponse<FormModel>> {
