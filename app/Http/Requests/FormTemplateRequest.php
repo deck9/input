@@ -54,6 +54,8 @@ class FormTemplateRequest extends FormRequest
             'blocks' => 'present|array',
             'blocks.*.id' => 'nullable|string',
             'blocks.*.type' => ['required', Rule::enum(FormBlockType::class)],
+            // same as the sequence API, a group stays at the top level
+            'blocks.*.parent_block' => 'prohibited_if:blocks.*.type,'.FormBlockType::group->value,
             'is_auto_delete_enabled' => 'boolean',
             'data_retention_days' => [Rule::excludeIf(! $autoDelete), 'required_with:is_auto_delete_enabled', 'integer', 'min:1'],
             ...$logicRules->all(),
@@ -65,6 +67,8 @@ class FormTemplateRequest extends FormRequest
             'instagram' => $link,
             'github' => $link,
             'linkedin' => $link,
+        ], [
+            'blocks.*.parent_block.prohibited_if' => 'A group can\'t go into another group.',
         ])->validate();
 
         // same group check as FormBlockLogicRequest, children point to their group by its template id

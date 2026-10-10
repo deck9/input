@@ -36,7 +36,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
 -   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and phone numbers stay as they are. (#217)
--   The API refuses to put a group inside a group or a question into another form's group, so no questions disappear from the public form. The API and template import refuse a show/hide rule on a group that uses a question inside that group, which sent respondents back to the start. (#220)
+-   The API and template import refuse a group inside a group, and the API refuses a question moved into another form's group, so no questions disappear from the public form. Both also refuse a show/hide rule on a group that uses a question inside that group, which sent respondents back to the start. (#220)
 
 ### Security
 

@@ -486,6 +486,10 @@ test('a refused template creates no form', function (array $data, string $error)
     'unknown question type' => [['template' => json_encode(['blocks' => [['type' => 'input-magic', 'message' => 'Hi', 'sequence' => 0]]])], 'blocks.0.type'],
     'a link that is not http(s)' => [['template' => json_encode(['blocks' => [], 'cta_link' => 'javascript:alert(1)'])], 'cta_link'],
     'auto delete below one day' => [['template' => json_encode(['blocks' => [], 'is_auto_delete_enabled' => true, 'data_retention_days' => 0])], 'data_retention_days'],
+    'a group inside a group' => [['template' => json_encode(['blocks' => [
+        ['id' => 'g', 'type' => 'group', 'message' => 'Outer', 'sequence' => 0],
+        ['id' => 'h', 'type' => 'group', 'message' => 'Inner', 'sequence' => 1, 'parent_block' => 'g'],
+    ]])], 'blocks.1.parent_block'],
 ]);
 
 test('a template that fails halfway creates no form', function () {
@@ -553,4 +557,20 @@ test('template import rejects a rule on a group that uses a question inside that
         ->assertOk();
 
     expect($form->fresh()->formBlocks->firstWhere('type', FormBlockType::group)->formBlockLogics)->toHaveCount(1);
+});
+
+test('template import rejects a group inside a group and keeps the form', function () {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'g', 'type' => 'group', 'message' => 'Outer', 'sequence' => 0],
+            ['id' => 'h', 'type' => 'group', 'message' => 'Inner', 'sequence' => 1, 'parent_block' => 'g'],
+            ['id' => 'c', 'type' => 'input-short', 'message' => 'Lost', 'sequence' => 2, 'parent_block' => 'h'],
+        ]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['blocks.1.parent_block' => 'A group can\'t go into another group.']);
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
 });
