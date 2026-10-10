@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\ForceDeleteForms;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\Authenticated;
@@ -28,7 +29,7 @@ class TrashedFormController extends Controller
             return abort(422, 'You need to put the form into trash before deleting it permanently.');
         }
 
-        $model->forceDelete();
+        app(ForceDeleteForms::class)->delete($model->newCollection([$model]));
 
         return response()->json([], 200);
     }
