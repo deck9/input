@@ -158,6 +158,17 @@ test('removing the image on a duplicated form keeps the original form\'s image',
     expect($original->fresh()->hasImage($type))->toBeTrue();
 })->with(['avatar', 'background']);
 
+test('removing an image whose file is already gone clears its path', function (string $type) {
+    Storage::fake();
+    $form = Form::factory()->create([$type.'_path' => 'form/gone.png']);
+
+    $this->actingAs($form->user)
+        ->json('DELETE', route('api.forms.images.delete', $form->uuid), ['type' => $type])
+        ->assertStatus(200);
+
+    expect($form->fresh()->{$type.'_path'})->toBeNull();
+})->with(['avatar', 'background']);
+
 test('replacing or removing an image no other form uses deletes it and its resized copies', function (string $type) {
     Storage::fake();
     $form = Form::factory()->create([$type.'_path' => 'form/old.png']);
