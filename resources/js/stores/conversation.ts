@@ -18,6 +18,8 @@ type ConversationStore = {
     storyboard: PublicFormBlockModel[] | null;
     queue: PublicFormBlockModel[] | null;
     current: PublicFormBlockModel["id"] | null;
+    // questions passed on the way to the current one, jumps included
+    path: PublicFormBlockModel["id"][];
     payload: FormSubmitPayload;
     isProcessing: boolean;
     isSubmitted: boolean;
@@ -35,6 +37,7 @@ export const useConversation = defineStore("form", {
             storyboard: null,
             queue: null,
             current: null,
+            path: [],
             payload: {},
             isProcessing: false,
             isSubmitted: false,
@@ -67,20 +70,32 @@ export const useConversation = defineStore("form", {
                 return [];
             }
 
-            const hiddenGroups = state.queue
-                .filter((block) => block.type === "group")
-                .filter((group) => !isBlockVisible(group, state.payload))
-                .map((group) => group.id);
+            // rules read only answers of shown questions above them, so a hidden answer counts as none
+            // and a question can't hide itself
+            const answers: FormSubmitPayload = {};
+            const hidden: string[] = [];
+            const shown: PublicFormBlockModel[] = [];
 
-            return state.queue
-                .filter((block) => isBlockVisible(block, state.payload))
+            for (const block of state.queue) {
                 // a question in a hidden group is hidden too
-                .filter(
-                    (block) =>
-                        !block.parent_block ||
-                        !hiddenGroups.includes(block.parent_block),
-                )
-                .filter((block) => block.type !== "group");
+                if (
+                    (block.parent_block && hidden.includes(block.parent_block)) ||
+                    !isBlockVisible(block, answers)
+                ) {
+                    hidden.push(block.id);
+                    continue;
+                }
+
+                if (state.payload[block.id]) {
+                    answers[block.id] = state.payload[block.id];
+                }
+
+                if (block.type !== "group") {
+                    shown.push(block);
+                }
+            }
+
+            return shown;
         },
 
         currentBlockIndex(state): number {
@@ -118,13 +133,16 @@ export const useConversation = defineStore("form", {
             return null;
         },
 
-        // answers of the questions shown now; a hidden answer stays in payload in case its question shows again
+        // answers of the shown questions on the path to the current one; any other answer stays in payload
+        // in case the respondent goes back and its question is on the path again
         shownPayload(state): FormSubmitPayload {
             const shownIds = this.processedQueue.map((block) => block.id);
+            const pathIds = [...state.path, state.current];
 
             return Object.fromEntries(
-                Object.entries(state.payload).filter(([block]) =>
-                    shownIds.includes(block),
+                Object.entries(state.payload).filter(
+                    ([block]) =>
+                        shownIds.includes(block) && pathIds.includes(block),
                 ),
             );
         },
@@ -386,6 +404,10 @@ export const useConversation = defineStore("form", {
 
         goToIndex(index: number) {
             if (index >= 0 && index < this.processedQueue.length) {
+                if (this.current) {
+                    this.path.push(this.current);
+                }
+
                 this.current = this.processedQueue[index].id;
             } else {
                 console.warn("Index out of bounds", index);
@@ -410,7 +432,16 @@ export const useConversation = defineStore("form", {
                 return;
             }
 
-            this.goToIndex(this.currentBlockIndex - 1);
+            // back along the path, past questions a backward jump has hidden since
+            let previous = this.path.pop();
+
+            while (previous && this.findBlockIndex(previous) === -1) {
+                previous = this.path.pop();
+            }
+
+            if (previous) {
+                this.current = previous;
+            }
         },
 
         /**
@@ -423,7 +454,7 @@ export const useConversation = defineStore("form", {
             }
 
             const gotoAction = this.currentBlock
-                ? evaluateGotoLogic(this.currentBlock, this.payload)
+                ? evaluateGotoLogic(this.currentBlock, this.shownPayload)
                 : null;
 
             if (gotoAction && gotoAction.target) {

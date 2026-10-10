@@ -41,14 +41,25 @@ const makeBlocks = (...ids: string[]): PublicFormBlockModel[] =>
     logics: undefined,
   }));
 
-const rule = (action: 'show' | 'hide', value: string): FormBlockLogic[] => [{
+const rule = (action: 'show' | 'hide', value: string, source = 'q0'): FormBlockLogic[] => [{
   form_block_id: 1,
   name: 'Rule',
   action,
   evaluate: 'before',
   action_payload: null,
-  conditions: [{ source: 'q0', operator: 'equals', value, chainOperator: 'and' }],
+  conditions: [{ source, operator: 'equals', value, chainOperator: 'and' }],
 }];
+
+const jump = (source: string, value: string, target: string): FormBlockLogic[] => [{
+  form_block_id: 1,
+  name: 'Jump',
+  action: 'goto',
+  evaluate: 'after',
+  action_payload: target,
+  conditions: [{ source, operator: 'equals', value, chainOperator: 'and' }],
+}];
+
+const sentAnswers = () => vi.mocked(callSubmitForm).mock.calls[0][2] as FormSubmitPayload;
 
 describe('Conversation Store', () => {
   beforeEach(() => {
@@ -354,14 +365,14 @@ describe('Conversation Store', () => {
 
       store.queue = createFlatQueue([q0, q1, group, q2, q3]);
       store.payload = payload;
+      // the respondent went through every question
+      store.path = ['q0', 'q1', 'q2'];
       store.current = 'q3';
       store.form = { uuid: 'form' } as PublicFormModel;
       store.session = { token: 'session' } as FormSessionModel;
 
       return store;
     };
-
-    const sentAnswers = () => vi.mocked(callSubmitForm).mock.calls[0][2] as FormSubmitPayload;
 
     it('leaves out the answer of a question a rule hides', async () => {
       await setupForm(answers('a')).next();
@@ -415,12 +426,154 @@ describe('Conversation Store', () => {
     });
   });
 
+  describe('answers on the path the respondent took', () => {
+    beforeEach(async () => {
+      const actual = await vi.importActual<typeof logicHelpers>('./helpers/logic');
+      vi.mocked(logicHelpers.isBlockVisible).mockImplementation(actual.isBlockVisible);
+      vi.mocked(logicHelpers.evaluateGotoLogic).mockImplementation(actual.evaluateGotoLogic);
+    });
+
+    afterEach(() => {
+      vi.mocked(logicHelpers.isBlockVisible).mockReturnValue(true);
+      vi.mocked(logicHelpers.evaluateGotoLogic).mockReset();
+    });
+
+    const shownIds = (store: ReturnType<typeof useConversation>) =>
+      store.processedQueue.map((block) => block.id);
+
+    it('lets a rule on a hidden question act as if it had no answer', () => {
+      const store = useConversation();
+      const [q0, q1, q2] = makeBlocks('q0', 'q1', 'q2');
+      // q1 hides when q0 is "a", q2 shows when q1 is "yes"
+      q1.logics = rule('hide', 'a');
+      q2.logics = rule('show', 'yes', 'q1');
+      store.queue = [q0, q1, q2];
+      store.payload = { q0: { payload: 'a', actionId: 'a0' }, q1: { payload: 'yes', actionId: 'a1' } };
+
+      expect(shownIds(store)).toEqual(['q0']);
+    });
+
+    it('lets a jump on a hidden question act as if it had no answer', async () => {
+      const store = useConversation();
+      const [q0, q1, q2, q3, q4] = makeBlocks('q0', 'q1', 'q2', 'q3', 'q4');
+      // q1 hides when q0 is "a", q2 jumps to q4 when q1 is "yes"
+      q1.logics = rule('hide', 'a');
+      q2.logics = jump('q1', 'yes', 'q4');
+      store.queue = [q0, q1, q2, q3, q4];
+      store.payload = { q0: { payload: 'a', actionId: 'a0' }, q1: { payload: 'yes', actionId: 'a1' } };
+      store.current = 'q2';
+
+      await store.next();
+
+      expect(store.current).toBe('q3');
+    });
+
+    it('keeps a question shown when its own answer would hide it', () => {
+      const store = useConversation();
+      const [q0, q1] = makeBlocks('q0', 'q1');
+      q1.logics = rule('hide', 'x', 'q1');
+      store.queue = [q0, q1];
+      store.payload = { q1: { payload: 'x', actionId: 'a1' } };
+
+      expect(shownIds(store)).toEqual(['q0', 'q1']);
+    });
+
+    // q1, q2, q3; each question can be prefilled by its id
+    const startForm = async (q1Logics: FormBlockLogic[] | undefined, params: Record<string, string> = {}) => {
+      const store = useConversation();
+      const blocks = makeBlocks('q1', 'q2', 'q3');
+      blocks.forEach((block) => {
+        block.title = block.id;
+        block.interactions = [{ id: `a-${block.id}` } as PublicFormBlockInteractionModel];
+      });
+      blocks[0].logics = q1Logics;
+      vi.mocked(callGetFormStoryboard).mockResolvedValue({ data: { blocks } } as any);
+
+      await store.initForm({ uuid: 'form' } as PublicFormModel, params);
+      store.session = { token: 'session' } as FormSessionModel;
+
+      return store;
+    };
+
+    const skipQ2 = jump('q1', 'skip', 'q3');
+
+    const type = (store: ReturnType<typeof useConversation>, value: string) =>
+      store.setResponse(store.currentBlock!.interactions[0], value);
+
+    // answers q2, goes back to q1 and jumps over q2
+    const answerThenSkipQ2 = async (store: ReturnType<typeof useConversation>) => {
+      type(store, 'stay');
+      await store.next();
+      type(store, 'two');
+      store.back();
+      type(store, 'skip');
+      await store.next();
+    };
+
+    it('leaves out a typed answer of a question a jump skipped, but keeps it', async () => {
+      const store = await startForm(skipQ2);
+      await answerThenSkipQ2(store);
+
+      expect(store.current).toBe('q3');
+
+      await store.next();
+
+      expect(sentAnswers()).toEqual({ q1: { payload: 'skip', actionId: 'a-q1' } });
+      expect(store.payload.q2).toEqual({ payload: 'two', actionId: 'a-q2' });
+    });
+
+    it('leaves out a prefilled answer of a question a jump skipped', async () => {
+      const store = await startForm(skipQ2, { q2: 'prefilled' });
+      type(store, 'skip');
+      await store.next();
+      await store.next();
+
+      expect(sentAnswers()).toEqual({ q1: { payload: 'skip', actionId: 'a-q1' } });
+      expect(store.payload.q2).toEqual({ payload: 'prefilled', actionId: 'a-q2' });
+    });
+
+    it('goes back along the path and shows the skipped answer again', async () => {
+      const store = await startForm(skipQ2);
+      await answerThenSkipQ2(store);
+
+      store.back();
+
+      expect(store.current).toBe('q1');
+
+      type(store, 'stay');
+      await store.next();
+
+      expect(store.currentPayload).toEqual({ payload: 'two', actionId: 'a-q2' });
+
+      await store.next();
+      await store.next();
+
+      expect(Object.keys(sentAnswers())).toEqual(['q1', 'q2']);
+    });
+
+    it('sends every answer of a form without rules or jumps', async () => {
+      const store = await startForm(undefined);
+
+      for (const value of ['one', 'two', 'three']) {
+        type(store, value);
+        await store.next();
+      }
+
+      expect(sentAnswers()).toEqual({
+        q1: { payload: 'one', actionId: 'a-q1' },
+        q2: { payload: 'two', actionId: 'a-q2' },
+        q3: { payload: 'three', actionId: 'a-q3' },
+      });
+    });
+  });
+
   describe('submit on the last block', () => {
     const setupLastBlock = () => {
       const store = useConversation();
 
       // only answers of questions in the queue are sent
       store.queue = makeBlocks('block1');
+      store.current = 'block1';
       vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(makeBlocks('block1')[0]);
       vi.spyOn(store, 'isLastBlock', 'get').mockReturnValue(true);
       vi.mocked(logicHelpers.evaluateGotoLogic).mockReturnValue(null);
