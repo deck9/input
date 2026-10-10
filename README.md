@@ -88,89 +88,11 @@ sail composer {args} # use composer
 
 ## Production Deployment
 
-### Quick Start
+Input runs from the Docker image `ghcr.io/deck9/input`. The guides are in `docs/`:
 
-Please copy the `.env.example` file from this repository and fill in the missing values. To generate your `APP_KEY` you can use the following command in your terminal:
-
-```bash
-echo -n 'base64:'; openssl rand -base64 32
-```
-
-Save the generated key in the `.env` file and run the following commands to start the container:
-
-```bash
-# Create Docker Volume
-docker volume create input-data
-```
-
-```bash
-# Run the container using port 8080 on the host
-docker run -d -p 8080:8080 --name input \
- -v input-data:/var/www/html/storage \
- --env-file .env \
- ghcr.io/deck9/input:main
-
-```
-
-### Docker Compose
-
-You can also use Docker Compose to run the application. Please copy the `.env.example` file from this repository and fill in the missing values. To generate your `APP_KEY` you can use the following command in your terminal:
-
-```bash
-echo -n 'base64:'; openssl rand -base64 32
-```
-
-```docker-compose
-version: '3.2'
-services:
-    input:
-      image: ghcr.io/deck9/input:main
-      volumes:
-        - input-data:/var/www/html/storage
-      ports:
-        - 8080:8080
-      restart: unless-stopped
-      environment:
-        - APP_URL="https://<hostname>:8080"
-        - APP_KEY="<your-app-key>"
-        - DB_CONNECTION="sqlite"
-        - SESSION_DRIVER="file"
-        - CACHE_DRIVER="file"
-
-volumes:
-  input-data:
-```
-
-### Behind a Proxy
-
-Make sure to set the `APP_URL` env to the domain you want to use for your proxy.
-
-Also make sure that the proxy is configured to pass forward important request information like the scheme, host and IP.
-
-```nginx
-location / {
-    proxy_set_header Connection "";
-    proxy_set_header Host $http_host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Frame-Options SAMEORIGIN;
-    proxy_http_version 1.1;
-
-    # Pass the request to the address of the docker container
-    proxy_pass http://127.0.0.1:8080;
-}
-```
-
-### With MySQL
-
-To use MySQL as database, you need to set the following environment variables in your `.env` file:
-
-```dotEnv
-# Database Config
-DB_CONNECTION=mysql
-DB_DATABASE=input
-DB_HOST=<MySQL-Host>
-DB_USERNAME=<MySQL-User>
-DB_PASSWORD=<MySQL-Password>
-```
+-   [Quick Start](docs/quick-start.md): one container with SQLite
+-   [Docker Compose for Production](docs/hosting/docker-compose.md): MariaDB, Redis and S3 storage
+-   [Configuration](docs/hosting/configuration.md): database, queue worker, scheduler and mail
+-   [Proxy Setup / TLS](docs/hosting/proxy-setup.md): Nginx, Caddy, allowed host and trusted proxies
+-   [Backups and Updates](docs/hosting/backups.md)
+-   [Feature Limitations](docs/hosting/limitations.md)
