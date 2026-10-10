@@ -19,6 +19,7 @@ ENV APP_URL=http://localhost:8080
 ENV DB_CONNECTION=sqlite
 ENV SESSION_DRIVER=file
 ENV CACHE_DRIVER=file
+ENV QUEUE_CONNECTION=database
 ENV LOG_CHANNEL=stderr
 ENV MAIL_MAILER=log
 
@@ -55,9 +56,9 @@ USER root
 # Remove Composer Cache & Script since we do not need it any more
 RUN rm -rf /root/.composer /usr/bin/composer
 
-# Copy Supervisor Config for Scheduler
-COPY ./scripts/scheduler.conf /tmp/scheduler.conf
-RUN cat /tmp/scheduler.conf >> /etc/supervisor/conf.d/supervisord.conf && rm -f /tmp/scheduler.conf
+# Copy Supervisor Config for Scheduler and Queue Worker
+COPY ./scripts/scheduler.conf ./scripts/queue-worker.conf /tmp/
+RUN cat /tmp/scheduler.conf /tmp/queue-worker.conf >> /etc/supervisor/conf.d/supervisord.conf && rm -f /tmp/scheduler.conf /tmp/queue-worker.conf
 
 USER nobody
 
