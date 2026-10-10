@@ -125,3 +125,59 @@ test('can_upload_a_form_background_image', function () {
     $this->assertNull($form->background_path);
     Storage::assertMissing($form->background_path);
 });
+
+test('replacing the image on a duplicated form keeps the original form\'s image', function (string $type) {
+    Storage::fake();
+    $original = Form::factory()->create([$type.'_path' => 'original/image.png']);
+    Storage::put('original/image.png', 'image');
+    $copy = $original->duplicate('Copy');
+
+    $this->actingAs($copy->user)
+        ->json('POST', route('api.forms.images.store', $copy->uuid), [
+            'image' => UploadedFile::fake()->image('new.png'),
+            'type' => $type,
+        ])
+        ->assertStatus(201);
+
+    Storage::assertExists('original/image.png');
+    expect($original->fresh()->hasImage($type))->toBeTrue();
+})->with(['avatar', 'background']);
+
+test('removing the image on a duplicated form keeps the original form\'s image', function (string $type) {
+    Storage::fake();
+    $original = Form::factory()->create([$type.'_path' => 'original/image.png']);
+    Storage::put('original/image.png', 'image');
+    $copy = $original->duplicate('Copy');
+
+    $this->actingAs($copy->user)
+        ->json('DELETE', route('api.forms.images.delete', $copy->uuid), ['type' => $type])
+        ->assertStatus(200);
+
+    expect($copy->fresh()->{$type.'_path'})->toBeNull();
+    Storage::assertExists('original/image.png');
+    expect($original->fresh()->hasImage($type))->toBeTrue();
+})->with(['avatar', 'background']);
+
+test('replacing or removing an image no other form uses deletes it and its resized copies', function (string $type) {
+    Storage::fake();
+    $form = Form::factory()->create([$type.'_path' => 'form/old.png']);
+    Storage::put('form/old.png', 'image');
+    Storage::put('.cache/form/old.png/resized', 'image');
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.images.store', $form->uuid), [
+            'image' => UploadedFile::fake()->image('new.png'),
+            'type' => $type,
+        ])
+        ->assertStatus(201);
+
+    Storage::assertMissing(['form/old.png', '.cache/form/old.png']);
+
+    $newPath = $form->fresh()->{$type.'_path'};
+    Storage::assertExists($newPath);
+
+    $this->json('DELETE', route('api.forms.images.delete', $form->uuid), ['type' => $type])
+        ->assertStatus(200);
+
+    Storage::assertMissing($newPath);
+})->with(['avatar', 'background']);
