@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\FormSessionCompletedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
+use App\Rules\MaxSize;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
@@ -38,7 +39,9 @@ class FormSubmitController extends Controller
         $request->validate([
             'token' => 'required|string',
             'is_uploading' => 'boolean',
-            'payload' => 'array|nullable',
+            'payload' => 'array|nullable|max:'.$form->formBlocks()->count(),
+            // an answer is stored encrypted in a TEXT column (64 KB), encryption almost doubles it
+            'payload.*' => [new MaxSize(30000)],
         ]);
 
         $session = $form->formSessions()

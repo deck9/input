@@ -311,3 +311,62 @@ test('answers for a question of another form are rejected and not stored', funct
     $this->assertCount(0, FormSessionResponse::all());
     $this->assertNull($session->fresh()->getRawOriginal('is_completed'));
 })->with('templates');
+
+test('session parameters over the size cap are rejected', function () {
+    $form = Form::factory()->create();
+
+    // {"ref":"…"} is 8,193 bytes as JSON
+    $this->json('POST', route('api.public.forms.session.create', ['form' => $form->uuid]), [
+        'params' => ['ref' => str_repeat('a', 8183)],
+    ])->assertStatus(422)->assertJsonValidationErrors('params');
+
+    expect(FormSession::count())->toBe(0);
+});
+
+test('session parameters up to the size cap are accepted', function (array $params) {
+    $form = Form::factory()->create();
+
+    $this->json('POST', route('api.public.forms.session.create', ['form' => $form->uuid]), [
+        'params' => $params,
+    ])->assertCreated();
+
+    expect(FormSession::count())->toBe(1);
+})->with([
+    // 8,192 bytes as JSON
+    'one long parameter' => [['ref' => str_repeat('a', 8182)]],
+    // 6,493 bytes as JSON, but 11,300 serialized
+    'many short parameters' => [collect(range(1, 600))->mapWithKeys(fn ($i) => ["p$i" => 'x'])->all()],
+]);
+
+test('an answer over the size cap is rejected and not stored', function ($template) {
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+    $block = $form->formBlocks[0];
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => $block->getSubmitPayload(str_repeat('a', 30000)),
+    ])->assertStatus(422)->assertJsonValidationErrors('payload.'.$block->uuid);
+
+    expect(FormSessionResponse::count())->toBe(0);
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => $block->getSubmitPayload(str_repeat('a', 29000)),
+    ])->assertOk();
+})->with('templates');
+
+test('more answers than the form has blocks are rejected', function ($template) {
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+    $payload = $form->formBlocks[0]->getSubmitPayload('froggy@mailfrog.com');
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => [...$payload, 'a' => [], 'b' => [], 'c' => [], 'd' => []],
+    ])->assertStatus(422)->assertJsonValidationErrors('payload');
+
+    expect(FormSessionResponse::count())->toBe(0);
+})->with('templates');
