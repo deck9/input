@@ -41,6 +41,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A webhook whose receiver is down or answers with a server error is tried up to 5 times in all, over about 1 hour 20 minutes. A webhook call stops after 10 seconds, a webhook URL must start with http:// or https://, and the webhook log shows a plain error text when the URL can't be reached. (#218)
 -   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
 -   A logo or background whose file is already gone, and shows as a broken image, can be removed again. (#219)
+-   The API and template import refuse a group inside a group, and a question in a group that belongs to another form or is missing from the template, so no questions disappear from the public form. Both also refuse a show/hide rule on a group that uses a question inside that group, which sent respondents back to the start. (#220)
 
 ### Security
 

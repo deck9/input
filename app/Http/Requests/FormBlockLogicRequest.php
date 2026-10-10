@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\FormBlockType;
+use App\Models\FormBlock;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class FormBlockLogicRequest extends FormRequest
 {
@@ -11,9 +14,12 @@ class FormBlockLogicRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $block = $this->route('block') ?? $this->route('logic')->formBlock;
+        return $this->user()->can('update', $this->block());
+    }
 
-        return $this->user()->can('update', $block);
+    protected function block(): FormBlock
+    {
+        return $this->route('block') ?? $this->route('logic')->formBlock;
     }
 
     /**
@@ -34,6 +40,26 @@ class FormBlockLogicRequest extends FormRequest
             'action_payload' => 'nullable|string',
             'evaluate' => 'required|string|in:before,after',
         ];
+    }
+
+    // like the editor: a rule on a group can't use the questions inside it
+    public function after(): array
+    {
+        return [function (Validator $validator) {
+            $block = $this->block();
+
+            if ($block->type !== FormBlockType::group) {
+                return;
+            }
+
+            $inside = FormBlock::where('parent_block', $block->uuid)->pluck('uuid');
+
+            foreach ((array) $this->input('conditions') as $pos => $condition) {
+                if ($inside->contains($condition['source'] ?? null)) {
+                    $validator->errors()->add("conditions.$pos.source", 'A rule on a group can only use questions outside that group.');
+                }
+            }
+        }];
     }
 
     public function messages()

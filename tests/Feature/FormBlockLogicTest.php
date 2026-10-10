@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\FormBlockType;
 use App\Models\FormBlock;
 use App\Models\FormBlockLogic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -66,3 +67,27 @@ test('can delete a logic rule', function () {
 
     $this->assertNull($logic->fresh());
 });
+
+test('a rule on a group can only use questions outside that group', function (string $method) {
+    $outside = FormBlock::factory()->create();
+    $group = FormBlock::factory()->for($outside->form)->create(['type' => FormBlockType::group]);
+    $inside = FormBlock::factory()->for($outside->form)->create(['parent_block' => $group->uuid]);
+    $logic = FormBlockLogic::factory()->for($group)->create(['name' => 'Old']);
+
+    $route = $method === 'create' ? route('api.logics.create', $group->id) : route('api.logics.update', $logic->id);
+    $rule = fn (FormBlock $source) => [
+        'name' => 'New',
+        'conditions' => [['source' => $source->uuid, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']],
+        'action' => 'hide',
+        'evaluate' => 'before',
+    ];
+
+    $this->actingAs($group->form->user)
+        ->json('post', $route, $rule($inside))
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('conditions.0.source');
+
+    expect($group->formBlockLogics()->pluck('name')->all())->toBe(['Old']);
+
+    $this->json('post', $route, $rule($outside))->assertSuccessful();
+})->with(['create', 'update']);

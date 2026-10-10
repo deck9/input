@@ -6,6 +6,7 @@ use App\Enums\FormBlockType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class FormTemplateRequest extends FormRequest
 {
@@ -53,6 +54,8 @@ class FormTemplateRequest extends FormRequest
             'blocks' => 'present|array',
             'blocks.*.id' => 'nullable|string',
             'blocks.*.type' => ['required', Rule::enum(FormBlockType::class)],
+            // same as the sequence API, a group stays at the top level
+            'blocks.*.parent_block' => 'prohibited_if:blocks.*.type,'.FormBlockType::group->value,
             'is_auto_delete_enabled' => 'boolean',
             'data_retention_days' => [Rule::excludeIf(! $autoDelete), 'required_with:is_auto_delete_enabled', 'integer', 'min:1'],
             ...$logicRules->all(),
@@ -64,7 +67,37 @@ class FormTemplateRequest extends FormRequest
             'instagram' => $link,
             'github' => $link,
             'linkedin' => $link,
+        ], [
+            'blocks.*.parent_block.prohibited_if' => 'A group can\'t go into another group.',
         ])->validate();
+
+        $blocks = collect($template['blocks']);
+
+        // the import only creates a block with a parent_block inside a top-level group (strict, so "" fails too, unlike Rule::in)
+        $topLevelGroups = $blocks->where('type', FormBlockType::group->value)->whereNull('parent_block')->pluck('id');
+
+        foreach ($blocks as $i => $block) {
+            if (isset($block['parent_block']) && ! $topLevelGroups->containsStrict($block['parent_block'])) {
+                throw ValidationException::withMessages([
+                    "blocks.$i.parent_block" => 'A question can only go into a top-level group of the template.',
+                ]);
+            }
+        }
+
+        // same group check as FormBlockLogicRequest, children point to their group by its template id
+        foreach ($blocks->where('type', FormBlockType::group->value)->whereNotNull('id') as $i => $group) {
+            $inside = $blocks->whereStrict('parent_block', $group['id'])->pluck('id');
+
+            foreach ($group['formBlockLogics'] ?? [] as $j => $logic) {
+                foreach ($logic['conditions'] as $k => $condition) {
+                    if ($inside->containsStrict($condition['source'])) {
+                        throw ValidationException::withMessages([
+                            "blocks.$i.formBlockLogics.$j.conditions.$k.source" => 'A rule on a group can only use questions outside that group.',
+                        ]);
+                    }
+                }
+            }
+        }
 
         return $template;
     }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\FormBlockType;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
 
@@ -21,8 +24,22 @@ class FormBlockSequenceController extends Controller
     {
         $this->authorize('update', $form);
 
+        $groups = $form->formBlocks->where('type', FormBlockType::group);
+
+        // like the editor: a block can only go into a top-level group of this form, a group stays at the top level
         $request->validate([
             'sequence' => 'required|array',
+            'sequence.*.id' => ['required', Rule::in($form->formBlocks->pluck('id'))],
+            'sequence.*.scope' => [
+                'present',
+                'nullable',
+                Rule::in($groups->whereNull('parent_block')->pluck('uuid')),
+                function ($attribute, $value, $fail) use ($request, $groups) {
+                    if ($groups->contains('id', $request->input(Str::replaceLast('scope', 'id', $attribute)))) {
+                        $fail('A group can\'t go into another group.');
+                    }
+                },
+            ],
         ]);
 
         foreach ($request->sequence as $pos => $item) {

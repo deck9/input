@@ -486,6 +486,10 @@ test('a refused template creates no form', function (array $data, string $error)
     'unknown question type' => [['template' => json_encode(['blocks' => [['type' => 'input-magic', 'message' => 'Hi', 'sequence' => 0]]])], 'blocks.0.type'],
     'a link that is not http(s)' => [['template' => json_encode(['blocks' => [], 'cta_link' => 'javascript:alert(1)'])], 'cta_link'],
     'auto delete below one day' => [['template' => json_encode(['blocks' => [], 'is_auto_delete_enabled' => true, 'data_retention_days' => 0])], 'data_retention_days'],
+    'a group inside a group' => [['template' => json_encode(['blocks' => [
+        ['id' => 'g', 'type' => 'group', 'message' => 'Outer', 'sequence' => 0],
+        ['id' => 'h', 'type' => 'group', 'message' => 'Inner', 'sequence' => 1, 'parent_block' => 'g'],
+    ]])], 'blocks.1.parent_block'],
 ]);
 
 test('a template that fails halfway creates no form', function () {
@@ -529,3 +533,65 @@ test('a form from a template refuses a name over 255 characters', function () {
 
     expect(Form::count())->toBe(0);
 });
+
+test('template import rejects a rule on a group that uses a question inside that group', function () {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+    $template = fn (string $source) => json_encode(['blocks' => [
+        ['id' => 'q', 'type' => 'input-short', 'message' => 'Outside', 'sequence' => 0],
+        ['id' => 'g', 'type' => 'group', 'message' => 'Group', 'sequence' => 1, 'formBlockLogics' => [
+            ['name' => 'Hide group', 'action' => 'hide', 'evaluate' => 'before', 'conditions' => [
+                ['source' => $source, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and'],
+            ]],
+        ]],
+        ['id' => 'c', 'type' => 'input-short', 'message' => 'Inside', 'sequence' => 2, 'parent_block' => 'g'],
+    ]]);
+
+    $this->actingAs($form->user)
+        ->postJson(route('api.forms.template-import', ['form' => $form->uuid]), ['template' => $template('c')])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('blocks.1.formBlockLogics.0.conditions.0.source');
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+
+    $this->postJson(route('api.forms.template-import', ['form' => $form->uuid]), ['template' => $template('q')])
+        ->assertOk();
+
+    expect($form->fresh()->formBlocks->firstWhere('type', FormBlockType::group)->formBlockLogics)->toHaveCount(1);
+});
+
+test('template import rejects a group inside a group and keeps the form', function () {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'g', 'type' => 'group', 'message' => 'Outer', 'sequence' => 0],
+            ['id' => 'h', 'type' => 'group', 'message' => 'Inner', 'sequence' => 1, 'parent_block' => 'g'],
+            ['id' => 'c', 'type' => 'input-short', 'message' => 'Lost', 'sequence' => 2, 'parent_block' => 'h'],
+        ]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['blocks.1.parent_block' => 'A group can\'t go into another group.']);
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+});
+
+test('template import rejects a parent_block that is not a top-level group of the template and keeps the form', function (string $type, string $parent) {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'q', 'type' => 'input-short', 'message' => 'Question', 'sequence' => 0],
+            ['id' => 'g', 'type' => 'group', 'message' => 'Group', 'sequence' => 1],
+            ['id' => 'c', 'type' => $type, 'message' => 'Lost', 'sequence' => 2, 'parent_block' => $parent],
+        ]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('blocks.2.parent_block');
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+})->with([
+    'a question' => ['input-short', 'q'],
+    'a missing block' => ['input-short', 'gone'],
+    'an empty id' => ['input-short', ''],
+    'a group with an empty id' => ['group', ''],
+]);
