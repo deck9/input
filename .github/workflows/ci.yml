@@ -5,6 +5,7 @@ on:
 
 jobs:
   tests:
+    name: tests (${{ matrix.db }})
     runs-on: ubuntu-latest
 
     strategy:
