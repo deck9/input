@@ -2,13 +2,10 @@
 
 use App\Models\Form;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
 test('user can publish a form', function () {
-    Event::fake();
-
     $form = Form::factory()->create(['published_at' => null]);
 
     $this->actingAs($form->user)
