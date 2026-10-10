@@ -1,6 +1,6 @@
 # Configuration
 
-Input reads its settings from environment variables. Pass them with `-e` or `--env-file` to `docker run`, or put them in the `.env` file of your [Docker Compose setup](/hosting/docker-compose). The full list is in [`.env.example`](https://github.com/deck9/input/blob/main/.env.example).
+Input reads its settings from environment variables. Pass them with `-e` or `--env-file` to `docker run`, or put them in the `.env` file of your [Docker Compose setup](/hosting/docker-compose). The common ones are in [`.env.example`](https://github.com/deck9/input/blob/main/.env.example).
 
 ## Database
 
