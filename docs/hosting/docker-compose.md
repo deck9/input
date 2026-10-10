@@ -126,7 +126,7 @@ docker compose up -d
 3. Create the storage bucket once:
 
 ```bash
-docker compose exec input php artisan tinker --execute='Storage::disk("minio")->getClient()->createBucket(["Bucket" => config("filesystems.disks.minio.bucket")])'
+docker compose exec -e HOME=/tmp input php artisan tinker --execute='Storage::disk("minio")->getClient()->createBucket(["Bucket" => config("filesystems.disks.minio.bucket")])'
 ```
 
 4. Put a reverse proxy with TLS in front of port 8080, see [Proxy Setup / TLS](/hosting/proxy-setup).
