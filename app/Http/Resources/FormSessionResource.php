@@ -14,7 +14,7 @@ class FormSessionResource extends JsonResource
      */
     public function toArray($request)
     {
-        $this->load('formSessionResponses.formBlock');
+        $this->loadMissing('formSessionResponses.formBlock');
 
         return [
             'id' => $this->id,

@@ -115,7 +115,7 @@ class FormBlock extends BaseModel
 
     public function getSessionCountAttribute()
     {
-        return $this->formSessionResponses()->selectRaw('COUNT(DISTINCT form_session_id) as count')->first()->count;
+        return $this->formSessionResponses()->distinct()->count('form_session_id');
     }
 
     public function getInteractionType(): ?FormBlockInteractionType
