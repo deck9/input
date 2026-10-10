@@ -2,7 +2,7 @@
 
 ## What to Back Up
 
-1. Your settings: the `.env` file or your `docker run` command. Keep `APP_KEY` safe. With a new key, everyone is logged out, and users with two-factor login can't sign in.
+1. Your settings: the `.env` file or your `docker run` command. Keep `APP_KEY` safe: answers are stored encrypted with it. Back it up with the database, and never change it on a running install. With a new key, saved answers can't be read, everyone is logged out, and users with two-factor login can't sign in.
 2. The database.
 3. Uploaded files and images.
 
