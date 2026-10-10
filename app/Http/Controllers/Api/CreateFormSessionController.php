@@ -22,7 +22,7 @@ class CreateFormSessionController extends Controller
     {
         $request->validate([
             // params come from the form link, and nginx stops URLs at 8 KB
-            'params' => ['array', 'nullable', new MaxSize(8192)],
+            'params' => ['array', 'nullable', new MaxSize(8192, json: true)],
         ]);
 
         $session = FormSession::create([

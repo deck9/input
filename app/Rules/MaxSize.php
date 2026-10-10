@@ -7,14 +7,17 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class MaxSize implements ValidationRule
 {
-    public function __construct(private int $bytes)
+    public function __construct(private int $bytes, private bool $json = false)
     {
     }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // measured serialized, the form an answer is encrypted in, so a cap maps to the stored size
-        if (strlen(serialize($value)) > $this->bytes) {
+        // measured the way the value is stored, so a cap maps to the stored size:
+        // answers are encrypted serialized, session params are cast to JSON
+        $stored = $this->json ? json_encode($value) : serialize($value);
+
+        if (strlen($stored) > $this->bytes) {
             $fail("The :attribute may not be larger than {$this->bytes} bytes.");
         }
     }
