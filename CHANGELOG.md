@@ -40,6 +40,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Webhooks send their custom headers again, such as `Authorization` or an API key, and saving a webhook in the editor keeps headers set through the API. (#218)
 -   A webhook whose receiver is down or answers with a server error is tried up to 5 times in all, over about 1 hour 20 minutes. A webhook call stops after 10 seconds, a webhook URL must start with http:// or https://, and the webhook log shows a plain error text when the URL can't be reached. (#218)
 -   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
+-   A logo or background whose file is already gone, and shows as a broken image, can be removed again. (#219)
 
 ### Security
 
