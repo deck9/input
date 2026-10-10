@@ -166,17 +166,18 @@ class FormBlock extends BaseModel
     {
         $attributes = $this->only(self::TEMPLATE_ATTRIBUTES);
 
-        // if the block is a group, we need to add an id attribute
-        if ($this->type === FormBlockType::group) {
-            $attributes['id'] = $this->uuid;
-        }
+        // children point to their group, and logic rules to any block, by this id
+        $attributes['id'] = $this->uuid;
 
         $interactions = $this->formBlockInteractions->map(function ($interactions) {
             return $interactions->toTemplate();
         })->toArray();
 
+        $logics = $this->formBlockLogics->map->toTemplate()->toArray();
+
         return array_merge($attributes, [
             'formBlockInteractions' => $interactions,
+            'formBlockLogics' => $logics,
         ]);
     }
 
