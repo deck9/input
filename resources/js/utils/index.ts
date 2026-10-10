@@ -69,9 +69,9 @@ export function replaceRouteQuery(query: Record<string, any>): void {
 }
 
 export function getTextFromHtml(html: string): string {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    const text = div.textContent || div.innerText || "";
-
-    return text;
+    // a parsed document loads no images and runs no handlers
+    return (
+        new DOMParser().parseFromString(html, "text/html").body.textContent ??
+        ""
+    );
 }
