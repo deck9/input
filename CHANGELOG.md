@@ -15,7 +15,7 @@ All installs should update: this release limits the public form endpoints and fi
 -   **Upgrade step:** back up `APP_KEY` together with your database: answers are stored encrypted with it, and a new key can't read them. New hosting docs cover the database, queue worker, scheduler, mail, reverse proxy and backups. (#203)
 -   **Upgrade step:** if you deleted a team before this update, its forms are still online. Back up first, then run `php artisan input:prune-orphaned-forms` to list them, and add `--force` to delete them with their answers and files. The hosting docs on backups and updates show the full command. (#209)
 -   Fill in text questions from the link: a URL parameter named like a question's Identifier, such as `?email=ada@example.com`, prefills that answer, and the visitor can still change it. The embedding docs show how this works with links, iframes and the native embed. (#208)
--   Create a form from a template file on the dashboard with "From template". A file that can't be imported shows why and creates no form. (#214)
+-   Create a form from a template file on the dashboard with "From template", or through the API with `POST /api/forms/template`. A file that can't be imported shows why and creates no form. (#213, #214)
 -   For contributors: browser tests with Laravel Dusk check the login and filling in and submitting a form. They run on every pull request, and `sail dusk` runs them locally on their own database, as "Browser tests" in the README shows. (#221)
 
 ### Changed
