@@ -48,6 +48,22 @@ test('cannot_upload_avatar_if_wrong_format_or_too_big', function () {
     $this->assertFalse($form->hasImage('avatar'));
 });
 
+test('cannot_upload_an_svg_avatar', function () {
+    Storage::fake();
+    $form = Form::factory()->create();
+
+    // Images are served through Glide, which can't render SVG
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.images.store', ['form' => $form->uuid]), [
+            'image' => UploadedFile::fake()->createWithContent('avatar.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>'),
+            'type' => 'avatar',
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('image');
+
+    $this->assertFalse($form->fresh()->hasImage('avatar'));
+});
+
 test('can_delete_an_uploaded_avatar_image_for_a_form', function () {
     Storage::fake();
     $form = Form::factory()->create();

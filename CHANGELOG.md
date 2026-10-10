@@ -52,6 +52,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Question labels in the logic editor's pickers show as plain text. (#199)
 -   Public forms have limits: the image address only serves form logos and backgrounds, in the sizes the form uses. Uploads must match the question's file types, size and count (at most 8 MB per file, also in the editor), answers can be up to 30 KB and form link parameters up to 8 KB. Images and uploads are rate-limited per visitor, so behind a proxy check that `TRUSTED_PROXIES` lists it. (#212)
 -   **Upgrade step:** building from source needs Node 22. The Docker image already has it. JavaScript packages with known security advisories are updated, among them axios, lodash, vue-i18n, the text editor's ProseMirror and the build tools Vite and Vitest. (#223)
+-   Input runs on Laravel 13 instead of Laravel 11, which no longer gets security fixes. This closes 3 known Laravel security issues, one of them high. Logo and background uploads refuse SVG files, which never showed. Forms in an iframe on another site now load and submit. Before, they stayed blank. (#224)
 
 ## [2.1.0] - 2026-10-09
 
