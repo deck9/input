@@ -24,6 +24,11 @@
           @change="selectFiles"
         />
       </div>
+      <ValidationErrors
+        v-if="errors.length > 0"
+        class="mt-2"
+        :errors="errors"
+      />
     </div>
   </div>
 </template>
@@ -33,6 +38,9 @@ import { callGetFormTemplate, callImportFormTemplate } from "@/api/forms";
 import { useForm } from "@/stores";
 import { D9Label, D9Button } from "@deck9/ui";
 import { ref } from "vue";
+import { AxiosError } from "axios";
+
+import ValidationErrors from "@/components/ValidationErrors.vue";
 
 const store = useForm();
 const template = ref<string | null>(null);
@@ -42,6 +50,7 @@ callGetFormTemplate(store.form?.uuid).then((response) => {
 });
 
 const isImporting = ref(false);
+const errors = ref<string[]>([]);
 
 const downloadTemplate = () => {
   const form = store.form?.uuid;
@@ -71,8 +80,11 @@ const selectFiles = async (payload: Event) => {
     const file = files[0];
 
     isImporting.value = true;
+    errors.value = [];
 
     try {
+      // a broken file gets a plain message, not the server's file type rule
+      JSON.parse(await file.text());
       const response = await callImportFormTemplate(store.form?.uuid, file);
 
       if (response.status === 200) {
@@ -81,9 +93,15 @@ const selectFiles = async (payload: Event) => {
 
       isImporting.value = false;
     } catch (error) {
-      console.warn("something went wrong", error);
+      errors.value = [
+        error instanceof AxiosError && error.response?.status === 422
+          ? error.response.data.message
+          : "This file could not be imported as a template.",
+      ];
     }
 
+    // else picking the same file again fires no change event
+    (payload.target as HTMLInputElement).value = "";
     isImporting.value = false;
   }
 };
