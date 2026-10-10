@@ -454,3 +454,78 @@ test('template import requires update on the form', function () {
 
     expect($form->fresh()->description)->not->toBe('Imported');
 });
+
+test('creates a form from a template file in the user\'s current team', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $response = $this->actingAs($user)->post(route('api.forms.create-from-template'), [
+        'file' => UploadedFile::fake()->createWithContent('form.template.json', file_get_contents(base_path('tests/form.template.json'))),
+    ])->assertCreated();
+
+    $form = Form::where('uuid', $response->json('uuid'))->firstOrFail();
+
+    expect($form->team_id)->toBe($user->current_team_id)
+        ->and($form->user_id)->toBe($user->id)
+        ->and($form->name)->toBe('Untitled Form')
+        ->and($form->description)->toBe('This is just a test')
+        ->and($form->formBlocks)->toHaveCount(4);
+});
+
+test('a refused template creates no form', function (array $data, string $error) {
+    $user = User::factory()->withTeam()->create();
+
+    $this->actingAs($user)->postJson(route('api.forms.create-from-template'), $data)
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($error);
+
+    expect(Form::count())->toBe(0);
+})->with([
+    'no file' => [[], 'file'],
+    'not a json file' => [fn () => ['file' => UploadedFile::fake()->createWithContent('form.txt', 'hello')], 'file'],
+    'no blocks' => [['template' => json_encode(['description' => 'Imported'])], 'blocks'],
+    'unknown question type' => [['template' => json_encode(['blocks' => [['type' => 'input-magic', 'message' => 'Hi', 'sequence' => 0]]])], 'blocks.0.type'],
+    'a link that is not http(s)' => [['template' => json_encode(['blocks' => [], 'cta_link' => 'javascript:alert(1)'])], 'cta_link'],
+    'auto delete below one day' => [['template' => json_encode(['blocks' => [], 'is_auto_delete_enabled' => true, 'data_retention_days' => 0])], 'data_retention_days'],
+]);
+
+test('a template that fails halfway creates no form', function () {
+    $user = User::factory()->withTeam()->create();
+
+    FormBlock::created(fn () => throw new RuntimeException('disk full'));
+
+    $this->actingAs($user)->postJson(route('api.forms.create-from-template'), [
+        'template' => json_encode(['blocks' => [['type' => 'none', 'message' => 'Hi', 'sequence' => 0]]]),
+    ])->assertServerError();
+
+    expect(Form::count())->toBe(0);
+});
+
+test('creating a form from a template needs a logged-in user', function () {
+    $this->postJson(route('api.forms.create-from-template'), [
+        'template' => json_encode(['blocks' => []]),
+    ])->assertUnauthorized();
+
+    expect(Form::count())->toBe(0);
+});
+
+test('a form from a template takes the given name', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $response = $this->actingAs($user)->postJson(route('api.forms.create-from-template'), [
+        'name' => 'Contact',
+        'template' => json_encode(['blocks' => []]),
+    ])->assertCreated();
+
+    expect($response->json('name'))->toBe('Contact');
+});
+
+test('a form from a template refuses a name over 255 characters', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $this->actingAs($user)->postJson(route('api.forms.create-from-template'), [
+        'name' => str_repeat('a', 256),
+        'template' => json_encode(['blocks' => []]),
+    ])->assertStatus(422)->assertJsonValidationErrors('name');
+
+    expect(Form::count())->toBe(0);
+});
