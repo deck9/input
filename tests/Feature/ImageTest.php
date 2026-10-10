@@ -31,6 +31,12 @@ test('serves only form images', function () {
     $this->get('/images/uploads/1/answer.jpg')->assertNotFound();
 });
 
+test('serves a form image only under its exact path', function (string $path) {
+    $this->get('/images/'.$path)->assertNotFound();
+
+    expect(Storage::allFiles('.cache'))->toBeEmpty();
+})->with(['form/BACKGROUND.jpg', 'form/background.jpg%20']);
+
 test('limits image requests per visitor', function () {
     for ($i = 0; $i < 120; $i++) {
         $this->get('/images/missing.jpg')->assertNotFound();

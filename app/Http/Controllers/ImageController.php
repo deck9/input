@@ -25,7 +25,10 @@ class ImageController extends Controller
 
         abort_unless(
             in_array($params, self::VARIANTS, true)
-                && Form::where('avatar_path', $path)->orWhere('background_path', $path)->exists(),
+                && Form::where('avatar_path', $path)->orWhere('background_path', $path)
+                    ->get(['avatar_path', 'background_path'])
+                    // compared here, the database ignores case and trailing spaces
+                    ->contains(fn (Form $form) => in_array($path, [$form->avatar_path, $form->background_path], true)),
             404
         );
 
