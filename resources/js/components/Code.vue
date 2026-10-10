@@ -3,7 +3,7 @@
     <div
       class="overflow-hidden rounded border border-grey-800 font-mono text-xs"
     >
-      <hightlightjs language="xml" :code="code"></hightlightjs>
+      <hljsVuePlugin.component language="xml" :code="code" />
     </div>
     <D9Button
       v-if="isSupported"
@@ -27,8 +27,6 @@ import { D9Button } from "@deck9/ui";
 import { useClipboard } from "@vueuse/core";
 
 hljs.registerLanguage("javascript", xml);
-
-const hightlightjs = hljsVuePlugin.component;
 
 const props = defineProps<{
   code: string;
