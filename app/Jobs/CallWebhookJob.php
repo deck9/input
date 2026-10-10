@@ -80,13 +80,15 @@ class CallWebhookJob implements ShouldQueue
             'headers' => $headers,
         ]);
 
-        $this->session->webhooks()->updateOrCreate([
+        $log = $this->session->webhooks()->firstOrNew([
             'form_webhook_id' => $this->webhook->id,
-        ], [
+        ]);
+
+        $log->fill([
             'status' => $status,
             'response' => $json ?? $body,
-            'tries' => $this->session->webhooks()->where('form_webhook_id', $this->webhook->id)->count() + 1,
-        ]);
+            'tries' => $log->tries + 1,
+        ])->save();
 
         // fail so the queue retries; on the sync queue this would fail the submit itself
         if ($status >= 500 && ! $this->job instanceof SyncJob) {

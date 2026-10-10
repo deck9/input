@@ -39,6 +39,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Forms with many submissions load faster: the dashboard, editor and submissions page count answers in the database instead of loading them all, and submitting uses new database indexes. The CSV export works with 10,000 submissions and more, an export without submissions has its header row, and answers starting with = + - @ get a leading `'` so spreadsheets don't run them as formulas. Plain numbers and phone numbers stay as they are. (#217)
 -   Webhooks send their custom headers again, such as `Authorization` or an API key, and saving a webhook in the editor keeps headers set through the API. (#218)
 -   A webhook whose receiver is down or answers with a server error is tried up to 5 times in all, over about 1 hour 20 minutes. A webhook call stops after 10 seconds, a webhook URL must start with http:// or https://, and the webhook log shows a plain error text when the URL can't be reached. (#218)
+-   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
 
 ### Security
 

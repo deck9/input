@@ -203,7 +203,19 @@ it('retries a failing webhook 5 times with a backoff, then marks it failed', fun
     $this->artisan('queue:work', ['--once' => true]);
 
     expect(DB::table('jobs')->count())->toBe(0)
-        ->and(DB::table('failed_jobs')->count())->toBe(1);
+        ->and(DB::table('failed_jobs')->count())->toBe(1)
+        ->and($session->webhooks()->first()->tries)->toBe(5);
+});
+
+it('counts every try in the webhook log', function () {
+    app()->bind(HttpClientInterface::class, fn () => new MockHttpClient(new MockResponse('no', ['http_code' => 401])));
+    [$session, $webhook] = sessionWithWebhook();
+
+    foreach (range(1, 5) as $try) {
+        app()->call([new CallWebhookJob($session, $webhook), 'handle']);
+    }
+
+    expect($session->webhooks()->first()->tries)->toBe(5);
 });
 
 it('keeps the submit working on the sync queue when a webhook fails', function () {
