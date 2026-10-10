@@ -4,10 +4,12 @@ use App\Enums\FormBlockType;
 use App\Models\Form;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
+use App\Models\FormBlockLogic;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Gate;
 
 uses(RefreshDatabase::class);
 
@@ -253,3 +255,96 @@ test('template import only accepts http(s) and mailto links', function (string $
 
     expect($form->fresh()->$key)->toBe('mailto:team@example.com');
 })->with(['cta_link', 'privacy_link', 'legal_notice_link', 'twitter', 'facebook', 'instagram', 'github', 'linkedin']);
+
+test('export, then import into another form keeps the logic rules and their targets', function () {
+    $form = Form::factory()->create();
+    $question = FormBlock::factory()->create(['form_id' => $form->id, 'type' => FormBlockType::short, 'sequence' => 0]);
+    $target = FormBlock::factory()->create(['form_id' => $form->id, 'sequence' => 1]);
+
+    FormBlockLogic::factory()->create([
+        'form_block_id' => $question->id,
+        'name' => 'Jump on yes',
+        'action' => 'goto',
+        'action_payload' => $target->uuid,
+        'evaluate' => 'after',
+        'conditions' => [['source' => $question->uuid, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']],
+    ]);
+
+    $template = $this->actingAs($form->user)
+        ->json('GET', route('api.forms.template-export', ['form' => $form->uuid]))
+        ->assertOk()
+        ->content();
+
+    $newForm = Form::factory()->create();
+
+    $this->actingAs($newForm->user)->post(route('api.forms.template-import', ['form' => $newForm->uuid]), [
+        'template' => $template,
+    ])->assertOk();
+
+    [$newQuestion, $newTarget] = $newForm->fresh()->formBlocks->all();
+    $logic = $newQuestion->formBlockLogics->sole();
+
+    expect($logic->only('name', 'action', 'evaluate'))->toBe(['name' => 'Jump on yes', 'action' => 'goto', 'evaluate' => 'after'])
+        ->and($logic->action_payload)->toBe($newTarget->uuid)
+        ->and($logic->conditions)->toBe([['source' => $newQuestion->uuid, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']]);
+});
+
+test('template import drops a logic rule that points to a block missing from the template', function () {
+    $form = Form::factory()->create();
+    $conditions = fn (string $source) => [['source' => $source, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']];
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'a', 'type' => 'input-short', 'message' => 'Question', 'sequence' => 0, 'formBlockLogics' => [
+                ['name' => 'Kept', 'action' => 'goto', 'action_payload' => 'b', 'evaluate' => 'after', 'conditions' => $conditions('a')],
+                ['name' => 'Missing source', 'action' => 'hide', 'evaluate' => 'before', 'conditions' => $conditions('gone')],
+                ['name' => 'Missing target', 'action' => 'goto', 'action_payload' => 'gone', 'evaluate' => 'after', 'conditions' => $conditions('a')],
+            ]],
+            ['id' => 'b', 'type' => 'none', 'message' => 'End', 'sequence' => 1],
+        ]]),
+    ])->assertOk();
+
+    expect($form->fresh()->formBlocks[0]->formBlockLogics->pluck('name')->all())->toBe(['Kept']);
+});
+
+test('a template made before logic rules were exported still imports', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)->post(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => file_get_contents(base_path('tests/form.template.json')),
+    ])->assertOk();
+
+    $blocks = $form->fresh()->formBlocks;
+
+    expect($blocks)->toHaveCount(4)
+        ->and($blocks->flatMap->formBlockLogics)->toBeEmpty();
+});
+
+test('template import rejects a malformed logic rule before it changes the form', function () {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'a', 'type' => 'none', 'message' => 'Hi', 'sequence' => 0, 'formBlockLogics' => [
+                ['name' => 'No conditions', 'action' => 'hide', 'evaluate' => 'before'],
+            ]],
+        ]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('blocks.0.formBlockLogics.0.conditions');
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+});
+
+test('template import requires update on the form', function () {
+    $form = Form::factory()->create();
+
+    // a user who may view the form but not change it
+    Gate::before(fn ($user, string $ability) => $ability === 'update' ? false : null);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['description' => 'Imported', 'blocks' => []]),
+    ])->assertForbidden();
+
+    expect($form->fresh()->description)->not->toBe('Imported');
+});

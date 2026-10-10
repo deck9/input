@@ -10,6 +10,14 @@ class FormBlockLogic extends Model
 {
     use HasFactory;
 
+    public const TEMPLATE_ATTRIBUTES = [
+        'name',
+        'conditions',
+        'action',
+        'action_payload',
+        'evaluate',
+    ];
+
     protected $guarded = [];
 
     protected $casts = [
@@ -29,5 +37,10 @@ class FormBlockLogic extends Model
     public function formBlock()
     {
         return $this->belongsTo(FormBlock::class);
+    }
+
+    public function toTemplate()
+    {
+        return $this->only(self::TEMPLATE_ATTRIBUTES);
     }
 }

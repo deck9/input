@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FormBlockLogicRequest;
 use App\Models\Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +21,7 @@ class FormTemplateImportController extends Controller
     #[Group('Templates')]
     public function __invoke(Request $request, Form $form)
     {
-        if ($request->user()->cannot('view', $form)) {
+        if ($request->user()->cannot('update', $form)) {
             abort(403);
         }
 
@@ -39,7 +40,13 @@ class FormTemplateImportController extends Controller
 
         // same link rule as FormController::update()
         $link = ['nullable', 'regex:~^(https?://|mailto:)~i'];
+
+        // same rules as creating a logic rule through the API
+        $logicRules = collect((new FormBlockLogicRequest())->rules())
+            ->mapWithKeys(fn ($rule, $key) => ["blocks.*.formBlockLogics.*.$key" => $rule]);
+
         Validator::make($template, [
+            ...$logicRules->all(),
             'cta_link' => $link,
             'privacy_link' => $link,
             'legal_notice_link' => $link,
