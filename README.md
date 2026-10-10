@@ -86,6 +86,28 @@ sail artisan test # run phpunit
 sail composer {args} # use composer
 ```
 
+### Browser tests
+
+Browser tests use [Laravel Dusk](https://laravel.com/docs/11.x/dusk) and live in `tests/Browser`. They run on their own SQLite file, `database/dusk.sqlite`, so your other databases stay as they are. Chrome runs in the `selenium` service, which `sail up -d` doesn't start.
+
+Once:
+
+```bash
+cp .env.dusk.example .env.dusk.local
+sail artisan key:generate --env=dusk.local
+touch database/dusk.sqlite
+```
+
+Then stop `npm run dev` (Chrome in the container can't reach Vite) and run:
+
+```bash
+sail up -d selenium
+npm run build
+sail dusk
+```
+
+While the tests run, the app at http://localhost:8500 uses the Dusk database. A failed test leaves a screenshot in `tests/Browser/screenshots`. CI runs the browser tests on every pull request.
+
 ## Production Deployment
 
 Input runs from the Docker image `ghcr.io/deck9/input`. The guides are in `docs/`:

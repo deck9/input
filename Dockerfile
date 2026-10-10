@@ -35,6 +35,7 @@ RUN apk add --no-cache \
     php83-pdo_mysql \
     php83-pdo_sqlite \
     php83-bcmath \
+    php83-zip \
     sqlite
 
 COPY ./scripts/nginx/fastcgi_params /etc/nginx/fastcgi_params

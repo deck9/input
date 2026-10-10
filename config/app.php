@@ -41,6 +41,9 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    // Lets a local app serve Dusk's login route during a browser test run, see .env.dusk.example
+    'dusk' => (bool) env('DUSK_ENABLED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL

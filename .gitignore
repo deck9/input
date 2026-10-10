@@ -13,6 +13,7 @@
 /vendor
 .env
 .env.backup
+.env.dusk.local
 .phpunit.result.cache
 .phpunit.cache
 docker-compose.override.yml
