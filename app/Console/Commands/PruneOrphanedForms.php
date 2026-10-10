@@ -29,7 +29,9 @@ class PruneOrphanedForms extends Command
     public function handle(ForceDeleteForms $forceDeleteForms): void
     {
         // deleting a team before v2.2 left its forms behind, trashed ones too
-        $forms = Form::withTrashed()->whereDoesntHave('team')->withCount('formSessions')->orderBy('id')->get();
+        $forms = Form::withTrashed()->whereDoesntHave('team')
+            ->withCount(['formSessions' => fn ($query) => $query->whereNotNull('is_completed')])
+            ->orderBy('id')->get();
 
         if ($forms->isEmpty()) {
             $this->info('No forms of deleted teams found.');

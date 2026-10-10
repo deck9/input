@@ -28,7 +28,7 @@ beforeEach(function () {
         $interaction = FormBlockInteraction::factory()->for($block)->create();
         FormBlockLogic::factory()->for($block)->create();
 
-        $this->uploads[$form->id] = FormSession::factory()->for($form)->create()->formSessionResponses()->create([
+        $this->uploads[$form->id] = FormSession::factory()->for($form)->completed()->create()->formSessionResponses()->create([
             'form_block_id' => $block->id,
             'form_block_interaction_id' => $interaction->id,
             'value' => 'cv.pdf',
@@ -46,6 +46,8 @@ beforeEach(function () {
         'background_path' => 'orphaned/background.png',
     ]);
     $this->trashedOrphanedForm = Form::factory()->deleted()->create(['team_id' => $deletedTeam->id]);
+    // a visit without a submission, not counted
+    FormSession::factory()->for($this->orphanedForm)->create();
 
     Storage::put('shared/avatar.png', 'image');
     Storage::put('orphaned/background.png', 'image');
