@@ -46,11 +46,32 @@ describe('prefillPayload', () => {
     });
   });
 
-  it('fills a number question only with a number', () => {
-    const blocks = [makeBlock('q1', 'age', 'input-number'), makeBlock('q2', 'size', 'input-number')];
+  it('reads only real params for Identifiers like constructor', () => {
+    const blocks = ['constructor', 'toString', 'valueOf', '__proto__']
+      .map((title, index) => makeBlock(`q${index}`, title));
 
-    expect(prefillPayload(blocks, { age: '42', size: 'large' })).toEqual({
-      q1: { payload: 42, actionId: 'q1-action' },
+    expect(prefillPayload(blocks, {})).toEqual({});
+    expect(prefillPayload(blocks, { constructor: 'Ada' })).toEqual({
+      q0: { payload: 'Ada', actionId: 'q0-action' },
+    });
+  });
+
+  it('ignores a number param that is not digits with a dot', () => {
+    const blocks = [makeBlock('q1', 'size', 'input-number')];
+
+    ['large', '0x10', '1e3', 'Infinity', '12,5'].forEach((size) => {
+      expect(prefillPayload(blocks, { size })).toEqual({});
+    });
+  });
+
+  it('rounds a number to the decimal places of the question', () => {
+    const age = makeBlock('q1', 'age', 'input-number');
+    const price = makeBlock('q2', 'price', 'input-number');
+    price.interactions[0].options = { decimalPlaces: 2 };
+
+    expect(prefillPayload([age, price], { age: '12.5', price: '-3.14159' })).toEqual({
+      q1: { payload: 13, actionId: 'q1-action' },
+      q2: { payload: -3.14, actionId: 'q2-action' },
     });
   });
 });

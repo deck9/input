@@ -17,17 +17,28 @@ export function prefillPayload(
 
     blocks.forEach((block) => {
         const action = block.interactions[0];
-        const value = block.title ? params[block.title]?.trim() : undefined;
+        // an own key only: an Identifier like "constructor" must not read a built-in
+        const value =
+            block.title &&
+            Object.prototype.hasOwnProperty.call(params, block.title)
+                ? params[block.title].trim()
+                : undefined;
 
         if (!action || !value || !prefillTypes.includes(block.type)) {
             return;
         }
 
-        // a number question stores a number, like a typed answer
-        const answer = block.type === "input-number" ? Number(value) : value;
+        let answer: string | number = value;
 
-        if (Number.isNaN(answer)) {
-            return;
+        // digits with a dot, rounded to the decimal places the input shows
+        if (block.type === "input-number") {
+            if (!/^-?\d+(\.\d+)?$/.test(value)) {
+                return;
+            }
+
+            answer = Number(
+                Number(value).toFixed(action.options?.decimalPlaces ?? 0),
+            );
         }
 
         payload[block.id] = { payload: answer, actionId: action.id };

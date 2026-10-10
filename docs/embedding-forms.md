@@ -122,9 +122,9 @@ https://app.getinput.co/form-uuid?email=ada@example.com
 ```
 
 -   Works for short text, long text, email, number, phone and link questions. Parameters for other question types or unknown Identifiers are ignored.
--   The question still shows, so the visitor can check and change the answer.
+-   The question still shows, so the visitor can check and change the answer. A question hidden by a rule or skipped by a jump still sends its prefilled answer.
 -   The value shows as plain text. Encode special characters: `%2B` for `+`, `%20` for a space.
--   Number questions take a number with a dot as decimal separator, like `price=12.5`. Anything else is ignored.
+-   Number questions take digits with a dot as decimal separator, like `price=12.5`, rounded to the question's decimal places. Anything else is ignored.
 -   Show/hide rules treat a prefilled answer like a typed one.
 -   The match is case-sensitive. `iframe`, `hideTitle`, `hideNavigation`, `focusOnMount` and `alignLeft` never fill a question.
 
