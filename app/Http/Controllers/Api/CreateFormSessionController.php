@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\FormSession;
+use App\Rules\MaxSize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Knuckles\Scribe\Attributes\Group;
@@ -19,6 +20,11 @@ class CreateFormSessionController extends Controller
     #[Group('Public Form Endpoints')]
     public function __invoke(Request $request, Form $form)
     {
+        $request->validate([
+            // params come from the form link, and nginx stops URLs at 8 KB
+            'params' => ['array', 'nullable', new MaxSize(8192)],
+        ]);
+
         $session = FormSession::create([
             'form_id' => $form->id,
             'token' => Str::random(32),

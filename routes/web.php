@@ -33,7 +33,7 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
     $router->get('/uploads/{upload}', FormUploadsDownloadController::class)->name('forms.submission-uploads.download')->middleware('signed');
 });
 
-$router->get('/images/{path}', [ImageController::class, 'show'])->where('path', '.*')->name('images.show');
+$router->get('/images/{path}', [ImageController::class, 'show'])->where('path', '.*')->middleware('throttle:images')->name('images.show');
 $router->get('/internal/meta-preview/{id}', [MetaPreviewController::class, 'show'])->name('internal.meta-preview');
 
 $router->get('/{uuid}', [ViewFormController::class, 'show'])

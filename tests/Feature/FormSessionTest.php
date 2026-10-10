@@ -311,3 +311,46 @@ test('answers for a question of another form are rejected and not stored', funct
     $this->assertCount(0, FormSessionResponse::all());
     $this->assertNull($session->fresh()->getRawOriginal('is_completed'));
 })->with('templates');
+
+test('session parameters over the size cap are rejected', function () {
+    $form = Form::factory()->create();
+
+    $this->json('POST', route('api.public.forms.session.create', ['form' => $form->uuid]), [
+        'params' => ['ref' => str_repeat('a', 8192)],
+    ])->assertStatus(422)->assertJsonValidationErrors('params');
+
+    expect(FormSession::count())->toBe(0);
+});
+
+test('an answer over the size cap is rejected and not stored', function ($template) {
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+    $block = $form->formBlocks[0];
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => $block->getSubmitPayload(str_repeat('a', 30000)),
+    ])->assertStatus(422)->assertJsonValidationErrors('payload.'.$block->uuid);
+
+    expect(FormSessionResponse::count())->toBe(0);
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => $block->getSubmitPayload(str_repeat('a', 29000)),
+    ])->assertOk();
+})->with('templates');
+
+test('more answers than the form has blocks are rejected', function ($template) {
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+    $payload = $form->formBlocks[0]->getSubmitPayload('froggy@mailfrog.com');
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => [...$payload, 'a' => [], 'b' => [], 'c' => [], 'd' => []],
+    ])->assertStatus(422)->assertJsonValidationErrors('payload');
+
+    expect(FormSessionResponse::count())->toBe(0);
+})->with('templates');

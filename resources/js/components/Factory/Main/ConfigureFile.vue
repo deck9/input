@@ -53,7 +53,7 @@ const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
 
 const maxFiles = 10;
-const maxFileSize = 16;
+const maxFileSize = 8;
 
 const availableFileTypes = [
   { label: "Image", key: "image" },
