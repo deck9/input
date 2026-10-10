@@ -113,6 +113,36 @@ Example URL with parameters:
 https://app.getinput.co/form-uuid?iframe=1&hideTitle=1&alignLeft=1
 ```
 
+## Prefill Questions
+
+You can fill in answers with URL parameters. The parameter name is the question's Identifier (open the question, then "More Settings"). For example, this fills the question with the Identifier `email`:
+
+```
+https://app.getinput.co/form-uuid?email=ada@example.com
+```
+
+-   Works for short text, long text, email, number, phone and link questions. Parameters for other question types or unknown Identifiers are ignored.
+-   The question still shows, so the visitor can check and change the answer. A question hidden by a rule or skipped by a jump still sends its prefilled answer.
+-   The value shows as plain text. Encode special characters: `%2B` for `+`, `%20` for a space.
+-   Number questions take digits with a dot as decimal separator, like `price=12.5`, rounded to the question's decimal places. Anything else is ignored.
+-   Show/hide rules treat a prefilled answer like a typed one.
+-   The match is case-sensitive. `iframe`, `hideTitle`, `hideNavigation`, `focusOnMount` and `alignLeft` never fill a question.
+
+Where the parameters go depends on how you embed the form:
+
+-   **Embed Link**: add them to the link.
+-   **Native Embedding**: the form reads the URL of your page, so `https://example.com/signup?email=ada@example.com` fills the question.
+-   **iFrame**: the form only sees the `src` URL of the iframe, not the URL of your page. Add the parameters to the `src`, or pass your page's parameters on with a small script:
+
+```html
+<iframe id="input-form" width="100%" height="520px" frameborder="0"></iframe>
+<script>
+    document.getElementById("input-form").src =
+        "https://app.getinput.co/form-uuid?iframe=1&" +
+        new URLSearchParams(window.location.search);
+</script>
+```
+
 ## Troubleshooting
 
 ### Form Not Displaying

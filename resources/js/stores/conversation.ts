@@ -8,6 +8,7 @@ import {
 } from "@/api/conversation";
 import { evaluateGotoLogic, isBlockVisible } from "./helpers/logic";
 import { createFlatQueue } from "./helpers/queue";
+import { prefillPayload } from "./helpers/prefill";
 import { isAllowedLink } from "@/utils/sanitize";
 import { nextTick, Ref, ref } from "vue";
 
@@ -305,6 +306,7 @@ export const useConversation = defineStore("form", {
             this.storyboard = storyboardResponse.data.blocks;
 
             this.queue = createFlatQueue(this.storyboard);
+            this.payload = prefillPayload(this.storyboard, params);
 
             this.current = this.processedQueue[0].id ?? null;
         },
