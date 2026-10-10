@@ -574,3 +574,24 @@ test('template import rejects a group inside a group and keeps the form', functi
 
     expect($form->fresh()->formBlocks)->toHaveCount(1);
 });
+
+test('template import rejects a parent_block that is not a top-level group of the template and keeps the form', function (string $type, string $parent) {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'q', 'type' => 'input-short', 'message' => 'Question', 'sequence' => 0],
+            ['id' => 'g', 'type' => 'group', 'message' => 'Group', 'sequence' => 1],
+            ['id' => 'c', 'type' => $type, 'message' => 'Lost', 'sequence' => 2, 'parent_block' => $parent],
+        ]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('blocks.2.parent_block');
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+})->with([
+    'a question' => ['input-short', 'q'],
+    'a missing block' => ['input-short', 'gone'],
+    'an empty id' => ['input-short', ''],
+    'a group with an empty id' => ['group', ''],
+]);

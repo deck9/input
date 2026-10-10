@@ -31,6 +31,7 @@ class FormBlockSequenceController extends Controller
             'sequence' => 'required|array',
             'sequence.*.id' => ['required', Rule::in($form->formBlocks->pluck('id'))],
             'sequence.*.scope' => [
+                'present',
                 'nullable',
                 Rule::in($groups->whereNull('parent_block')->pluck('uuid')),
                 function ($attribute, $value, $fail) use ($request, $groups) {

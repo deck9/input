@@ -71,9 +71,20 @@ class FormTemplateRequest extends FormRequest
             'blocks.*.parent_block.prohibited_if' => 'A group can\'t go into another group.',
         ])->validate();
 
-        // same group check as FormBlockLogicRequest, children point to their group by its template id
         $blocks = collect($template['blocks']);
 
+        // the import only creates a block with a parent_block inside a top-level group (strict, so "" fails too, unlike Rule::in)
+        $topLevelGroups = $blocks->where('type', FormBlockType::group->value)->whereNull('parent_block')->pluck('id');
+
+        foreach ($blocks as $i => $block) {
+            if (isset($block['parent_block']) && ! $topLevelGroups->containsStrict($block['parent_block'])) {
+                throw ValidationException::withMessages([
+                    "blocks.$i.parent_block" => 'A question can only go into a top-level group of the template.',
+                ]);
+            }
+        }
+
+        // same group check as FormBlockLogicRequest, children point to their group by its template id
         foreach ($blocks->where('type', FormBlockType::group->value)->whereNotNull('id') as $i => $group) {
             $inside = $blocks->whereStrict('parent_block', $group['id'])->pluck('id');
 

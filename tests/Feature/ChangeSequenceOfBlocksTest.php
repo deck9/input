@@ -115,3 +115,24 @@ test('blocks of another form can\'t be moved', function () {
     expect($other->fresh()->sequence)->toBe(5)
         ->and($form->formBlocks[0]->fresh()->sequence)->toBe(0);
 });
+
+test('a reorder without a scope is refused and saves nothing', function () {
+    $form = Form::factory()
+        ->has(FormBlock::factory(['sequence' => 0]))
+        ->has(FormBlock::factory(['sequence' => 1]))
+        ->create();
+    [$first, $second] = $form->formBlocks->all();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.blocks.sequence', ['form' => $form->uuid]), [
+            'sequence' => [
+                ['id' => $second->id, 'scope' => null],
+                ['id' => $first->id],
+            ],
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('sequence.1.scope');
+
+    expect($first->fresh()->sequence)->toBe(0)
+        ->and($second->fresh()->sequence)->toBe(1);
+});
