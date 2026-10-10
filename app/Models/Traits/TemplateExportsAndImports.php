@@ -8,6 +8,7 @@ use App\Models\FormBlockLogic;
 use App\Enums\FormBlockType;
 use App\Models\FormBlockInteraction;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 trait TemplateExportsAndImports
 {
@@ -34,39 +35,42 @@ trait TemplateExportsAndImports
             $template = collect($template);
         }
 
-        $blocks = $template->has('blocks') ? collect($template['blocks']) : [];
+        $blocks = collect($template->get('blocks', []));
 
-        $this->update(
-            $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
-        );
+        DB::transaction(function () use ($template, $blocks) {
+            $this->update(
+                $template->only(Form::TEMPLATE_ATTRIBUTES)->toArray()
+            );
 
-        // Clear out current form blocks (and their interactions)
-        $this->formBlocks()->delete();
+            // Clear out current form blocks (their interactions cascade, their logic rules have no foreign key)
+            FormBlockLogic::whereIn('form_block_id', $this->formBlocks()->pluck('id'))->delete();
+            $this->formBlocks()->delete();
 
-        // Create new form blocks, as pairs of [template item, new block]
-        $created = collect();
+            // Create new form blocks, as pairs of [template item, new block]
+            $created = collect();
 
-        $blocks->each(function ($item) use ($blocks, $created) {
-            if (isset($item['parent_block'])) {
-                return;
-            }
+            $blocks->each(function ($item) use ($blocks, $created) {
+                if (isset($item['parent_block'])) {
+                    return;
+                }
 
-            $block = $this->applyBlockTemplate($item);
-            $created->push([$item, $block]);
+                $block = $this->applyBlockTemplate($item);
+                $created->push([$item, $block]);
 
-            if ($block->type === FormBlockType::group) {
-                $childBlocks = $blocks->filter(function ($child) use ($item) {
-                    return $item['id'] === $child['parent_block'];
-                });
+                if ($block->type === FormBlockType::group && isset($item['id'])) {
+                    $childBlocks = $blocks->filter(function ($child) use ($item) {
+                        return ($child['parent_block'] ?? null) === $item['id'];
+                    });
 
-                $childBlocks->each(function ($child) use ($block, $created) {
-                    $created->push([$child, $this->applyBlockTemplate($child, $block->uuid)]);
-                });
-            }
+                    $childBlocks->each(function ($child) use ($block, $created) {
+                        $created->push([$child, $this->applyBlockTemplate($child, $block->uuid)]);
+                    });
+                }
+            });
+
+            // Logic rules can point to any block, so they come after all blocks exist
+            $this->applyLogicTemplates($created);
         });
-
-        // Logic rules can point to any block, so they come after all blocks exist
-        $this->applyLogicTemplates($created);
     }
 
     protected function applyLogicTemplates(Collection $created)

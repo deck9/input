@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Actions\Jetstream\DeleteTeam;
 use App\Mail\FormSubmissionNotification;
 use App\Models\Form;
 use App\Models\FormSession;
@@ -69,7 +68,8 @@ it('stores a submission without a mail when the form\'s team was deleted', funct
         'form_id' => $form->id,
     ]);
 
-    app(DeleteTeam::class)->delete($form->team);
+    // older versions deleted the team and left its forms online
+    $form->team->purge();
 
     $this->json('POST', route('api.public.forms.submit', [
         'form' => $form->uuid,

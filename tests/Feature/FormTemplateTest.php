@@ -5,6 +5,8 @@ use App\Models\Form;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\FormBlockLogic;
+use App\Models\FormSession;
+use App\Models\FormSessionResponse;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -334,6 +336,110 @@ test('template import rejects a malformed logic rule before it changes the form'
         ->assertJsonValidationErrors('blocks.0.formBlockLogics.0.conditions');
 
     expect($form->fresh()->formBlocks)->toHaveCount(1);
+});
+
+test('template import is refused for a form with answers and deletes none', function () {
+    $form = Form::factory()->create(['description' => 'Original']);
+    $block = FormBlock::factory()->for($form)->create(['type' => FormBlockType::short]);
+    $interaction = FormBlockInteraction::factory()->for($block)->create();
+    $block->submit(FormSession::factory()->for($form)->create(), ['actionId' => $interaction->uuid, 'payload' => 'yes']);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => file_get_contents(base_path('tests/form.template.json')),
+    ])->assertStatus(422);
+
+    expect(FormSessionResponse::count())->toBe(1)
+        ->and($form->fresh()->formBlocks->pluck('id')->all())->toBe([$block->id])
+        ->and($form->fresh()->description)->toBe('Original');
+});
+
+test('template import rejects a template without blocks or with an unknown question type and keeps the form', function (array $template, string $error) {
+    $form = Form::factory()->has(FormBlock::factory())->create(['description' => 'Original']);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['description' => 'Imported', ...$template]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($error);
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1)
+        ->and($form->fresh()->description)->toBe('Original');
+})->with([
+    'no blocks' => [[], 'blocks'],
+    'unknown question type' => [['blocks' => [['type' => 'input-magic', 'message' => 'Hi', 'sequence' => 0]]], 'blocks.0.type'],
+]);
+
+test('template import rejects a block id that is not text before it changes the form', function ($id) {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [['id' => $id, 'type' => 'none', 'message' => 'Hi', 'sequence' => 0]]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('blocks.0.id');
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+})->with([
+    'a number' => [5],
+    'a list' => [['a']],
+]);
+
+test('template import rejects auto delete with a retention period below one day', function (array $form, array $template) {
+    $form = Form::factory()->create($form);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode([...$template, 'data_retention_days' => 0, 'blocks' => []]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('data_retention_days');
+
+    expect($form->fresh()->data_retention_days)->not->toBe(0);
+})->with([
+    'auto delete on in the template' => [[], ['is_auto_delete_enabled' => true]],
+    'auto delete already on in the form' => [['is_auto_delete_enabled' => true, 'data_retention_days' => 30], []],
+]);
+
+test('a template import that fails halfway leaves the form unchanged', function () {
+    $form = Form::factory()->has(FormBlock::factory())->create(['description' => 'Original']);
+
+    // any error after the old blocks are gone
+    FormBlock::created(fn () => throw new RuntimeException('disk full'));
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['description' => 'Imported', 'blocks' => [['type' => 'none', 'message' => 'Hi', 'sequence' => 0]]]),
+    ])->assertServerError();
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1)
+        ->and($form->fresh()->description)->toBe('Original');
+});
+
+test('template import treats a block without parent_block as a top-level block', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['id' => 'g', 'type' => 'group', 'message' => 'Group', 'sequence' => 0],
+            ['id' => 'c', 'type' => 'none', 'message' => 'Child', 'parent_block' => 'g', 'sequence' => 1],
+            ['id' => 'q', 'type' => 'input-short', 'message' => 'Question', 'sequence' => 2],
+        ]]),
+    ])->assertOk();
+
+    [$group, $child, $question] = $form->fresh()->formBlocks->all();
+
+    expect([$group->message, $child->message, $question->message])->toBe(['Group', 'Child', 'Question'])
+        ->and($child->parent_block)->toBe($group->uuid)
+        ->and($question->parent_block)->toBeNull();
+});
+
+test('template import removes the form\'s old logic rules with its blocks', function () {
+    $form = Form::factory()->create();
+    FormBlockLogic::factory()->for(FormBlock::factory()->for($form))->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => []]),
+    ])->assertOk();
+
+    expect(FormBlockLogic::count())->toBe(0);
 });
 
 test('template import requires update on the form', function () {

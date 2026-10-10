@@ -400,3 +400,51 @@ test('can enable or disable email notifications for a form', function () {
     $form = $form->fresh();
     $this->assertNotTrue($form->is_notification_via_mail);
 });
+
+test('turning auto delete on needs a retention period of at least one day', function ($days) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [
+            'is_auto_delete_enabled' => true,
+            'data_retention_days' => $days,
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('data_retention_days');
+
+    $this->assertFalse($form->fresh()->is_auto_delete_enabled);
+})->with([
+    'empty' => [null],
+    'zero' => [0],
+    'negative' => [-1],
+]);
+
+test('a form with auto delete on cannot get a retention period below one day', function ($days) {
+    $form = Form::factory()->create(['is_auto_delete_enabled' => true, 'data_retention_days' => 30]);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['data_retention_days' => $days])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('data_retention_days');
+
+    $this->assertEquals(30, $form->fresh()->data_retention_days);
+})->with([
+    'empty' => [null],
+    'zero' => [0],
+    'negative' => [-5],
+]);
+
+test('with auto delete off, the retention period is not checked', function () {
+    $form = Form::factory()->create();
+
+    // the privacy settings always send the hidden retention field along
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [
+            'is_auto_delete_enabled' => false,
+            'data_retention_days' => 0,
+            'privacy_link' => 'https://example.com/privacy',
+        ])
+        ->assertSuccessful();
+
+    $this->assertEquals('https://example.com/privacy', $form->fresh()->privacy_link);
+});

@@ -237,32 +237,32 @@ class Form extends BaseModel
 
     public function getCompanyNameAttribute()
     {
-        return $this->user->company_name;
+        return $this->user?->company_name;
     }
 
     public function getCompanyDescriptionAttribute()
     {
-        return $this->user->company_description;
+        return $this->user?->company_description;
     }
 
     public function getActivePrivacyLinkAttribute()
     {
-        return $this->privacy_link ? $this->privacy_link : $this->user->privacy_link;
+        return $this->privacy_link ? $this->privacy_link : $this->user?->privacy_link;
     }
 
     public function getActiveLegalNoticeLinkAttribute()
     {
-        return $this->legal_notice_link ? $this->legal_notice_link : $this->user->legal_notice_link;
+        return $this->legal_notice_link ? $this->legal_notice_link : $this->user?->legal_notice_link;
     }
 
     public function getPrivacyContactPersonAttribute()
     {
-        return $this->user->privacy_contact_person;
+        return $this->user?->privacy_contact_person;
     }
 
     public function getPrivacyContactEmailAttribute()
     {
-        return $this->user->privacy_contact_email;
+        return $this->user?->privacy_contact_email;
     }
 
     public function brandColor()

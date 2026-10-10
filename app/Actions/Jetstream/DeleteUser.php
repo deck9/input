@@ -2,6 +2,8 @@
 
 namespace App\Actions\Jetstream;
 
+use App\Models\Form;
+use App\Models\Team;
 use Illuminate\Support\Facades\DB;
 use Laravel\Jetstream\Contracts\DeletesTeams;
 use Laravel\Jetstream\Contracts\DeletesUsers;
@@ -35,6 +37,7 @@ class DeleteUser implements DeletesUsers
     {
         DB::transaction(function () use ($user) {
             $this->deleteTeams($user);
+            $this->handOverForms($user);
             $user->deleteProfilePhoto();
             $user->tokens->each->delete();
             $user->delete();
@@ -54,5 +57,19 @@ class DeleteUser implements DeletesUsers
         $user->ownedTeams->each(function ($team) {
             $this->deletesTeams->delete($team);
         });
+    }
+
+    /**
+     * Give the forms the user made in other teams to each team's owner.
+     *
+     * @param  mixed  $user
+     * @return void
+     */
+    protected function handOverForms($user)
+    {
+        Team::whereIn('id', Form::withTrashed()->where('user_id', $user->id)->select('team_id'))
+            ->each(function (Team $team) use ($user) {
+                $team->forms()->withTrashed()->where('user_id', $user->id)->update(['user_id' => $team->user_id]);
+            });
     }
 }
