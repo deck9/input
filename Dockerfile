@@ -1,3 +1,12 @@
+# Packages are plain PHP files: fetch them once, natively, for every platform
+FROM --platform=$BUILDPLATFORM mirror.gcr.io/library/composer AS vendor
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --no-scripts --no-autoloader --no-interaction --no-progress --ignore-platform-reqs
+
+# ---
+
 FROM mirror.gcr.io/trafex/php-nginx:3.6.0 AS php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
@@ -37,6 +46,7 @@ WORKDIR /var/www/html
 
 COPY --from=mirror.gcr.io/library/composer /usr/bin/composer /usr/bin/composer
 COPY --chown=nobody . .
+COPY --chown=nobody --from=vendor /app/vendor ./vendor
 
 RUN composer install --optimize-autoloader --no-interaction --no-progress
 
@@ -53,13 +63,17 @@ USER nobody
 
 # ---
 
-FROM mirror.gcr.io/library/node:18-alpine AS asset_builder
+# Built JS and CSS are the same for every platform: build them once, natively
+FROM --platform=$BUILDPLATFORM mirror.gcr.io/library/node:18-alpine AS asset_builder
 WORKDIR /var/www/html
 ENV NODE_ENV=production
 
-COPY --from=php_base /var/www/html ./
+COPY package.json package-lock.json ./
 RUN npm ci && npm cache clean --force
 
+COPY . .
+# Tailwind scans Blade views in vendor/ for class names
+COPY --from=vendor /app/vendor ./vendor
 RUN npm run build
 RUN rm -rf node_modules
 

@@ -12,6 +12,13 @@ jobs:
     tests:
         uses: ./.github/workflows/ci.yml
 
+    # A PR image is only a check, so it builds next to the tests
+    docker-pr:
+        if: github.event_name == 'pull_request'
+        uses: ./.github/workflows/docker-publish.yml
+
+    # main and release images are only built from tested code
     docker:
+        if: github.event_name != 'pull_request'
         needs: tests
         uses: ./.github/workflows/docker-publish.yml

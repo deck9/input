@@ -32,9 +32,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "18"
+          cache: npm
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.dev.example', '.env');"
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -74,6 +86,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
+          cache: npm
 
       - name: Install NPM Dependencies
         run: npm ci
