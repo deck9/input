@@ -19,11 +19,16 @@ const importFile = async (content: string) => {
     // jsdom has no Blob.text()
     file.text = () => Promise.resolve(content);
     Object.defineProperty(input.element, "files", { value: [file] });
+    // like a browser, the input holds the picked file until it is cleared
+    Object.defineProperty(input.element, "value", {
+        value: "C:\\fakepath\\template.json",
+        writable: true,
+    });
 
     await input.trigger("change");
     await flushPromises();
 
-    return { wrapper, file };
+    return { wrapper, file, input };
 };
 
 const serverError = (status: number, message: string) =>
@@ -71,6 +76,12 @@ describe("template import", () => {
         expect(wrapper.text()).toContain(
             "This file could not be imported as a template.",
         );
+    });
+
+    it("clears the file input after an error, so the same file can be picked again", async () => {
+        const { input } = await importFile("not json");
+
+        expect((input.element as HTMLInputElement).value).toBe("");
     });
 
     it("shows a general error when the server fails", async () => {

@@ -100,6 +100,8 @@ const selectFiles = async (payload: Event) => {
       ];
     }
 
+    // else picking the same file again fires no change event
+    (payload.target as HTMLInputElement).value = "";
     isImporting.value = false;
   }
 };
