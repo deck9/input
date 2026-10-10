@@ -70,8 +70,9 @@ export const useConversation = defineStore("form", {
                 return [];
             }
 
-            // rules read only answers of shown questions above them, so a hidden answer counts as none
-            // and a question can't hide itself
+            // rules read only answers of shown questions above them on the path, so a hidden or skipped
+            // answer counts as none and a question can't hide itself
+            const onPath = [...state.path, state.current];
             const answers: FormSubmitPayload = {};
             const hidden: string[] = [];
             const shown: PublicFormBlockModel[] = [];
@@ -86,7 +87,7 @@ export const useConversation = defineStore("form", {
                     continue;
                 }
 
-                if (state.payload[block.id]) {
+                if (state.payload[block.id] && onPath.includes(block.id)) {
                     answers[block.id] = state.payload[block.id];
                 }
 

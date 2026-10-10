@@ -276,6 +276,7 @@ describe('Conversation Store', () => {
 
       store.queue = createFlatQueue([q0, group, q1, q2, q3]);
       store.payload = { q0: { payload: answer, actionId: '1' } };
+      store.path = ['q0'];
 
       return store.processedQueue.map((block) => block.id);
     };
@@ -449,6 +450,8 @@ describe('Conversation Store', () => {
       q2.logics = rule('show', 'yes', 'q1');
       store.queue = [q0, q1, q2];
       store.payload = { q0: { payload: 'a', actionId: 'a0' }, q1: { payload: 'yes', actionId: 'a1' } };
+      // q1 was answered before q0 changed
+      store.path = ['q0', 'q1'];
 
       expect(shownIds(store)).toEqual(['q0']);
     });
@@ -461,6 +464,7 @@ describe('Conversation Store', () => {
       q2.logics = jump('q1', 'yes', 'q4');
       store.queue = [q0, q1, q2, q3, q4];
       store.payload = { q0: { payload: 'a', actionId: 'a0' }, q1: { payload: 'yes', actionId: 'a1' } };
+      store.path = ['q0', 'q1'];
       store.current = 'q2';
 
       await store.next();
@@ -474,19 +478,25 @@ describe('Conversation Store', () => {
       q1.logics = rule('hide', 'x', 'q1');
       store.queue = [q0, q1];
       store.payload = { q1: { payload: 'x', actionId: 'a1' } };
+      store.path = ['q0'];
+      store.current = 'q1';
 
       expect(shownIds(store)).toEqual(['q0', 'q1']);
     });
 
-    // q1, q2, q3; each question can be prefilled by its id
-    const startForm = async (q1Logics: FormBlockLogic[] | undefined, params: Record<string, string> = {}) => {
+    // q1, q2, q3 by default; each question can be prefilled by its id
+    const startForm = async (
+      logics: Record<string, FormBlockLogic[]>,
+      params: Record<string, string> = {},
+      ids = ['q1', 'q2', 'q3'],
+    ) => {
       const store = useConversation();
-      const blocks = makeBlocks('q1', 'q2', 'q3');
+      const blocks = makeBlocks(...ids);
       blocks.forEach((block) => {
         block.title = block.id;
         block.interactions = [{ id: `a-${block.id}` } as PublicFormBlockInteractionModel];
+        block.logics = logics[block.id];
       });
-      blocks[0].logics = q1Logics;
       vi.mocked(callGetFormStoryboard).mockResolvedValue({ data: { blocks } } as any);
 
       await store.initForm({ uuid: 'form' } as PublicFormModel, params);
@@ -495,7 +505,7 @@ describe('Conversation Store', () => {
       return store;
     };
 
-    const skipQ2 = jump('q1', 'skip', 'q3');
+    const skipQ2 = { q1: jump('q1', 'skip', 'q3') };
 
     const type = (store: ReturnType<typeof useConversation>, value: string) =>
       store.setResponse(store.currentBlock!.interactions[0], value);
@@ -532,6 +542,20 @@ describe('Conversation Store', () => {
       expect(store.payload.q2).toEqual({ payload: 'prefilled', actionId: 'a-q2' });
     });
 
+    it('lets a rule on a skipped question act as if it had no answer', async () => {
+      // q1 jumps over the prefilled q2, and q4 shows when q2 is "BMW"
+      const store = await startForm(
+        { ...skipQ2, q4: rule('show', 'BMW', 'q2') },
+        { q2: 'BMW' },
+        ['q1', 'q2', 'q3', 'q4'],
+      );
+      type(store, 'skip');
+      await store.next();
+
+      expect(store.current).toBe('q3');
+      expect(shownIds(store)).not.toContain('q4');
+    });
+
     it('goes back along the path and shows the skipped answer again', async () => {
       const store = await startForm(skipQ2);
       await answerThenSkipQ2(store);
@@ -552,7 +576,7 @@ describe('Conversation Store', () => {
     });
 
     it('sends every answer of a form without rules or jumps', async () => {
-      const store = await startForm(undefined);
+      const store = await startForm({});
 
       for (const value of ['one', 'two', 'three']) {
         type(store, value);
