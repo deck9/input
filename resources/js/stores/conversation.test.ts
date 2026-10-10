@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { setActivePinia, createPinia, storeToRefs } from 'pinia';
 import { effectScope, nextTick } from 'vue';
 import { useConversation } from './conversation';
 import * as logicHelpers from './helpers/logic';
+import { createFlatQueue } from './helpers/queue';
 import { callSubmitForm } from '@/api/conversation';
 import handler from '@/api/handler';
 import { useBeforeUnload } from '@/utils/useBeforeUnload';
@@ -238,6 +239,53 @@ describe('Conversation Store', () => {
       expect(store.callToActionUrl).toBe(
         'https://example.com/thanks?ref=mail&ipt_session=session#top',
       );
+    });
+  });
+
+  describe('show/hide rules on a group', () => {
+    const rule = (action: 'show' | 'hide', value: string): FormBlockLogic[] => [{
+      form_block_id: 1,
+      name: 'Rule',
+      action,
+      evaluate: 'before',
+      action_payload: null,
+      conditions: [{ source: 'q0', operator: 'equals', value, chainOperator: 'and' }],
+    }];
+
+    // q0, then a group with q1 and q2, then q3; q2 hides itself when q0 is "no"
+    const visibleBlocks = (answer: string, groupRule = rule('hide', 'yes')) => {
+      const store = useConversation();
+      const [q0, group, q1, q2, q3] = makeBlocks('q0', 'group', 'q1', 'q2', 'q3');
+      group.type = 'group';
+      group.logics = groupRule;
+      q1.parent_block = q2.parent_block = 'group';
+      q2.logics = rule('hide', 'no');
+
+      store.queue = createFlatQueue([q0, group, q1, q2, q3]);
+      store.payload = { q0: { payload: answer, actionId: '1' } };
+
+      return store.processedQueue.map((block) => block.id);
+    };
+
+    beforeEach(async () => {
+      const { isBlockVisible } = await vi.importActual<typeof logicHelpers>('./helpers/logic');
+      vi.mocked(logicHelpers.isBlockVisible).mockImplementation(isBlockVisible);
+    });
+
+    afterEach(() => {
+      vi.mocked(logicHelpers.isBlockVisible).mockReturnValue(true);
+    });
+
+    it('hides every question in the group when a hide rule on the group fires', () => {
+      expect(visibleBlocks('yes')).toEqual(['q0', 'q3']);
+    });
+
+    it('hides every question in the group when a show rule on the group does not match', () => {
+      expect(visibleBlocks('no', rule('show', 'yes'))).toEqual(['q0', 'q3']);
+    });
+
+    it('keeps the rule on a single question inside a shown group', () => {
+      expect(visibleBlocks('no')).toEqual(['q0', 'q1', 'q3']);
     });
   });
 

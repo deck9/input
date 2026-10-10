@@ -66,8 +66,19 @@ export const useConversation = defineStore("form", {
                 return [];
             }
 
+            const hiddenGroups = state.queue
+                .filter((block) => block.type === "group")
+                .filter((group) => !isBlockVisible(group, state.payload))
+                .map((group) => group.id);
+
             return state.queue
                 .filter((block) => isBlockVisible(block, state.payload))
+                // a question in a hidden group is hidden too
+                .filter(
+                    (block) =>
+                        !block.parent_block ||
+                        !hiddenGroups.includes(block.parent_block),
+                )
                 .filter((block) => block.type !== "group");
         },
 
