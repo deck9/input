@@ -34,6 +34,16 @@ location / {
 
 This configuration ensures that important request information like the scheme, host, and IP are passed to Input.
 
+## Caddy Configuration
+
+Caddy gets a TLS certificate for your domain and passes the host, scheme and IP headers by itself:
+
+```text
+your-domain.com {
+    reverse_proxy 127.0.0.1:8080
+}
+```
+
 ## Allowed Host and Trusted Proxies
 
 Input only answers requests for the host in `APP_URL` and its subdomains. Any other host gets a `400 Bad Request`. Make sure `APP_URL` is your public URL and that your proxy passes the original `Host` header (like `proxy_set_header Host $http_host;` above) or sets `X-Forwarded-Host`. Health checks that go through the app must use that host too.
@@ -43,6 +53,8 @@ By default, Input trusts the `X-Forwarded-*` headers from any proxy. To trust on
 ```bash
 -e TRUSTED_PROXIES=172.16.0.0/12
 ```
+
+With Docker Compose, put `TRUSTED_PROXIES=172.16.0.0/12` in your `.env` file instead.
 
 ## SSL/TLS Configuration
 

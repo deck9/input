@@ -87,7 +87,7 @@ docker compose up -d
 
 3. Open Input at `http://localhost:8080`
 
-To run Input on your own domain, set `APP_URL` to that domain and see [Proxy Setup / TLS](/hosting/proxy-setup). For production setups with MySQL, Redis, and MinIO, see our [Docker Compose for Production](/hosting/docker-compose) guide.
+To run Input on your own domain, set `APP_URL` to that domain and see [Proxy Setup / TLS](/hosting/proxy-setup). For production setups with MariaDB, Redis and S3 storage, see our [Docker Compose for Production](/hosting/docker-compose) guide. [Configuration](/hosting/configuration) covers the database, the queue worker and mail, and [Backups and Updates](/hosting/backups) what to back up.
 
 ## Getting Started After Installation
 
