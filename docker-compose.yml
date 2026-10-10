@@ -95,6 +95,15 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+  selenium:
+    image: "selenium/standalone-chromium"
+    profiles: ["dusk"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "/dev/shm:/dev/shm"
+    networks:
+      - sail
   mailhog:
     image: "jcalonso/mailhog:latest"
     ports:
