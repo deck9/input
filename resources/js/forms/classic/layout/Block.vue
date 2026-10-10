@@ -24,6 +24,10 @@
       {{ t(validator.message ?? "Something went wrong validating your input") }}
     </div>
 
+    <div v-if="store.submitFailed" class="text-sm text-red-500">
+      {{ t("submit_failed") }}
+    </div>
+
     <FormButton
       :isDisabled="!validator.valid"
       :isProcessing="store.isProcessing"

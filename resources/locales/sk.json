@@ -28,6 +28,7 @@
   "close": "Zavrieť",
   "type": "Zadajte Vašu odpoveď",
   "submit": "Odoslať",
+  "submit_failed": "Vaše odpovede sa nepodarilo odoslať. Skúste to znova.",
   "privacy_policy": "Ochrana osobných údajov",
   "other": "Iné",
   "next": "Ďalej",

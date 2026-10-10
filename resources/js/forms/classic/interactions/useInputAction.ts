@@ -17,7 +17,7 @@ export function useInputAction(block: PublicFormBlockModel) {
         const defaultValidator = string().max(100).required();
         const emailValidator = string().max(100).required().email();
         const linkValidator = string().max(100).required().url();
-        const numberValidator = number().max(100).required();
+        const numberValidator = number().required();
         const phoneValidator = string()
             .required()
             .min(7)

@@ -28,6 +28,7 @@
   "close": "Zamknij",
   "type": "Wprowadź swoją odpowiedź",
   "submit": "Wyślij",
+  "submit_failed": "Nie udało się wysłać odpowiedzi. Spróbuj ponownie.",
   "privacy_policy": "Polityka Prywatności",
   "other": "Inne",
   "next": "Następny",

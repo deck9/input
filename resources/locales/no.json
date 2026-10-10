@@ -28,6 +28,7 @@
   "close": "Lukk",
   "type": "Skriv svaret ditt",
   "submit": "Send inn",
+  "submit_failed": "Svarene dine kunne ikke sendes. Vennligst prøv igjen.",
   "privacy_policy": "Personvern",
   "other": "Annet",
   "next": "Neste",

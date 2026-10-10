@@ -29,7 +29,7 @@ The Number input type is specifically designed for collecting numerical data wit
 - **Measurements**: "How many hours do you sleep per night?"
 - **Age**: "What is your age?"
 - **Percentages**: "What percentage of time do you spend on this activity?"
-- **Ratings**: "On a scale from 0-100, how would you rate this product?"
+- **Ratings**: "On a scale from 0-10, how would you rate this product?"
 
 ::: tip Best Practice
 🌟 Always specify the units of measurement in your question or by using the symbol feature. For decimal inputs, clearly indicate how precise the answer should be. When collecting financial data, use the symbol feature to indicate currency.
@@ -45,7 +45,7 @@ The Number input type is specifically designed for collecting numerical data wit
 - When you want proper numeric formatting (thousands separators)
 
 ::: warning Note
-Remember that Number inputs only accept numeric values up to 100. If users need to enter larger numbers, or if they might need to add any text or explanations with their numbers, consider using a Short Text input instead and add validation.
+Number inputs only accept numeric values. If users might need to add any text or explanations with their numbers, consider using a Short Text input instead.
 :::
 
 ## Technical Details:
@@ -53,5 +53,5 @@ Remember that Number inputs only accept numeric values up to 100. If users need 
 - Numbers are displayed with proper thousands separators
 - For decimal inputs, the step size is automatically set based on decimal places
 - When decimal places is set to 0, only integers can be entered
-- The highest accepted value is 100; larger numbers fail validation
+- There is no minimum or maximum value
 - Mobile devices will show the appropriate keyboard type based on your decimal configuration

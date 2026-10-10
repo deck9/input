@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { setActivePinia, createPinia } from 'pinia';
+import { setActivePinia, createPinia, storeToRefs } from 'pinia';
+import { effectScope, nextTick } from 'vue';
 import { useConversation } from './conversation';
 import * as logicHelpers from './helpers/logic';
+import { callSubmitForm } from '@/api/conversation';
+import { useBeforeUnload } from '@/utils/useBeforeUnload';
 
 // Mock the logic helpers
 vi.mock('./helpers/logic', async (importOriginal) => {
@@ -182,22 +185,103 @@ describe('Conversation Store', () => {
     it.each(['javascript:void(0)', 'mailto:team@example.com'])(
       'skips a stored link that is not http(s): %s',
       async (link) => {
+        const navigation = vi.spyOn(console, 'error').mockImplementation(() => {});
         const store = await submitWithRedirectTo(link);
 
         // no redirect, so the form shows its end page
         expect(store.isSubmitted).toBe(true);
+        expect(navigation).not.toHaveBeenCalled();
+        navigation.mockRestore();
       },
     );
 
-    it('redirects to an https link', async () => {
+    it('turns the "Leave site?" prompt off before it redirects', async () => {
+      const store = useConversation();
+      const scope = effectScope();
+      scope.run(() => useBeforeUnload(storeToRefs(store).hasUnsavedPayload));
+
+      store.payload = { block1: { payload: 'yes', actionId: '1' } };
+      await nextTick();
+
+      const removeListener = vi.spyOn(window, 'removeEventListener');
+      let promptOffAtRedirect = false;
+
       // jsdom can't navigate and reports the attempt as an error
-      const navigation = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const navigation = vi.spyOn(console, 'error').mockImplementation(() => {
+        promptOffAtRedirect = removeListener.mock.calls.some(([type]) => type === 'beforeunload');
+      });
 
-      const store = await submitWithRedirectTo('https://example.com/thanks');
+      await submitWithRedirectTo('https://example.com/thanks');
 
-      expect(store.isSubmitted).toBe(false);
       expect(navigation).toHaveBeenCalled();
+      expect(promptOffAtRedirect).toBe(true);
       navigation.mockRestore();
+      removeListener.mockRestore();
+      scope.stop();
+    });
+  });
+
+  describe('callToActionUrl', () => {
+    it('keeps the query string of the link and adds the session id', () => {
+      const store = useConversation();
+      store.form = {
+        cta_link: 'https://example.com/thanks?ref=mail#top',
+        cta_append_session_id: true,
+      } as PublicFormModel;
+      store.session = { token: 'session' } as FormSessionModel;
+
+      expect(store.callToActionUrl).toBe(
+        'https://example.com/thanks?ref=mail&ipt_session=session#top',
+      );
+    });
+  });
+
+  describe('submit on the last block', () => {
+    const setupLastBlock = () => {
+      const store = useConversation();
+
+      vi.spyOn(store, 'currentBlock', 'get').mockReturnValue(makeBlocks('block1')[0]);
+      vi.spyOn(store, 'isLastBlock', 'get').mockReturnValue(true);
+      vi.mocked(logicHelpers.evaluateGotoLogic).mockReturnValue(null);
+      store.form = { uuid: 'form' } as PublicFormModel;
+      store.session = { token: 'session' } as FormSessionModel;
+
+      return store;
+    };
+
+    it('stops the spinner when the submit fails and lets the user retry', async () => {
+      const store = setupLastBlock();
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(callSubmitForm).mockRejectedValueOnce(new Error('Network Error'));
+
+      await store.next();
+
+      expect(store.isProcessing).toBe(false);
+      expect(store.submitFailed).toBe(true);
+      expect(store.isSubmitted).toBe(false);
+
+      await store.next();
+
+      expect(store.submitFailed).toBe(false);
+      expect(store.isSubmitted).toBe(true);
+    });
+
+    it('sends nothing on a second press while the submit runs', async () => {
+      const store = setupLastBlock();
+      let finishSubmit = () => {};
+      vi.mocked(callSubmitForm).mockReturnValueOnce(
+        new Promise((resolve) => {
+          finishSubmit = () => resolve({} as any);
+        }),
+      );
+
+      const firstPress = store.next();
+      await store.next();
+      finishSubmit();
+      await firstPress;
+
+      expect(callSubmitForm).toHaveBeenCalledTimes(1);
+      expect(store.isSubmitted).toBe(true);
     });
   });
 });

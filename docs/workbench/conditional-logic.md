@@ -37,8 +37,8 @@ Each logic rule consists of one or more conditions that determine when the rule'
 -   **is not equal to** – Anything except an exact match
 -   **contains** – Response includes the specified text
 -   **does not contain** – Response doesn't include the specified text
--   **is lower than** – Response value is less than specified value
--   **is greater than** – Response value is greater than specified value
+-   **is lower than** – Response is a number below the specified number; never true for text
+-   **is greater than** – Response is a number above the specified number; never true for text
 
 ### Combining Multiple Conditions
 
