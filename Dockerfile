@@ -35,6 +35,7 @@ RUN apk add --no-cache \
     php83-pdo_mysql \
     php83-pdo_sqlite \
     php83-bcmath \
+    php83-zip \
     sqlite
 
 COPY ./scripts/nginx/fastcgi_params /etc/nginx/fastcgi_params
@@ -49,8 +50,7 @@ COPY --from=mirror.gcr.io/library/composer /usr/bin/composer /usr/bin/composer
 COPY --chown=nobody . .
 COPY --chown=nobody --from=vendor /app/vendor ./vendor
 
-# Only the browser tests (Laravel Dusk) need ext-zip, and they never run in this image
-RUN composer install --optimize-autoloader --no-interaction --no-progress --ignore-platform-req=ext-zip
+RUN composer install --optimize-autoloader --no-interaction --no-progress
 
 USER root
 
