@@ -35,8 +35,10 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
 
-            // Dusk adds a route that logs in as any user, so it never loads outside local
-            $this->app->register(DuskServiceProvider::class);
+            // Dusk adds a route that logs in as any user: web requests get it only during a browser test run
+            if ($this->app->runningInConsole() || config('app.dusk')) {
+                $this->app->register(DuskServiceProvider::class);
+            }
         }
     }
 
