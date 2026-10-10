@@ -38,7 +38,7 @@ import { callGetFormTemplate, callImportFormTemplate } from "@/api/forms";
 import { useForm } from "@/stores";
 import { D9Label, D9Button } from "@deck9/ui";
 import { ref } from "vue";
-import { AxiosError } from "axios";
+import { templateImportError } from "@/utils/templateImport";
 
 import ValidationErrors from "@/components/ValidationErrors.vue";
 
@@ -93,11 +93,7 @@ const selectFiles = async (payload: Event) => {
 
       isImporting.value = false;
     } catch (error) {
-      errors.value = [
-        error instanceof AxiosError && error.response?.status === 422
-          ? error.response.data.message
-          : "This file could not be imported as a template.",
-      ];
+      errors.value = [templateImportError(error)];
     }
 
     // else picking the same file again fires no change event
