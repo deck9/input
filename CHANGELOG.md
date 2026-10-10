@@ -11,6 +11,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   **Upgrade step:** back up `APP_KEY` together with your database: answers are stored encrypted with it, and a new key can't read them. New hosting docs cover the database, queue worker, scheduler, mail, reverse proxy and backups. (#203)
 -   **Upgrade step:** if you deleted a team before this update, its forms are still online. Back up first, then run `php artisan input:prune-orphaned-forms` to list them, and add `--force` to delete them with their answers and files. The hosting docs on backups and updates show the full command. (#209)
 -   Fill in text questions from the link: a URL parameter named like a question's Identifier, such as `?email=ada@example.com`, prefills that answer, and the visitor can still change it. The embedding docs show how this works with links, iframes and the native embed. (#208)
+-   Create a form from a template file on the dashboard with "From template". A file that can't be imported shows why and creates no form. (#214)
 
 ### Changed
 
@@ -18,6 +19,10 @@ Lines marked **Upgrade step** need you to act after updating.
 -   **Upgrade step:** the minio image can no longer be pulled, so the production compose example now uses RustFS. On the old example, `docker compose pull` fails on the minio service, but a running install keeps working, and `docker compose pull --ignore-pull-failures` gets past the error. A new host, or one without the cached minio image, needs the RustFS setup from the hosting docs. Moving existing files over is a manual copy the docs don't cover. (#203)
 -   Docker builds pull their base images from Google's Docker Hub mirror, so they no longer fail on Docker Hub's pull limit. (#195)
 -   Checks on a pull request take about 3 minutes instead of 20. (#201)
+
+### Removed
+
+-   The preview-image feature, switched off since 2022, is gone. This drops the Browsershot package with its 6 security advisories, and `npm ci` no longer downloads Chrome when you build from source. (#215)
 
 ### Fixed
 
@@ -27,6 +32,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Changing or removing the logo or background on a duplicated form keeps the original form's image. (#205)
 -   A show/hide rule on a group now hides or shows all questions in that group in the public form. Group rules you already set up start working after the update, so respondents skip those questions when the rule hides the group. (#206)
 -   Answers to questions that a show/hide rule hides at submit are no longer saved, also inside a hidden group and when filled in from the link. A question that shows again before submit keeps its answer. (#210)
+-   A failed template import shows an error in the settings, such as which link is not allowed or that the form already has answers. Before, nothing happened. (#211)
 -   A form session's "active" check counted every session as active. Nothing in the app depends on it yet. (#194)
 
 ### Security

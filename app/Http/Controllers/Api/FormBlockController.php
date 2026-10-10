@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\FormBlockType;
-use App\Events\FormBlocksUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormBlockUpdateRequest;
 use App\Models\Form;
@@ -73,7 +72,6 @@ class FormBlockController extends Controller
 
         $block->update($request->validated());
 
-        event(new FormBlocksUpdated($block->form));
         $block->makeHidden('form');
 
         return response()->json($block, 200);

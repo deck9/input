@@ -5,7 +5,6 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FormEditController;
 use App\Http\Controllers\ViewFormController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MetaPreviewController;
 use App\Http\Controllers\MissingTeamController;
 use App\Http\Controllers\FormSettingsController;
 use App\Http\Controllers\FormSubmissionsController;
@@ -34,7 +33,6 @@ $router->middleware(['auth:sanctum', 'verified'])->group(function (Router $route
 });
 
 $router->get('/images/{path}', [ImageController::class, 'show'])->where('path', '.*')->middleware('throttle:images')->name('images.show');
-$router->get('/internal/meta-preview/{id}', [MetaPreviewController::class, 'show'])->name('internal.meta-preview');
 
 $router->get('/{uuid}', [ViewFormController::class, 'show'])
     ->middleware('check.form.access')

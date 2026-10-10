@@ -30,7 +30,6 @@
         "prettier": "^3.3.3",
         "prettier-eslint": "^16.3.0",
         "prettier-plugin-tailwindcss": "^0.6.6",
-        "puppeteer": "^23.4.0",
         "tailwind-config-viewer": "^2.0.4",
         "vite": "^5.4.6",
         "vitest": "^2.1.1"
