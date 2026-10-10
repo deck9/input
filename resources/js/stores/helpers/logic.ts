@@ -17,12 +17,16 @@ const asNumber = (value: unknown): number =>
         ? Number(value)
         : NaN;
 
+// date answers are YYYY-MM-DD, which sorts correctly as text
+const isDate = (value: string): boolean => /^\d{4}-\d{2}-\d{2}$/.test(value);
+
 export function evaluateCondition(
     condition: FormBlockLogicCondition,
     responseValue: any,
 ): boolean {
     const answer = asText(responseValue);
     const value = asText(condition.value);
+    const bothDates = isDate(answer) && isDate(value);
 
     switch (condition.operator) {
         case "equals":
@@ -34,9 +38,13 @@ export function evaluateCondition(
         case "containsNot":
             return !answer.includes(value);
         case "isLowerThan":
-            return asNumber(responseValue) < asNumber(condition.value);
+            return bothDates
+                ? answer < value
+                : asNumber(responseValue) < asNumber(condition.value);
         case "isGreaterThan":
-            return asNumber(responseValue) > asNumber(condition.value);
+            return bothDates
+                ? answer > value
+                : asNumber(responseValue) > asNumber(condition.value);
         default:
             return false;
     }

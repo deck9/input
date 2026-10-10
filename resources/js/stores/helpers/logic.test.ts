@@ -49,6 +49,11 @@ describe('Logic Helpers', () => {
       ['isLowerThan', '1', '', false],
       ['isLowerThan', '1', false, false],
       ['isGreaterThan', 'abc', 5, false],
+      ['isGreaterThan', '2024-01-01', '2024-05-01', true],
+      ['isGreaterThan', '2024-01-01', '2023-12-31', false],
+      ['isLowerThan', '2024-01-01', '2023-12-31', true],
+      ['isGreaterThan', '2024-01-01', 'abc', false],
+      ['isLowerThan', '5', '2024-01-01', false],
     ] as const)('%s "%s" on the answer %j is %s', (operator, value, answer, expected) => {
       expect(evaluateCondition(condition(operator, value), answer)).toBe(expected);
     });
