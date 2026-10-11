@@ -1,10 +1,12 @@
-export const operators: Array<{ key: Operator; label: string }> = [
-    { key: "equals", label: "is equal to" },
-    { key: "equalsNot", label: "is not equal to" },
-    { key: "contains", label: "contains" },
-    { key: "containsNot", label: "does not contain" },
-    { key: "isLowerThan", label: "is lower than" },
-    { key: "isGreaterThan", label: "is greater than" },
+export const operators: Array<
+    EditableFormBlockBlockLogicCondition["operator"]
+> = [
+    { id: "equals", key: "equals", label: "is equal to" },
+    { id: "equalsNot", key: "equalsNot", label: "is not equal to" },
+    { id: "contains", key: "contains", label: "contains" },
+    { id: "containsNot", key: "containsNot", label: "does not contain" },
+    { id: "isLowerThan", key: "isLowerThan", label: "is lower than" },
+    { id: "isGreaterThan", key: "isGreaterThan", label: "is greater than" },
 ];
 
 // rule values are text, while rating, scale and number answers are numbers

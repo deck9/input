@@ -14,7 +14,7 @@
         :disabled="store.isFirstBlock"
         @click="store.back()"
       >
-        <D9Icon icon="chevron-left" />
+        <D9Icon name="chevron-left" />
       </button>
       <span class="col-span-2 inline-block whitespace-nowrap py-1 font-medium">
         <span>{{ currentPage }}</span>
@@ -32,7 +32,7 @@
         :aria-label="t('page_next')"
         @click="!store.isLastBlock ? store.next() : false"
       >
-        <D9Icon icon="chevron-right" />
+        <D9Icon name="chevron-right" />
       </button>
     </div>
     <ProgressIndicator

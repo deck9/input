@@ -30,6 +30,7 @@
         </div>
         <div class="mt-px">
           <D9Switch
+            :label="`Enable ${webhook.name}`"
             v-model="isIntegrationEnabled"
             @change="updateIntegration"
           />

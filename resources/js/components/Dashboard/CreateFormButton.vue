@@ -5,7 +5,6 @@
       color="dark"
       icon="cloud-upload"
       :isLoading="isImporting"
-      :isDisabled="isImporting"
       @click="uploadInput?.click()"
     />
     <input

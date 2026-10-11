@@ -23,7 +23,7 @@
 
     <form @submit.prevent="submit">
       <div>
-        <d9-label for="email" label="Email" />
+        <d9-label id="email" label="Email" />
         <d9-input
           id="email"
           type="email"

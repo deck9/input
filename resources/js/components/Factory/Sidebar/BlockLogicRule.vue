@@ -48,14 +48,33 @@
             v-model="condition.chainOperator"
           />
           <div class="relative">
+            <label :for="`${uid}-${index}-source`" class="sr-only"
+              >Source block</label
+            >
             <D9Select
+              :id="`${uid}-${index}-source`"
               placeholder="Select a block"
               v-model="condition.source"
               size="small"
               :options="availableSourceBlocks"
-            />
+              by="key"
+            >
+              <template #option="{ option }">
+                <span class="inline-flex items-center text-xs">
+                  <span
+                    class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center"
+                    >{{ option.title }}</span
+                  >
+                  <span class="inline-block truncate">{{ option.text }}</span>
+                </span>
+              </template>
+            </D9Select>
+            <label :for="`${uid}-${index}-operator`" class="sr-only"
+              >Operator</label
+            >
             <div class="flex items-center space-x-2 mt-1">
               <D9Select
+                :id="`${uid}-${index}-operator`"
                 class="w-64"
                 placeholder="Select an operator"
                 v-model="condition.operator"
@@ -116,13 +135,25 @@
       </div>
 
       <div v-if="action === 'goto'" class="mt-3">
-        <D9Label label="Go to Block" />
+        <D9Label :id="`${uid}-target`" label="Go to Block" />
         <D9Select
+          :id="`${uid}-target`"
           placeholder="Select a block"
           v-model="target"
           size="small"
           :options="availableTargetBlocks"
-        />
+          by="key"
+        >
+          <template #option="{ option }">
+            <span class="inline-flex items-center text-xs">
+              <span
+                class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center"
+                >{{ option.title }}</span
+              >
+              <span class="inline-block truncate">{{ option.text }}</span>
+            </span>
+          </template>
+        </D9Select>
       </div>
     </div>
 
@@ -136,8 +167,7 @@
 
 <script lang="ts" setup>
 import { D9Input, D9Select, D9Icon, D9Label, D9Button } from "@deck9/ui";
-import { computed, Ref, ref, watch } from "vue";
-import escape from "lodash/escape";
+import { computed, Ref, ref, useId, watch } from "vue";
 import { useLogic } from "@/stores";
 import { operators } from "@/stores/helpers/logic";
 import { getTextFromHtml } from "@/utils";
@@ -145,6 +175,7 @@ import LabelToggle from "@/components/Factory/Shared/LabelToggle.vue";
 import ValidationErrors from "@/components/ValidationErrors.vue";
 
 const logicStore = useLogic();
+const uid = useId();
 
 const props = defineProps<{
   rule: FormBlockLogic;
@@ -166,16 +197,16 @@ const validation = computed(() => {
 const evaluate = ref<FormBlockLogic["evaluate"]>(props.rule.evaluate);
 const action = ref<FormBlockLogic["action"]>(props.rule.action);
 const conditions: Ref<Array<EditableFormBlockBlockLogicCondition>> = ref([]);
-const target = ref<Record<string, any> | null>(null);
+const target = ref<EditableFormBlockBlockLogicCondition["source"] | null>(null);
 
-// D9Select renders labels as HTML, so the user's text is escaped
 const getBlockOption = (block: FormBlockModel) => {
-  const title = escape(block.title?.length ? block.title : block.uuid);
-  const text = escape(getTextFromHtml(block.message ?? ""));
+  const text = getTextFromHtml(block.message ?? "");
 
   return {
     key: block.uuid,
-    label: `<div class="inline-flex items-center text-xs"><span class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center">${title}</span><span class="inline-block truncate">${text}</span></div>`,
+    label: text,
+    title: block.title?.length ? block.title : block.uuid,
+    text,
   };
 };
 
@@ -248,11 +279,13 @@ const availableSourceBlocks = computed(() => {
 });
 
 const availableTargetBlocks = computed(() => {
-  return logicStore.allBlocks
-    ?.filter((block) => block.type !== "group")
-    .map((block) => {
-      return getBlockOption(block);
-    });
+  return (
+    logicStore.allBlocks
+      ?.filter((block) => block.type !== "group")
+      .map((block) => {
+        return getBlockOption(block);
+      }) ?? []
+  );
 });
 
 watch(

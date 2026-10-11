@@ -37,7 +37,7 @@
             class="w-full rounded bg-white p-16 text-center"
             v-else-if="isLoading"
           >
-            <D9Spinner />
+            <D9Spinner label="Loading forms" />
           </div>
 
           <div v-else>

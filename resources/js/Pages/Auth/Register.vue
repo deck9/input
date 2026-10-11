@@ -27,7 +27,7 @@
       <input type="hidden" name="name" autocomplete="off" ref="honeypot" />
 
       <div class="mt-4">
-        <d9-label for="email" label="Email" />
+        <d9-label id="email" label="Email" />
         <d9-input
           id="email"
           type="email"
@@ -39,7 +39,7 @@
       </div>
 
       <div class="mt-4">
-        <d9-label for="password" label="Password" />
+        <d9-label id="password" label="Password" />
         <d9-input
           id="password"
           type="password"
@@ -56,7 +56,7 @@
         v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature"
       >
         <div class="flex items-center">
-          <d9-checkbox name="terms" id="terms" v-model="form.terms" />
+          <d9-checkbox name="terms" id="terms" label="" v-model="form.terms" />
           <label for="terms" class="ml-2 text-grey-500">
             I agree to the
             <a

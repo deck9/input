@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="flex justify-between">
-      <D9Label label="Allow Custom Response" />
+      <D9Label id="custom-response" label="Allow Custom Response" />
       <D9Switch
+        id="custom-response"
         label=""
         v-model="useCustomResponse"
         onLabel="yes"

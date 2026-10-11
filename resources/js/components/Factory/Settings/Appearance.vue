@@ -26,10 +26,12 @@
 
       <div class="mb-4 flex justify-between">
         <D9Label
+          id="brighter-inputs"
           label="Brighten Input Fields"
           description="This will brighten up the inputs and is especially desirable for themes with a dark background color."
         />
         <D9Switch
+          id="brighter-inputs"
           label="Brighten Input Fields"
           v-model="useBrighterInputs"
           onLabel="yes"
@@ -40,8 +42,9 @@
       <hr class="mb-4 border-grey-200" />
 
       <div class="mb-4 flex justify-between pb-3">
-        <D9Label label="Show Progress Indicator" />
+        <D9Label id="form-progress" label="Show Progress Indicator" />
         <D9Switch
+          id="form-progress"
           label="Show Progress Indicator"
           v-model="showFormProgress"
           onLabel="yes"
@@ -67,8 +70,8 @@ const brandColor = ref(store?.form?.brand_color);
 const backgroundColor = ref(store?.form?.background_color);
 const textColor = ref(store?.form?.text_color);
 
-const useBrighterInputs = ref(store?.form?.use_brighter_inputs);
-const showFormProgress = ref(store?.form?.show_form_progress);
+const useBrighterInputs = ref(store?.form?.use_brighter_inputs ?? false);
+const showFormProgress = ref(store?.form?.show_form_progress ?? false);
 
 const saveOptions = async () => {
   isSaving.value = true;

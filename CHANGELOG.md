@@ -16,10 +16,13 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The server now limits a file question to 10 files, and only accepts whole-number ids when you change or delete questions, answer options, logic rules, webhooks or submissions. Before, the file limit was only checked in the editor. The update sets a stored file limit above 10, below 1 or in text to 10, and rounds a decimal down. (#233)
 -   The form editor tells you when it can't save a change, with the server's reason when there is one. Before, the change looked saved but was lost when you reloaded the page. (#234)
 -   A file question now keeps its file limit when several files for one answer are uploaded at the same time. Before, an answer could end up with more files than the question allows. (#235)
+-   Fields, switches and selects in the editor and on the login pages now have labels a screen reader reads, and menus and loading spinners have names. Buttons keep focus while they load. (#231)
+-   The logic editor ticks the block you picked. Decimal places, max files and max file size are kept in range when saved. A rating whose icon the form can't show now shows stars instead of nothing. (#231)
 
 ### Security
 
 -   The text editor for questions and the completion page now uses tiptap 3, which fixes a moderate advisory in tiptap 2. Texts you wrote before stay as they are. (#226)
+-   Input's UI library, @deck9/ui, no longer pulls in a uuid version with a moderate advisory (GHSA-w5hq-g745-h8pq). Input never used the affected functions. (#231)
 
 ## [2.2.0] - 2026-10-11
 
