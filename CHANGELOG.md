@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Added
+
+-   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. A link with an unknown filter or sort now shows the form list instead of an error. (#242)
+
 ### Fixed
 
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
