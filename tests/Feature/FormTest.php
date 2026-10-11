@@ -471,4 +471,5 @@ test('a form whose name starts with an emoji or non-Latin text shows in the list
     ['🎉 Party', '🎉'],
     ['调查问卷', '调查'],
     ['€ Preise', '€'],
+    ['Müller Umfrage', 'Mü'],
 ]);
