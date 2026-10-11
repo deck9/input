@@ -161,6 +161,28 @@ test('can delete a block', function () {
     $this->assertNull($block->fresh());
 });
 
+test('a block id that is not a whole number is not found and changes nothing', function (string $suffix) {
+    $block = FormBlock::factory()->create([
+        'message' => 'Hey there',
+        'type' => FormBlockType::none,
+    ]);
+
+    $this->actingAs($block->form->user)
+        ->json('post', route('api.blocks.update', $block->id.$suffix), [
+            'message' => 'Ok?',
+            'type' => FormBlockType::radio,
+        ])
+        ->assertNotFound();
+
+    $this->actingAs($block->form->user)
+        ->json('DELETE', route('api.blocks.delete', $block->id.$suffix))
+        ->assertNotFound();
+
+    expect($block->fresh())
+        ->message->toBe('Hey there')
+        ->type->toBe(FormBlockType::none);
+})->with(['xlf', '.0', 'e0']);
+
 test('cannot delete blocks of other users', function () {
     /** @var User $otherUser */
     $otherUser = User::factory()->withTeam()->create();

@@ -55,6 +55,11 @@ class FormBlockInteractionController extends Controller
                     'label' => 'exclude_if:is_editable,false|min:1',
                 ]);
                 break;
+            case FormBlockInteractionType::file:
+                $request->validate([
+                    'options.allowedFiles' => 'nullable|integer|min:1',
+                ]);
+                break;
         }
 
         // the editor sends the stored uuid back on every save, so only check a changed one

@@ -309,6 +309,31 @@ test('template import drops a logic rule that points to a block missing from the
     expect($form->fresh()->formBlocks[0]->formBlockLogics->pluck('name')->all())->toBe(['Kept']);
 });
 
+test('template import stores allowed files of a file question the way uploads read them', function (mixed $allowedFiles, ?int $stored) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['type' => 'input-file', 'message' => 'Files', 'sequence' => 0, 'formBlockInteractions' => [
+                ['type' => 'file', 'options' => ['allowedFiles' => $allowedFiles, 'allowedFileSize' => 4], 'sequence' => 0],
+            ]],
+        ]]),
+    ])->assertOk();
+
+    expect($form->fresh()->formBlocks[0]->formBlockInteractions[0]->options)
+        ->toBe(['allowedFiles' => $stored, 'allowedFileSize' => 4]);
+})->with([
+    'a whole number' => [3, 3],
+    'a whole number as text' => ['3', 3],
+    'above the limit' => [50, 10],
+    'zero' => [0, 10],
+    'a negative number' => [-1, 10],
+    'text' => ['abc', 10],
+    'empty text' => ['', 10],
+    'a decimal' => [2.5, 2],
+    'none' => [null, null],
+]);
+
 test('a template made before logic rules were exported still imports', function () {
     $form = Form::factory()->create();
 

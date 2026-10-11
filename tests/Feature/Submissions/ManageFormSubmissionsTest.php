@@ -179,3 +179,13 @@ test('submissions response is a pagination response', function () {
     $this->assertArrayHasKey('to', $response->json('meta'));
     $this->assertArrayHasKey('total', $response->json('meta'));
 });
+
+test('a submission id that is not a whole number is not found and deletes nothing', function (string $suffix) {
+    $session = FormSession::factory()->completed()->create();
+
+    $this->actingAs($session->form->user)
+        ->json('delete', route('api.forms.submissions.delete', ['form' => $session->form->uuid, 'session' => $session->id.$suffix]))
+        ->assertNotFound();
+
+    expect($session->fresh())->not->toBeNull();
+})->with(['xlf', '.0', 'e0']);
