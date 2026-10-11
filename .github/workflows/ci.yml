@@ -5,7 +5,18 @@ on:
 
 jobs:
   tests:
+    name: tests (${{ matrix.db }})
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - db: mysql
+            database: input
+          # most Docker installs run on SQLite
+          - db: sqlite
+            database: database/database.sqlite
 
     services:
       mariadb.test:
@@ -31,7 +42,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: npm
 
       - name: Copy .env
@@ -69,11 +80,12 @@ jobs:
 
       - name: Execute tests (Unit and Feature tests) via PestPHP
         env:
+          DB_CONNECTION: ${{ matrix.db }}
           DB_PORT: 3306
           DB_HOST: 127.0.0.1
           DB_USERNAME: sail
           DB_PASSWORD: password
-          DB_DATABASE: input
+          DB_DATABASE: ${{ matrix.database }}
         run: vendor/bin/pest
 
   browser-tests:
@@ -92,7 +104,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: npm
 
       - name: Copy .env
@@ -152,7 +164,7 @@ jobs:
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: npm
 
       - name: Install NPM Dependencies

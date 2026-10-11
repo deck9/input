@@ -47,6 +47,7 @@ All installs should update: this release limits the public form endpoints and fi
 -   The webhook log shows how often a webhook was really tried. Before, it stopped counting at 2. (#218)
 -   A logo or background whose file is already gone, and shows as a broken image, can be removed again. (#219)
 -   The API and template import refuse a group inside a group, and a question in a group that belongs to another form or is missing from the template, so no questions disappear from the public form. Both also refuse a show/hide rule on a group that uses a question inside that group, which sent respondents back to the start. (#220)
+-   **Upgrade step:** on SQLite, deleting a team, form, question or submission kept rows in the database: upload records, and on installs set up before v2.0 also answers. The update adds the missing foreign keys, so this no longer happens. To remove what was left behind, back up first, then run `php artisan input:prune-orphaned-forms` and add `--force`. (#225)
 
 ### Security
 
@@ -55,6 +56,8 @@ All installs should update: this release limits the public form endpoints and fi
 -   Webhook responses show as plain text in the submissions view. (#196)
 -   Question labels in the logic editor's pickers show as plain text. (#199)
 -   Public forms have limits: the image address only serves form logos and backgrounds, in the sizes the form uses. Uploads must match the question's file types, size and count (at most 8 MB per file, also in the editor), answers can be up to 30 KB and form link parameters up to 8 KB. Images and uploads are rate-limited per visitor, so behind a proxy check that `TRUSTED_PROXIES` lists it. (#212)
+-   **Upgrade step:** building from source needs Node 22. The Docker image already has it. JavaScript packages with known security advisories are updated, among them axios, lodash, vue-i18n, the text editor's ProseMirror and the build tools Vite and Vitest. (#223)
+-   Input runs on Laravel 13 instead of Laravel 11, which no longer gets security fixes. This closes 3 known Laravel security issues, one of them high. Logo and background uploads refuse SVG files, which never showed. Forms in an iframe on another site now load and submit. Before, they stayed blank. (#224)
 
 ## [2.1.0] - 2026-10-09
 

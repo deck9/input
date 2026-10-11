@@ -5,13 +5,14 @@ namespace Tests\Feature\Jetstream;
 use App\Models\Form;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ShowFormTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function cannot_view_unpublished_form()
     {
         $form = Form::factory()->unpublished()->create();
@@ -20,7 +21,7 @@ class ShowFormTest extends TestCase
             ->assertStatus(404);
     }
 
-    /** @test */
+    #[Test]
     public function can_view_the_form_view_when_form_is_unpublished_but_owner()
     {
         $form = Form::factory()->unpublished()->create();
@@ -29,7 +30,7 @@ class ShowFormTest extends TestCase
             ->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function cannot_view_the_form_view_when_form_is_unpublished_and_other_user()
     {
         $form = Form::factory()->unpublished()->create();
@@ -41,7 +42,7 @@ class ShowFormTest extends TestCase
             ->assertStatus(404);
     }
 
-    /** @test */
+    #[Test]
     public function can_view_the_form_view_when_form_is_published()
     {
         $form = Form::factory()->create();
@@ -50,7 +51,7 @@ class ShowFormTest extends TestCase
             ->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function can_view_published_forms_meta_data()
     {
         $form = Form::factory()->create();
