@@ -48,14 +48,22 @@
             v-model="condition.chainOperator"
           />
           <div class="relative">
+            <label :for="`${uid}-${index}-source`" class="sr-only"
+              >Source block</label
+            >
             <D9Select
+              :id="`${uid}-${index}-source`"
               placeholder="Select a block"
               v-model="condition.source"
               size="small"
               :options="availableSourceBlocks"
             />
+            <label :for="`${uid}-${index}-operator`" class="sr-only"
+              >Operator</label
+            >
             <div class="flex items-center space-x-2 mt-1">
               <D9Select
+                :id="`${uid}-${index}-operator`"
                 class="w-64"
                 placeholder="Select an operator"
                 v-model="condition.operator"
@@ -116,8 +124,9 @@
       </div>
 
       <div v-if="action === 'goto'" class="mt-3">
-        <D9Label label="Go to Block" />
+        <D9Label :id="`${uid}-target`" label="Go to Block" />
         <D9Select
+          :id="`${uid}-target`"
           placeholder="Select a block"
           v-model="target"
           size="small"
@@ -136,7 +145,7 @@
 
 <script lang="ts" setup>
 import { D9Input, D9Select, D9Icon, D9Label, D9Button } from "@deck9/ui";
-import { computed, Ref, ref, watch } from "vue";
+import { computed, Ref, ref, useId, watch } from "vue";
 import escape from "lodash/escape";
 import { useLogic } from "@/stores";
 import { operators } from "@/stores/helpers/logic";
@@ -145,6 +154,7 @@ import LabelToggle from "@/components/Factory/Shared/LabelToggle.vue";
 import ValidationErrors from "@/components/ValidationErrors.vue";
 
 const logicStore = useLogic();
+const uid = useId();
 
 const props = defineProps<{
   rule: FormBlockLogic;

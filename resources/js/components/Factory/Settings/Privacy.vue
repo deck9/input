@@ -12,8 +12,9 @@
       </div>
 
       <div class="mb-4 flex justify-between">
-        <D9Label label="Auto Delete Submissions" />
+        <D9Label id="auto-delete" label="Auto Delete Submissions" />
         <D9Switch
+          id="auto-delete"
           label=""
           v-model="isAutoDeleteEnabled"
           onLabel="yes"

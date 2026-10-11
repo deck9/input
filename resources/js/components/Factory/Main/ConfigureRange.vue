@@ -35,8 +35,13 @@
 
     <template v-if="workbench.block?.type === 'rating'">
       <div class="mb-4" v-if="icon">
-        <D9Label label="Icon" />
-        <D9Select :options="iconOptions" v-model="icon" :icon="icon.icon" />
+        <D9Label id="range-icon" label="Icon" />
+        <D9Select
+          id="range-icon"
+          :options="iconOptions"
+          v-model="icon"
+          :icon="icon.icon"
+        />
       </div>
       <div class="mb-4">
         <D9Label label="Color" />

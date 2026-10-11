@@ -57,8 +57,9 @@
                         />
                       </div>
                       <div class="mb-4">
-                        <D9Label label="Submit Method" />
+                        <D9Label id="webhook-method" label="Submit Method" />
                         <D9Select
+                          id="webhook-method"
                           block
                           :options="webhookRequestMethod"
                           v-model="webhookMethod"

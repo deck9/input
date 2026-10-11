@@ -1,7 +1,10 @@
 <template>
   <div class="z-20">
-    <h2 class="mb-2 text-base font-bold">Type</h2>
+    <h2 class="mb-2 text-base font-bold">
+      <label for="block-type">Type</label>
+    </h2>
     <D9Select
+      id="block-type"
       class="mb-2"
       v-model="selected"
       placeholder="Please select a type"

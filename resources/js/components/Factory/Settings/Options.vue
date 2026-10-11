@@ -12,13 +12,18 @@
       </div>
 
       <div class="mb-4">
-        <D9Label label="Form Language" />
-        <D9Select v-model="language" :options="languageOptions" />
+        <D9Label id="form-language" label="Form Language" />
+        <D9Select
+          id="form-language"
+          v-model="language"
+          :options="languageOptions"
+        />
       </div>
 
       <div class="mb-4 flex justify-between">
-        <D9Label label="Send email notifications" />
+        <D9Label id="notification-via-mail" label="Send email notifications" />
         <D9Switch
+          id="notification-via-mail"
           label=""
           v-model="isNotificationViaMail"
           onLabel="yes"

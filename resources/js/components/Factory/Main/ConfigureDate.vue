@@ -9,8 +9,8 @@
       <D9Input type="date" block v-model="maxDate" />
     </div>
     <div class="mb-4 flex items-center justify-between">
-      <D9Label label="Do not allow past dates" />
-      <D9Switch label="" v-model="noPastDates" />
+      <D9Label id="no-past-dates" label="Do not allow past dates" />
+      <D9Switch id="no-past-dates" label="" v-model="noPastDates" />
     </div>
   </div>
 </template>
