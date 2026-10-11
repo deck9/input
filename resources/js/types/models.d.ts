@@ -86,8 +86,12 @@ interface FormBlockLogicCondition {
 }
 
 interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {
-    source?: { key: FormBlockModel["uuid"] };
-    operator: { key: Operator };
+    source?: {
+        id: FormBlockModel["uuid"];
+        key: FormBlockModel["uuid"];
+        label: string;
+    };
+    operator: { id: Operator; key: Operator; label: string };
 }
 
 interface ValidationError {
@@ -184,7 +188,7 @@ interface FormBlockInteractionModel extends BaseModel {
 }
 
 type InteractionOption = {
-    id?: number;
+    id: number;
     label: string;
     value: FormBlockType;
     icon?: string;

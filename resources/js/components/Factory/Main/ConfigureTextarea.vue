@@ -17,8 +17,8 @@
       <D9Input
         placeholder="The size of the textarea"
         type="number"
-        min="1"
-        max="10"
+        :min="1"
+        :max="10"
         step="1"
         block
         v-model="rows"

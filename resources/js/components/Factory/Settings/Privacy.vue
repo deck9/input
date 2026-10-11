@@ -23,7 +23,7 @@
 
       <div class="mb-4" v-show="isAutoDeleteEnabled">
         <D9Label label="Data retention in days" />
-        <D9Input type="number" min="1" v-model="dataRetentionDays" block />
+        <D9Input type="number" :min="1" v-model="dataRetentionDays" block />
       </div>
 
       <ValidationErrors
@@ -53,7 +53,7 @@ const errors = ref<string[]>([]);
 const privacyLink = ref(store?.form?.privacy_link);
 const legalNoticeLink = ref(store?.form?.legal_notice_link);
 
-const isAutoDeleteEnabled = ref(store?.form?.is_auto_delete_enabled);
+const isAutoDeleteEnabled = ref(store?.form?.is_auto_delete_enabled ?? false);
 const dataRetentionDays = ref(store?.form?.data_retention_days);
 
 const saveOptions = async () => {

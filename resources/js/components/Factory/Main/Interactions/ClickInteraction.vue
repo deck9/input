@@ -68,7 +68,7 @@ const emit = defineEmits<{
   (e: "onDelete", index: number): void;
 }>();
 
-const labelElement = ref<D9Input | null>(null);
+const labelElement = ref<InstanceType<typeof D9Input> | null>(null);
 
 const label: Ref<FormBlockInteractionModel["label"]> = ref(props.item.label);
 const message: Ref<FormBlockInteractionModel["label"]> = ref(

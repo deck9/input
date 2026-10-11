@@ -67,8 +67,8 @@ const brandColor = ref(store?.form?.brand_color);
 const backgroundColor = ref(store?.form?.background_color);
 const textColor = ref(store?.form?.text_color);
 
-const useBrighterInputs = ref(store?.form?.use_brighter_inputs);
-const showFormProgress = ref(store?.form?.show_form_progress);
+const useBrighterInputs = ref(store?.form?.use_brighter_inputs ?? false);
+const showFormProgress = ref(store?.form?.show_form_progress ?? false);
 
 const saveOptions = async () => {
   isSaving.value = true;

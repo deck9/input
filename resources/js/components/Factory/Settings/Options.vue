@@ -48,20 +48,22 @@ const isSaving = ref(false);
 
 const name = ref(store?.form?.name);
 const description = ref(store?.form?.description);
-const isNotificationViaMail = ref(store?.form?.is_notification_via_mail);
+const isNotificationViaMail = ref(
+  store?.form?.is_notification_via_mail ?? false,
+);
 
 const languageOptions = ref([
   // Default language
-  { label: "English", value: "en" },
+  { id: "en", label: "English", value: "en" },
 
   // Alternative languages
-  { label: "Français", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Norwegian", value: "no" },
-  { label: "Polish", value: "pl" },
-  { label: "Ukrainian", value: "uk" },
-  { label: "Slovak", value: "sk" },
-  { label: "简体中文", value: "zh" },
+  { id: "fr", label: "Français", value: "fr" },
+  { id: "de", label: "German", value: "de" },
+  { id: "no", label: "Norwegian", value: "no" },
+  { id: "pl", label: "Polish", value: "pl" },
+  { id: "uk", label: "Ukrainian", value: "uk" },
+  { id: "sk", label: "Slovak", value: "sk" },
+  { id: "zh", label: "简体中文", value: "zh" },
 ]);
 
 const language = ref(

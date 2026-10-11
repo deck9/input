@@ -18,7 +18,7 @@
     <D9Input
       :placeholder="`The maximum number of allowed files to upload (max. ${maxFiles})`"
       type="number"
-      min="1"
+      :min="1"
       :max="maxFiles"
       step="1"
       block
@@ -34,7 +34,7 @@
     <D9Input
       :placeholder="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
       type="number"
-      min="1"
+      :min="1"
       :max="maxFileSize"
       step="1"
       block

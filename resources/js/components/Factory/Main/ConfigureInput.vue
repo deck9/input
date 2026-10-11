@@ -18,8 +18,8 @@
       <D9Input
         placeholder="Number of decimal places"
         type="number"
-        min="0"
-        max="10"
+        :min="0"
+        :max="10"
         step="1"
         block
         v-model="decimalPlaces"
@@ -27,7 +27,7 @@
     </div>
     <div class="mb-4">
       <D9Label label="Show Symbol" />
-      <D9Input v-model="useSymbol" block max="3" />
+      <D9Input v-model="useSymbol" block :max="3" />
     </div>
   </template>
 </template>

@@ -141,8 +141,8 @@ const open = ref(false);
 const isSaving = ref(false);
 
 const webhookRequestMethod = ref([
-  { label: "GET", value: "GET" },
-  { label: "POST", value: "POST" },
+  { id: "GET", label: "GET", value: "GET" },
+  { id: "POST", label: "POST", value: "POST" },
 ]);
 
 const name = ref("");

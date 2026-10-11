@@ -166,7 +166,7 @@ const validation = computed(() => {
 const evaluate = ref<FormBlockLogic["evaluate"]>(props.rule.evaluate);
 const action = ref<FormBlockLogic["action"]>(props.rule.action);
 const conditions: Ref<Array<EditableFormBlockBlockLogicCondition>> = ref([]);
-const target = ref<Record<string, any> | null>(null);
+const target = ref<EditableFormBlockBlockLogicCondition["source"] | null>(null);
 
 // D9Select renders labels as HTML, so the user's text is escaped
 const getBlockOption = (block: FormBlockModel) => {
@@ -174,6 +174,7 @@ const getBlockOption = (block: FormBlockModel) => {
   const text = escape(getTextFromHtml(block.message ?? ""));
 
   return {
+    id: block.uuid,
     key: block.uuid,
     label: `<div class="inline-flex items-center text-xs"><span class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center">${title}</span><span class="inline-block truncate">${text}</span></div>`,
   };
@@ -248,11 +249,13 @@ const availableSourceBlocks = computed(() => {
 });
 
 const availableTargetBlocks = computed(() => {
-  return logicStore.allBlocks
-    ?.filter((block) => block.type !== "group")
-    .map((block) => {
-      return getBlockOption(block);
-    });
+  return (
+    logicStore.allBlocks
+      ?.filter((block) => block.type !== "group")
+      .map((block) => {
+        return getBlockOption(block);
+      }) ?? []
+  );
 });
 
 watch(

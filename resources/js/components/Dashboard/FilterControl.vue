@@ -17,10 +17,10 @@ const emit = defineEmits<{
 }>();
 
 const options = ref([
-  { label: "All forms", value: null },
-  { label: "Published", value: "published" },
-  { label: "Unpublished", value: "unpublished" },
-  { label: "Archived", value: "trashed" },
+  { id: "all", label: "All forms", value: null },
+  { id: "published", label: "Published", value: "published" },
+  { id: "unpublished", label: "Unpublished", value: "unpublished" },
+  { id: "trashed", label: "Archived", value: "trashed" },
 ]);
 
 const filterSetting = ref(

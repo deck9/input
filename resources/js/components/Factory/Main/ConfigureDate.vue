@@ -27,7 +27,7 @@ const { findOrCreate } = useInteractionsUtils();
 
 const minDate = ref<string | null>("");
 const maxDate = ref<string | null>("");
-const noPastDates = ref<boolean | null>(false);
+const noPastDates = ref(false);
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
@@ -36,7 +36,7 @@ onMounted(async () => {
 
     minDate.value = interaction.value.options?.minDate ?? null;
     maxDate.value = interaction.value.options?.maxDate ?? null;
-    noPastDates.value = interaction.value.options?.noPastDates ?? null;
+    noPastDates.value = interaction.value.options?.noPastDates ?? false;
   }
 });
 

@@ -68,16 +68,17 @@ const labelLeft = ref("");
 const labelRight = ref("");
 
 const iconOptions = ref([
-  { label: "Star", value: "star", icon: "star" },
-  { label: "Heart", value: "heart", icon: "heart" },
-  { label: "Poo", value: "poo", icon: "poo" },
-  { label: "Bolt", value: "bolt", icon: "bolt" },
-  { label: "Tree", value: "tree", icon: "tree" },
-  { label: "Crown", value: "crown", icon: "crown" },
-  { label: "Trophy", value: "trophy", icon: "trophy" },
+  { id: "star", label: "Star", value: "star", icon: "star" },
+  { id: "heart", label: "Heart", value: "heart", icon: "heart" },
+  { id: "poo", label: "Poo", value: "poo", icon: "poo" },
+  { id: "bolt", label: "Bolt", value: "bolt", icon: "bolt" },
+  { id: "tree", label: "Tree", value: "tree", icon: "tree" },
+  { id: "crown", label: "Crown", value: "crown", icon: "crown" },
+  { id: "trophy", label: "Trophy", value: "trophy", icon: "trophy" },
 ]);
 
 const icon = ref<{
+  id: string;
   label: string;
   value: string;
   icon: string;
