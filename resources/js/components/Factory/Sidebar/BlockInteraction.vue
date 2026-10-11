@@ -1,13 +1,19 @@
 <template>
   <div class="relative ml-[3px] flex items-center py-1">
     <IndexItem class="shrink-0" :type="interaction.type" :index="index" />
-    <div class="ml-2 text-sm" v-if="interaction.type === 'file'">
+    <div
+      class="ml-2 text-sm"
+      v-if="interaction.type === 'file' && interaction.options"
+    >
       <span>up to {{ interaction.options.allowedFiles }} files</span>,
       <span class="ml-px"
         >max {{ interaction.options.allowedFileSize }} MB</span
       >
     </div>
-    <div class="ml-2 text-sm" v-else-if="interaction.type === 'range'">
+    <div
+      class="ml-2 text-sm"
+      v-else-if="interaction.type === 'range' && interaction.options"
+    >
       <span
         >rate from <strong>{{ interaction.options.start }}</strong> to
         <strong>{{ interaction.options.end }}</strong></span
