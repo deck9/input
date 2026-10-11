@@ -145,7 +145,7 @@
               type="button"
               class="block w-full text-left"
               label="Duplicate Form"
-              @click="duplicateForm"
+              @click="isNaming = true"
             />
           </template>
           <template v-else>
@@ -166,14 +166,25 @@
           </template>
         </D9Menu>
       </div>
+      <FormNameDialog
+        :show="isNaming"
+        title="Duplicate form"
+        label="Name"
+        confirmLabel="Duplicate"
+        :defaultName="copyName"
+        :isSaving="isDuplicating"
+        @close="isNaming = false"
+        @submit="duplicateForm"
+      />
     </td>
   </tr>
 </template>
 
 <script setup lang="ts">
 import FormAvatar from "@/components/Dashboard/FormAvatar.vue";
+import FormNameDialog from "@/components/Dashboard/FormNameDialog.vue";
 import { D9Icon, D9Menu, D9MenuLink, D9Button } from "@deck9/ui";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import {
   callDeleteForeverForm,
@@ -191,6 +202,12 @@ const props = defineProps<{
 const container = ref(null);
 const isActive = ref(false);
 const isPublishMenuActive = ref(false);
+const isNaming = ref(false);
+const isDuplicating = ref(false);
+// by characters like the server's 255 limit, so an emoji isn't cut in half
+const copyName = computed(() =>
+  Array.from(`${props.form.name} (copy)`).slice(0, 255).join(""),
+);
 
 onClickOutside(container, () => {
   isActive.value = false;
@@ -204,25 +221,22 @@ const setPublishMenuActive = () => {
   isPublishMenuActive.value = true;
 };
 
-const duplicateForm = async () => {
-  const form = props.form;
+const duplicateForm = async (newName: string) => {
+  try {
+    isDuplicating.value = true;
 
-  isActive.value = false;
+    const newFormResponse = await callDuplicateForm(
+      props.form,
+      newName || copyName.value,
+    );
 
-  const newName = window.prompt(
-    "Please enter a name for the new form",
-    `Copy of ${form.name}`,
-  );
-
-  if (!newName) {
-    return;
+    window.location.href = window.route("forms.edit", {
+      uuid: newFormResponse.data.uuid,
+    });
+  } catch (error) {
+    console.warn(error);
+    isDuplicating.value = false;
   }
-
-  const newFormResponse = await callDuplicateForm(form, newName);
-
-  window.location.href = window.route("forms.edit", {
-    uuid: newFormResponse.data.uuid,
-  });
 };
 
 const publishForm = async () => {

@@ -4,7 +4,6 @@
       label="From template"
       color="dark"
       icon="cloud-upload"
-      :isLoading="isImporting"
       @click="uploadInput?.click()"
     />
     <input
@@ -12,19 +11,29 @@
       class="hidden"
       ref="uploadInput"
       accept="application/json"
-      @change="createFromTemplate"
+      @change="pickTemplate"
     />
     <D9Button
       label="Create form"
       icon="add"
       iconPosition="right"
-      :isLoading="isSubmitting"
-      @click="createForm"
+      @click="openDialog(null, '')"
     />
     <ValidationErrors
       v-if="errors.length > 0"
       class="absolute right-0 top-full z-10 mt-2 w-80 rounded bg-white p-4 shadow"
       :errors="errors"
+    />
+    <FormNameDialog
+      :show="isNaming"
+      title="Create form"
+      label="Form name"
+      confirmLabel="Create form"
+      placeholder="Customer feedback"
+      :defaultName="defaultName"
+      :isSaving="isSaving"
+      @close="isNaming = false"
+      @submit="submitName"
     />
   </div>
 </template>
@@ -36,14 +45,23 @@ import { callCreateForm, callCreateFormFromTemplate } from "@/api/forms";
 import { router } from "@inertiajs/vue3";
 import { templateImportError } from "@/utils/templateImport";
 
+import FormNameDialog from "@/components/Dashboard/FormNameDialog.vue";
 import ValidationErrors from "@/components/ValidationErrors.vue";
 
-const isSubmitting = ref(false);
-const isImporting = ref(false);
+const isNaming = ref(false);
+const isSaving = ref(false);
+const template = ref<File | null>(null);
+const defaultName = ref("");
 const errors = ref<string[]>([]);
 const uploadInput = ref<HTMLInputElement | null>(null);
 
-const createFromTemplate = async (event: Event) => {
+const openDialog = (file: File | null, name: string) => {
+  template.value = file;
+  defaultName.value = name;
+  isNaming.value = true;
+};
+
+const pickTemplate = async (event: Event) => {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
 
@@ -59,38 +77,47 @@ const createFromTemplate = async (event: Event) => {
   try {
     // a broken file gets a plain message, not the server's file type rule
     JSON.parse(await file.text());
-
-    const formName = window.prompt("Give your form a name");
-
-    if (formName === null) {
-      return;
-    }
-
-    isImporting.value = true;
-    const response = await callCreateFormFromTemplate(file, formName);
-    router.visit(window.route("forms.edit", { id: response.data.uuid }));
   } catch (error) {
     errors.value = [templateImportError(error)];
-    isImporting.value = false;
+    return;
+  }
+
+  openDialog(file, file.name.replace(/\.json$/i, ""));
+};
+
+const submitName = (formName: string) => {
+  if (template.value) {
+    createFromTemplate(template.value, formName);
+  } else {
+    createForm(formName);
   }
 };
 
-const createForm = async () => {
-  const formName = window.prompt("Give your form a name");
-
+const createFromTemplate = async (file: File, formName: string) => {
   try {
-    isSubmitting.value = true;
+    isSaving.value = true;
+    const response = await callCreateFormFromTemplate(file, formName);
+    router.visit(window.route("forms.edit", { id: response.data.uuid }));
+  } catch (error) {
+    // the name is fine, the file isn't: show why next to the buttons
+    isNaming.value = false;
+    isSaving.value = false;
+    errors.value = [templateImportError(error)];
+  }
+};
 
-    let response = await callCreateForm(formName ?? undefined);
+const createForm = async (formName: string) => {
+  try {
+    isSaving.value = true;
+
+    let response = await callCreateForm(formName || undefined);
 
     if (response.status === 200) {
       router.visit(window.route("forms.edit", { id: response.data.uuid }));
     }
   } catch (error) {
     console.warn(error);
-    setTimeout(() => {
-      isSubmitting.value = false;
-    }, 200);
+    isSaving.value = false;
   }
 };
 </script>
