@@ -284,7 +284,8 @@ class Form extends BaseModel
             ' ',
             collect($strings)
                 ->take(2)
-                ->map(fn ($item) => substr($item, 0, 2))
+                // by characters: a byte cut can split one and break the form's JSON
+                ->map(fn ($item) => mb_substr($item, 0, 2))
                 ->toArray()
         );
     }

@@ -448,3 +448,27 @@ test('with auto delete off, the retention period is not checked', function () {
 
     $this->assertEquals('https://example.com/privacy', $form->fresh()->privacy_link);
 });
+
+test('a form whose name starts with an emoji or non-Latin text shows in the list and opens', function (string $name, string $initials) {
+    $user = User::factory()->withTeam()->create();
+    $form = Form::factory()->create([
+        'name' => $name,
+        'user_id' => $user->id,
+        'team_id' => $user->current_team_id,
+    ]);
+
+    $this->actingAs($user)->getJson(route('api.forms.index'))
+        ->assertOk()
+        ->assertJsonPath('0.initials', $initials);
+
+    $this->actingAs($user)->getJson(route('api.forms.show', $form->uuid))
+        ->assertOk()
+        ->assertJsonPath('initials', $initials);
+
+    $this->actingAs($user)->get(route('forms.edit', $form->uuid))
+        ->assertOk();
+})->with([
+    ['🎉 Party', '🎉'],
+    ['调查问卷', '调查'],
+    ['€ Preise', '€'],
+]);
