@@ -34,6 +34,7 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
             'throw' => false,
+            'report' => true,
         ],
 
         'public' => [
@@ -42,6 +43,7 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
+            'report' => true,
         ],
 
         'minio' => [
@@ -57,6 +59,7 @@ return [
             'request_checksum_calculation' => 'when_required',
             'response_checksum_validation' => 'when_required',
             'throw' => false,
+            'report' => true,
         ],
 
     ],
