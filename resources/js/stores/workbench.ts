@@ -9,6 +9,7 @@ import {
     callUpdateInteractionSequence,
 } from "@/api/interactions";
 import { replaceRouteQuery } from "@/utils";
+import { useNotice } from "./notice";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
 
 interface WorkbenchStore {
@@ -93,14 +94,17 @@ export const useWorkbench = defineStore("workbench", {
         },
 
         async saveBlock(block: FormBlockModel) {
+            const save = `saveBlock:${block.id}`;
+
             try {
                 const response = await callUpdateFormBlock(block);
+                useNotice().clearSaveError(save);
 
                 if (response.status === 200) {
                     console.info("saved block success");
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, save, block);
             }
         },
 
@@ -112,12 +116,15 @@ export const useWorkbench = defineStore("workbench", {
                 return;
             }
 
+            const save = `createInteraction:${this.block.id}`;
+
             try {
                 const response = await callCreateFormBlockInteraction(
                     this.block?.id,
                     type,
                     attributes,
                 );
+                useNotice().clearSaveError(save);
 
                 if (response.status === 201) {
                     this.block.interactions?.push(response.data);
@@ -125,7 +132,7 @@ export const useWorkbench = defineStore("workbench", {
                     return response.data;
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, save, this.block);
             }
         },
 
@@ -178,27 +185,38 @@ export const useWorkbench = defineStore("workbench", {
             )
                 return;
 
+            const save = `deleteInteraction:${interaction.id}`;
+
             try {
                 await callDeleteFormBlockInteraction(
                     interaction as FormBlockInteractionModel,
                 );
+                useNotice().clearSaveError(save);
 
                 this.block.interactions.splice(index, 1);
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, save, this.block);
             }
         },
 
         async saveInteraction(interaction: FormBlockInteractionModel) {
+            const save = `saveInteraction:${interaction.id}`;
+
             try {
                 const response =
                     await callUpdateFormBlockInteraction(interaction);
+                useNotice().clearSaveError(save);
 
                 if (response.status === 200) {
                     console.info("saving interaction success");
                 }
             } catch (error) {
-                console.warn(error);
+                // the debounced save can run after the owner opened another block
+                const block = useForm().blocks?.find(
+                    (item) => item.id === interaction.form_block_id,
+                );
+
+                useNotice().showSaveError(error, save, block);
             }
         },
 
@@ -234,13 +252,16 @@ export const useWorkbench = defineStore("workbench", {
                 }
             });
 
+            const save = `interactionSequence:${this.block.id}`;
+
             try {
                 await callUpdateInteractionSequence(
                     this.block.id,
                     saveSequenceRequestData,
                 );
+                useNotice().clearSaveError(save);
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, save, this.block);
             }
         },
     },

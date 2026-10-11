@@ -14,6 +14,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The word count under the text editor now counts every word in headings, paragraphs and list items. Before, words on different lines ran together, and a text with only spaces counted 1 word. (#230)
 -   Changing a question to a rating or file question no longer shows an error in the browser console. The question list on the left shows its settings as soon as they are set. (#232)
 -   The server now limits a file question to 10 files, and only accepts whole-number ids when you change or delete questions, answer options, logic rules, webhooks or submissions. Before, the file limit was only checked in the editor. The update sets a stored file limit above 10, below 1 or in text to 10, and rounds a decimal down. (#233)
+-   The form editor tells you when it can't save a change, with the server's reason when there is one. Before, the change looked saved but was lost when you reloaded the page. (#234)
 -   A file question now keeps its file limit when several files for one answer are uploaded at the same time. Before, an answer could end up with more files than the question allows. (#235)
 
 ### Security

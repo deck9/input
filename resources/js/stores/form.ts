@@ -17,6 +17,7 @@ import {
     callUpdateFormBlock,
 } from "@/api/blocks";
 import { useWorkbench } from ".";
+import { useNotice } from "./notice";
 
 interface FormStore {
     form: FormModel | null;
@@ -250,6 +251,7 @@ export const useForm = defineStore("form", {
                     this.form.uuid,
                     type,
                 );
+                useNotice().clearSaveError("createFormBlock");
 
                 const newBlock = response.data;
 
@@ -272,7 +274,7 @@ export const useForm = defineStore("form", {
                     workbench.putOnWorkbench(newBlock);
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, "createFormBlock");
             }
         },
 
@@ -281,8 +283,11 @@ export const useForm = defineStore("form", {
                 return;
             }
 
+            const save = `deleteFormBlock:${block.id}`;
+
             try {
                 const response = await callDeleteFormBlock(block.id);
+                useNotice().clearSaveError(save);
 
                 if (response.status === 200) {
                     const index = this.blocks?.findIndex((item) => {
@@ -305,7 +310,7 @@ export const useForm = defineStore("form", {
                     }
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, save, block);
             }
         },
 
@@ -318,11 +323,14 @@ export const useForm = defineStore("form", {
                 return;
             }
 
+            const save = `updateFormBlockProperty:${block.id}:${property}`;
+
             try {
                 const response = await callUpdateFormBlock({
                     ...block,
                     [property]: newValue,
                 });
+                useNotice().clearSaveError(save);
 
                 const index = this.blocks?.findIndex(
                     (item) => item.id === block.id,
@@ -336,7 +344,7 @@ export const useForm = defineStore("form", {
                     this.blocks[index] = response.data;
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, save, block);
             }
         },
 
@@ -411,8 +419,9 @@ export const useForm = defineStore("form", {
                     this.form.uuid,
                     saveSequenceRequestData,
                 );
+                useNotice().clearSaveError("blockSequence");
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error, "blockSequence");
             }
         },
     },

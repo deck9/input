@@ -1,6 +1,7 @@
 import { useForm } from "@/stores";
 import { defineStore } from "pinia";
 import { findAllBlocksBeforeTarget } from "./helpers/queue";
+import { useNotice } from "./notice";
 
 import {
     callCreateFormBlockLogic,
@@ -82,16 +83,19 @@ export const useLogic = defineStore("logic", {
                 return;
             }
 
+            const save = `removeRule:${this.block.logics[index].id}`;
+
             try {
                 const response = await callDeleteFormBlockLogic(
                     this.block.logics[index],
                 );
+                useNotice().clearSaveError(save);
 
                 if (response.status === 200) {
                     this.block.logics.splice(index, 1);
                 }
             } catch (error) {
-                console.warn(`Error deleting rule:`, error);
+                useNotice().showSaveError(error, save, this.block);
             }
         },
 
