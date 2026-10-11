@@ -14,6 +14,7 @@
       >
         <D9Menu
           class="text-grey-400"
+          label="Block options"
           position="right"
           :use-portal="true"
           :key="`${block.sequence}-position-menu`"

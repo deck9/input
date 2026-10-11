@@ -29,6 +29,7 @@
       >
         <D9Menu
           class="text-grey-400"
+          label="Group options"
           position="right"
           :use-portal="true"
           :key="`${block.sequence}-position-menu`"

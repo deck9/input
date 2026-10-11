@@ -28,7 +28,7 @@
       v-if="!isLoaded"
       class="flex w-full items-center justify-center px-4 py-12"
     >
-      <D9Spinner class="text-blue-300 opacity-50" />
+      <D9Spinner class="text-blue-300 opacity-50" label="Loading blocks" />
     </div>
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
