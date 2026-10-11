@@ -56,7 +56,7 @@
         v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature"
       >
         <div class="flex items-center">
-          <d9-checkbox name="terms" id="terms" v-model="form.terms" />
+          <d9-checkbox name="terms" id="terms" label="" v-model="form.terms" />
           <label for="terms" class="ml-2 text-grey-500">
             I agree to the
             <a

@@ -44,13 +44,11 @@
       </div>
 
       <div class="mt-4 block">
-        <label class="flex items-center">
-          <d9-checkbox
-            name="remember"
-            v-model="form.remember"
-            label="Remember me"
-          />
-        </label>
+        <d9-checkbox
+          name="remember"
+          v-model="form.remember"
+          label="Remember me"
+        />
       </div>
 
       <div class="mt-4 flex items-center justify-end">
