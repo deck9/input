@@ -81,7 +81,7 @@ First list them. This deletes nothing:
 docker compose exec input php artisan input:prune-orphaned-forms
 ```
 
-It shows each form with its ID, name, and number of submissions and uploaded files. Forms in the trash are included. Back up first, then delete them:
+It shows each form with its ID, name, and number of submissions and uploaded files. Forms in the trash are included. It also lists rows that earlier deletes left behind on SQLite installs, such as uploads of deleted submissions, and on installs set up before v2.0 also answers, as a count per table. `--force` deletes them too, with their files. Back up first, then delete them:
 
 ```bash
 docker compose exec input php artisan input:prune-orphaned-forms --force
