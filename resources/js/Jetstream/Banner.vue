@@ -5,7 +5,8 @@
         'bg-blue-500': style == 'success',
         'bg-red-700': style == 'danger',
       }"
-      v-if="show && message"
+      :role="style == 'danger' ? 'alert' : 'status'"
+      v-if="message"
     >
       <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between flex-wrap">
@@ -64,7 +65,7 @@
                 'hover:bg-red-600 focus:bg-red-600': style == 'danger',
               }"
               aria-label="Dismiss"
-              @click.prevent="show = false"
+              @click.prevent="dismiss"
             >
               <svg
                 class="h-5 w-5 text-white"
@@ -90,8 +91,13 @@
 
 <script>
 import { defineComponent } from "vue";
+import { useNotice } from "@/stores/notice";
 
 export default defineComponent({
+  setup() {
+    return { notice: useNotice() };
+  },
+
   data() {
     return {
       show: true,
@@ -100,11 +106,29 @@ export default defineComponent({
 
   computed: {
     style() {
+      if (this.notice.message) {
+        return "danger";
+      }
+
       return this.$page.props.jetstream.flash?.bannerStyle || "success";
     },
 
     message() {
-      return this.$page.props.jetstream.flash?.banner || "";
+      if (this.notice.message) {
+        return this.notice.message;
+      }
+
+      return (this.show && this.$page.props.jetstream.flash?.banner) || "";
+    },
+  },
+
+  methods: {
+    dismiss() {
+      if (this.notice.message) {
+        this.notice.message = null;
+      } else {
+        this.show = false;
+      }
     },
   },
 });

@@ -9,6 +9,7 @@ import {
     callUpdateInteractionSequence,
 } from "@/api/interactions";
 import { replaceRouteQuery } from "@/utils";
+import { useNotice } from "./notice";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
 
 interface WorkbenchStore {
@@ -100,7 +101,7 @@ export const useWorkbench = defineStore("workbench", {
                     console.info("saved block success");
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -125,7 +126,7 @@ export const useWorkbench = defineStore("workbench", {
                     return response.data;
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -185,7 +186,7 @@ export const useWorkbench = defineStore("workbench", {
 
                 this.block.interactions.splice(index, 1);
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -198,7 +199,7 @@ export const useWorkbench = defineStore("workbench", {
                     console.info("saving interaction success");
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -240,7 +241,7 @@ export const useWorkbench = defineStore("workbench", {
                     saveSequenceRequestData,
                 );
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
     },

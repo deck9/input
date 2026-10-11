@@ -17,6 +17,7 @@ import {
     callUpdateFormBlock,
 } from "@/api/blocks";
 import { useWorkbench } from ".";
+import { useNotice } from "./notice";
 
 interface FormStore {
     form: FormModel | null;
@@ -272,7 +273,7 @@ export const useForm = defineStore("form", {
                     workbench.putOnWorkbench(newBlock);
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -305,7 +306,7 @@ export const useForm = defineStore("form", {
                     }
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -336,7 +337,7 @@ export const useForm = defineStore("form", {
                     this.blocks[index] = response.data;
                 }
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
 
@@ -412,7 +413,7 @@ export const useForm = defineStore("form", {
                     saveSequenceRequestData,
                 );
             } catch (error) {
-                console.warn(error);
+                useNotice().showSaveError(error);
             }
         },
     },
