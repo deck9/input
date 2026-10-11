@@ -95,8 +95,8 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     // Block API Routes
     $router->get('{form}/blocks', [FormBlockController::class, 'index'])->name('api.blocks.index');
     $router->post('{form}/blocks', [FormBlockController::class, 'create'])->name('api.blocks.create');
-    $router->post('blocks/{block}', [FormBlockController::class, 'update'])->name('api.blocks.update');
-    $router->delete('blocks/{block}', [FormBlockController::class, 'delete'])->name('api.blocks.delete');
+    $router->post('blocks/{block}', [FormBlockController::class, 'update'])->whereNumber('block')->name('api.blocks.update');
+    $router->delete('blocks/{block}', [FormBlockController::class, 'delete'])->whereNumber('block')->name('api.blocks.delete');
 
     // Interaction API Routes
     $router->post('{block}/interactions', [FormBlockInteractionController::class, 'create'])->name('api.interactions.create');

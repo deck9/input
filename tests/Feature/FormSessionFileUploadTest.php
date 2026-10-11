@@ -175,6 +175,7 @@ test('an upload over the allowed file count is rejected and stores nothing', fun
         ->and(Storage::allFiles('uploads'))->toHaveCount($count);
 })->with([
     'the question count' => [['allowedFiles' => '2'], 2],
+    'a question count above the server limit' => [['allowedFiles' => 50], 10],
     'no question count' => [[], 10],
 ]);
 
