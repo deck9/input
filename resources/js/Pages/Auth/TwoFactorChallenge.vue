@@ -28,7 +28,7 @@
 
     <form @submit.prevent="submit">
       <div v-if="!recovery">
-        <d9-label for="code" label="Code" />
+        <d9-label id="code" label="Code" />
         <d9-input
           ref="code"
           id="code"
@@ -44,7 +44,7 @@
       </div>
 
       <div v-else>
-        <d9-label for="recovery_code" label="Recovery Code" />
+        <d9-label id="recovery_code" label="Recovery Code" />
         <d9-input
           ref="recovery_code"
           id="recovery_code"
