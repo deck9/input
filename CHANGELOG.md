@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Security
+
+-   The text editor for questions and the completion page now uses tiptap 3, which fixes a moderate advisory in tiptap 2. Texts you wrote before stay as they are. (#226)
+
 ## [2.2.0] - 2026-10-11
 
 All installs should update: this release moves Input to Laravel 13, limits the public form endpoints and fixes how links and hosts are checked. It has 9 upgrade steps, marked **Upgrade step** below. Read them before you update, and back up your database and `APP_KEY` first. On SQLite, make sure the disk has room for a second copy of the database: the update rebuilds some tables.

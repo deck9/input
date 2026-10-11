@@ -122,12 +122,9 @@
 <script lang="ts" setup>
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import FontFamily from "@tiptap/extension-font-family";
 import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
-import TextStyle from "@tiptap/extension-text-style";
-import Underline from "@tiptap/extension-underline";
+import { FontFamily, TextStyle } from "@tiptap/extension-text-style";
 import EditorButton from "@/components/Factory/Shared/EditorButton.vue";
 import { useContentLength } from "@/utils/useContentLength";
 import { ref } from "vue";
@@ -160,9 +157,6 @@ const editor = useEditor({
   },
   extensions: [
     FontFamily,
-    Link.configure({
-      openOnClick: false,
-    }),
     Placeholder.configure({
       placeholder: "Type your message here...",
     }),
@@ -174,9 +168,13 @@ const editor = useEditor({
         color: "#ff0000",
         width: 3,
       },
+      link: {
+        openOnClick: false,
+      },
+      // else tiptap 3 saves an extra <p></p> when a text ends with a heading, list or image
+      trailingNode: false,
     }),
     TextStyle,
-    Underline,
     Image,
   ],
 });
