@@ -76,6 +76,11 @@ class FormSessionResponse extends Model
         // stored before the lock, so the lock only covers the count and the row
         $path = $file->store(implode('/', ['uploads', $this->id]));
 
+        // the disks don't throw ('throw' => false): a refused write only returns false
+        if ($path === false) {
+            throw new \RuntimeException('The uploaded file could not be stored.');
+        }
+
         try {
             return DB::transaction(function () use ($file, $path, $refuseWhenFull) {
                 // a write first locks this answer: its row on MariaDB, the database on SQLite,
