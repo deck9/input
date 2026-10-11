@@ -27,6 +27,24 @@ describe("block text editor", () => {
 
     expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([stored]);
   });
+
+  it("saves an image-only text, and an emptied text as empty", async () => {
+    const wrapper = mount(Editor, {
+      props: { modelValue: stored },
+      global: { directives: { tooltip: {} } },
+    });
+    await nextTick();
+    const editor = wrapper
+      .findComponent(EditorContent)
+      .props("editor") as TiptapEditor;
+    const image = '<img src="https://example.com/image.png">';
+
+    editor.commands.setContent(image);
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([image]);
+
+    editor.commands.clearContent();
+    expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([""]);
+  });
 });
 
 describe("block text counter", () => {
