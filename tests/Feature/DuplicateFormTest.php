@@ -76,3 +76,24 @@ it('has a default name if no new name is provided via API', function () {
 
     expect($newForm->name)->toBe('Copy of '.$form->name);
 });
+
+it('refuses a copy name longer than 255 characters', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.duplicate', $form->uuid), ['name' => str_repeat('a', 256)])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('name');
+
+    expect(Form::count())->toBe(1);
+});
+
+it('cuts the default name of a copy to 255 characters', function () {
+    $form = Form::factory()->create(['name' => str_repeat('a', 255)]);
+
+    $response = $this->actingAs($form->user)
+        ->json('POST', route('api.forms.duplicate', $form->uuid))
+        ->assertStatus(201);
+
+    expect(Form::find($response->json('id'))->name)->toBe('Copy of '.str_repeat('a', 247));
+});

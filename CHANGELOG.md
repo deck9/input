@@ -21,6 +21,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A file upload is now refused when the server can't store the file, and the form asks to try again. Before, the upload looked done, but the submission pointed to a missing file. When the storage can't save, read or delete a file, the log now says why. (#236)
 -   The Options and Appearance settings tell you when they can't be saved, with the server's reason when there is one. Before, the save button kept spinning. (#237)
 -   Clicking a field's label in the form settings and the question settings now puts the cursor in that field, and screen readers read the label as the field's name. (#238)
+-   A form name longer than 255 characters is now refused with a message that says so, and so is an empty name in the settings. Before, a long name failed with a server error on MySQL and MariaDB, and an empty name on every database. The description, language, colors, button label, completion headline and links are checked against their length the same way. (#239)
 
 ### Security
 
