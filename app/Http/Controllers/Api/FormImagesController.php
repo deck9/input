@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FormImageRequest;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
@@ -30,11 +31,18 @@ class FormImagesController extends Controller
 
         $filename = sprintf('%s.%s.%s', strtolower(Str::random(6)), time(), $file->extension());
 
-        // store to filesystem
-        $file->storeAs($form->uuid, $filename);
+        $path = implode('/', [$form->uuid, $filename]);
+
+        // the disks don't throw ('throw' => false): a refused write only returns false, and the old image stays
+        if ($file->storeAs($form->uuid, $filename) === false) {
+            // a write that broke off can leave part of the file behind
+            Storage::delete($path);
+
+            abort(500, 'The image could not be stored. Please try again.');
+        }
 
         // save to form model
-        $form->$fieldname = implode('/', [$form->uuid, $filename]);
+        $form->$fieldname = $path;
         $form->save();
 
         $deleteUnusedImages->delete(collect([$oldPath]));

@@ -1,9 +1,15 @@
 <?php
 
 use App\Models\Form;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\Config;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UnableToWriteFile;
 
 uses(RefreshDatabase::class);
 
@@ -207,4 +213,37 @@ test('replacing or removing an image no other form uses deletes it and its resiz
         ->assertStatus(200);
 
     Storage::assertMissing($newPath);
+})->with(['avatar', 'background']);
+
+test('a new image the disk fails to store keeps the old one', function (string $type) {
+    Exceptions::fake();
+    $disk = config('filesystems.default');
+    Storage::fake($disk);
+    $form = Form::factory()->create([$type.'_path' => 'form/old.png']);
+    Storage::put('form/old.png', 'image');
+    // reads like the fake disk, but a write breaks off after part of the file, like on a full disk
+    $adapter = new class(Storage::path('')) extends LocalFilesystemAdapter
+    {
+        public function writeStream(string $path, $contents, Config $config): void
+        {
+            $this->write($path, 'part', $config);
+
+            throw UnableToWriteFile::atLocation($path, 'No space left on device');
+        }
+    };
+    // the disk's own settings: with 'throw' => false a refused write returns false
+    Storage::set($disk, new FilesystemAdapter(new Filesystem($adapter), $adapter, config("filesystems.disks.{$disk}")));
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.images.store', $form->uuid), [
+            'image' => UploadedFile::fake()->image('new.png'),
+            'type' => $type,
+        ])
+        ->assertServerError()
+        ->assertJsonPath('message', 'The image could not be stored. Please try again.');
+
+    Exceptions::assertReported(fn (UnableToWriteFile $e) => $e->reason() === 'No space left on device');
+    expect($form->fresh()->{$type.'_path'})->toBe('form/old.png')
+        ->and(Storage::allFiles($form->uuid))->toBeEmpty();
+    Storage::assertExists('form/old.png');
 })->with(['avatar', 'background']);
