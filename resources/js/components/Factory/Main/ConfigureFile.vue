@@ -12,10 +12,12 @@
 
   <div class="mb-4">
     <D9Label
+      id="file-max-files"
       label="Max Files"
       :description="`The maximum number of allowed files to upload (max. ${maxFiles})`"
     />
     <D9Input
+      id="file-max-files"
       :placeholder="`The maximum number of allowed files to upload (max. ${maxFiles})`"
       type="number"
       :min="1"
@@ -28,10 +30,12 @@
 
   <div class="mb-4">
     <D9Label
+      id="file-max-size"
       label="Max Filesize"
       :description="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
     />
     <D9Input
+      id="file-max-size"
       :placeholder="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
       type="number"
       :min="1"

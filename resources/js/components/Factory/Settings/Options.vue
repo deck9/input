@@ -2,13 +2,13 @@
   <div>
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
-        <D9Label label="Name" />
-        <D9Input type="text" v-model="name" block />
+        <D9Label id="form-name" label="Name" />
+        <D9Input id="form-name" type="text" v-model="name" block />
       </div>
 
       <div class="mb-4">
-        <D9Label label="Description" />
-        <D9Textarea v-model="description" block />
+        <D9Label id="form-description" label="Description" />
+        <D9Textarea id="form-description" v-model="description" block />
       </div>
 
       <div class="mb-4">
@@ -47,8 +47,10 @@ import {
   D9Switch,
 } from "@deck9/ui";
 import { ref } from "vue";
+import { useNotice } from "@/stores/notice";
 
 const store = useForm();
+const notice = useNotice();
 const isSaving = ref(false);
 
 const name = ref(store?.form?.name);
@@ -79,12 +81,17 @@ const language = ref(
 const saveOptions = async () => {
   isSaving.value = true;
 
-  await store.updateForm({
-    name: name.value,
-    description: description.value,
-    language: language.value.value,
-    is_notification_via_mail: isNotificationViaMail.value,
-  });
+  try {
+    await store.updateForm({
+      name: name.value,
+      description: description.value,
+      language: language.value.value,
+      is_notification_via_mail: isNotificationViaMail.value,
+    });
+    notice.clearSaveError("updateForm:options");
+  } catch (error) {
+    notice.showSaveError(error, "updateForm:options");
+  }
 
   isSaving.value = false;
 };

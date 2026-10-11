@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="mb-4">
-      <D9Label label="Min Date" />
-      <D9Input type="date" block v-model="minDate" />
+      <D9Label id="date-min" label="Min Date" />
+      <D9Input id="date-min" type="date" block v-model="minDate" />
     </div>
     <div class="mb-4">
-      <D9Label label="Max Date" />
-      <D9Input type="date" block v-model="maxDate" />
+      <D9Label id="date-max" label="Max Date" />
+      <D9Input id="date-max" type="date" block v-model="maxDate" />
     </div>
     <div class="mb-4 flex items-center justify-between">
       <D9Label id="no-past-dates" label="Do not allow past dates" />
