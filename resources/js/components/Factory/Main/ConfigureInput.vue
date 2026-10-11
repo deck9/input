@@ -27,7 +27,7 @@
     </div>
     <div class="mb-4">
       <D9Label label="Show Symbol" />
-      <D9Input v-model="useSymbol" block :max="3" />
+      <D9Input v-model="useSymbol" block maxlength="3" />
     </div>
   </template>
 </template>
