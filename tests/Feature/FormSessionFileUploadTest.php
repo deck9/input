@@ -11,12 +11,18 @@ use App\Models\FormSession;
 use App\Models\FormSessionUpload;
 use Illuminate\Database\Events\TransactionBeginning;
 use Illuminate\Database\Events\TransactionCommitted;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\Config;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UnableToWriteFile;
 
 uses(RefreshDatabase::class);
 
@@ -241,6 +247,36 @@ test('a full answer is refused before the file is written', function () {
 
     expect(Storage::directoryExists("uploads/{$answer->id}"))->toBeFalse();
 });
+
+test('a file the disk fails to store is refused and takes no place in the limit', function (string $disk) {
+    Exceptions::fake();
+    config(['filesystems.default' => $disk]);
+    Storage::fake($disk);
+    $workingDisk = Storage::disk($disk);
+    // reads like the fake disk but refuses every write; with 'throw' => false a refused write returns false
+    $adapter = new class(Storage::path('')) extends LocalFilesystemAdapter
+    {
+        public function writeStream(string $path, $contents, Config $config): void
+        {
+            throw UnableToWriteFile::atLocation($path, 'No space left on device');
+        }
+    };
+    // the disk's own settings: a fake disk keeps 'throw' but drops 'report'
+    Storage::set($disk, new FilesystemAdapter(new Filesystem($adapter), $adapter, config("filesystems.disks.{$disk}")));
+    $interaction = fileQuestion(['allowedFiles' => 1]);
+    $session = answerFileQuestion($interaction);
+
+    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertServerError();
+
+    // the log gets the disk's reason and the refusal
+    Exceptions::assertReported(fn (UnableToWriteFile $e) => $e->reason() === 'No space left on device');
+    Exceptions::assertReported(fn (\RuntimeException $e) => $e->getMessage() === 'The uploaded file could not be stored.');
+    expect(FormSessionUpload::count())->toBe(0)
+        ->and(Storage::allFiles('uploads'))->toBeEmpty();
+
+    Storage::set($disk, $workingDisk);
+    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
+})->with(['local', 'minio']);
 
 test('an upload for a question that is not a file question is rejected', function () {
     Storage::fake();
