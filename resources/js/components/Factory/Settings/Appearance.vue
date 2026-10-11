@@ -5,13 +5,20 @@
 
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
-        <D9Label label="Brand Color" />
-        <D9Input type="color" v-model="brandColor" block show-color-picker />
+        <D9Label id="brand-color" label="Brand Color" />
+        <D9Input
+          id="brand-color"
+          type="color"
+          v-model="brandColor"
+          block
+          show-color-picker
+        />
       </div>
 
       <div class="mb-4">
-        <D9Label label="Background Color" />
+        <D9Label id="background-color" label="Background Color" />
         <D9Input
+          id="background-color"
           type="color"
           v-model="backgroundColor"
           block
@@ -20,8 +27,14 @@
       </div>
 
       <div class="mb-4">
-        <D9Label label="Text Color" />
-        <D9Input type="color" v-model="textColor" block show-color-picker />
+        <D9Label id="text-color" label="Text Color" />
+        <D9Input
+          id="text-color"
+          type="color"
+          v-model="textColor"
+          block
+          show-color-picker
+        />
       </div>
 
       <div class="mb-4 flex justify-between">
@@ -62,8 +75,10 @@ import { useForm } from "@/stores";
 import { D9Button, D9Label, D9Input, D9Switch } from "@deck9/ui";
 import { ref } from "vue";
 import ImageUpload from "./partials/ImageUpload.vue";
+import { useNotice } from "@/stores/notice";
 
 const store = useForm();
+const notice = useNotice();
 const isSaving = ref(false);
 
 const brandColor = ref(store?.form?.brand_color);
@@ -76,13 +91,18 @@ const showFormProgress = ref(store?.form?.show_form_progress ?? false);
 const saveOptions = async () => {
   isSaving.value = true;
 
-  await store.updateForm({
-    brand_color: brandColor.value,
-    background_color: backgroundColor.value,
-    text_color: textColor.value,
-    show_form_progress: showFormProgress.value,
-    use_brighter_inputs: useBrighterInputs.value,
-  });
+  try {
+    await store.updateForm({
+      brand_color: brandColor.value,
+      background_color: backgroundColor.value,
+      text_color: textColor.value,
+      show_form_progress: showFormProgress.value,
+      use_brighter_inputs: useBrighterInputs.value,
+    });
+    notice.clearSaveError("updateForm:appearance");
+  } catch (error) {
+    notice.showSaveError(error, "updateForm:appearance");
+  }
 
   isSaving.value = false;
 };

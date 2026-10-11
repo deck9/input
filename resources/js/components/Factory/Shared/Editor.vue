@@ -129,9 +129,15 @@ import EditorButton from "@/components/Factory/Shared/EditorButton.vue";
 import { useContentLength } from "@/utils/useContentLength";
 import { ref } from "vue";
 
-const { modelValue, counter = false } = defineProps<{
+const {
+  modelValue,
+  counter = false,
+  id,
+} = defineProps<{
   modelValue?: string;
   counter?: boolean;
+  // names the text box after the D9Label with the same id
+  id?: string;
 }>();
 
 const content = ref("");
@@ -148,6 +154,7 @@ const editor = useEditor({
     attributes: {
       class:
         "form-message-prose conversation-theme focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
+      ...(id ? { id, "aria-labelledby": `${id}-label` } : {}),
     },
   },
   onCreate: ({ editor }) => {
@@ -184,6 +191,9 @@ const editor = useEditor({
     Image,
   ],
 });
+
+// a label's for= can't focus a contenteditable, so its page calls this
+defineExpose({ focus: () => editor.value?.commands.focus() });
 
 const setLink = () => {
   if (typeof editor.value === "undefined") {
