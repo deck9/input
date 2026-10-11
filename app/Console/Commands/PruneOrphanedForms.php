@@ -49,6 +49,7 @@ class PruneOrphanedForms extends Command
         }
 
         if ($forms->isNotEmpty()) {
+            $this->line('Forms of deleted teams:');
             $this->table(['ID', 'Name', 'Submissions', 'Uploaded files'], $forms->map(fn (Form $form) => [
                 $form->id,
                 $form->name,
@@ -58,7 +59,7 @@ class PruneOrphanedForms extends Command
         }
 
         if ($leftovers !== []) {
-            $this->line('Rows that earlier deletes left behind, on installs without foreign keys:');
+            $this->line('Rows left behind by earlier deletes:');
             $this->table(['Table', 'Rows'], array_map(null, array_keys($leftovers), $leftovers));
         }
 

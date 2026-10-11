@@ -70,6 +70,7 @@ test('without --force it lists the forms of deleted teams and deletes nothing', 
     $before = $rowCounts();
 
     $this->artisan('input:prune-orphaned-forms')
+        ->expectsOutputToContain('Forms of deleted teams:')
         ->expectsTable(['ID', 'Name', 'Submissions', 'Uploaded files'], [
             [$this->orphanedForm->id, $this->orphanedForm->name, 1, 1],
             [$this->trashedOrphanedForm->id, $this->trashedOrphanedForm->name, 0, 0],
@@ -150,6 +151,7 @@ test('it lists rows that earlier deletes left behind, and with --force deletes o
     $before = $ids();
 
     $this->artisan('input:prune-orphaned-forms')
+        ->expectsOutputToContain('Rows left behind by earlier deletes:')
         ->expectsTable(['Table', 'Rows'], [
             ['form_session_uploads', 2],
             ['form_session_responses', 3],
