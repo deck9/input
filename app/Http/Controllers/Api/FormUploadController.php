@@ -66,11 +66,7 @@ class FormUploadController extends Controller
             ]),
         ]);
 
-        if ($sessionResponse->formSessionUploads()->count() >= $maxFiles) {
-            throw ValidationException::withMessages(['file' => "This question takes at most {$maxFiles} files."]);
-        }
-
-        $upload = $sessionResponse->saveUpload($request->file('file'));
+        $upload = $sessionResponse->saveUpload($request->file('file'), $maxFiles);
 
         return response()->json($upload, 201);
     }
