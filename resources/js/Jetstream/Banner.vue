@@ -125,7 +125,7 @@ export default defineComponent({
   methods: {
     dismiss() {
       if (this.notice.message) {
-        this.notice.message = null;
+        this.notice.$reset();
       } else {
         this.show = false;
       }

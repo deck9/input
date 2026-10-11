@@ -1,6 +1,5 @@
 import { mount } from "@vue/test-utils";
-import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import Banner from "./Banner.vue";
 import { useNotice } from "@/stores/notice";
 
@@ -10,12 +9,13 @@ const mountBanner = () =>
     });
 
 describe("banner", () => {
-    beforeEach(() => setActivePinia(createPinia()));
-
     it("shows a save error until it is dismissed", async () => {
         const wrapper = mountBanner();
 
-        useNotice().message = "Your change was not saved.";
+        // the test pinia stubs actions, so set the state directly
+        useNotice().$patch({
+            failedSaves: { "saveBlock:1": "Your change was not saved." },
+        });
         await wrapper.vm.$nextTick();
 
         expect(wrapper.get("[role=alert]").text()).toContain(
