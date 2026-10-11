@@ -8,8 +8,8 @@
           <span class="inline-block">Redirect Settings</span>
         </h2>
         <div class="mb-4">
-          <D9Label label="Link" />
-          <D9Input type="url" block v-model="ctaLink" />
+          <D9Label id="cta-link" label="Link" />
+          <D9Input id="cta-link" type="url" block v-model="ctaLink" />
         </div>
         <div class="mb-4 flex justify-between">
           <D9Label
@@ -45,12 +45,26 @@
 
         <div>
           <div class="mb-4">
-            <D9Label label="Headline" />
-            <D9Input type="text" block v-model="outroHeadline" />
+            <D9Label id="eoc-headline" label="Headline" />
+            <D9Input
+              id="eoc-headline"
+              type="text"
+              block
+              v-model="outroHeadline"
+            />
           </div>
           <div class="mb-4">
-            <D9Label label="Message" />
-            <Editor class="" v-model="outroMessage" />
+            <D9Label
+              id="eoc-message"
+              label="Message"
+              @click="messageEditor?.focus()"
+            />
+            <Editor
+              ref="messageEditor"
+              id="eoc-message"
+              class=""
+              v-model="outroMessage"
+            />
           </div>
         </div>
       </div>
@@ -75,12 +89,12 @@
           "
         >
           <div class="mb-4">
-            <D9Label label="Label" />
-            <D9Input type="text" block v-model="ctaLabel" />
+            <D9Label id="cta-label" label="Label" />
+            <D9Input id="cta-label" type="text" block v-model="ctaLabel" />
           </div>
           <div class="mb-4">
-            <D9Label label="Link" />
-            <D9Input type="url" block v-model="ctaLink" />
+            <D9Label id="cta-link" label="Link" />
+            <D9Input id="cta-link" type="url" block v-model="ctaLink" />
           </div>
           <div class="mb-4 flex justify-between">
             <D9Label
@@ -131,24 +145,29 @@
           "
         >
           <div class="mb-4">
-            <D9Label label="Instagram" />
-            <D9Input type="url" block v-model="instagram" />
+            <D9Label id="social-instagram" label="Instagram" />
+            <D9Input
+              id="social-instagram"
+              type="url"
+              block
+              v-model="instagram"
+            />
           </div>
           <div class="mb-4">
-            <D9Label label="Facebook" />
-            <D9Input type="url" block v-model="facebook" />
+            <D9Label id="social-facebook" label="Facebook" />
+            <D9Input id="social-facebook" type="url" block v-model="facebook" />
           </div>
           <div class="mb-4">
-            <D9Label label="Twitter" />
-            <D9Input type="url" block v-model="twitter" />
+            <D9Label id="social-twitter" label="Twitter" />
+            <D9Input id="social-twitter" type="url" block v-model="twitter" />
           </div>
           <div class="mb-4">
-            <D9Label label="LinkedIn" />
-            <D9Input type="url" block v-model="linkedin" />
+            <D9Label id="social-linkedin" label="LinkedIn" />
+            <D9Input id="social-linkedin" type="url" block v-model="linkedin" />
           </div>
           <div class="mb-4">
-            <D9Label label="Github" />
-            <D9Input type="url" block v-model="github" />
+            <D9Label id="social-github" label="Github" />
+            <D9Input id="social-github" type="url" block v-model="github" />
           </div>
         </div>
       </div>
@@ -180,6 +199,7 @@ const errors = ref<string[]>([]);
 
 const outroHeadline = ref(store.form?.eoc_headline ?? "");
 const outroMessage = ref(store.form?.eoc_text ?? "");
+const messageEditor = ref<InstanceType<typeof Editor> | null>(null);
 
 const isCtaOn = ref(store.form?.show_cta_link ? true : false);
 const ctaLabel = ref(store.form?.cta_label);

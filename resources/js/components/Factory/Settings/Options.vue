@@ -2,13 +2,13 @@
   <div>
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
-        <D9Label label="Name" />
-        <D9Input type="text" v-model="name" block />
+        <D9Label id="form-name" label="Name" />
+        <D9Input id="form-name" type="text" v-model="name" block />
       </div>
 
       <div class="mb-4">
-        <D9Label label="Description" />
-        <D9Textarea v-model="description" block />
+        <D9Label id="form-description" label="Description" />
+        <D9Textarea id="form-description" v-model="description" block />
       </div>
 
       <div class="mb-4">

@@ -5,13 +5,20 @@
 
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
-        <D9Label label="Brand Color" />
-        <D9Input type="color" v-model="brandColor" block show-color-picker />
+        <D9Label id="brand-color" label="Brand Color" />
+        <D9Input
+          id="brand-color"
+          type="color"
+          v-model="brandColor"
+          block
+          show-color-picker
+        />
       </div>
 
       <div class="mb-4">
-        <D9Label label="Background Color" />
+        <D9Label id="background-color" label="Background Color" />
         <D9Input
+          id="background-color"
           type="color"
           v-model="backgroundColor"
           block
@@ -20,8 +27,14 @@
       </div>
 
       <div class="mb-4">
-        <D9Label label="Text Color" />
-        <D9Input type="color" v-model="textColor" block show-color-picker />
+        <D9Label id="text-color" label="Text Color" />
+        <D9Input
+          id="text-color"
+          type="color"
+          v-model="textColor"
+          block
+          show-color-picker
+        />
       </div>
 
       <div class="mb-4 flex justify-between">

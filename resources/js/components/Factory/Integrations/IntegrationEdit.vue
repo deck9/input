@@ -48,8 +48,9 @@
                     </div>
                     <div class="relative mt-6 flex-1 px-4 sm:px-6">
                       <div class="mb-4">
-                        <D9Label label="Name" />
+                        <D9Label id="webhook-name" label="Name" />
                         <D9Input
+                          id="webhook-name"
                           type="text"
                           block
                           v-model="name"
@@ -66,8 +67,9 @@
                         />
                       </div>
                       <div class="mb-4">
-                        <D9Label label="Webhook URL" />
+                        <D9Label id="webhook-url" label="Webhook URL" />
                         <D9Input
+                          id="webhook-url"
                           icon="external-link"
                           type="url"
                           block
