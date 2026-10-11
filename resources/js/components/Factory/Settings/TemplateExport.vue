@@ -12,7 +12,6 @@
         <D9Button
           label="Import"
           :isLoading="isImporting"
-          :isDisabled="isImporting"
           icon="cloud-upload"
           @click="initUpload"
         />

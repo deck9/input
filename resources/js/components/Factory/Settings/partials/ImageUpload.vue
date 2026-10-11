@@ -17,7 +17,6 @@
       <D9Button
         label="Upload"
         @click="open"
-        :is-disabled="isSelecting"
         :is-loading="isSelecting"
       />
 
@@ -26,7 +25,6 @@
         color="dark"
         @click="deleteImage"
         :is-loading="isDeleting"
-        :is-disabled="isDeleting"
       />
     </div>
     <ValidationErrors
