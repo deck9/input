@@ -62,7 +62,16 @@ const labels = Object.entries(sources).flatMap(([path, source]) => {
             return {
                 name: `${file}: ${labelOf(node)}`,
                 id,
-                tied: !!id && all.some((n) => n !== node && idOf(n) === id),
+                tied:
+                    !!id &&
+                    all.some(
+                        (n) =>
+                            n !== node &&
+                            idOf(n) === id &&
+                            /^(d9-?(input|textarea|select|switch|checkbox)|editor)$/i.test(
+                                n.tag ?? "",
+                            ),
+                    ),
             };
         });
 });
