@@ -9,6 +9,7 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Fixed
 
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
+-   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 
 ### Security
 

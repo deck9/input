@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { mount, type VueWrapper } from "@vue/test-utils";
 import { EditorContent, type Editor as TiptapEditor } from "@tiptap/vue-3";
 import { describe, expect, it } from "vitest";
 import { nextTick } from "vue";
@@ -26,5 +26,39 @@ describe("block text editor", () => {
     editor.commands.undo();
 
     expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual([stored]);
+  });
+});
+
+describe("block text counter", () => {
+  const open = async (modelValue?: string) => {
+    const wrapper = mount(Editor, {
+      props: { modelValue, counter: true },
+      global: { directives: { tooltip: {} } },
+    });
+    // tiptap creates the editor a tick after mount
+    await new Promise((resolve) => setTimeout(resolve));
+    await nextTick();
+    return wrapper;
+  };
+  const counter = (wrapper: VueWrapper) =>
+    wrapper.element.lastElementChild?.textContent?.trim();
+
+  it("counts a saved text the same before and after an edit", async () => {
+    const wrapper = await open(stored);
+    const opened = counter(wrapper);
+    const editor = wrapper
+      .findComponent(EditorContent)
+      .props("editor") as TiptapEditor;
+
+    editor.commands.insertContentAt(editor.state.doc.content.size, "<p>x</p>");
+    editor.commands.undo();
+    await nextTick();
+
+    expect(opened).toMatch(/^\d+ chars, \d+ words$/);
+    expect(opened).toBe(counter(wrapper));
+  });
+
+  it("counts an empty text as 0 chars, 0 words", async () => {
+    expect(counter(await open())).toBe("0 chars, 0 words");
   });
 });

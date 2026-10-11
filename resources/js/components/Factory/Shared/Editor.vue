@@ -134,7 +134,7 @@ const { modelValue, counter = false } = defineProps<{
   counter?: boolean;
 }>();
 
-const content = ref(modelValue ?? "");
+const content = ref("");
 
 const { chars, words } = useContentLength(content);
 
@@ -149,6 +149,9 @@ const editor = useEditor({
       class:
         "form-message-prose conversation-theme focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
     },
+  },
+  onCreate: ({ editor }) => {
+    content.value = editor.getText();
   },
   onUpdate: () => {
     if (!editor.value) return;
