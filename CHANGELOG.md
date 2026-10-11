@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Fixed
+
+-   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
+
 ### Security
 
 -   The text editor for questions and the completion page now uses tiptap 3, which fixes a moderate advisory in tiptap 2. Texts you wrote before stay as they are. (#226)
