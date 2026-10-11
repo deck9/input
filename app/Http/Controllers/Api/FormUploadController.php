@@ -54,7 +54,7 @@ class FormUploadController extends Controller
         $options = $interaction->formBlock->formBlockInteractions
             ->firstWhere('type', FormBlockInteractionType::file)?->options ?? [];
         $maxFileSize = min((int) ($options['allowedFileSize'] ?? 0) ?: self::MAX_FILE_SIZE_MB, self::MAX_FILE_SIZE_MB);
-        $maxFiles = min((int) ($options['allowedFiles'] ?? 0) ?: FormBlockInteraction::MAX_FILES, FormBlockInteraction::MAX_FILES);
+        $maxFiles = FormBlockInteraction::maxFiles($options['allowedFiles'] ?? null);
         $types = collect($options['allowedFileTypes'] ?? [])
             ->filter(fn ($allowed) => $allowed === true)
             ->flatMap(fn ($allowed, $type) => self::FILE_TYPES[$type] ?? []);

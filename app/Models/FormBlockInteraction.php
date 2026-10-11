@@ -50,10 +50,10 @@ class FormBlockInteraction extends BaseModel
             }
         });
 
-        // store a higher number as the maximum, so editor saves and template imports keep working
+        // store allowed files the way the upload reads them, so imported or older values keep saving
         self::saving(function ($model) {
-            if ($model->type === FormBlockInteractionType::file && (int) ($model->options['allowedFiles'] ?? 0) > self::MAX_FILES) {
-                $model->options = [...$model->options, 'allowedFiles' => self::MAX_FILES];
+            if ($model->type === FormBlockInteractionType::file && isset($model->options['allowedFiles'])) {
+                $model->options = [...$model->options, 'allowedFiles' => self::maxFiles($model->options['allowedFiles'])];
             }
         });
 
@@ -66,6 +66,14 @@ class FormBlockInteraction extends BaseModel
                     ->toArray()
             );
         });
+    }
+
+    // whole numbers up to the maximum count, a decimal is cut, anything else is the maximum
+    public static function maxFiles(mixed $allowedFiles): int
+    {
+        $files = (int) $allowedFiles;
+
+        return $files >= 1 ? min($files, self::MAX_FILES) : self::MAX_FILES;
     }
 
     public function formBlock()
