@@ -48,6 +48,7 @@ import { useWorkbench } from "@/stores";
 import { D9Label, D9Checkbox, D9Input } from "@deck9/ui";
 import { watchEffect, Ref, ref, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
+import { clampInteger } from "@/utils";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -98,8 +99,8 @@ watchEffect(() => {
         audio: allowedFileTypes.value.audio,
         text: allowedFileTypes.value.text,
       },
-      allowedFiles: allowedFiles.value,
-      allowedFileSize: allowedFileSize.value,
+      allowedFiles: clampInteger(allowedFiles.value, 1, maxFiles),
+      allowedFileSize: clampInteger(allowedFileSize.value, 1, maxFileSize),
     },
   });
 });

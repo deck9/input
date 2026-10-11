@@ -68,6 +68,23 @@ export function replaceRouteQuery(query: Record<string, any>): void {
     window.history.replaceState(historyState, "", url.toString());
 }
 
+// an empty field stays undefined, so "not set" and a typed 0 stay apart
+export function clampInteger(
+    value: unknown,
+    min: number,
+    max: number,
+): number | undefined {
+    if (value === "" || value === null || value === undefined) {
+        return undefined;
+    }
+
+    const number = Math.trunc(Number(value));
+
+    return Number.isNaN(number)
+        ? undefined
+        : Math.min(max, Math.max(min, number));
+}
+
 export function getTextFromHtml(html: string): string {
     // a parsed document loads no images and runs no handlers
     return (
