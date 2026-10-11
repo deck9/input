@@ -87,7 +87,6 @@ interface FormBlockLogicCondition {
 
 interface EditableFormBlockBlockLogicCondition extends FormBlockLogicCondition {
     source?: {
-        id: FormBlockModel["uuid"];
         key: FormBlockModel["uuid"];
         label: string;
     };

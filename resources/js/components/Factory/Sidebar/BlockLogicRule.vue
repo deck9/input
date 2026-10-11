@@ -57,7 +57,18 @@
               v-model="condition.source"
               size="small"
               :options="availableSourceBlocks"
-            />
+              by="key"
+            >
+              <template #option="{ option }">
+                <span class="inline-flex items-center text-xs">
+                  <span
+                    class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center"
+                    >{{ option.title }}</span
+                  >
+                  <span class="inline-block truncate">{{ option.text }}</span>
+                </span>
+              </template>
+            </D9Select>
             <label :for="`${uid}-${index}-operator`" class="sr-only"
               >Operator</label
             >
@@ -131,7 +142,18 @@
           v-model="target"
           size="small"
           :options="availableTargetBlocks"
-        />
+          by="key"
+        >
+          <template #option="{ option }">
+            <span class="inline-flex items-center text-xs">
+              <span
+                class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center"
+                >{{ option.title }}</span
+              >
+              <span class="inline-block truncate">{{ option.text }}</span>
+            </span>
+          </template>
+        </D9Select>
       </div>
     </div>
 
@@ -146,7 +168,6 @@
 <script lang="ts" setup>
 import { D9Input, D9Select, D9Icon, D9Label, D9Button } from "@deck9/ui";
 import { computed, Ref, ref, useId, watch } from "vue";
-import escape from "lodash/escape";
 import { useLogic } from "@/stores";
 import { operators } from "@/stores/helpers/logic";
 import { getTextFromHtml } from "@/utils";
@@ -178,15 +199,14 @@ const action = ref<FormBlockLogic["action"]>(props.rule.action);
 const conditions: Ref<Array<EditableFormBlockBlockLogicCondition>> = ref([]);
 const target = ref<EditableFormBlockBlockLogicCondition["source"] | null>(null);
 
-// D9Select renders labels as HTML, so the user's text is escaped
 const getBlockOption = (block: FormBlockModel) => {
-  const title = escape(block.title?.length ? block.title : block.uuid);
-  const text = escape(getTextFromHtml(block.message ?? ""));
+  const text = getTextFromHtml(block.message ?? "");
 
   return {
-    id: block.uuid,
     key: block.uuid,
-    label: `<div class="inline-flex items-center text-xs"><span class="bg-grey-700 text-white rounded mr-2 px-1 py-px w-16 truncate inline-block text-center">${title}</span><span class="inline-block truncate">${text}</span></div>`,
+    label: text,
+    title: block.title?.length ? block.title : block.uuid,
+    text,
   };
 };
 
