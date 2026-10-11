@@ -9,8 +9,12 @@ use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\FormSession;
 use App\Models\FormSessionUpload;
+use Illuminate\Database\Events\TransactionBeginning;
+use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
@@ -181,6 +185,46 @@ test('an upload over the allowed file count is rejected and stores nothing', fun
     'a negative question count' => [['allowedFiles' => -1], 10],
     'no question count' => [[], 10],
 ]);
+
+test('an upload over the allowed file count leaves no file on the S3 disk', function () {
+    config(['filesystems.default' => 'minio']);
+    Storage::fake('minio');
+    $interaction = fileQuestion(['allowedFiles' => 1]);
+    $session = answerFileQuestion($interaction);
+
+    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
+    uploadFile($session, $interaction, UploadedFile::fake()->image('one-more.png'))->assertStatus(422);
+
+    expect(Storage::disk('minio')->allFiles('uploads'))->toHaveCount(1);
+});
+
+test('an upload locks its answer before it counts and saves', function () {
+    Storage::fake();
+    $interaction = fileQuestion(['allowedFiles' => 2]);
+    $session = answerFileQuestion($interaction);
+
+    $steps = [];
+    Event::listen(TransactionBeginning::class, function () use (&$steps) {
+        $steps[] = 'begin';
+    });
+    Event::listen(TransactionCommitted::class, function () use (&$steps) {
+        $steps[] = 'commit';
+    });
+    DB::listen(function ($query) use (&$steps) {
+        $sql = str_replace(['`', '"'], '', $query->sql);
+        $steps[] = match (true) {
+            str_starts_with($sql, 'update form_session_responses') => 'lock the answer',
+            str_starts_with($sql, 'select count(*) as aggregate from form_session_uploads') => 'count',
+            str_starts_with($sql, 'insert into form_session_uploads') => 'save',
+            default => null,
+        };
+    });
+
+    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
+
+    // parallel uploads can't run in one test process; the PR lists the manual parallel check
+    expect(array_values(array_filter($steps)))->toBe(['begin', 'lock the answer', 'count', 'save', 'commit']);
+});
 
 test('an upload for a question that is not a file question is rejected', function () {
     Storage::fake();

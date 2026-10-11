@@ -5,7 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class FormSessionResponse extends Model
 {
@@ -59,14 +62,33 @@ class FormSessionResponse extends Model
         }
     }
 
-    public function saveUpload(UploadedFile $file)
+    public function saveUpload(UploadedFile $file, int $maxFiles = PHP_INT_MAX)
     {
-        return $this->formSessionUploads()->create([
-            'uuid' => Str::uuid(),
-            'name' => $file->getClientOriginalName(),
-            'path' => $file->store(implode('/', ['uploads', $this->id])),
-            'type' => $file->getClientMimeType(),
-            'size' => $file->getSize(),
-        ]);
+        // stored before the lock, so the lock only covers the count and the row
+        $path = $file->store(implode('/', ['uploads', $this->id]));
+
+        try {
+            return DB::transaction(function () use ($file, $path, $maxFiles) {
+                // a write first locks this answer: its row on MariaDB, the database on SQLite,
+                // where lockForUpdate does nothing and a count before the first write can't wait
+                static::whereKey($this->id)->touch();
+
+                if ($this->formSessionUploads()->count() >= $maxFiles) {
+                    throw ValidationException::withMessages(['file' => "This question takes at most {$maxFiles} files."]);
+                }
+
+                return $this->formSessionUploads()->create([
+                    'uuid' => Str::uuid(),
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'type' => $file->getClientMimeType(),
+                    'size' => $file->getSize(),
+                ]);
+            });
+        } catch (\Throwable $e) {
+            Storage::delete($path);
+
+            throw $e;
+        }
     }
 }
