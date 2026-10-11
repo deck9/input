@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -25,8 +26,9 @@ return new class extends Migration
     public function up(): void
     {
         // SQLite adds a key by rebuilding the table: with keys on, dropping the old table would cascade,
-        // and rows whose parent is already gone would be rejected. They stay as they are.
-        Schema::withoutForeignKeyConstraints(fn () => $this->addMissingKeys());
+        // and rows whose parent is already gone would be rejected. They stay as they are. Keys go off before
+        // the transaction, as SQLite ignores that switch inside one. A failed copy then leaves no half-built table.
+        Schema::withoutForeignKeyConstraints(fn () => DB::transaction(fn () => $this->addMissingKeys()));
     }
 
     private function addMissingKeys(): void
