@@ -61,4 +61,24 @@ describe("block text counter", () => {
   it("counts an empty text as 0 chars, 0 words", async () => {
     expect(counter(await open())).toBe("0 chars, 0 words");
   });
+
+  it.each([
+    ["<h2>Hi</h2><p>there</p>", 2],
+    ["<ul><li><p>one</p></li><li><p>two</p></li></ul>", 2],
+    ["<p></p><p></p>", 0],
+  ])("counts %s as %i words", async (html, words) => {
+    expect(counter(await open(html))).toMatch(`, ${words} words`);
+  });
+
+  it("counts a text of only spaces as 0 words", async () => {
+    const wrapper = await open();
+    const editor = wrapper
+      .findComponent(EditorContent)
+      .props("editor") as TiptapEditor;
+
+    editor.view.dispatch(editor.state.tr.insertText("   "));
+    await nextTick();
+
+    expect(counter(wrapper)).toBe("3 chars, 0 words");
+  });
 });
