@@ -19,6 +19,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Fields, switches and selects in the editor and on the login pages now have labels a screen reader reads, and menus and loading spinners have names. Buttons keep focus while they load. (#231)
 -   The logic editor ticks the block you picked. Decimal places, max files and max file size are kept in range when saved. A rating whose icon the form can't show now shows stars instead of nothing. (#231)
 -   A file upload is now refused when the server can't store the file, and the form asks to try again. Before, the upload looked done, but the submission pointed to a missing file. When the storage can't save, read or delete a file, the log now says why. (#236)
+-   The form settings refuse a name longer than 255 characters with a message that says so. Before, saving failed with a server error on MySQL and MariaDB. The description, language, colors, button label, completion headline and links are checked against their length the same way. (#239)
 
 ### Security
 
