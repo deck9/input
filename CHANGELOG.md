@@ -12,6 +12,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 -   A question or completion page text that holds only an image keeps the image when you save it. Before, it was saved as empty and the image was lost. (#229)
 -   The word count under the text editor now counts every word in headings, paragraphs and list items. Before, words on different lines ran together, and a text with only spaces counted 1 word. (#230)
+-   The server now checks that a file question takes at most 10 files, and that a question's id is a whole number when you change or delete it. Before, the file limit was only checked in the editor. (#233)
 
 ### Security
 
