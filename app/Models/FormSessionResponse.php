@@ -64,18 +64,25 @@ class FormSessionResponse extends Model
 
     public function saveUpload(UploadedFile $file, int $maxFiles = PHP_INT_MAX)
     {
+        $refuseWhenFull = function () use ($maxFiles) {
+            if ($this->formSessionUploads()->count() >= $maxFiles) {
+                throw ValidationException::withMessages(['file' => "This question takes at most {$maxFiles} files."]);
+            }
+        };
+
+        // a full answer is refused before the file is written; the count under the lock is the real check
+        $refuseWhenFull();
+
         // stored before the lock, so the lock only covers the count and the row
         $path = $file->store(implode('/', ['uploads', $this->id]));
 
         try {
-            return DB::transaction(function () use ($file, $path, $maxFiles) {
+            return DB::transaction(function () use ($file, $path, $refuseWhenFull) {
                 // a write first locks this answer: its row on MariaDB, the database on SQLite,
                 // where lockForUpdate does nothing and a count before the first write can't wait
                 static::whereKey($this->id)->touch();
 
-                if ($this->formSessionUploads()->count() >= $maxFiles) {
-                    throw ValidationException::withMessages(['file' => "This question takes at most {$maxFiles} files."]);
-                }
+                $refuseWhenFull();
 
                 return $this->formSessionUploads()->create([
                     'uuid' => Str::uuid(),

@@ -16,6 +16,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
@@ -223,7 +224,22 @@ test('an upload locks its answer before it counts and saves', function () {
     uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
 
     // parallel uploads can't run in one test process; the PR lists the manual parallel check
-    expect(array_values(array_filter($steps)))->toBe(['begin', 'lock the answer', 'count', 'save', 'commit']);
+    expect(array_values(array_filter($steps)))->toBe(['count', 'begin', 'lock the answer', 'count', 'save', 'commit']);
+});
+
+test('a full answer is refused before the file is written', function () {
+    Storage::fake();
+    $interaction = fileQuestion(['allowedFiles' => 1]);
+    $session = answerFileQuestion($interaction);
+    $answer = $session->formSessionResponses()->first();
+    // a row without a file: the answer's folder only appears if the refused file gets written (a delete keeps the folder)
+    $answer->formSessionUploads()->create(['uuid' => Str::uuid(), 'name' => 'cv.pdf', 'path' => 'cv.pdf', 'type' => 'application/pdf', 'size' => 1]);
+
+    uploadFile($session, $interaction, UploadedFile::fake()->image('one-more.png'))
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['file' => 'This question takes at most 1 files.']);
+
+    expect(Storage::directoryExists("uploads/{$answer->id}"))->toBeFalse();
 });
 
 test('an upload for a question that is not a file question is rejected', function () {
