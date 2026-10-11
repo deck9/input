@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Fixed
+
+-   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
+
 ### Security
 
 -   The text editor for questions and the completion page now uses tiptap 3, which fixes a moderate advisory in tiptap 2. Texts you wrote before stay as they are. (#226)
