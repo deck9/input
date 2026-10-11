@@ -111,13 +111,7 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 };
 
 const focus = () => {
-  if (labelElement.value) {
-    try {
-      labelElement.value.$el.querySelector("input").focus();
-    } catch (e) {
-      console.error("Could not focus ClickInteraction input", e);
-    }
-  }
+  labelElement.value?.focus();
 };
 
 defineExpose({
