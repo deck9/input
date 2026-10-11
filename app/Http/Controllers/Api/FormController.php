@@ -41,6 +41,8 @@ class FormController extends Controller
      */
     public function create(Request $request)
     {
+        $request->validate(['name' => 'nullable|string|max:255']);
+
         $form = Form::create([
             'name' => $request->name ?? 'Untitled Form',
             'user_id' => $request->user()->id,
@@ -86,7 +88,7 @@ class FormController extends Controller
         $color = fn (string $key) => $changed($key, 'nullable', 'string', 'max:32');
 
         $request->validate([
-            'name' => $changed('name', 'string', 'max:255'),
+            'name' => $changed('name', 'filled', 'string', 'max:255'),
             'description' => $changed('description', 'nullable', 'string', 'max:1024'),
             'language' => $changed('language', 'nullable', 'string', 'max:4'),
             'brand_color' => $changed('brand_color', 'nullable', 'string', 'max:255'),

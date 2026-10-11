@@ -331,6 +331,28 @@ test('a form name longer than 255 characters is refused with a clear message', f
     expect($form->fresh()->name)->not->toBe(str_repeat('a', 256));
 });
 
+test('an empty form name is refused with a clear message', function () {
+    $form = Form::factory()->create(['name' => 'Old Name']);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['name' => ''])
+        ->assertStatus(422)
+        ->assertJsonPath('message', 'The name field must have a value.');
+
+    expect($form->fresh()->name)->toBe('Old Name');
+});
+
+test('a new form name longer than 255 characters is refused', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $this->actingAs($user)
+        ->json('POST', route('api.forms.create'), ['name' => str_repeat('a', 256)])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('name');
+
+    expect(Form::count())->toBe(0);
+});
+
 test('a changed form text must fit its column', function (string $key, int $max) {
     $form = Form::factory()->create();
 

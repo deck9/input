@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
@@ -23,7 +24,10 @@ class DuplicateFormController extends Controller
     {
         $this->authorize('update', $form);
 
-        $newForm = $form->duplicate($request->name ?? 'Copy of '.$form->name);
+        $request->validate(['name' => 'nullable|string|max:255']);
+
+        // a long original name must not push the copy's name past its column
+        $newForm = $form->duplicate($request->name ?? Str::substr('Copy of '.$form->name, 0, 255));
 
         $request->user()->forms()->save($newForm);
 
