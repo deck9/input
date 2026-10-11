@@ -35,8 +35,13 @@
 
     <template v-if="workbench.block?.type === 'rating'">
       <div class="mb-4" v-if="icon">
-        <D9Label label="Icon" />
-        <D9Select :options="iconOptions" v-model="icon" :icon="icon.icon" />
+        <D9Label id="range-icon" label="Icon" />
+        <D9Select
+          id="range-icon"
+          :options="iconOptions"
+          v-model="icon"
+          :icon="icon.icon"
+        />
       </div>
       <div class="mb-4">
         <D9Label label="Color" />
@@ -68,16 +73,17 @@ const labelLeft = ref("");
 const labelRight = ref("");
 
 const iconOptions = ref([
-  { label: "Star", value: "star", icon: "star" },
-  { label: "Heart", value: "heart", icon: "heart" },
-  { label: "Poo", value: "poo", icon: "poo" },
-  { label: "Bolt", value: "bolt", icon: "bolt" },
-  { label: "Tree", value: "tree", icon: "tree" },
-  { label: "Crown", value: "crown", icon: "crown" },
-  { label: "Trophy", value: "trophy", icon: "trophy" },
+  { id: "star", label: "Star", value: "star", icon: "star" },
+  { id: "heart", label: "Heart", value: "heart", icon: "heart" },
+  { id: "poo", label: "Poo", value: "poo", icon: "poo" },
+  { id: "bolt", label: "Bolt", value: "bolt", icon: "bolt" },
+  { id: "tree", label: "Tree", value: "tree", icon: "tree" },
+  { id: "crown", label: "Crown", value: "crown", icon: "crown" },
+  { id: "trophy", label: "Trophy", value: "trophy", icon: "trophy" },
 ]);
 
 const icon = ref<{
+  id: string;
   label: string;
   value: string;
   icon: string;

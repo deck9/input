@@ -3,7 +3,7 @@ import { ref, Ref } from "vue";
 export const useBlockTypes = (): {
     types: Ref<Array<InteractionOption>>;
 } => {
-    const rawTypes: Array<InteractionOption> = [
+    const rawTypes: Array<Omit<InteractionOption, "id">> = [
         { label: "No Input", value: "none", icon: "envelope" },
         { label: "Multiple Choice", value: "radio", icon: "check-circle" },
         { label: "Checkboxes", value: "checkbox", icon: "check-square" },

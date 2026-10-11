@@ -32,8 +32,9 @@
         v-if="embedType !== 'link'"
         class="mb-3 flex justify-between border-b border-grey-200 pb-3"
       >
-        <D9Label label="Use full height" />
+        <D9Label id="embed-full-height" label="Use full height" />
         <D9Switch
+          id="embed-full-height"
           label=""
           v-model="useFullheight"
           onLabel="yes"
@@ -68,8 +69,9 @@
       </div>
 
       <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
-        <D9Label label="Hide Title" />
+        <D9Label id="embed-hide-title" label="Hide Title" />
         <D9Switch
+          id="embed-hide-title"
           label="Hide Title"
           v-model="hideTitle"
           onLabel="yes"
@@ -78,8 +80,9 @@
       </div>
 
       <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
-        <D9Label label="Hide Navigation" />
+        <D9Label id="embed-hide-navigation" label="Hide Navigation" />
         <D9Switch
+          id="embed-hide-navigation"
           label="Hide Navigation"
           v-model="hideNavigation"
           onLabel="yes"
@@ -88,8 +91,9 @@
       </div>
 
       <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
-        <D9Label label="Autofocus on Load" />
+        <D9Label id="embed-autofocus" label="Autofocus on Load" />
         <D9Switch
+          id="embed-autofocus"
           label="Autofocus on Load"
           v-model="focusOnMount"
           onLabel="yes"
@@ -98,8 +102,9 @@
       </div>
 
       <div class="mb-3 flex justify-between border-b border-grey-200 pb-3">
-        <D9Label label="Align Left" />
+        <D9Label id="embed-align-left" label="Align Left" />
         <D9Switch
+          id="embed-align-left"
           label="Align Left"
           v-model="alignLeft"
           onLabel="yes"

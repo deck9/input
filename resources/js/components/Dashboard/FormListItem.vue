@@ -107,6 +107,7 @@
         </a>
         <D9Menu
           class="flex items-center"
+          label="Form options"
           position="left"
           use-portal
           @click="setActive"

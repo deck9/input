@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="mt-4">
-        <d9-label for="name" label="Team Name" />
+        <d9-label id="name" label="Team Name" />
         <d9-input
           id="name"
           type="text"

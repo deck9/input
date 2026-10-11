@@ -4,6 +4,67 @@ import { createApp, h, Suspense } from "vue";
 import { createPinia } from "pinia";
 import { createI18n } from "vue-i18n";
 import ClassicForm from "./classic/ClassicForm.vue";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+    faArrowUp19,
+    faBolt,
+    faCalendar,
+    faChevronLeft,
+    faChevronRight,
+    faCircleNotch,
+    faCrown,
+    faEnvelope,
+    faFileLines,
+    faFilePdf,
+    faFileVideo,
+    faFileWaveform,
+    faHeart,
+    faLink,
+    faPhone,
+    faPoo,
+    faStar,
+    faTree,
+    faTrophy,
+    faTurnDown,
+    faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+    faFacebook,
+    faGithub,
+    faInstagram,
+    faLinkedin,
+    faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+
+// @deck9/ui registers only the icons its own components render
+library.add(
+    faArrowUp19,
+    faBolt,
+    faCalendar,
+    faChevronLeft,
+    faChevronRight,
+    faCircleNotch,
+    faCrown,
+    faEnvelope,
+    faFileLines,
+    faFilePdf,
+    faFileVideo,
+    faFileWaveform,
+    faHeart,
+    faLink,
+    faPhone,
+    faPoo,
+    faStar,
+    faTree,
+    faTrophy,
+    faTurnDown,
+    faXmark,
+    faFacebook,
+    faGithub,
+    faInstagram,
+    faLinkedin,
+    faTwitter,
+);
 
 import localeDE from "@i18n/de.json";
 import localeEN from "@i18n/en.json";

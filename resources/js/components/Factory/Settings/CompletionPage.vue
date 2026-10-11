@@ -12,8 +12,12 @@
           <D9Input type="url" block v-model="ctaLink" />
         </div>
         <div class="mb-4 flex justify-between">
-          <D9Label label="Append Incoming Query Parameters" />
+          <D9Label
+            id="cta-append-params"
+            label="Append Incoming Query Parameters"
+          />
           <D9Switch
+            id="cta-append-params"
             label="Append Incoming Query Parameters"
             v-model="ctaAppendParams"
             onLabel="yes"
@@ -21,8 +25,12 @@
           />
         </div>
         <div class="mb-4 flex justify-between">
-          <D9Label label="Append Session ID as Query Parameter" />
+          <D9Label
+            id="cta-append-session-id"
+            label="Append Session ID as Query Parameter"
+          />
           <D9Switch
+            id="cta-append-session-id"
             label="Append Session ID as Query Parameter"
             v-model="ctaAppendSessionId"
             onLabel="yes"
@@ -49,8 +57,9 @@
 
       <div class="mt-8">
         <h2 class="mb-2 flex items-center text-base font-bold">
-          <span class="inline-block">Call to Action</span>
+          <label for="cta-enabled" class="inline-block">Call to Action</label>
           <D9Switch
+            id="cta-enabled"
             class="ml-2"
             label="Activate Call to Action"
             v-model="isCtaOn"
@@ -74,8 +83,12 @@
             <D9Input type="url" block v-model="ctaLink" />
           </div>
           <div class="mb-4 flex justify-between">
-            <D9Label label="Append Incoming Query Parameters" />
+            <D9Label
+              id="cta-append-params"
+              label="Append Incoming Query Parameters"
+            />
             <D9Switch
+              id="cta-append-params"
               label="Append Incoming Query Parameters"
               v-model="ctaAppendParams"
               onLabel="yes"
@@ -83,8 +96,12 @@
             />
           </div>
           <div class="mb-4 flex justify-between">
-            <D9Label label="Append Session ID as Query Parameter" />
+            <D9Label
+              id="cta-append-session-id"
+              label="Append Session ID as Query Parameter"
+            />
             <D9Switch
+              id="cta-append-session-id"
               label="Append Session ID as Query Parameter"
               v-model="ctaAppendSessionId"
               onLabel="yes"
@@ -96,8 +113,9 @@
 
       <div class="mt-8">
         <h2 class="mb-2 flex items-center text-base font-bold">
-          <span class="inline-block">Social Links</span>
+          <label for="social-enabled" class="inline-block">Social Links</label>
           <D9Switch
+            id="social-enabled"
             class="ml-2"
             label="Social Links"
             v-model="isSocialOn"

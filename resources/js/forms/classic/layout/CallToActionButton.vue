@@ -12,7 +12,7 @@
         v-show="isProcessing"
         class="absolute inset-0 flex items-center justify-center"
       >
-        <D9Icon class="animate-spin" icon="circle-notch" />
+        <D9Icon class="animate-spin" name="circle-notch" />
       </span>
     </a>
   </div>

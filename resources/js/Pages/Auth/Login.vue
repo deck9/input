@@ -18,7 +18,7 @@
 
     <form @submit.prevent="submit">
       <div>
-        <d9-label for="email" label="Email" />
+        <d9-label id="email" label="Email" />
         <d9-input
           id="email"
           type="email"
@@ -31,7 +31,7 @@
       </div>
 
       <div class="mt-4">
-        <d9-label for="password" label="Password" />
+        <d9-label id="password" label="Password" />
         <d9-input
           id="password"
           type="password"
@@ -44,13 +44,11 @@
       </div>
 
       <div class="mt-4 block">
-        <label class="flex items-center">
-          <d9-checkbox
-            name="remember"
-            v-model="form.remember"
-            label="Remember me"
-          />
-        </label>
+        <d9-checkbox
+          name="remember"
+          v-model="form.remember"
+          label="Remember me"
+        />
       </div>
 
       <div class="mt-4 flex items-center justify-end">

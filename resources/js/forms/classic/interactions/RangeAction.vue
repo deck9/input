@@ -35,7 +35,7 @@
         >
         <D9Icon
           v-if="block.type === 'rating'"
-          :name="action.options.icon ?? 'star'"
+          :name="ratingIcon"
           size="xl"
           class="custom-range-theme"
           :class="[
@@ -71,6 +71,10 @@ import { ref, computed } from "vue";
 import { onKeyStroke } from "@vueuse/core";
 import { useConversation } from "@/stores/conversation";
 import { D9Icon } from "@deck9/ui";
+import {
+  findIconDefinition,
+  IconName,
+} from "@fortawesome/fontawesome-svg-core";
 import { useThemableColor } from "@/utils/useThemableColor";
 import { watch } from "vue";
 
@@ -92,6 +96,15 @@ const ratingOptions = computed(() => {
   }
 
   return options;
+});
+
+// a name saved through the API may not be registered: show the default, not a blank rating
+const ratingIcon = computed(() => {
+  const name = props.action.options?.icon as IconName | undefined;
+
+  return name && findIconDefinition({ prefix: "fas", iconName: name })
+    ? name
+    : "star";
 });
 
 const selectedValue = computed(() => {

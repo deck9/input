@@ -15,7 +15,7 @@
           v-show="isProcessing"
           class="absolute inset-0 flex items-center justify-center"
         >
-          <D9Icon class="animate-spin" icon="circle-notch" />
+          <D9Icon class="animate-spin" name="circle-notch" />
           <span v-if="uploadProgress" class="text-xs ml-2"
             >{{ uploadProgress }}%</span
           >
@@ -28,7 +28,7 @@
         class="ml-4 inline-flex items-center justify-center text-xs font-bold leading-none text-content/80 transition duration-150"
       >
         {{ t("enter") }}
-        <D9Icon class="ml-1 rotate-90" icon="turn-down" />
+        <D9Icon class="ml-1 rotate-90" name="turn-down" />
       </span>
     </div>
   </div>

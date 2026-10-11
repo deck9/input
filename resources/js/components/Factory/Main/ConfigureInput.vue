@@ -18,8 +18,8 @@
       <D9Input
         placeholder="Number of decimal places"
         type="number"
-        min="0"
-        max="10"
+        :min="0"
+        :max="10"
         step="1"
         block
         v-model="decimalPlaces"
@@ -27,7 +27,7 @@
     </div>
     <div class="mb-4">
       <D9Label label="Show Symbol" />
-      <D9Input v-model="useSymbol" block max="3" />
+      <D9Input v-model="useSymbol" block maxlength="3" />
     </div>
   </template>
 </template>
@@ -37,6 +37,7 @@ import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
 import { watch, Ref, ref, inject, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
+import { clampInteger } from "@/utils";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -64,7 +65,7 @@ watch([label, decimalPlaces, useSymbol], (newValues: any[]) => {
     id: interaction.value.id,
     label: newValues[0],
     options: {
-      decimalPlaces: newValues[1] ? parseInt(newValues[1]) : undefined,
+      decimalPlaces: clampInteger(newValues[1], 0, 10),
       useSymbol: newValues[2] ? newValues[2] : undefined,
     },
   };

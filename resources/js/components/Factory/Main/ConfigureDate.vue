@@ -9,8 +9,8 @@
       <D9Input type="date" block v-model="maxDate" />
     </div>
     <div class="mb-4 flex items-center justify-between">
-      <D9Label label="Do not allow past dates" />
-      <D9Switch label="" v-model="noPastDates" />
+      <D9Label id="no-past-dates" label="Do not allow past dates" />
+      <D9Switch id="no-past-dates" label="" v-model="noPastDates" />
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ const { findOrCreate } = useInteractionsUtils();
 
 const minDate = ref<string | null>("");
 const maxDate = ref<string | null>("");
-const noPastDates = ref<boolean | null>(false);
+const noPastDates = ref(false);
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
@@ -36,7 +36,7 @@ onMounted(async () => {
 
     minDate.value = interaction.value.options?.minDate ?? null;
     maxDate.value = interaction.value.options?.maxDate ?? null;
-    noPastDates.value = interaction.value.options?.noPastDates ?? null;
+    noPastDates.value = interaction.value.options?.noPastDates ?? false;
   }
 });
 

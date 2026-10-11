@@ -33,7 +33,10 @@
         "vitest": "^4.1.11"
     },
     "dependencies": {
-        "@deck9/ui": "^0.15.5",
+        "@deck9/ui": "^0.17.0",
+        "@fortawesome/fontawesome-svg-core": "^6.5.1",
+        "@fortawesome/free-brands-svg-icons": "^6.5.1",
+        "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@headlessui/vue": "^1.7.23",
         "@highlightjs/vue-plugin": "^2.1.0",
         "@inertiajs/vue3": "^1.2.0",

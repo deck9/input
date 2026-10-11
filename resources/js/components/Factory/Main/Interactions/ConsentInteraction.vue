@@ -38,7 +38,9 @@
             :id="item.id + '_required'"
             v-model="isRequired"
           />
-          <span class="ml-2 inline-block">Consent required</span>
+          <label :for="item.id + '_required'" class="ml-2 inline-block"
+            >Consent required</label
+          >
         </div>
       </section>
     </div>
