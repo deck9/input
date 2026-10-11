@@ -320,6 +320,82 @@ test('an unchanged old form link does not block saving', function () {
     expect($form->fresh()->name)->toBe('New Name');
 });
 
+test('a form name longer than 255 characters is refused with a clear message', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['name' => str_repeat('a', 256)])
+        ->assertStatus(422)
+        ->assertJsonPath('message', 'The name must not be greater than 255 characters.');
+
+    expect($form->fresh()->name)->not->toBe(str_repeat('a', 256));
+});
+
+test('an empty form name is refused with a clear message', function () {
+    $form = Form::factory()->create(['name' => 'Old Name']);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['name' => ''])
+        ->assertStatus(422)
+        ->assertJsonPath('message', 'The name field must have a value.');
+
+    expect($form->fresh()->name)->toBe('Old Name');
+});
+
+test('a new form name longer than 255 characters is refused', function () {
+    $user = User::factory()->withTeam()->create();
+
+    $this->actingAs($user)
+        ->json('POST', route('api.forms.create'), ['name' => str_repeat('a', 256)])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('name');
+
+    expect(Form::count())->toBe(0);
+});
+
+test('a changed form text must fit its column', function (string $key, int $max) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => str_repeat('a', $max + 1)])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => str_repeat('a', $max)])
+        ->assertSuccessful();
+
+    expect($form->fresh()->$key)->toBe(str_repeat('a', $max));
+})->with([
+    ['name', 255],
+    ['description', 1024],
+    ['language', 4],
+    ['brand_color', 255],
+    ['background_color', 32],
+    ['text_color', 32],
+    ['message_background_color', 32],
+    ['message_text_color', 32],
+    ['user_message_background_color', 32],
+    ['user_message_text_color', 32],
+    ['interaction_background_color', 32],
+    ['interaction_text_color', 32],
+    ['cta_label', 255],
+    ['eoc_headline', 255],
+]);
+
+test('a changed form link must fit its column', function (string $key) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => 'https://'.str_repeat('a', 248)])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => 'https://'.str_repeat('a', 247)])
+        ->assertSuccessful();
+})->with(['cta_link', 'privacy_link', 'legal_notice_link', 'twitter', 'facebook', 'instagram', 'github', 'linkedin']);
+
 test('can not update form of other users', function () {
     $form = Form::factory()->create();
 

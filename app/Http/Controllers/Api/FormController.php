@@ -41,6 +41,8 @@ class FormController extends Controller
      */
     public function create(Request $request)
     {
+        $request->validate(['name' => 'nullable|string|max:255']);
+
         $form = Form::create([
             'name' => $request->name ?? 'Untitled Form',
             'user_id' => $request->user()->id,
@@ -77,14 +79,29 @@ class FormController extends Controller
     {
         $this->authorize('update', $form);
 
-        // the settings pages send every link back on save, so only check a changed one
-        $link = fn (string $key) => [
+        // the settings pages send the whole form back on save, so only check a changed value
+        $changed = fn (string $key, string ...$rules) => [
             Rule::excludeIf($request->input($key) === $form->$key),
-            'nullable',
-            'regex:~^(https?://|mailto:)~i',
+            ...$rules,
         ];
+        $link = fn (string $key) => $changed($key, 'nullable', 'max:255', 'regex:~^(https?://|mailto:)~i');
+        $color = fn (string $key) => $changed($key, 'nullable', 'string', 'max:32');
 
         $request->validate([
+            'name' => $changed('name', 'filled', 'string', 'max:255'),
+            'description' => $changed('description', 'nullable', 'string', 'max:1024'),
+            'language' => $changed('language', 'nullable', 'string', 'max:4'),
+            'brand_color' => $changed('brand_color', 'nullable', 'string', 'max:255'),
+            'background_color' => $color('background_color'),
+            'text_color' => $color('text_color'),
+            'message_background_color' => $color('message_background_color'),
+            'message_text_color' => $color('message_text_color'),
+            'user_message_background_color' => $color('user_message_background_color'),
+            'user_message_text_color' => $color('user_message_text_color'),
+            'interaction_background_color' => $color('interaction_background_color'),
+            'interaction_text_color' => $color('interaction_text_color'),
+            'cta_label' => $changed('cta_label', 'nullable', 'string', 'max:255'),
+            'eoc_headline' => $changed('eoc_headline', 'nullable', 'string', 'max:255'),
             'is_auto_delete_enabled' => 'boolean',
             // checked against the value the form ends up with; the settings page also sends the hidden field while auto delete is off
             'data_retention_days' => [

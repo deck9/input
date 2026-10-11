@@ -34,9 +34,15 @@
           <div class="relative bg-white p-4 text-left">
             <FormSummary v-if="store.form" :form="store.form" />
             <div class="mt-4">
-              <D9Label class="mb-1" label="Share URL" />
+              <D9Label id="share-url" class="mb-1" label="Share URL" />
               <div class="relative">
-                <D9Input block :modelValue="store.formUrl" readonly disabled />
+                <D9Input
+                  id="share-url"
+                  block
+                  :modelValue="store.formUrl"
+                  readonly
+                  disabled
+                />
                 <span class="absolute inset-y-0 right-2 flex items-center">
                   <D9Button
                     v-if="isSupported"

@@ -1,8 +1,9 @@
 <template>
   <div v-if="isInitialized">
     <div class="mb-4">
-      <D9Label label="Min Rating" />
+      <D9Label id="range-min" label="Min Rating" />
       <D9Input
+        id="range-min"
         placeholder="Min Rating"
         type="number"
         block
@@ -10,8 +11,9 @@
       />
     </div>
     <div class="mb-4">
-      <D9Label label="Max Rating" />
+      <D9Label id="range-max" label="Max Rating" />
       <D9Input
+        id="range-max"
         placeholder="Max Rating"
         type="number"
         block
@@ -20,12 +22,19 @@
     </div>
 
     <div class="mb-4">
-      <D9Label label="Left Label" />
-      <D9Input placeholder="Left Label" type="text" block v-model="labelLeft" />
+      <D9Label id="range-label-left" label="Left Label" />
+      <D9Input
+        id="range-label-left"
+        placeholder="Left Label"
+        type="text"
+        block
+        v-model="labelLeft"
+      />
     </div>
     <div class="mb-4">
-      <D9Label label="Right Label" />
+      <D9Label id="range-label-right" label="Right Label" />
       <D9Input
+        id="range-label-right"
         placeholder="Right Label"
         type="text"
         block
@@ -44,8 +53,14 @@
         />
       </div>
       <div class="mb-4">
-        <D9Label label="Color" />
-        <D9Input type="color" v-model="color" block show-color-picker />
+        <D9Label id="range-color" label="Color" />
+        <D9Input
+          id="range-color"
+          type="color"
+          v-model="color"
+          block
+          show-color-picker
+        />
         <button type="button" class="text-xs text-blue-600" @click="resetColor">
           Use default
         </button>
