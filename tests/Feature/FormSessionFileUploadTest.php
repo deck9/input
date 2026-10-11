@@ -160,7 +160,9 @@ test('an upload over the allowed file size is rejected and stores nothing', func
 
 test('an upload over the allowed file count is rejected and stores nothing', function (array $options, int $count) {
     Storage::fake();
-    $interaction = fileQuestion($options);
+    $interaction = fileQuestion([]);
+    // store the options as given, like a value saved before saving capped it
+    $interaction->fill(['options' => $options])->saveQuietly();
     $session = answerFileQuestion($interaction);
 
     for ($i = 0; $i < $count; $i++) {

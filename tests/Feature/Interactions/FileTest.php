@@ -38,7 +38,7 @@ test('can_change_settings_for_allowed_files', function () {
     ]);
 });
 
-test('allowed files must be a whole number from 1 to 10', function (mixed $allowedFiles) {
+test('allowed files must be a whole number of at least 1', function (mixed $allowedFiles) {
     $interaction = FormBlockInteraction::factory()->create([
         'type' => FormBlockInteractionType::file->value,
         'options' => ['allowedFiles' => 2],
@@ -52,18 +52,23 @@ test('allowed files must be a whole number from 1 to 10', function (mixed $allow
         ->assertJsonValidationErrors('options.allowedFiles');
 
     expect($interaction->fresh()->options['allowedFiles'])->toBe(2);
-})->with([11, 50, 0, 'many']);
+})->with([0, 'many']);
 
-test('allowed files up to 10 or none are stored', function (?int $allowedFiles) {
+test('allowed files are stored, capped at 10', function (?int $allowedFiles, ?int $stored) {
     $interaction = FormBlockInteraction::factory()->create([
         'type' => FormBlockInteractionType::file->value,
     ]);
 
     $this->actingAs($interaction->formBlock->form->user)
         ->json('post', route('api.interactions.update', $interaction), [
-            'options' => ['allowedFiles' => $allowedFiles],
+            'options' => ['allowedFiles' => $allowedFiles, 'allowedFileSize' => 4],
         ])
         ->assertStatus(200);
 
-    expect($interaction->fresh()->options['allowedFiles'])->toBe($allowedFiles);
-})->with([10, null]);
+    expect($interaction->fresh()->options)->toBe(['allowedFiles' => $stored, 'allowedFileSize' => 4]);
+})->with([
+    'within the limit' => [10, 10],
+    'none' => [null, null],
+    'above the limit' => [11, 10],
+    'far above the limit' => [50, 10],
+]);

@@ -57,7 +57,7 @@ class FormBlockInteractionController extends Controller
                 break;
             case FormBlockInteractionType::file:
                 $request->validate([
-                    'options.allowedFiles' => 'nullable|integer|min:1|max:'.FormUploadController::MAX_FILES,
+                    'options.allowedFiles' => 'nullable|integer|min:1',
                 ]);
                 break;
         }

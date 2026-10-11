@@ -22,6 +22,9 @@ class FormBlockInteraction extends BaseModel
         'sequence',
     ];
 
+    // the editor's maximum of files for a file question
+    public const MAX_FILES = 10;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -44,6 +47,13 @@ class FormBlockInteraction extends BaseModel
 
             if (! $model->sequence) {
                 $model->sequence = self::where('form_block_id', $model->form_block_id)->count();
+            }
+        });
+
+        // store a higher number as the maximum, so editor saves and template imports keep working
+        self::saving(function ($model) {
+            if ($model->type === FormBlockInteractionType::file && (int) ($model->options['allowedFiles'] ?? 0) > self::MAX_FILES) {
+                $model->options = [...$model->options, 'allowedFiles' => self::MAX_FILES];
             }
         });
 

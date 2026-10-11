@@ -309,6 +309,21 @@ test('template import drops a logic rule that points to a block missing from the
     expect($form->fresh()->formBlocks[0]->formBlockLogics->pluck('name')->all())->toBe(['Kept']);
 });
 
+test('template import stores at most 10 allowed files for a file question', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            ['type' => 'input-file', 'message' => 'Files', 'sequence' => 0, 'formBlockInteractions' => [
+                ['type' => 'file', 'options' => ['allowedFiles' => 50, 'allowedFileSize' => 4], 'sequence' => 0],
+            ]],
+        ]]),
+    ])->assertOk();
+
+    expect($form->fresh()->formBlocks[0]->formBlockInteractions[0]->options)
+        ->toBe(['allowedFiles' => 10, 'allowedFileSize' => 4]);
+});
+
 test('a template made before logic rules were exported still imports', function () {
     $form = Form::factory()->create();
 

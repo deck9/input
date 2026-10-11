@@ -15,9 +15,6 @@ class FormUploadController extends Controller
     // upload_max_filesize in scripts/php.conf.ini
     private const MAX_FILE_SIZE_MB = 8;
 
-    // the editor's maximum
-    public const MAX_FILES = 10;
-
     // same mapping as the form page (FileAction.vue)
     private const FILE_TYPES = [
         'image' => ['image/*'],
@@ -57,7 +54,7 @@ class FormUploadController extends Controller
         $options = $interaction->formBlock->formBlockInteractions
             ->firstWhere('type', FormBlockInteractionType::file)?->options ?? [];
         $maxFileSize = min((int) ($options['allowedFileSize'] ?? 0) ?: self::MAX_FILE_SIZE_MB, self::MAX_FILE_SIZE_MB);
-        $maxFiles = min((int) ($options['allowedFiles'] ?? 0) ?: self::MAX_FILES, self::MAX_FILES);
+        $maxFiles = min((int) ($options['allowedFiles'] ?? 0) ?: FormBlockInteraction::MAX_FILES, FormBlockInteraction::MAX_FILES);
         $types = collect($options['allowedFileTypes'] ?? [])
             ->filter(fn ($allowed) => $allowed === true)
             ->flatMap(fn ($allowed, $type) => self::FILE_TYPES[$type] ?? []);
