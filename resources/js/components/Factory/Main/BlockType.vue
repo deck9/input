@@ -16,10 +16,11 @@
     <AdvancedSettings title="More Settings">
       <div>
         <D9Label
+          id="block-identifier"
           label="Identifier"
           description="This name is used when submitting your form through webhooks and in the export."
         />
-        <D9Input v-model="title" block />
+        <D9Input id="block-identifier" v-model="title" block />
       </div>
     </AdvancedSettings>
   </div>

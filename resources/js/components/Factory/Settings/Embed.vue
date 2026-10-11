@@ -46,9 +46,9 @@
         v-if="!useFullheight && embedType !== 'link'"
         class="mb-3 border-b border-grey-200 pb-3"
       >
-        <D9Label class="mb-1" label="Custom Height" /><br />
+        <D9Label id="embed-height" class="mb-1" label="Custom Height" /><br />
         <span class="relative inline-block">
-          <D9Input v-model="height" />
+          <D9Input id="embed-height" v-model="height" />
           <span class="absolute inset-y-0 right-4 flex items-center">px</span>
         </span>
       </div>
@@ -58,12 +58,13 @@
         class="mb-3 border-b border-grey-200 pb-3"
       >
         <D9Label
+          id="embed-spacing-top"
           class="mb-1"
           label="Spacing Top"
           description="If value is 0, we use a default setting."
         /><br />
         <span class="relative inline-block">
-          <D9Input v-model="spacing" />
+          <D9Input id="embed-spacing-top" v-model="spacing" />
           <span class="absolute inset-y-0 right-4 flex items-center">px</span>
         </span>
       </div>

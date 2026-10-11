@@ -2,13 +2,18 @@
   <div>
     <form @submit.prevent="saveOptions">
       <div class="mb-4">
-        <D9Label label="Privacy Link" />
-        <D9Input type="url" v-model="privacyLink" block />
+        <D9Label id="privacy-link" label="Privacy Link" />
+        <D9Input id="privacy-link" type="url" v-model="privacyLink" block />
       </div>
 
       <div class="mb-4">
-        <D9Label label="Legal Notice Link" />
-        <D9Input type="url" v-model="legalNoticeLink" block />
+        <D9Label id="legal-notice-link" label="Legal Notice Link" />
+        <D9Input
+          id="legal-notice-link"
+          type="url"
+          v-model="legalNoticeLink"
+          block
+        />
       </div>
 
       <div class="mb-4 flex justify-between">
@@ -23,8 +28,14 @@
       </div>
 
       <div class="mb-4" v-show="isAutoDeleteEnabled">
-        <D9Label label="Data retention in days" />
-        <D9Input type="number" :min="1" v-model="dataRetentionDays" block />
+        <D9Label id="data-retention-days" label="Data retention in days" />
+        <D9Input
+          id="data-retention-days"
+          type="number"
+          :min="1"
+          v-model="dataRetentionDays"
+          block
+        />
       </div>
 
       <ValidationErrors
