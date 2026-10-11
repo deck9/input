@@ -156,7 +156,10 @@ const editor = useEditor({
   onUpdate: () => {
     if (!editor.value) return;
     content.value = editor.value.getText();
-    emit("update:modelValue", chars.value > 0 ? editor.value.getHTML() : "");
+    emit(
+      "update:modelValue",
+      editor.value.isEmpty ? "" : editor.value.getHTML(),
+    );
   },
   extensions: [
     FontFamily,
