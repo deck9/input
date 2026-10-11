@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Form;
+use App\Models\FormSession;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -147,6 +149,70 @@ test('a user can sort forms by name', function () {
     expect($response->json('1.name'))->toBe('H Form');
     expect($response->json('2.name'))->toBe('A Form');
 });
+
+test('each form in the list has the time of its latest submission', function () {
+    $user = User::factory()->withTeam()->create();
+    $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    $formWithoutSubmissions = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+
+    FormSession::factory()->for($form)->create(['is_completed' => '2026-10-01 08:00:00']);
+    FormSession::factory()->for($form)->create(['is_completed' => '2026-10-03 09:30:00']);
+    // started later, never submitted
+    FormSession::factory()->for($form)->create();
+    FormSession::factory()->for($formWithoutSubmissions)->create();
+
+    $response = $this->actingAs($user)->getJson(route('api.forms.index'))->assertOk();
+
+    expect(collect($response->json())->pluck('latest_submission_at', 'uuid')->all())->toEqual([
+        $form->uuid => '2026-10-03T09:30:00.000000Z',
+        $formWithoutSubmissions->uuid => null,
+    ]);
+});
+
+test('the form list loads the latest submissions without a query per form', function () {
+    $user = User::factory()->withTeam()->create();
+    Form::factory()->count(30)->create(['user_id' => $user->id, 'team_id' => $user->current_team_id])
+        ->each(fn (Form $form) => FormSession::factory()->for($form)->completed()->create());
+
+    DB::enableQueryLog();
+    $response = $this->actingAs($user)->getJson(route('api.forms.index'))->assertOk();
+
+    expect($response->json('*.latest_submission_at'))->not->toContain(null);
+    expect(collect(DB::getQueryLog())->filter(fn (array $query) => str_contains(strtolower($query['query']), 'max(')))
+        ->toHaveCount(1);
+});
+
+test('a user can sort forms by latest submission, newest first and forms without submissions last', function () {
+    $user = User::factory()->withTeam()->create();
+    $older = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    $none = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    $newer = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+
+    FormSession::factory()->for($older)->create(['is_completed' => '2026-10-01 08:00:00']);
+    FormSession::factory()->for($newer)->create(['is_completed' => '2026-10-02 08:00:00']);
+
+    $this->actingAs($user)
+        ->getJson(route('api.forms.index', ['sort' => 'latest_submission_at:desc']))
+        ->assertOk()
+        ->assertJsonPath('*.uuid', [$newer->uuid, $older->uuid, $none->uuid]);
+});
+
+test('an unknown filter or sort value returns the default list', function (array $query) {
+    $user = User::factory()->withTeam()->create();
+    $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    Form::factory()->deleted()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+
+    $this->actingAs($user)
+        ->getJson(route('api.forms.index', $query))
+        ->assertOk()
+        ->assertJsonPath('*.uuid', [$form->uuid]);
+})->with([
+    'unknown filter' => [['filter' => 'archived']],
+    'filter as a list' => [['filter' => ['trashed']]],
+    'unknown sort column' => [['sort' => 'password:desc']],
+    'unknown sort direction' => [['sort' => 'name:sideways']],
+    'sort as a list' => [['sort' => ['name']]],
+]);
 
 test('a user cannot return forms in other accounts', function () {
     /** @var User $user */
