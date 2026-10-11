@@ -22,6 +22,9 @@ class FormBlockInteraction extends BaseModel
         'sequence',
     ];
 
+    // the editor's maximum of files for a file question
+    public const MAX_FILES = 10;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -47,6 +50,13 @@ class FormBlockInteraction extends BaseModel
             }
         });
 
+        // store allowed files the way the upload reads them, so imported or older values keep saving
+        self::saving(function ($model) {
+            if ($model->type === FormBlockInteractionType::file && isset($model->options['allowedFiles'])) {
+                $model->options = [...$model->options, 'allowedFiles' => self::maxFiles($model->options['allowedFiles'])];
+            }
+        });
+
         self::deleted(function ($model) {
 
             $model->formBlock->updateInteractionSequence(
@@ -56,6 +66,14 @@ class FormBlockInteraction extends BaseModel
                     ->toArray()
             );
         });
+    }
+
+    // whole numbers up to the maximum count, a decimal is cut, anything else is the maximum
+    public static function maxFiles(mixed $allowedFiles): int
+    {
+        $files = (int) $allowedFiles;
+
+        return $files >= 1 ? min($files, self::MAX_FILES) : self::MAX_FILES;
     }
 
     public function formBlock()

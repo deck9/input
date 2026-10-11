@@ -97,3 +97,18 @@ test('can_delete_a_form_webhook', function () {
 
     $this->assertCount(0, $webhook->form->fresh()->formWebhooks);
 });
+
+test('a webhook id that is not a whole number is not found and changes nothing', function (string $suffix) {
+    $webhook = FormWebhook::factory()->create(['name' => 'Old']);
+
+    $this->actingAs($webhook->form->user);
+    $this->json('POST', route('api.forms.webhooks.update', [$webhook->form, $webhook->id.$suffix]), [
+        'name' => 'New',
+        'webhook_url' => 'https://example.com/webhook',
+        'webhook_method' => 'GET',
+    ])->assertNotFound();
+    $this->json('DELETE', route('api.forms.webhooks.delete', [$webhook->form, $webhook->id.$suffix]))
+        ->assertNotFound();
+
+    expect($webhook->fresh()->name)->toBe('Old');
+})->with(['xlf', '.0', 'e0']);

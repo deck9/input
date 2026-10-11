@@ -81,8 +81,8 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     // Form Webhooks
     $router->get('forms/{form}/webhooks', [FormWebhookController::class, 'index'])->name('api.forms.webhooks.index');
     $router->post('forms/{form}/webhooks', [FormWebhookController::class, 'create'])->name('api.forms.webhooks.create');
-    $router->post('forms/{form}/webhooks/{webhook}', [FormWebhookController::class, 'update'])->name('api.forms.webhooks.update');
-    $router->delete('forms/{form}/webhooks/{webhook}', [FormWebhookController::class, 'delete'])->name('api.forms.webhooks.delete');
+    $router->post('forms/{form}/webhooks/{webhook}', [FormWebhookController::class, 'update'])->whereNumber('webhook')->name('api.forms.webhooks.update');
+    $router->delete('forms/{form}/webhooks/{webhook}', [FormWebhookController::class, 'delete'])->whereNumber('webhook')->name('api.forms.webhooks.delete');
 
     // Form Publishing Routes
     $router->post('forms/{form}/publish', PublishFormController::class)->name('api.forms.publish');
@@ -95,22 +95,22 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
     // Block API Routes
     $router->get('{form}/blocks', [FormBlockController::class, 'index'])->name('api.blocks.index');
     $router->post('{form}/blocks', [FormBlockController::class, 'create'])->name('api.blocks.create');
-    $router->post('blocks/{block}', [FormBlockController::class, 'update'])->name('api.blocks.update');
-    $router->delete('blocks/{block}', [FormBlockController::class, 'delete'])->name('api.blocks.delete');
+    $router->post('blocks/{block}', [FormBlockController::class, 'update'])->whereNumber('block')->name('api.blocks.update');
+    $router->delete('blocks/{block}', [FormBlockController::class, 'delete'])->whereNumber('block')->name('api.blocks.delete');
 
     // Interaction API Routes
-    $router->post('{block}/interactions', [FormBlockInteractionController::class, 'create'])->name('api.interactions.create');
-    $router->post('interactions/{interaction}', [FormBlockInteractionController::class, 'update'])->name('api.interactions.update');
-    $router->delete('interactions/{interaction}', [FormBlockInteractionController::class, 'delete'])->name('api.interactions.delete');
+    $router->post('{block}/interactions', [FormBlockInteractionController::class, 'create'])->whereNumber('block')->name('api.interactions.create');
+    $router->post('interactions/{interaction}', [FormBlockInteractionController::class, 'update'])->whereNumber('interaction')->name('api.interactions.update');
+    $router->delete('interactions/{interaction}', [FormBlockInteractionController::class, 'delete'])->whereNumber('interaction')->name('api.interactions.delete');
 
     // Logic API Routes
-    $router->post('{block}/logic', [FormBlockLogicController::class, 'create'])->name('api.logics.create');
-    $router->post('logic/{logic}', [FormBlockLogicController::class, 'update'])->name('api.logics.update');
-    $router->delete('logic/{logic}', [FormBlockLogicController::class, 'delete'])->name('api.logics.delete');
+    $router->post('{block}/logic', [FormBlockLogicController::class, 'create'])->whereNumber('block')->name('api.logics.create');
+    $router->post('logic/{logic}', [FormBlockLogicController::class, 'update'])->whereNumber('logic')->name('api.logics.update');
+    $router->delete('logic/{logic}', [FormBlockLogicController::class, 'delete'])->whereNumber('logic')->name('api.logics.delete');
 
     // Sequence Routes
     $router->post('{form}/blocks/sequence', FormBlockSequenceController::class)->name('api.blocks.sequence');
-    $router->post('{block}/interactions/sequence', FormBlockInteractionSequenceController::class)->name('api.interactions.sequence');
+    $router->post('{block}/interactions/sequence', FormBlockInteractionSequenceController::class)->whereNumber('block')->name('api.interactions.sequence');
 
     // Template API Routes
     $router->get('forms/{form}/template-export', FormTemplateExportController::class)->name('api.forms.template-export');
@@ -118,7 +118,7 @@ $router->middleware(['auth:sanctum'])->group(function (Router $router) {
 
     // Form Submissions API Routes
     $router->get('forms/{form}/submissions', FormSubmissionsController::class)->name('api.forms.submissions');
-    $router->delete('forms/{form}/submissions/{session}', DeleteFormSubmissionController::class)->name('api.forms.submissions.delete');
+    $router->delete('forms/{form}/submissions/{session}', DeleteFormSubmissionController::class)->whereNumber('session')->name('api.forms.submissions.delete');
     $router->post('forms/{form}/purge-results', PurgeFormSubmissionsController::class)->name('api.forms.purge-results');
 
     // Form Block Mapping is just a helper to discover block & interaction type matches

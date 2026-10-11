@@ -12,6 +12,9 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 -   A question or completion page text that holds only an image keeps the image when you save it. Before, it was saved as empty and the image was lost. (#229)
 -   The word count under the text editor now counts every word in headings, paragraphs and list items. Before, words on different lines ran together, and a text with only spaces counted 1 word. (#230)
+-   Changing a question to a rating or file question no longer shows an error in the browser console. The question list on the left shows its settings as soon as they are set. (#232)
+-   The server now limits a file question to 10 files, and only accepts whole-number ids when you change or delete questions, answer options, logic rules, webhooks or submissions. Before, the file limit was only checked in the editor. The update sets a stored file limit above 10, below 1 or in text to 10, and rounds a decimal down. (#233)
+-   The form editor tells you when it can't save a change, with the server's reason when there is one. Before, the change looked saved but was lost when you reloaded the page. (#234)
 
 ### Security
 
