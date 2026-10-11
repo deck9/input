@@ -91,3 +91,22 @@ test('a rule on a group can only use questions outside that group', function (st
 
     $this->json('post', $route, $rule($outside))->assertSuccessful();
 })->with(['create', 'update']);
+
+test('a block or rule id that is not a whole number is not found and changes nothing', function (string $suffix) {
+    $logic = FormBlockLogic::factory()->create(['name' => 'Old']);
+    $block = $logic->formBlock;
+    $source = FormBlock::factory()->for($block->form)->create();
+    $rule = [
+        'name' => 'New',
+        'conditions' => [['source' => $source->uuid, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']],
+        'action' => 'hide',
+        'evaluate' => 'before',
+    ];
+
+    $this->actingAs($block->form->user);
+    $this->json('post', route('api.logics.create', $block->id.$suffix), $rule)->assertNotFound();
+    $this->json('post', route('api.logics.update', $logic->id.$suffix), $rule)->assertNotFound();
+    $this->json('DELETE', route('api.logics.delete', $logic->id.$suffix))->assertNotFound();
+
+    expect(FormBlockLogic::pluck('name', 'id')->all())->toBe([$logic->id => 'Old']);
+})->with(['xlf', '.0', 'e0']);

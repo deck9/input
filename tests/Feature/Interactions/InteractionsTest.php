@@ -226,3 +226,23 @@ test('label_can_be_null_when_interaction_is_not_editable', function ($blockType,
         ])
         ->assertSuccessful();
 })->with('interactions');
+
+test('a block or interaction id that is not a whole number is not found and changes nothing', function (string $suffix) {
+    $interaction = FormBlockInteraction::factory()->create(['label' => 'Old']);
+    $other = FormBlockInteraction::factory()->create(['form_block_id' => $interaction->form_block_id]);
+    $block = $interaction->formBlock;
+    $state = fn () => $block->formBlockInteractions()->get(['id', 'label', 'sequence'])->toArray();
+    $before = $state();
+
+    $this->actingAs($block->form->user);
+    $this->json('post', route('api.interactions.create', $block->id.$suffix), ['type' => FormBlockInteractionType::button->value])
+        ->assertNotFound();
+    $this->json('post', route('api.interactions.update', $interaction->id.$suffix), ['label' => 'New'])
+        ->assertNotFound();
+    $this->json('DELETE', route('api.interactions.delete', $interaction->id.$suffix))
+        ->assertNotFound();
+    $this->json('post', route('api.interactions.sequence', $block->id.$suffix), ['sequence' => [$other->id, $interaction->id]])
+        ->assertNotFound();
+
+    expect($state())->toBe($before);
+})->with(['xlf', '.0', 'e0']);
