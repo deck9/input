@@ -11,12 +11,18 @@ use App\Models\FormSession;
 use App\Models\FormSessionUpload;
 use Illuminate\Database\Events\TransactionBeginning;
 use Illuminate\Database\Events\TransactionCommitted;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\Config;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UnableToWriteFile;
 
 uses(RefreshDatabase::class);
 
@@ -240,6 +246,32 @@ test('a full answer is refused before the file is written', function () {
         ->assertJsonValidationErrors(['file' => 'This question takes at most 1 files.']);
 
     expect(Storage::directoryExists("uploads/{$answer->id}"))->toBeFalse();
+});
+
+test('a file the disk fails to store is refused and takes no place in the limit', function () {
+    Exceptions::fake();
+    Storage::fake();
+    $workingDisk = Storage::disk();
+    // reads like the fake disk but refuses every write; with 'throw' => false a refused write returns false
+    $adapter = new class(Storage::path('')) extends LocalFilesystemAdapter
+    {
+        public function writeStream(string $path, $contents, Config $config): void
+        {
+            throw UnableToWriteFile::atLocation($path);
+        }
+    };
+    Storage::set(config('filesystems.default'), new FilesystemAdapter(new Filesystem($adapter), $adapter, ['throw' => false]));
+    $interaction = fileQuestion(['allowedFiles' => 1]);
+    $session = answerFileQuestion($interaction);
+
+    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertServerError();
+
+    Exceptions::assertReported(\RuntimeException::class);
+    expect(FormSessionUpload::count())->toBe(0)
+        ->and(Storage::allFiles('uploads'))->toBeEmpty();
+
+    Storage::set(config('filesystems.default'), $workingDisk);
+    uploadFile($session, $interaction, UploadedFile::fake()->image('face.png'))->assertCreated();
 });
 
 test('an upload for a question that is not a file question is rejected', function () {
