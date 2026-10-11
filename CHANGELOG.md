@@ -16,6 +16,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The server now limits a file question to 10 files, and only accepts whole-number ids when you change or delete questions, answer options, logic rules, webhooks or submissions. Before, the file limit was only checked in the editor. The update sets a stored file limit above 10, below 1 or in text to 10, and rounds a decimal down. (#233)
 -   The form editor tells you when it can't save a change, with the server's reason when there is one. Before, the change looked saved but was lost when you reloaded the page. (#234)
 -   A file question now keeps its file limit when several files for one answer are uploaded at the same time. Before, an answer could end up with more files than the question allows. (#235)
+-   A file upload is now refused when the server can't store the file, and the form asks to try again. Before, the upload looked done, but the submission pointed to a missing file. (#236)
 
 ### Security
 
