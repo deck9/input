@@ -47,7 +47,7 @@
         <label class="flex items-center">
           <d9-checkbox
             name="remember"
-            v-model:checked="form.remember"
+            v-model="form.remember"
             label="Remember me"
           />
         </label>
