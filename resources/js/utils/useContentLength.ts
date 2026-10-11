@@ -9,10 +9,7 @@ export function useContentLength(content: Ref<string>): {
     });
 
     const words = computed(() => {
-        if (chars.value === 0) {
-            return 0;
-        }
-        return content.value.trim().split(" ").length;
+        return content.value.split(/\s+/).filter(Boolean).length;
     });
 
     return { chars, words };
