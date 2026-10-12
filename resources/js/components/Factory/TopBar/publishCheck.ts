@@ -8,9 +8,9 @@ const plural = (count: number, word: string) =>
 const hasText = (block: FormBlockModel) =>
     !!block.message?.replace(/<[^>]*>|&nbsp;/g, "").trim();
 
-// the logic editor keeps a picked source as { key, label }
+// the logic editor keeps a picked source as { key, label }, an unpicked one is null
 const sourceOf = (condition: Condition) =>
-    typeof condition.source === "object" ? condition.source.key : condition.source;
+    typeof condition.source === "object" ? condition.source?.key : condition.source;
 
 // Frontend only: what a respondent would trip over once the form is live.
 export function publishCheck(blocks: FormBlockModel[]): CheckRow[] {
