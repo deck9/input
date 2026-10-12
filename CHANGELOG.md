@@ -13,6 +13,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules. The copy goes right after the original. (#262)
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
+-   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
 
 ### Changed
 
@@ -21,6 +22,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 -   The form list loads faster when a team has many forms. It now needs the same few database queries for one form or a hundred. Before, every form added 3 queries. (#256)
 -   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, and the header keeps the logo and your team name. On every screen, keyboard focus in the editor bar and the account menu now shows a blue ring. (#257)
+-   A form's pages have one top bar instead of two: the form's name with its menu, a Draft or Live label, the pages, Preview, Publish and your account. Publish first checks for questions without text, rules that point to a deleted question and a missing privacy link. Once the form is live, Share has its link, Open form and Unpublish. On a phone the pages sit in a tab bar at the bottom. (#265)
 -   The form editor shows your whole form as one column. Each question shows its number, answer type, text, and if it is required, has rules or is hidden. The question you work on opens right there, also on a phone, where you couldn't edit questions before. Hiding a question, random order and custom answers are now under the question's Settings. (#268)
 
 ### Fixed

@@ -25,6 +25,8 @@ type ConversationStore = {
     isSubmitted: boolean;
     submitFailed: boolean;
     isInputMode: boolean;
+    // the editor's preview: the server stores nothing, so skip uploads and the redirect
+    isPreview: boolean;
     uploads: FormFileUploads;
     uploadedFiles: File[];
 };
@@ -43,6 +45,7 @@ export const useConversation = defineStore("form", {
             isSubmitted: false,
             submitFailed: false,
             isInputMode: false,
+            isPreview: false,
             uploads: {},
             uploadedFiles: [],
         };
@@ -209,7 +212,8 @@ export const useConversation = defineStore("form", {
          */
         hasUnsavedPayload(state): Ref<boolean> {
             return ref(
-                !state.isSubmitted &&
+                !state.isPreview &&
+                    !state.isSubmitted &&
                     state.payload &&
                     Object.keys(state.payload).length > 0,
             );
@@ -310,7 +314,10 @@ export const useConversation = defineStore("form", {
         async initForm(
             initialPayload: string | PublicFormModel,
             params: Record<string, string>,
+            preview: { block: string | null } | null = null,
         ) {
+            this.isPreview = preview !== null;
+
             const id =
                 typeof initialPayload === "string"
                     ? initialPayload
@@ -328,9 +335,24 @@ export const useConversation = defineStore("form", {
                 }
             }
 
-            const [formSessionResponse, storyboardResponse] = await Promise.all(
-                [callCreateFormSession(id, params), callGetFormStoryboard(id)],
-            );
+            const responses = await Promise.all([
+                callCreateFormSession(id, params, this.isPreview),
+                callGetFormStoryboard(id),
+            ]).catch((error) => {
+                // only the form's team may preview: anyone else gets 403 and sees the error state
+                if (!this.isPreview) {
+                    throw error;
+                }
+
+                console.warn(error);
+            });
+
+            if (!responses) {
+                this.form = undefined;
+                return;
+            }
+
+            const [formSessionResponse, storyboardResponse] = responses;
 
             this.session = formSessionResponse.data;
             this.storyboard = storyboardResponse.data.blocks;
@@ -339,6 +361,25 @@ export const useConversation = defineStore("form", {
             this.payload = prefillPayload(this.storyboard, params);
 
             this.current = this.processedQueue[0].id ?? null;
+
+            if (preview?.block) {
+                this.startAt(preview.block);
+            }
+        },
+
+        // the preview starts at any shown question, as if the respondent had come along the way to it
+        startAt(blockId: string) {
+            const index = this.findBlockIndex(blockId);
+
+            if (index === -1) {
+                return;
+            }
+
+            this.path = this.processedQueue
+                .slice(0, index)
+                .map((block) => block.id);
+            this.current = blockId;
+            this.isSubmitted = false;
         },
 
         enableInputMode() {
@@ -478,7 +519,7 @@ export const useConversation = defineStore("form", {
                             this.hasFileUploads,
                         );
 
-                        if (this.hasFileUploads) {
+                        if (this.hasFileUploads && !this.isPreview) {
                             // init file upload state
                             this.initFileUpload();
 
@@ -521,6 +562,7 @@ export const useConversation = defineStore("form", {
 
                     // If a redirect is configured, we redirect the user to the given url
                     if (
+                        !this.isPreview &&
                         this.form.use_cta_redirect &&
                         isAllowedLink(this.callToActionUrl, ["http:", "https:"])
                     ) {
