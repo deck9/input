@@ -121,6 +121,28 @@ describe("form list row", () => {
         expect(wrapper.find('a[href="/forms.show"]').exists()).toBe(false);
     });
 
+    it("writes large counts with the reader's thousands separator", () => {
+        const route = vi.fn((name: string) => `/${name}`);
+        const form = {
+            uuid: "form1",
+            name: "Newsletter",
+            completed_sessions: 1031,
+            total_sessions: 1200,
+            completion_rate: 85.92,
+        } as FormModel;
+        const wrapper = mount(FormListItem, {
+            props: { form },
+            global: { stubs, mocks: { route } },
+        });
+
+        expect(wrapper.find('a[href="/forms.submissions"]').text()).toBe(
+            `${(1031).toLocaleString()} submissions`,
+        );
+        expect(wrapper.text()).toContain(
+            `${(1200).toLocaleString()} started`,
+        );
+    });
+
     it("says when a form has no submissions yet", () => {
         const route = vi.fn((name: string) => `/${name}`);
         const form = {

@@ -69,14 +69,16 @@
       <div class="lg:min-w-0">
         <template v-if="form.completed_sessions > 0">
           <a
-            class="tabular-nums hover:text-blue-600 lg:font-medium lg:text-grey-900"
+            class="tabular-nums hover:text-blue-600 lg:text-grey-900"
             :href="route('forms.submissions', form.uuid)"
           >
-            {{ form.completed_sessions }}
+            <span class="lg:font-semibold">{{
+              form.completed_sessions.toLocaleString()
+            }}</span>
             {{ form.completed_sessions === 1 ? "submission" : "submissions" }}
           </a>
           <div class="hidden text-xs tabular-nums text-grey-500 lg:block">
-            {{ form.total_sessions }} started ·
+            {{ form.total_sessions.toLocaleString() }} started ·
             {{ Math.round(form.completion_rate) }}% finished
           </div>
         </template>
