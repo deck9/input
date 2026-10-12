@@ -75,6 +75,7 @@ import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { useRouteParams } from "@/utils/useRouteParams";
 import { useRoutes } from "@/utils/useRoutes";
+import { usePreviewMessages } from "@/forms/classic/usePreviewMessages";
 
 const props = defineProps<{
   settings: PublicFormModel;
@@ -90,6 +91,10 @@ provide("disableFocus", focusDisabled);
 // init routes
 await useRoutes();
 
+// the editor's preview runs on the form page, an embed on another site never does
+const query = new URLSearchParams(window.location.search);
+const isPreview = !!window.iptSettings && query.get("preview") === "1";
+
 // init conversation store
 const store = useConversation();
 await store.initForm(
@@ -100,8 +105,14 @@ await store.initForm(
     "hideNavigation",
     "focusOnMount",
     "alignLeft",
+    ...(isPreview ? ["preview", "block"] : []),
   ]),
+  isPreview ? { block: query.get("block") } : null,
 );
+
+if (isPreview) {
+  usePreviewMessages();
+}
 
 const { locale } = useI18n({ useScope: "global" });
 locale.value = store.form?.language ?? "en";
