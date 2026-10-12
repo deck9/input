@@ -1,5 +1,6 @@
 import { useForm } from "@/stores/form";
 import { callUpdateFormBlock } from "@/api/blocks";
+import { keepAlive } from "@/api/handler";
 import { defineStore } from "pinia";
 import { DebouncedFunc } from "lodash";
 import {
@@ -11,6 +12,9 @@ import {
 import { replaceRouteQuery } from "@/utils";
 import { useNotice } from "./notice";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
+
+// true while flushSaves sends the waiting saves as the page closes
+let isLeaving = false;
 
 interface WorkbenchStore {
     block: FormBlockModel | null;
@@ -95,17 +99,25 @@ export const useWorkbench = defineStore("workbench", {
         },
 
         async saveBlock(block: FormBlockModel) {
+            const config = isLeaving ? keepAlive(block) : undefined;
+
             await useNotice().send(
                 `saveBlock:${block.id}`,
-                () => callUpdateFormBlock(block),
+                () => callUpdateFormBlock(block, config),
                 block,
             );
         },
 
-        // sends the saves that wait for their debounce now
+        // sends the saves that wait for their debounce now, as the page closes
         flushSaves() {
-            (this.saveBlock as DebouncedFunc<any>).flush();
-            (this.saveInteraction as DebouncedFunc<any>).flush();
+            isLeaving = true;
+
+            try {
+                (this.saveBlock as DebouncedFunc<any>).flush();
+                (this.saveInteraction as DebouncedFunc<any>).flush();
+            } finally {
+                isLeaving = false;
+            }
         },
 
         async createInteraction(
@@ -209,10 +221,11 @@ export const useWorkbench = defineStore("workbench", {
             const block = useForm().blocks?.find(
                 (item) => item.id === interaction.form_block_id,
             );
+            const config = isLeaving ? keepAlive(interaction) : undefined;
 
             await useNotice().send(
                 `saveInteraction:${interaction.id}`,
-                () => callUpdateFormBlockInteraction(interaction),
+                () => callUpdateFormBlockInteraction(interaction, config),
                 block,
             );
         },

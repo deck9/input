@@ -1,13 +1,22 @@
 import { AxiosError, AxiosResponse } from "axios";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createApp } from "vue";
 import { useForm } from "./form";
 import { useNotice } from "./notice";
 import { useWorkbench } from "./workbench";
+import { PiniaDebounce } from "@pinia/plugin-debounce";
+import debounce from "lodash/debounce";
+import { callUpdateFormBlock } from "@/api/blocks";
 import { callUpdateFormBlockInteraction } from "@/api/interactions";
 
 vi.mock("@/api/interactions", () => ({
     callUpdateFormBlockInteraction: vi.fn(),
+}));
+
+vi.mock("@/api/blocks", async (importOriginal) => ({
+    ...(await importOriginal()),
+    callUpdateFormBlock: vi.fn(),
 }));
 
 const interaction = {
@@ -92,5 +101,61 @@ describe("workbench store", () => {
         await useWorkbench().saveInteraction(otherInteraction);
 
         expect(useNotice().message).toMatch(/^Your change wasn't saved:/);
+    });
+});
+
+describe("leaving the page", () => {
+    const keepalive = { adapter: "fetch", fetchOptions: { keepalive: true } };
+
+    const typeInBlock = (message: string) => {
+        const workbench = useWorkbench();
+        workbench.block = { id: 3, message: "<p>Hi</p>" } as FormBlockModel;
+        workbench.updateBlock({ message });
+
+        return workbench;
+    };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        // the debounce the app uses, so a save waits like in the editor
+        // (plugins run only once pinia is in an app)
+        const pinia = createPinia();
+        pinia.use(PiniaDebounce(debounce));
+        createApp({}).use(pinia);
+        setActivePinia(pinia);
+        vi.mocked(callUpdateFormBlock).mockResolvedValue({} as AxiosResponse);
+    });
+
+    it("sends a waiting save with fetch keepalive, which outlives the page", () => {
+        const workbench = typeInBlock("<p>Hi there</p>");
+        expect(callUpdateFormBlock).not.toHaveBeenCalled();
+
+        workbench.flushSaves();
+
+        expect(callUpdateFormBlock).toHaveBeenCalledWith(
+            expect.objectContaining({ message: "<p>Hi there</p>" }),
+            keepalive,
+        );
+    });
+
+    it("sends a save over keepalive's 64 KB limit the usual way", () => {
+        typeInBlock(`<p>${"a".repeat(70_000)}</p>`).flushSaves();
+
+        expect(callUpdateFormBlock).toHaveBeenCalledWith(
+            expect.anything(),
+            undefined,
+        );
+    });
+
+    it("sends saves without keepalive while the page stays", () => {
+        vi.useFakeTimers();
+        typeInBlock("<p>Hi there</p>");
+        vi.advanceTimersByTime(1000);
+        vi.useRealTimers();
+
+        expect(callUpdateFormBlock).toHaveBeenCalledWith(
+            expect.anything(),
+            undefined,
+        );
     });
 });
