@@ -42,6 +42,8 @@ class Form extends BaseModel
         'user_id' => 'integer',
         'published_at' => 'datetime',
         'deleted_at' => 'datetime',
+        // only set by the form list's withMax
+        'latest_submission_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -163,16 +165,17 @@ class Form extends BaseModel
 
     public function scopeWithOrder(Builder $builder, ?string $order)
     {
-        // split the order by : and get the first part
-        $attribute = explode(':', $order)[0];
-        $direction = explode(':', $order)[1] ?? 'asc';
+        [$attribute, $direction] = array_pad(explode(':', $order ?? '', 2), 2, 'asc');
+        $direction = strtolower($direction);
 
-        if ($attribute) {
-            return $builder->orderBy($attribute, $direction);
+        // the value comes from the query string, so only known columns; latest_submission_at needs the form list's withMax
+        if (! in_array($attribute, ['name', 'created_at', 'updated_at', 'latest_submission_at'], true)
+            || ! in_array($direction, ['asc', 'desc'], true)) {
+            return $builder;
         }
 
-        return $builder;
-
+        // equal values, like forms without submissions, keep a stable order
+        return $builder->orderBy($attribute, $direction)->orderBy('created_at', 'desc');
     }
 
     public function route()
