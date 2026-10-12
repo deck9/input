@@ -64,8 +64,9 @@
       </div>
     </div>
 
+    <!-- v-show: the Configure* parts make the answer field when they mount -->
     <QuestionSettings
-      v-if="settingsOpen"
+      v-show="settingsOpen"
       :id="`${id}-settings`"
       :block="block"
       :interaction-type="interactionType"
