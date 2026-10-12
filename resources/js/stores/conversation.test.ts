@@ -5,7 +5,7 @@ import { effectScope, nextTick } from 'vue';
 import { useConversation } from './conversation';
 import * as logicHelpers from './helpers/logic';
 import { createFlatQueue } from './helpers/queue';
-import { callGetFormStoryboard, callSubmitForm } from '@/api/conversation';
+import { callCreateFormSession, callGetFormStoryboard, callSubmitForm } from '@/api/conversation';
 import handler from '@/api/handler';
 import { useBeforeUnload } from '@/utils/useBeforeUnload';
 
@@ -709,6 +709,99 @@ describe('Conversation Store', () => {
         expect(store.isProcessing).toBe(false);
         expect(store.submitFailed).toBe(true);
       });
+    });
+  });
+
+  describe('preview', () => {
+    const initPreview = async (block: string | null = null) => {
+      const store = useConversation();
+      vi.mocked(callGetFormStoryboard).mockResolvedValue({ data: { blocks: makeBlocks('q1', 'q2', 'q3') } } as any);
+
+      await store.initForm({ uuid: 'form' } as PublicFormModel, {}, { block });
+
+      return store;
+    };
+
+    const submitLastQuestion = async (store: ReturnType<typeof useConversation>) => {
+      store.current = 'q3';
+      store.session = { token: 'preview' } as FormSessionModel;
+      vi.mocked(logicHelpers.evaluateGotoLogic).mockReturnValue(null);
+
+      await store.next();
+    };
+
+    it('asks for a preview session, and only in preview', async () => {
+      await initPreview();
+      expect(callCreateFormSession).toHaveBeenLastCalledWith('form', {}, true);
+
+      setActivePinia(createPinia());
+      await useConversation().initForm({ uuid: 'form' } as PublicFormModel, {});
+      expect(callCreateFormSession).toHaveBeenLastCalledWith('form', {}, false);
+    });
+
+    it('starts at the given question, and Back goes to the one before it', async () => {
+      const store = await initPreview('q2');
+      expect(store.current).toBe('q2');
+
+      store.back();
+      expect(store.current).toBe('q1');
+    });
+
+    it('starts at the first question when the given one is not in the queue', async () => {
+      const store = await initPreview('unknown');
+
+      expect(store.current).toBe('q1');
+    });
+
+    it('shows the error state when the server refuses the preview', async () => {
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(callCreateFormSession).mockRejectedValueOnce(new Error('Request failed with status code 403'));
+
+      const store = await initPreview();
+
+      expect(store.form).toBeUndefined();
+    });
+
+    it('goes to a question the editor asks for, also from the end page', async () => {
+      const store = await initPreview();
+      store.isSubmitted = true;
+
+      store.startAt('q3');
+
+      expect(store.current).toBe('q3');
+      expect(store.path).toEqual(['q1', 'q2']);
+      expect(store.isSubmitted).toBe(false);
+    });
+
+    it('skips the redirect after the last question', async () => {
+      const store = await initPreview();
+      store.form = { uuid: 'form', use_cta_redirect: true, cta_link: 'https://example.com/thanks' } as PublicFormModel;
+      const navigation = vi.fn();
+      jsdom.virtualConsole.on('jsdomError', navigation);
+
+      await submitLastQuestion(store);
+
+      expect(store.isSubmitted).toBe(true);
+      expect(navigation).not.toHaveBeenCalled();
+      jsdom.virtualConsole.off('jsdomError', navigation);
+    });
+
+    it('skips the file uploads', async () => {
+      const store = await initPreview();
+      store.payload = { q3: { payload: [new File(['a'], 'a.txt')], actionId: 'files' } };
+      const upload = vi.spyOn(handler, 'post').mockResolvedValue({});
+
+      await submitLastQuestion(store);
+
+      expect(store.isSubmitted).toBe(true);
+      expect(upload).not.toHaveBeenCalled();
+    });
+
+    it('never asks "Leave site?": a preview stores nothing', async () => {
+      const store = await initPreview();
+      store.payload = { q1: { payload: 'yes', actionId: '1' } };
+
+      expect(store.hasUnsavedPayload.value).toBe(false);
     });
   });
 });
