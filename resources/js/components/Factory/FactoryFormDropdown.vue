@@ -29,7 +29,7 @@
       leave-to-class="-translate-y-2 opacity-0"
     >
       <PopoverPanel
-        class="absolute inset-x-4 top-full z-10 mt-1 sm:inset-x-auto sm:left-0 sm:w-80 xl:mt-3"
+        class="absolute inset-x-4 top-full z-30 mt-1 sm:inset-x-auto sm:left-0 sm:w-80 xl:mt-3"
       >
         <div
           class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
@@ -88,7 +88,8 @@ import { useClipboard } from "@vueuse/core";
 
 // On phones the button fills the form row of FactoryNavigationRows and the
 // panel spans that row. From sm the panel sits under the button, 320 px
-// wide, and from xl the button sits in the header bar.
+// wide, and from xl the button sits in the header bar. The panel is z-30:
+// above the storyboard's block menus (z-10), under dialogs (z-50).
 const store = useForm();
 
 const isPublishing = ref(false);
