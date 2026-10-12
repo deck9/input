@@ -32,7 +32,7 @@
         {{ option.name }}
         <span
           v-if="option.count !== undefined"
-          class="font-normal tabular-nums text-grey-500"
+          class="font-normal tabular-nums text-grey-600"
           >{{ option.count.toLocaleString() }}</span
         >
       </button>
