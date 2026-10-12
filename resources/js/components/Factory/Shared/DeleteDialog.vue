@@ -11,12 +11,12 @@
       <D9Button
         label="Cancel"
         color="light"
-        class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
+        class="h-11 !bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100 lg:h-9"
         @click="emit('close')"
       />
       <!-- shaped like the D9 Cancel next to it -->
       <DangerButton
-        class="ml-2 !rounded-lg !border-0 !px-5 !text-sm !font-medium !normal-case !leading-4 !tracking-normal"
+        class="ml-2 h-11 !rounded-lg !border-0 !px-5 !text-sm !font-medium !normal-case !leading-4 !tracking-normal lg:h-9"
         @click="emit('confirm')"
       >
         {{ confirmLabel }}
