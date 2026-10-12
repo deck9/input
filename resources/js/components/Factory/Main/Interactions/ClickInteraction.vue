@@ -37,7 +37,7 @@
       </section>
       <ChoiceRowActions
         :label="label ? `choice “${label}”` : `choice ${index + 1}`"
-        @onDelete="workbench.deleteInteraction(item)"
+        @onDelete="emit('onDelete', index)"
       />
     </div>
   </div>
@@ -100,7 +100,6 @@ const keyboardCommands = async (event: KeyboardEvent) => {
     case "Backspace":
       if (event.metaKey) {
         emit("onDelete", props.index);
-        await workbench.deleteInteraction(props.item);
       }
       break;
 

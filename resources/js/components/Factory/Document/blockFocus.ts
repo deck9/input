@@ -39,8 +39,13 @@ export function useAddBlock() {
     const addBlock = async (
         ...args: Parameters<typeof store.createFormBlock>
     ) => {
+        const before = workbench.block;
         await store.createFormBlock(...args);
-        await focusBlock(workbench.block);
+
+        // a failed create keeps the open block: leave the cursor where it is
+        if (workbench.block !== before) {
+            await focusBlock(workbench.block);
+        }
     };
 
     return { addBlock };

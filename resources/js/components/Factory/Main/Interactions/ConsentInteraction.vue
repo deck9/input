@@ -9,7 +9,7 @@
       <ChoiceRowActions
         class="ml-auto"
         :label="label ? `policy “${label}”` : `policy ${index + 1}`"
-        @onDelete="workbench.deleteInteraction(item)"
+        @onDelete="emit('onDelete', index)"
       />
     </div>
     <div class="mt-2 flex items-center">
@@ -65,6 +65,10 @@ const workbench = useWorkbench();
 const props = defineProps<{
   index: number;
   item: FormBlockInteractionModel;
+}>();
+
+const emit = defineEmits<{
+  (e: "onDelete", index: number): void;
 }>();
 
 const labelElement = ref(null) as unknown as Ref<HTMLElement>;

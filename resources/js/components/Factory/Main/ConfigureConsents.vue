@@ -21,11 +21,12 @@
           v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
+          @onDelete="deleteItem"
         />
       </Draggable>
     </Container>
 
-    <div class="mt-8">
+    <div ref="addRow" class="mt-8">
       <D9Button
         label="Add new policy"
         icon="plus"
@@ -51,6 +52,7 @@ import { storeToRefs } from "pinia";
 const workbench = useWorkbench();
 const { currentInteractions } = storeToRefs(workbench);
 const isCreatingInteraction = ref(false);
+const addRow = ref<HTMLElement | null>(null);
 
 const onDrop = ({ removedIndex, addedIndex }: any): void => {
   if (removedIndex === null || addedIndex === null) {
@@ -78,7 +80,21 @@ const createConsentPolicy = async () => {
   }
 };
 
-const { bindTemplateRefsForTraversables, focusLastItem } =
+const deleteItem = async (index: number) => {
+  const item = currentInteractions.value?.[index];
+  if (!item) return;
+
+  await workbench.deleteInteraction(item);
+
+  // a failed delete keeps the policy, and focus stays in it
+  if (currentInteractions.value?.includes(item)) return;
+
+  if (!(await focusNeighborItem(index))) {
+    addRow.value?.querySelector("button")?.focus();
+  }
+};
+
+const { bindTemplateRefsForTraversables, focusLastItem, focusNeighborItem } =
   useKeyboardNavigation(currentInteractions, () => {
     return;
   });

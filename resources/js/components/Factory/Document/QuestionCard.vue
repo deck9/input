@@ -68,15 +68,20 @@
       </div>
     </div>
 
+    <!-- one QuestionSettings, mounted while the card is open, also when
+         hidden: the Configure* parts make the answer field when they mount -->
     <QuestionSettings
-      v-if="settingsOpen && !isPhone"
+      v-if="!isPhone"
+      v-show="settingsOpen"
       :id="`${id}-settings`"
       :block="block"
       :interaction-type="interactionType"
     />
 
     <Dialog
-      :open="settingsOpen && isPhone"
+      v-else
+      :open="settingsOpen"
+      :unmount="false"
       class="relative z-50"
       @close="settingsOpen = false"
     >
