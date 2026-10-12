@@ -14,14 +14,14 @@
         <D9Icon name="chevron-left" />
       </Link>
 
-      <FactoryFormDropdown class="min-w-0 flex-1" />
+      <FactoryFormDropdown class="min-w-0 flex-1 sm:max-w-xs" />
 
       <a
         :href="store.formUrl"
         target="_blank"
         rel="noopener"
         aria-label="Preview (opens in a new tab)"
-        class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded text-grey-300 hover:bg-grey-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-grey-800 active:bg-grey-900"
+        class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded text-grey-300 hover:bg-grey-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-grey-800 active:bg-grey-900 sm:ml-auto"
       >
         <D9Icon name="play-circle" />
       </a>

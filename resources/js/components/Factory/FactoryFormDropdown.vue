@@ -1,5 +1,5 @@
 <template>
-  <Popover class="static xl:relative" v-slot="{ open }">
+  <Popover class="static sm:relative" v-slot="{ open }">
     <PopoverButton
       class="flex h-12 w-full items-center gap-3 rounded bg-grey-700 px-3 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 xl:h-full xl:w-auto xl:gap-x-8 xl:px-4 xl:py-1"
       :class="{ 'ring-2 ring-grey-500': open }"
@@ -29,7 +29,7 @@
       leave-to-class="-translate-y-2 opacity-0"
     >
       <PopoverPanel
-        class="absolute inset-x-4 top-full z-10 mt-1 xl:right-auto xl:left-0 xl:mt-3 xl:w-screen xl:max-w-xs"
+        class="absolute inset-x-4 top-full z-10 mt-1 sm:inset-x-auto sm:left-0 sm:w-80 xl:mt-3"
       >
         <div
           class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
@@ -86,8 +86,9 @@ import FormSummary from "@/components/Factory/FormSummary.vue";
 import Label from "@/components/Label.vue";
 import { useClipboard } from "@vueuse/core";
 
-// Under xl the button fills the form row of FactoryNavigationRows and the
-// panel spans that row; from xl it sits in the header bar as before.
+// On phones the button fills the form row of FactoryNavigationRows and the
+// panel spans that row. From sm the panel sits under the button, 320 px
+// wide, and from xl the button sits in the header bar.
 const store = useForm();
 
 const isPublishing = ref(false);
