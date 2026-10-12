@@ -37,7 +37,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form keeps its brand or background image when the server can't store the new one, and the Appearance page asks you to try again. Before, the old image was deleted and the form showed none. (#240)
 -   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
 -   On a phone, the app header shows the logo and your team name next to the account menu, and screen readers name the account menu. Before, it showed only a gear. (#246)
--   While your forms load, the form list shows placeholder rows. When the list can't load, it says so and offers "Try again". A search or status without forms says so and offers a way back, and screen readers hear how many forms a search finds. Before, all of these said you hadn't created a survey yet. A team without any forms now sees "Create your first form". (#249)
+-   While your forms load, the form list shows placeholder rows. When the list can't load, it says so and offers "Try again". A search or status without forms says so and offers a way back, and screen readers hear how many forms a search finds. Before, all of these said you hadn't created a survey yet. A team without any forms now sees "Create your first form". A form you publish, unpublish, archive or restore in the list moves to its tab right away, and the tab counts follow. (#249)
 
 ### Security
 
