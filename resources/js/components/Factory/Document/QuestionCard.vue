@@ -23,7 +23,7 @@
         />
       </div>
 
-      <div class="flex items-center gap-2">
+      <div v-if="type?.value !== 'none'" class="flex items-center gap-2">
         <label :for="`${id}-required`" class="text-sm text-grey-700">
           Required
         </label>
