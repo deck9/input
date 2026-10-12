@@ -318,6 +318,21 @@ describe("form list states", () => {
         expect(wrapper!.text()).not.toContain("Create your first form");
     });
 
+    it("keeps the error to the archived forms when only they fail", async () => {
+        await mountAt("/");
+        vi.mocked(callListForms).mockRejectedValue(new Error("offline"));
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        await tab("Archived").trigger("click");
+        await flushPromises();
+
+        expect(wrapper!.find("[role=alert]").exists()).toBe(true);
+
+        await tab("All").trigger("click");
+
+        expect(wrapper!.find("[role=alert]").exists()).toBe(false);
+        expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
+    });
+
     it("shows the first-run card only when the team has no forms at all", async () => {
         vi.mocked(callListForms).mockResolvedValue(answer([]));
         await mountAt("/");

@@ -122,7 +122,7 @@ import FilterControl from "@/components/Dashboard/FilterControl.vue";
 import SearchField from "@/components/Dashboard/SearchField.vue";
 import SortControl from "@/components/Dashboard/SortControl.vue";
 
-import { computed, ref, useTemplateRef, watch } from "vue";
+import { computed, reactive, ref, useTemplateRef, watch } from "vue";
 import { callListForms } from "@/api/forms";
 import { D9Button, D9Skeleton } from "@deck9/ui";
 
@@ -152,7 +152,11 @@ const sort = ref(
 );
 
 const isLoading = ref(true);
-const hasFailed = ref(false);
+// an error belongs to the list that failed, so All still shows its forms
+const failed = reactive({ forms: false, archived: false });
+const hasFailed = computed(
+  () => failed[status.value === "archived" ? "archived" : "forms"],
+);
 // null until loaded, so loading never looks like an empty list
 const forms = ref<Array<FormModel> | null>(null);
 const archived = ref<Array<FormModel> | null>(null);
@@ -234,13 +238,17 @@ let latest = 0;
 // the archived forms load only when they're shown
 const updateList = async (withForms = true) => {
   const request = ++latest;
+  const withArchived = status.value === "archived";
+  const setFailed = (value: boolean) => {
+    if (withForms) failed.forms = value;
+    if (withArchived) failed.archived = value;
+  };
+
   isLoading.value = true;
   try {
     const [all, trashed] = await Promise.all([
       withForms ? callListForms(null, apiSort[sort.value]) : null,
-      status.value === "archived"
-        ? callListForms("trashed", apiSort[sort.value])
-        : null,
+      withArchived ? callListForms("trashed", apiSort[sort.value]) : null,
     ]);
 
     // the first-run card needs to know there are no archived forms either
@@ -252,10 +260,10 @@ const updateList = async (withForms = true) => {
 
     if (all) forms.value = all.data;
     if (gone) archived.value = gone.data;
-    hasFailed.value = false;
+    setFailed(false);
   } catch (e) {
     console.warn(e);
-    if (request === latest) hasFailed.value = true;
+    if (request === latest) setFailed(true);
   } finally {
     if (request === latest) isLoading.value = false;
   }
