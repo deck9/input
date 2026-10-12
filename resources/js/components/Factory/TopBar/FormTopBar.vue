@@ -22,9 +22,12 @@
       </Link>
       <!-- the team is in the account menu too -->
       <span aria-hidden="true" class="hidden text-grey-500 xl:block">/</span>
-      <span dir="auto" class="hidden max-w-[160px] truncate text-sm xl:block">{{
-        $page.props.auth.user.current_team.name
-      }}</span>
+      <!-- the form name gives way first -->
+      <span
+        dir="auto"
+        class="hidden max-w-[160px] flex-none truncate text-sm xl:block"
+        >{{ $page.props.auth.user.current_team.name }}</span
+      >
       <span aria-hidden="true" class="hidden text-grey-500 lg:block">/</span>
       <FormMenu />
       <span
@@ -34,7 +37,10 @@
             ? 'bg-green-100 text-green-800'
             : 'bg-yellow-100 text-yellow-800'
         "
-        ><span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-current"></span
+        ><span
+          aria-hidden="true"
+          class="h-1.5 w-1.5 rounded-full bg-current"
+        ></span
         >{{ store.form?.is_published ? "Live" : "Draft" }}</span
       >
     </nav>

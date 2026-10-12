@@ -56,6 +56,7 @@
         <D9Button
           label="Cancel"
           color="light"
+          class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
           :isDisabled="isBusy"
           @click="isChecking = false"
         />
@@ -75,6 +76,7 @@
       :as="D9Button"
       label="Share"
       icon="link"
+      icon-position="left"
       aria-haspopup="dialog"
       class="h-11 whitespace-nowrap lg:h-9"
     />
@@ -90,12 +92,12 @@
           id="share-link"
           readonly
           :value="store.formUrl"
-          class="h-9 min-w-0 flex-1 rounded-md border-grey-300 bg-grey-50 px-2.5 text-sm"
+          class="h-11 min-w-0 flex-1 rounded-md border-grey-300 bg-grey-50 px-2.5 text-sm lg:h-9"
           @focus="($event.target as HTMLInputElement).select()"
         />
         <D9Button
           :label="copied ? 'Copied' : 'Copy link'"
-          class="h-9 flex-none whitespace-nowrap"
+          class="h-11 flex-none whitespace-nowrap lg:h-9"
           @click="copy(store.formUrl)"
         />
       </div>
@@ -103,7 +105,7 @@
         :href="store.formUrl"
         target="_blank"
         rel="noopener"
-        class="flex h-9 items-center gap-1.5 self-start rounded-md border border-grey-300 px-3 text-sm font-semibold text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="flex h-11 items-center gap-1.5 self-start rounded-md border border-grey-300 px-3 text-sm font-semibold lg:h-9 text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >Open form <span aria-hidden="true">↗</span
         ><span class="sr-only">&nbsp;(opens in a new tab)</span></a
       >
@@ -113,7 +115,7 @@
       <div role="separator" class="h-px bg-grey-200"></div>
       <button
         type="button"
-        class="-ml-2 h-9 self-start rounded-md px-2 text-sm font-semibold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50"
+        class="-ml-2 h-11 self-start rounded-md px-2 text-sm font-semibold text-red-700 lg:h-9 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50"
         :disabled="isBusy"
         @click="unpublish"
       >
