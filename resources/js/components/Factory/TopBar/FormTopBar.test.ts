@@ -127,6 +127,10 @@ describe("form top bar", () => {
         expect(text(wrapper.get('[aria-haspopup="menu"]').element)).toBe(
             "Form menu: Meetup RSVP",
         );
+        // a cut name shows in full on hover
+        expect(wrapper.get('[aria-haspopup="menu"] [title]').attributes("title")).toBe(
+            "Meetup RSVP",
+        );
         expect(wrapper.text()).toContain("Account: Mara Jensen");
     });
 

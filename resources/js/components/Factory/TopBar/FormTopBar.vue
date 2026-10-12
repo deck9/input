@@ -12,7 +12,10 @@
       <D9Icon name="chevron-left" />
     </Link>
 
-    <nav aria-label="Breadcrumb" class="flex min-w-0 flex-1 items-center gap-2">
+    <nav
+      aria-label="Breadcrumb"
+      class="flex min-w-0 flex-[1_1_auto] items-center gap-2"
+    >
       <Link
         :href="route('dashboard')"
         aria-label="All forms"
@@ -48,7 +51,7 @@
     <FormPageTabs />
 
     <div
-      class="flex flex-none items-center justify-end gap-1 lg:min-w-0 lg:flex-1 lg:gap-2"
+      class="flex flex-none items-center justify-end gap-1 lg:flex-[1_0_auto] lg:gap-2"
     >
       <slot name="save-status" />
       <slot name="preview">

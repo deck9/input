@@ -8,6 +8,7 @@
     <template #button>
       <span
         class="flex h-11 min-w-0 items-center gap-1.5 rounded-md px-2 text-sm font-semibold text-white transition-colors hover:bg-grey-700 lg:h-9 lg:max-w-[200px] xl:max-w-[300px]"
+        :title="store.form?.name"
       >
         <span class="sr-only">Form menu: </span>
         <span dir="auto" class="truncate">{{ store.form?.name }}</span>
