@@ -30,7 +30,9 @@ describe("app header", () => {
         expect(team.text()).toBe("Ole's Studio");
         expect(team.element.closest(".hidden")).toBeNull();
         expect(team.find("span").classes()).toContain("truncate");
-        expect(account.text()).toContain("Ole");
+        // an Arabic or Hebrew name keeps its start when it's cut
+        expect(team.find("span").attributes("dir")).toBe("auto");
+        expect(account.text().replace(/\s+/g, " ")).toContain("Account: Ole");
         expect(account.find(".hidden").exists()).toBe(false);
     });
 });
