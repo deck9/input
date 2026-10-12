@@ -52,7 +52,9 @@ describe.each([
     });
 
     it("saves without a message", async () => {
-        vi.mocked(callUpdateForm).mockResolvedValue({} as AxiosResponse);
+        vi.mocked(callUpdateForm).mockResolvedValue({
+            data: useForm().form,
+        } as AxiosResponse);
 
         const button = await save();
 

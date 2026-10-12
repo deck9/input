@@ -73,6 +73,7 @@ const imageUrl = computed(() => {
 
 onChange(async (files) => {
   isSelecting.value = true;
+  uploadErrors.value = [];
   if (files && files.length > 0) {
     const file = files[0];
     try {

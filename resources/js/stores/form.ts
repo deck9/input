@@ -181,24 +181,21 @@ export const useForm = defineStore("form", {
             this.form[type] = null;
         },
 
+        // only the page's own fields, and the store changes only once they're saved
         async updateForm(newValues: Partial<FormModel>) {
             if (!this.form) {
                 return;
             }
 
-            Object.entries(newValues).forEach((value) => {
-                const key = value[0];
-                const setting = value[1];
-
-                if (
-                    this.form &&
-                    Object.prototype.hasOwnProperty.call(this.form, key)
-                ) {
-                    this.form[key] = setting;
-                }
-            });
-
-            await callUpdateForm(this.form);
+            const response = await callUpdateForm(this.form, newValues);
+            // the editor may have left this form while it saved
+            if (this.form?.uuid !== response.data.uuid) {
+                return;
+            }
+            // only the fields sent: an older reply that comes in last can't undo a newer save
+            for (const key of Object.keys(newValues)) {
+                this.form[key] = response.data[key];
+            }
         },
 
         async deleteForm() {
