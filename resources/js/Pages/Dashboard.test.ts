@@ -257,6 +257,25 @@ describe("form list states", () => {
         expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
     });
 
+    it("shows the latest sort when an older answer comes last", async () => {
+        await mountAt("/");
+        const answers: Array<(value: AxiosResponse<FormModel[]>) => void> = [];
+        vi.mocked(callListForms).mockImplementation(
+            () => new Promise((resolve) => answers.push(resolve)),
+        );
+        const sortControl = wrapper!.findComponent(SortControl);
+        sortControl.vm.$emit("changeSort", "name");
+        sortControl.vm.$emit("changeSort", "newest");
+
+        answers[1](answer([forms[2]]));
+        await flushPromises();
+        answers[0](answer([forms[0]]));
+        await flushPromises();
+
+        expect(shown()).toEqual(["Customer feedback"]);
+        expect(list().attributes("aria-busy")).toBe("false");
+    });
+
     it("shows the first-run card only when the team has no forms at all", async () => {
         vi.mocked(callListForms).mockResolvedValue(answer([]));
         await mountAt("/");

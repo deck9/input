@@ -215,8 +215,12 @@ const writeUrl = (mode: "pushState" | "replaceState") => {
 // typing replaces the history entry, so Back doesn't step through letters
 watch(query, () => writeUrl("replaceState"));
 
+// only the latest request counts, so a slow older answer can't win
+let latest = 0;
+
 // the archived forms load only when they're shown
 const updateList = async (withForms = true) => {
+  const request = ++latest;
   isLoading.value = true;
   try {
     const [all, trashed] = await Promise.all([
@@ -226,21 +230,21 @@ const updateList = async (withForms = true) => {
         : null,
     ]);
 
-    if (all) forms.value = all.data;
-    if (trashed) archived.value = trashed.data;
-
     // the first-run card needs to know there are no archived forms either
-    if (forms.value?.length === 0 && !archived.value) {
-      archived.value = (
-        await callListForms("trashed", apiSort[sort.value])
-      ).data;
-    }
+    const gone =
+      all?.data.length === 0 && !trashed && !archived.value
+        ? await callListForms("trashed", apiSort[sort.value])
+        : trashed;
+    if (request !== latest) return;
+
+    if (all) forms.value = all.data;
+    if (gone) archived.value = gone.data;
     hasFailed.value = false;
   } catch (e) {
     console.warn(e);
-    hasFailed.value = true;
+    if (request === latest) hasFailed.value = true;
   } finally {
-    isLoading.value = false;
+    if (request === latest) isLoading.value = false;
   }
 };
 
