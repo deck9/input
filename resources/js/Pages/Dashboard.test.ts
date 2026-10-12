@@ -233,6 +233,9 @@ describe("form list states", () => {
 
         expect(wrapper!.find("[role=alert]").exists()).toBe(false);
         expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
+        expect(document.activeElement).toBe(
+            wrapper!.get("input[type=search]").element,
+        );
     });
 
     it("says when a search finds nothing and clears it", async () => {

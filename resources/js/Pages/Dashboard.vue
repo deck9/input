@@ -63,7 +63,7 @@
               color="light"
               label="Try again"
               :isLoading="isLoading"
-              @click="updateList()"
+              @click="tryAgain"
             />
           </div>
 
@@ -298,6 +298,11 @@ const clearSearch = () => {
 const showAll = () => {
   changeStatus("all");
   searchField.value?.focus();
+};
+
+const tryAgain = async () => {
+  await updateList();
+  if (!hasFailed.value) searchField.value?.focus();
 };
 
 // init forms on load
