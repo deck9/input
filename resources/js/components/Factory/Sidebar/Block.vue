@@ -30,7 +30,7 @@
             as="button"
             class="block w-full text-left"
             label="Delete"
-            @click.stop="deleteBlock"
+            @click.stop="ask"
           />
         </D9Menu>
       </div>
@@ -62,6 +62,12 @@
       <!-- Block Logic -->
       <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
     </div>
+
+    <DeleteBlockDialog
+      v-bind="{ block, check }"
+      @close="cancel"
+      @confirm="confirm"
+    />
   </div>
 </template>
 
@@ -73,6 +79,8 @@ import BlockInteraction from "./BlockInteraction.vue";
 import BlockFooter from "./BlockFooter.vue";
 import BlockLogicVisualizer from "./BlockLogicVisualizer.vue";
 import InsertAfterButton from "./InsertAfterButton.vue";
+import DeleteBlockDialog from "@/components/Factory/Shared/DeleteBlockDialog.vue";
+import { useDeleteBlock } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench, useForm } from "@/stores";
 import { D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
@@ -101,17 +109,7 @@ const isActive = computed((): boolean => {
 
 const { cardStyle } = useActiveCard(isActive);
 
-const deleteBlock = () => {
-  const result = window.confirm("Do you really want to delete this block?");
-
-  if (result) {
-    store.deleteFormBlock(props.block);
-
-    if (workbench.block?.id === props.block.id) {
-      workbench.clearWorkbench();
-    }
-  }
-};
+const { check, ask, cancel, confirm } = useDeleteBlock(props.block);
 
 const copyId = () => {
   copy(props.block.uuid);

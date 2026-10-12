@@ -37,7 +37,13 @@
       </section>
     </div>
 
-    <InteractionHoverActions @onDelete="workbench.deleteInteraction(item)" />
+    <InteractionHoverActions @onDelete="askDelete" />
+    <DeleteChoiceDialog
+      :choice="asking"
+      :answers="answers"
+      @close="asking = null"
+      @confirm="deleteNow"
+    />
   </div>
 </template>
 
@@ -45,6 +51,8 @@
 import { D9Input } from "@deck9/ui";
 import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
+import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
+import { checkDelete } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
 
@@ -97,8 +105,7 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 
     case "Backspace":
       if (event.metaKey) {
-        emit("onDelete", props.index);
-        await workbench.deleteInteraction(props.item);
+        await askDelete();
       }
       break;
 
@@ -108,6 +115,34 @@ const keyboardCommands = async (event: KeyboardEvent) => {
     case "ArrowDown":
       return emit("nextSoft", props.index);
   }
+};
+
+// open while the owner decides
+const asking = ref<FormBlockInteractionModel | null>(null);
+const answers = ref<number>();
+let isChecking = false;
+
+const deleteNow = async () => {
+  asking.value = null;
+  emit("onDelete", props.index);
+  await workbench.deleteInteraction(props.item);
+};
+
+// a choice nobody picked goes at once, else the owner confirms first
+const askDelete = async () => {
+  if (isChecking || !workbench.block) {
+    return;
+  }
+
+  isChecking = true;
+  answers.value = (await checkDelete(workbench.block)).choices[props.item.id];
+  isChecking = false;
+
+  if (answers.value === 0) {
+    return deleteNow();
+  }
+
+  asking.value = props.item;
 };
 
 const focus = () => {

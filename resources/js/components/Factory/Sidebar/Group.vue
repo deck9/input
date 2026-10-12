@@ -45,7 +45,7 @@
             as="button"
             class="block w-full text-left"
             label="Delete"
-            @click.stop="deleteBlock"
+            @click.stop="ask"
           />
         </D9Menu>
       </div>
@@ -61,12 +61,20 @@
       <!-- Block Logic -->
       <BlockLogicVisualizer v-if="store.showLogicInStoryboard" />
     </div>
+
+    <DeleteBlockDialog
+      v-bind="{ block, check }"
+      @close="cancel"
+      @confirm="confirm"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import BlockContainer from "@/components/Factory/Sidebar/BlockContainer.vue";
 import InsertAfterButton from "./InsertAfterButton.vue";
+import DeleteBlockDialog from "@/components/Factory/Shared/DeleteBlockDialog.vue";
+import { useDeleteBlock } from "@/components/Factory/Shared/useDeleteBlock";
 import BlockFooter from "./BlockFooter.vue";
 import BlockLogicVisualizer from "./BlockLogicVisualizer.vue";
 import copy from "copy-text-to-clipboard";
@@ -103,19 +111,7 @@ const groupCount = computed(() => {
   return store.countGroups[props.block.uuid];
 });
 
-const deleteBlock = () => {
-  let result = window.confirm(
-    "Do you really want to delete this group? All blocks inside this group will be deleted as well.",
-  );
-
-  if (result) {
-    store.deleteFormBlock(props.block);
-
-    if (workbench.block?.id === props.block.id) {
-      workbench.clearWorkbench();
-    }
-  }
-};
+const { check, ask, cancel, confirm } = useDeleteBlock(props.block);
 
 const copyId = () => {
   copy(props.block.uuid);

@@ -6,14 +6,19 @@
       <span class="font-medium">
         {{ rule.name }}
       </span>
-      <button>
-        <D9Icon
-          name="trash"
-          class="text-grey-500 hover:text-red-700 text-sm"
-          @click="removeRule"
-        />
+      <button type="button" aria-label="Delete rule" @click="isAsking = true">
+        <D9Icon name="trash" class="text-grey-500 hover:text-red-700 text-sm" />
       </button>
     </div>
+
+    <DeleteDialog
+      :show="isAsking"
+      :title="rule.name ? `Delete rule “${rule.name}”?` : 'Delete this rule?'"
+      text="This can't be undone."
+      confirm-label="Delete rule"
+      @close="isAsking = false"
+      @confirm="removeRule"
+    />
 
     <div class="px-4 py-2">
       <div class="mb-3 hidden">
@@ -172,6 +177,7 @@ import { useLogic } from "@/stores";
 import { operators } from "@/stores/helpers/logic";
 import { getTextFromHtml } from "@/utils";
 import LabelToggle from "@/components/Factory/Shared/LabelToggle.vue";
+import DeleteDialog from "@/components/Factory/Shared/DeleteDialog.vue";
 import ValidationErrors from "@/components/ValidationErrors.vue";
 
 const logicStore = useLogic();
@@ -247,15 +253,10 @@ const addCondition = () => {
   });
 };
 
+const isAsking = ref(false);
+
 const removeRule = () => {
-  const result = window.confirm(
-    "Are you sure you want to delete this rule? This action cannot be undone.",
-  );
-
-  if (!result) {
-    return;
-  }
-
+  isAsking.value = false;
   logicStore.removeRule(props.index);
 };
 
