@@ -5,6 +5,7 @@ use App\Enums\FormBlockType;
 use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -212,6 +213,35 @@ test('an_interaction_can_be_named', function ($blockType, $interactionType) {
 
     $this->assertEquals('other_option', $interaction->fresh()->name);
 })->with('interactions');
+
+test('a changed answer label must fit its column', function ($blockType, $interactionType) {
+    $interaction = FormBlockInteraction::factory()->create(['type' => $interactionType, 'label' => 'Old label']);
+    $update = fn (string $label) => $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), ['label' => $label]);
+
+    // the column counts letters, so a two-byte ä counts once
+    $update(str_repeat('ä', 256))->assertStatus(422)->assertJsonValidationErrors('label');
+
+    expect($interaction->fresh()->label)->toBe('Old label');
+
+    $update(str_repeat('ä', 255))->assertSuccessful();
+
+    expect($interaction->fresh()->label)->toBe(str_repeat('ä', 255));
+})->with('interactions');
+
+test('an unchanged old answer label longer than its column does not block saving', function () {
+    // the editor sends the whole answer back; only SQLite keeps a value longer than its column
+    $interaction = FormBlockInteraction::factory()->create(['label' => str_repeat('a', 256)]);
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'label' => str_repeat('a', 256),
+            'name' => 'changed',
+        ])
+        ->assertSuccessful();
+
+    expect($interaction->fresh()->name)->toBe('changed');
+})->skip(fn () => DB::getDriverName() !== 'sqlite', 'only SQLite keeps a value longer than its column');
 
 test('label_can_be_null_when_interaction_is_not_editable', function ($blockType, $interactionType) {
     $interaction = FormBlockInteraction::factory()->create([
