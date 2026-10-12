@@ -14,7 +14,7 @@
       block
       placeholder="Search forms"
       autocomplete="off"
-      class="!pl-9"
+      class="!pl-9 max-md:h-11"
       :modelValue="query"
       @update:modelValue="query = String($event ?? '')"
       @keydown.esc="query = ''"

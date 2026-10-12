@@ -7,7 +7,7 @@
     />
     <D9Select
       :id="id"
-      class="w-full md:w-48 [&_[role=listbox]]:right-0 [&_[role=listbox]]:w-max [&_[role=listbox]]:min-w-full max-md:[&_button]:!pl-3 max-md:[&_button]:!pr-7"
+      class="w-full md:w-48 [&_[role=listbox]]:right-0 [&_[role=listbox]]:w-max [&_[role=listbox]]:min-w-full max-md:[&_button]:h-11 max-md:[&_button]:!pl-3 max-md:[&_button]:!pr-7"
       :modelValue="options.find((option) => option.id === sort)"
       :options="options"
       @update:modelValue="emit('changeSort', $event.id as SortSetting)"
