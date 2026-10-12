@@ -1,7 +1,7 @@
 <template>
   <component
     :is="target ? 'a' : Link"
-    class="flex flex-col justify-center rounded px-3 py-2 text-center font-medium ring-offset-2 ring-offset-grey-800 focus:outline-none focus:ring-2 focus:ring-grey-600"
+    class="flex flex-col justify-center rounded px-3 py-2 text-center font-medium ring-offset-2 ring-offset-grey-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
     :class="[
       isActive ? 'bg-grey-900 text-grey-300' : '',
       {
@@ -12,6 +12,7 @@
       },
     ]"
     :href="href ?? '#'"
+    :aria-current="isActive ? 'page' : undefined"
     :target="href && target ? target : undefined"
     @click="processClick"
   >

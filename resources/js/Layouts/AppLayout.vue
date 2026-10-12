@@ -36,7 +36,7 @@
                   <span class="inline-flex rounded-md">
                     <button
                       type="button"
-                      class="inline-flex h-11 items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 ring-offset-2 ring-offset-grey-800 transition hover:text-blue-200 focus:outline-none focus:ring-2 focus:ring-grey-600 md:h-auto"
+                      class="inline-flex h-11 items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 ring-offset-2 ring-offset-grey-800 transition hover:text-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 md:h-auto"
                     >
                       <D9Icon class="md:hidden" name="user" />
                       <span v-if="$page.props.auth.user.name" class="sr-only"

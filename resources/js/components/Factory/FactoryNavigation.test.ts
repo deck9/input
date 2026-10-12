@@ -59,3 +59,16 @@ describe("form navigation under xl", () => {
         expect(wrapper.get("button").text()).toContain("Customer feedback");
     });
 });
+
+describe("form navigation from xl", () => {
+    it("stays in the header and tells screen readers the current page", async () => {
+        const wrapper = await mountOnPage(FactoryNavigation, "forms.integrations");
+
+        expect(wrapper.classes()).toEqual(
+            expect.arrayContaining(["hidden", "xl:flex"]),
+        );
+        const current = wrapper.findAll('a[aria-current="page"]');
+        expect(current).toHaveLength(1);
+        expect(current[0].text()).toBe("Integrations");
+    });
+});
