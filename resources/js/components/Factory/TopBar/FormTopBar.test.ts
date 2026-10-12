@@ -2,6 +2,7 @@ import { mount } from "@vue/test-utils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import FormTopBar from "./FormTopBar.vue";
 import FormPageTabs from "./FormPageTabs.vue";
+import AccountMenu from "./AccountMenu.vue";
 import { useForm } from "@/stores";
 
 // the headlessui dialog and menu need it, jsdom has none
@@ -204,6 +205,21 @@ describe("form top bar", () => {
         expect(wrapper.get('nav[aria-label="Form pages"]').classes()).toEqual(
             expect.arrayContaining(["hidden", "lg:flex"]),
         );
+    });
+});
+
+describe("account menu", () => {
+    it("names the account and shows initials when the user has no name yet", async () => {
+        const wrapper = mount(AccountMenu, {
+            props: {
+                user: { name: null, email: "ole@example.org", current_team: { name: "Ole's" } },
+            },
+            global: { mocks: { $page, route } },
+        });
+        const button = wrapper.get('[aria-haspopup="menu"]');
+
+        expect(button.get(".sr-only").text()).toBe("Account");
+        expect(button.get('[aria-hidden="true"]').text()).toBe("O");
     });
 });
 

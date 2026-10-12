@@ -9,7 +9,9 @@
       <span
         class="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-grey-700"
       >
-        <span class="sr-only">Account: {{ user.name }}</span>
+        <span class="sr-only">{{
+          user.name ? `Account: ${user.name}` : "Account"
+        }}</span>
         <span
           aria-hidden="true"
           class="grid h-8 w-8 place-items-center rounded-full bg-grey-600 text-xs font-bold text-white"
@@ -17,13 +19,17 @@
         >
       </span>
     </template>
-    <div class="px-3 py-2">
-      <p dir="auto" class="truncate text-sm font-semibold text-grey-900">
+    <div class="px-4 py-2">
+      <p
+        v-if="user.name"
+        dir="auto"
+        class="truncate text-sm font-semibold text-grey-900"
+      >
         {{ user.name }}
       </p>
       <p class="truncate text-xs text-grey-600">{{ user.email }}</p>
     </div>
-    <p dir="auto" class="mb-1 truncate rounded bg-grey-50 px-3 py-1.5 text-xs">
+    <p dir="auto" class="mb-1 truncate rounded bg-grey-50 px-4 py-1.5 text-xs">
       Team: {{ user.current_team.name }}
     </p>
     <D9MenuLink
@@ -46,7 +52,7 @@
       label="API tokens"
     />
     <div role="separator" class="my-1 h-px bg-grey-100"></div>
-    <p class="px-3 pb-0.5 pt-1.5 text-xs text-grey-500">Help</p>
+    <p class="px-4 pb-0.5 pt-1.5 text-xs text-grey-500">Help</p>
     <D9MenuLink
       v-for="link in help"
       :key="link.label"
@@ -54,8 +60,7 @@
       :href="link.href"
       target="_blank"
       :class="menuItem"
-      :label="link.label"
-      meta="↗"
+      :label="`${link.label} ↗`"
       :aria-label="`${link.label} (opens in a new tab)`"
     />
     <div role="separator" class="my-1 h-px bg-grey-100"></div>
@@ -75,7 +80,8 @@ import { router } from "@inertiajs/vue3";
 import { D9Menu, D9MenuLink } from "@deck9/ui";
 
 const props = defineProps<{
-  user: { name: string; email: string; current_team: { name: string } };
+  // Input asks only for an email at sign-up, the name comes later
+  user: { name: string | null; email: string; current_team: { name: string } };
 }>();
 
 // as on the dashboard: 44 px rows on phones
@@ -88,7 +94,7 @@ const help = [
 ];
 
 const initials = computed(() => {
-  const words = props.user.name.trim().split(/\s+/);
+  const words = (props.user.name || props.user.email).trim().split(/\s+/);
   const first = words[0]?.[0] ?? "";
   const last = words.length > 1 ? words[words.length - 1][0] : "";
 
