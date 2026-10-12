@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex min-h-full shrink-0 flex-grow flex-col border-r border-grey-200 transition duration-100"
+    class="relative flex min-h-full max-w-full shrink-0 flex-grow flex-col border-r border-grey-200 transition duration-100"
     :class="isResizing ? 'pointer-events-none select-none' : ''"
     :style="`width: ${sidebarWidth}px`"
     ref="sidebar"
