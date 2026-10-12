@@ -158,6 +158,15 @@ describe("form top bar", () => {
         expect(store.publishForm).toHaveBeenCalledTimes(1);
     });
 
+    it("opens the check on Cancel, not on the Settings link in the middle", async () => {
+        const wrapper = await mountOnPage(FormTopBar, {}, [block("q1", "<p>Your name?</p>")]);
+
+        await wrapper.findAll("button").find((b) => b.text() === "Publish")?.trigger("click");
+        await flushPromises();
+
+        expect(text(document.activeElement)).toBe("Cancel");
+    });
+
     it("says all is well when every question has text and every rule works", async () => {
         const blocks = [
             block("q1", "<p>Your name?</p>"),

@@ -62,6 +62,7 @@
       </template>
       <template #footer>
         <D9Button
+          ref="cancelButton"
           label="Cancel"
           color="light"
           class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
@@ -192,13 +193,19 @@ const checkAgain = async () => {
   (checks.value ? confirmButton.value?.$el : checkAgainButton.value)?.focus();
 };
 
-const openCheck = () => {
+const cancelButton = ref<InstanceType<typeof D9Button> | null>(null);
+
+const openCheck = async () => {
   hasFailed.value = false;
   isChecking.value = true;
 
   if (!hasRules(store.blocks)) {
     loadBlocks();
   }
+
+  // start on Cancel, not on a link in the middle of the list
+  await nextTick();
+  cancelButton.value?.$el.focus();
 };
 
 const publishButton = ref<InstanceType<typeof D9Button> | null>(null);
