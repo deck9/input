@@ -329,11 +329,14 @@ watch(
 const lastSubmission = computed(() =>
   props.form.completed_sessions > 0 ? props.form.latest_submission_at : null,
 );
-const shownDate = computed(() =>
-  props.date.key === "latest_submission_at"
-    ? lastSubmission.value
-    : props.form[props.date.key],
-);
+const shownDate = computed(() => {
+  const value =
+    props.date.key === "latest_submission_at"
+      ? lastSubmission.value
+      : props.form[props.date.key];
+  // a date that doesn't parse is shown like none, the formatters would throw
+  return value && !Number.isNaN(Date.parse(value)) ? value : null;
+});
 // a blue dot for a submission in the last 24 hours, by its date if shown
 const isNew = computed(
   () => !!lastSubmission.value && isWithinDay(lastSubmission.value),

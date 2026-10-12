@@ -274,6 +274,13 @@ describe("last submission", () => {
         }
     });
 
+    it("shows a date that doesn't parse like no date", () => {
+        const wrapper = mountRow({ latest_submission_at: "abc" });
+
+        expect(dateCell(wrapper).text()).toBe("Last submission: —No submissions");
+        expect(dateCell(wrapper).attributes("title")).toBe("No submissions yet");
+    });
+
     it("marks a submission in the last 24 hours with a dot screen readers read", () => {
         const wrapper = mountRow({
             latest_submission_at: new Date(2026, 9, 12, 9, 48).toISOString(),
