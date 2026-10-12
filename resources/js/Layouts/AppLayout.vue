@@ -21,6 +21,7 @@
                   class="block h-8 w-auto flex-shrink-0 text-white"
                 />
                 <span
+                  dir="auto"
                   class="ml-3 truncate py-0.5 text-white text-xs uppercase font-bold leading-none"
                 >
                   {{ $page.props.auth.user.current_team.name }}
