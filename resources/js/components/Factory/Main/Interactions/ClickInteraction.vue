@@ -69,7 +69,7 @@ const emit = defineEmits<{
 }>();
 
 // the row draws the border, so its fields are bare
-const field = "!border-0 !bg-transparent !px-1 focus:!ring-0";
+const field = "!border-0 !bg-transparent !px-1 !py-2 focus:!ring-0";
 
 const labelElement = ref<InstanceType<typeof D9Input> | null>(null);
 
