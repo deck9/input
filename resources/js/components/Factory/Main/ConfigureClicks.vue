@@ -21,12 +21,12 @@
           @next="focusNextItem"
           @nextSoft="focusNextItemSoft"
           @previous="focusPreviousItem"
-          @onDelete="focusNeighborItem"
+          @onDelete="deleteItem"
         />
       </Draggable>
     </Container>
 
-    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <div ref="addRow" class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <D9Button
         label="Add new option"
         icon="plus"
@@ -56,6 +56,7 @@ const { activeInteractions, editableInteractions } = useActiveInteractions(
 );
 
 const isCreatingInteraction = ref(false);
+const addRow = ref<HTMLElement | null>(null);
 
 const onDrop = ({ removedIndex, addedIndex }: any): void => {
   if (removedIndex === null || addedIndex === null) {
@@ -80,6 +81,20 @@ const createClickInteraction = async () => {
     return Promise.reject(error);
   } finally {
     isCreatingInteraction.value = false;
+  }
+};
+
+const deleteItem = async (index: number) => {
+  const item = editableInteractions.value?.[index];
+  if (!item) return;
+
+  await workbench.deleteInteraction(item);
+
+  // a failed delete keeps the row, and focus stays in it
+  if (editableInteractions.value?.includes(item)) return;
+
+  if (!(await focusNeighborItem(index))) {
+    addRow.value?.querySelector("button")?.focus();
   }
 };
 
