@@ -206,6 +206,88 @@ describe("form list row", () => {
     });
 });
 
+describe("last submission", () => {
+    const now = new Date(2026, 9, 12, 10, 0);
+    const route = vi.fn(() => "/forms");
+    const lastEdited: ListDate = { key: "updated_at", label: "Last edited" };
+
+    const mountRow = (form: Partial<FormModel>, date?: ListDate) =>
+        mount(FormListItem, {
+            props: {
+                form: {
+                    uuid: "form1",
+                    name: "Contact",
+                    completed_sessions: 4,
+                    total_sessions: 5,
+                    completion_rate: 80,
+                    latest_submission_at: new Date(2026, 9, 9, 12, 0).toISOString(),
+                    updated_at: new Date(2026, 8, 2, 9, 0).toISOString(),
+                    ...form,
+                } as FormModel,
+                ...(date && { date }),
+            },
+            global: { stubs, mocks: { route } },
+        });
+    const dateCell = (wrapper: VueWrapper) => wrapper.get("div.tabular-nums[title]");
+    const dots = (wrapper: VueWrapper) => wrapper.findAll(".bg-blue-600");
+
+    beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(now);
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    it("says when the form last got a submission, with the full date on hover", () => {
+        const wrapper = mountRow({});
+
+        expect(dateCell(wrapper).text()).toBe("Last submission: 3 days ago");
+        expect(dateCell(wrapper).attributes("title")).toBe(
+            new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }).format(
+                new Date(2026, 9, 9, 12, 0),
+            ),
+        );
+        expect(dots(wrapper)).toHaveLength(0);
+    });
+
+    it("shows a dash, read as no submissions, also for a date without a count", () => {
+        for (const form of [
+            { completed_sessions: 0, latest_submission_at: null },
+            { completed_sessions: 0 },
+        ]) {
+            const wrapper = mountRow(form);
+
+            // the dash is hidden from screen readers, the words are hidden on screen
+            expect(dateCell(wrapper).text()).toBe("Last submission: —No submissions");
+            expect(dateCell(wrapper).attributes("title")).toBe("No submissions yet");
+            expect(dots(wrapper)).toHaveLength(0);
+        }
+    });
+
+    it("marks a submission in the last 24 hours with a dot screen readers read", () => {
+        const wrapper = mountRow({
+            latest_submission_at: new Date(2026, 9, 12, 9, 48).toISOString(),
+        });
+
+        expect(dateCell(wrapper).text()).toBe("Last submission: New, 12 min ago");
+        expect(dateCell(wrapper).findAll(".bg-blue-600")).toHaveLength(1);
+    });
+
+    it("shows the date the list is sorted by, and moves the dot to the count", () => {
+        const wrapper = mountRow(
+            { latest_submission_at: new Date(2026, 9, 12, 9, 48).toISOString() },
+            lastEdited,
+        );
+
+        expect(dateCell(wrapper).text()).toBe("Last edited: 2 Sept");
+        expect(dateCell(wrapper).find(".bg-blue-600").exists()).toBe(false);
+        expect(dots(wrapper)).toHaveLength(1);
+        expect(wrapper.text()).toContain("New, 4 submissions");
+    });
+});
+
 describe("row actions", () => {
     const route = (name: string) => `/${name}`;
     const question = () => document.querySelector("[role=alertdialog]");

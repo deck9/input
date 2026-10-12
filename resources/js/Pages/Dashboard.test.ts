@@ -19,7 +19,7 @@ const stubs = {
     AppLayout: { props: ["title"], template: "<main><slot /></main>" },
     CreateFormButton: true,
     FormListTable: {
-        props: ["forms"],
+        props: ["forms", "date"],
         template:
             "<div><ul v-if='forms.length'><li v-for='form in forms'>{{ form.name }}</li></ul><slot v-else /></div>",
     },
@@ -90,7 +90,7 @@ describe("form list search, status and sort", () => {
         expect(tab("Archived").text()).toBe("Archived");
         expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
         expect(callListForms).toHaveBeenCalledTimes(1);
-        expect(callListForms).toHaveBeenCalledWith(null, "updated_at:desc");
+        expect(callListForms).toHaveBeenCalledWith(null, "latest_submission_at:desc");
     });
 
     it("moves a published or archived form to its tab and counts it there, without loading", async () => {
@@ -130,7 +130,7 @@ describe("form list search, status and sort", () => {
         expect(tab("Unpublished").text()).toBe("Unpublished 2");
         // the first load asked twice, the reload asks again
         expect(callListForms).toHaveBeenCalledTimes(4);
-        expect(callListForms).toHaveBeenNthCalledWith(3, null, "updated_at:desc");
+        expect(callListForms).toHaveBeenNthCalledWith(3, null, "latest_submission_at:desc");
     });
 
     it("drops a deleted form, so the last archived one leaves an empty Archived tab", async () => {
@@ -160,7 +160,7 @@ describe("form list search, status and sort", () => {
 
         expect(callListForms).toHaveBeenLastCalledWith(
             "trashed",
-            "updated_at:desc",
+            "latest_submission_at:desc",
         );
         expect(shown()).toEqual(["Old contest"]);
     });
@@ -180,11 +180,28 @@ describe("form list search, status and sort", () => {
     it("adds no history entry when the status or sort doesn't change", async () => {
         await mountAt("/");
         await tab("All").trigger("click");
-        wrapper!.findComponent(SortControl).vm.$emit("changeSort", "edited");
+        wrapper!.findComponent(SortControl).vm.$emit("changeSort", "latest");
         await flushPromises();
 
         expect(window.history.pushState).not.toHaveBeenCalled();
         expect(callListForms).toHaveBeenCalledTimes(1);
+    });
+
+    it("sorts by latest submission by default, and the date column follows the sort", async () => {
+        await mountAt("/");
+        const list = wrapper!.findComponent(stubs.FormListTable);
+
+        expect(callListForms).toHaveBeenCalledWith(null, "latest_submission_at:desc");
+        expect(list.props("date")).toEqual({ key: "latest_submission_at", label: "Last submission" });
+
+        wrapper!.findComponent(SortControl).vm.$emit("changeSort", "edited");
+        await flushPromises();
+        expect(window.history.pushState).toHaveBeenLastCalledWith(null, "", "/?sort=edited");
+        expect(list.props("date")).toEqual({ key: "updated_at", label: "Last edited" });
+
+        wrapper!.findComponent(SortControl).vm.$emit("changeSort", "newest");
+        await flushPromises();
+        expect(list.props("date")).toEqual({ key: "created_at", label: "Created" });
     });
 
     it("sorts on the server and keeps the sort in a new history entry", async () => {
@@ -215,7 +232,7 @@ describe("form list search, status and sort", () => {
         await mountAt("/?status=bogus&sort=nope");
 
         expect(tab("All").attributes("aria-pressed")).toBe("true");
-        expect(callListForms).toHaveBeenLastCalledWith(null, "updated_at:desc");
+        expect(callListForms).toHaveBeenLastCalledWith(null, "latest_submission_at:desc");
     });
 });
 
@@ -403,7 +420,7 @@ describe("form list states", () => {
             "Build a form, share its link and read the answers here.",
         );
         expect(wrapper!.find("input[type=search]").exists()).toBe(false);
-        expect(callListForms).toHaveBeenCalledWith("trashed", "updated_at:desc");
+        expect(callListForms).toHaveBeenCalledWith("trashed", "latest_submission_at:desc");
         wrapper!.unmount();
 
         // archived forms only: no first run, a way to them instead

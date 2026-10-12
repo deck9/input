@@ -9,7 +9,7 @@
       <div>Name</div>
       <div>Status</div>
       <div>Submissions</div>
-      <div>Last edited</div>
+      <div>{{ date.label }}</div>
       <div></div>
     </div>
     <ul v-if="forms.length" role="list" class="divide-y divide-grey-200">
@@ -17,6 +17,7 @@
         :form="form"
         :key="form.id"
         v-for="form in forms"
+        :date="date"
         @announce="announce"
         @changed="$emit('changed', $event)"
         @deleted="$emit('deleted', $event)"
@@ -61,6 +62,7 @@ defineOptions({ inheritAttrs: false });
 
 defineProps<{
   forms: Array<FormModel>;
+  date: ListDate;
 }>();
 
 defineEmits<{
