@@ -4,7 +4,16 @@
     class="rounded-lg border border-grey-200 bg-grey-50 py-2 pr-2"
     :class="isOpen && 'ring-1 ring-blue-500'"
   >
-    <div class="flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-3">
+    <div
+      class="group/header flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-1"
+    >
+      <span
+        aria-hidden="true"
+        title="Drag to reorder"
+        class="document-grip grid h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/header:opacity-100 lg:group-hover/header:opacity-100"
+      >
+        <D9Icon name="grip-vertical" />
+      </span>
       <D9Icon name="layer-group" aria-hidden="true" class="text-grey-600" />
       <label :id="`${id}-label`" :for="`${id}-name`" class="sr-only"
         >Group name</label
