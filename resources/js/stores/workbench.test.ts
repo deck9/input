@@ -38,14 +38,19 @@ describe("workbench store", () => {
 
     it("shows the server's reason and the question when a save is refused", async () => {
         useForm().blocks = [
-            { id: 3, title: "Your files", uuid: "Ab12" } as FormBlockModel,
+            {
+                id: 3,
+                uuid: "Ab12",
+                type: "file",
+                message: "<p>Your files</p>",
+            } as FormBlockModel,
         ];
         refuse();
 
         await useWorkbench().saveInteraction(interaction);
 
         expect(useNotice().message).toBe(
-            'Your change to "Your files" was not saved: The options.allowed files field must be an integer.',
+            "Your change to question 1 (“Your files”) wasn't saved: The options.allowed files field must be an integer.",
         );
     });
 
@@ -57,7 +62,7 @@ describe("workbench store", () => {
         await useWorkbench().saveInteraction(interaction);
 
         expect(useNotice().message).toBe(
-            "Your change was not saved. Check your connection and try again.",
+            "Your change wasn't saved. Check your connection and try again.",
         );
     });
 
@@ -86,6 +91,6 @@ describe("workbench store", () => {
         accept();
         await useWorkbench().saveInteraction(otherInteraction);
 
-        expect(useNotice().message).toMatch(/^Your change was not saved:/);
+        expect(useNotice().message).toMatch(/^Your change wasn't saved:/);
     });
 });

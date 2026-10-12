@@ -12,7 +12,7 @@
         <div class="flex items-center justify-between flex-wrap">
           <div class="w-0 flex-1 flex items-center min-w-0">
             <span
-              class="flex p-2 rounded-lg"
+              class="hidden sm:flex p-2 rounded-lg mr-3"
               :class="{
                 'bg-blue-600': style == 'success',
                 'bg-red-600': style == 'danger',
@@ -51,12 +51,20 @@
               </svg>
             </span>
 
-            <p class="ml-3 font-medium text-sm text-white truncate">
+            <p class="font-medium text-sm text-white break-words">
               {{ message }}
             </p>
           </div>
 
-          <div class="flex-shrink-0 sm:ml-3">
+          <div class="flex flex-shrink-0 items-center gap-2 sm:ml-3">
+            <button
+              v-if="notice.message && notice.canRetry"
+              type="button"
+              class="h-11 rounded-md bg-white px-3 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-8"
+              @click="notice.retrySaves()"
+            >
+              Retry
+            </button>
             <button
               type="button"
               class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
@@ -125,7 +133,11 @@ export default defineComponent({
   methods: {
     dismiss() {
       if (this.notice.message) {
-        this.notice.$reset();
+        // only the failures: running saves still count for the save status
+        this.notice.$patch((state) => {
+          state.failedSaves = {};
+          state.retries = {};
+        });
       } else {
         this.show = false;
       }

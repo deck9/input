@@ -16,6 +16,7 @@ import Storyboard from "@/components/Factory/Sidebar/Storyboard.vue";
 import Workbench from "@/components/Factory/Main/Workbench.vue";
 import WorkbenchEmpty from "@/components/Factory/Main/WorkbenchEmpty.vue";
 import { useForm, useWorkbench } from "@/stores";
+import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
 import { onBeforeUnmount, onMounted } from "vue";
 
 const props = defineProps<{
@@ -24,6 +25,8 @@ const props = defineProps<{
 
 const store = useForm();
 const workbench = useWorkbench();
+
+useSaveOnLeave();
 
 onBeforeUnmount(() => {
   store.clearForm();
