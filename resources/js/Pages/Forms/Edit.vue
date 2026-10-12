@@ -24,7 +24,14 @@ const loadBlocks = async () => {
   try {
     await store.getBlocks();
   } catch {
-    status.value = "failed";
+    if (!left) {
+      status.value = "failed";
+    }
+    return;
+  }
+
+  // a late reply must not open a question, and so change the address, on the next page
+  if (left) {
     return;
   }
 
@@ -43,7 +50,10 @@ const loadBlocks = async () => {
   status.value = "loaded";
 };
 
+let left = false;
+
 onBeforeUnmount(() => {
+  left = true;
   store.clearForm();
 });
 

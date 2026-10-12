@@ -15,12 +15,7 @@
       </span>
     </div>
 
-    <QuestionCard
-      v-if="isOpen"
-      :block="block"
-      :number="number"
-      :autofocus="openedHere"
-    />
+    <QuestionCard v-if="isOpen" :block="block" :number="number" />
     <button
       v-else
       type="button"
@@ -66,12 +61,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed } from "vue";
 import { D9Icon } from "@deck9/ui";
 import { useWorkbench } from "@/stores";
 import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
 import { plainText } from "./questionSummary";
 import QuestionCard from "./QuestionCard.vue";
+import { cursorFor } from "./blockFocus";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -82,13 +78,6 @@ const workbench = useWorkbench();
 const { types } = useBlockTypes();
 
 const isOpen = computed(() => workbench.block?.id === props.block.id);
-const openedHere = ref(false);
-
-watch(isOpen, (value) => {
-  if (!value) {
-    openedHere.value = false;
-  }
-});
 
 const text = computed(() => plainText(props.block.message));
 const blockType = computed(() =>
@@ -104,7 +93,7 @@ const choiceCount = computed(() =>
 const ruleCount = computed(() => props.block.logics?.length ?? 0);
 
 const open = () => {
-  openedHere.value = true;
+  cursorFor.value = props.block.uuid;
   workbench.putOnWorkbench(props.block);
 };
 </script>

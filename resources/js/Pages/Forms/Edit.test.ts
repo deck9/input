@@ -20,10 +20,16 @@ let wrapper: VueWrapper | undefined;
 // the test pinia stubs actions: getBlocks does what each test tells it to
 const mountEditor = async (load: () => Promise<void>) => {
     vi.mocked(useForm().getBlocks).mockImplementation(load);
-    wrapper = mount(Edit, { props: { form }, global: { stubs } });
+    wrapper = mount(Edit, {
+        props: { form },
+        global: { stubs },
+        attachTo: document.body,
+    });
     await flushPromises();
     return wrapper;
 };
+const focused = () =>
+    document.activeElement?.closest("button")?.textContent?.trim();
 const loads = (result: FormBlockModel[]) => async () => {
     useForm().blocks = result;
 };
@@ -80,5 +86,35 @@ describe("editor loading", () => {
 
         expect(editor.text()).toContain("questions");
         expect(editor.text()).not.toContain("No questions yet");
+    });
+
+    it("puts focus on Add question after Try again loads, and back on Try again when it fails again", async () => {
+        const getBlocks = vi.mocked(useForm().getBlocks);
+        const editor = await mountEditor(() => Promise.reject(new Error("500")));
+
+        await editor.get("[role=alert] button").trigger("click");
+        await flushPromises();
+        expect(focused()).toBe("Try again");
+
+        // putOnWorkbench is a stub, so no question is open to take the focus
+        getBlocks.mockImplementation(loads(blocks));
+        await editor.get("[role=alert] button").trigger("click");
+        await flushPromises();
+        expect(focused()).toBe("Add question");
+    });
+
+    it("opens no question when the questions arrive after the editor closed", async () => {
+        let arrive!: () => void;
+        const editor = await mountEditor(
+            () => new Promise<void>((resolve) => (arrive = resolve)),
+        );
+
+        editor.unmount();
+        wrapper = undefined;
+        useForm().blocks = blocks;
+        arrive();
+        await flushPromises();
+
+        expect(useWorkbench().putOnWorkbench).not.toHaveBeenCalled();
     });
 });

@@ -1,8 +1,12 @@
 <template>
-  <div id="form-document" class="h-full w-full overflow-y-auto bg-white">
+  <div
+    id="form-document"
+    ref="root"
+    class="h-full w-full overflow-y-auto bg-white"
+  >
     <div class="mx-auto w-full max-w-[720px] px-2 pb-40 pt-6 sm:px-6 sm:pt-10">
       <div v-if="status !== 'loaded'" class="pl-12">
-        <QuestionsLoadState :status="status" @retry="emit('retry')" />
+        <QuestionsLoadState :status="status" @retry="retry" />
       </div>
 
       <template v-else>
@@ -18,7 +22,7 @@
           description="Add your first question below."
         />
 
-        <div class="mt-4 flex flex-wrap gap-2 pl-12">
+        <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
           <D9Button
             label="Add question"
             color="dark"
@@ -41,23 +45,55 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { D9Button } from "@deck9/ui";
-import { useForm } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 import EmptyState from "@/components/EmptyState.vue";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
 import { questionNumbers } from "./questionSummary";
-import { useAddBlock } from "./useAddBlock";
+import { focusBlock, useAddBlock } from "./blockFocus";
 
-defineProps<{
+const props = defineProps<{
   status: "loading" | "failed" | "loaded";
 }>();
 const emit = defineEmits<{ retry: [] }>();
 
 const store = useForm();
+const workbench = useWorkbench();
 const { addBlock } = useAddBlock();
+const root = ref<HTMLElement | null>(null);
+const addButtons = ref<HTMLElement | null>(null);
+
+// Try again leaves the page: its button is gone once the load ends
+let retried = false;
+const retry = () => {
+  retried = true;
+  emit("retry");
+};
+
+watch(
+  () => props.status,
+  async (status) => {
+    if (!retried || status === "loading") {
+      return;
+    }
+
+    retried = false;
+
+    if (status === "loaded" && (await focusBlock(workbench.block))) {
+      return;
+    }
+
+    await nextTick();
+    const fallback =
+      status === "failed"
+        ? root.value?.querySelector<HTMLElement>("[role=alert] button")
+        : addButtons.value?.querySelector("button");
+    fallback?.focus();
+  },
+);
 
 const numbers = computed(() => questionNumbers(store.blocks ?? []));
 

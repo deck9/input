@@ -65,7 +65,7 @@ import { D9Icon } from "@deck9/ui";
 import { useForm, useLogic, useWorkbench } from "@/stores";
 import BlockMenu from "./BlockMenu.vue";
 import DocumentList from "./DocumentList.vue";
-import { useAddBlock } from "./useAddBlock";
+import { useAddBlock } from "./blockFocus";
 
 const props = defineProps<{
   group: FormBlockModel;

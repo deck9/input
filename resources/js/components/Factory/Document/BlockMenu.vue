@@ -54,7 +54,7 @@ import { computed } from "vue";
 import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import { useForm, useWorkbench } from "@/stores";
-import { useAddBlock } from "./useAddBlock";
+import { useAddBlock } from "./blockFocus";
 
 const props = defineProps<{
   block: FormBlockModel;

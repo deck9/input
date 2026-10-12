@@ -83,12 +83,11 @@ import ConfigureConsents from "@/components/Factory/Main/ConfigureConsents.vue";
 import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
 import BlockMenu from "./BlockMenu.vue";
 import QuestionSettings from "./QuestionSettings.vue";
+import { cursorFor } from "./blockFocus";
 
 const props = defineProps<{
   block: FormBlockModel;
   number: number;
-  // set when the owner opened it, not when the page opened the first question
-  autofocus?: boolean;
 }>();
 
 // Configure* and IndexItem read the open block from here
@@ -115,9 +114,13 @@ watch(type, (value) => {
   }
 });
 
-onMounted(() => {
-  if (props.autofocus) {
+const takeCursor = () => {
+  if (cursorFor.value === props.block.uuid) {
+    cursorFor.value = null;
     editor.value?.focus();
   }
-});
+};
+
+onMounted(takeCursor);
+watch(cursorFor, takeCursor);
 </script>

@@ -155,10 +155,12 @@ export const useForm = defineStore("form", {
                 return;
             }
 
-            const response = await callGetFormBlocks(
-                this.form.uuid,
-                includeSubmissions,
-            );
+            const uuid = this.form.uuid;
+            const response = await callGetFormBlocks(uuid, includeSubmissions);
+            // the editor may have left this form while it loaded
+            if (this.form?.uuid !== uuid) {
+                return;
+            }
 
             this.blocks = response.data;
         },

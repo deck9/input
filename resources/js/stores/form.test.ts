@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import handler from "@/api/handler";
 import { useForm } from "@/stores";
 
-vi.mock("@/api/handler", () => ({ default: { post: vi.fn() } }));
+vi.mock("@/api/handler", () => ({ default: { get: vi.fn(), post: vi.fn() } }));
 
 const saved = {
     uuid: "form1",
@@ -83,5 +83,42 @@ describe("saving form settings", () => {
         await expect(useForm().updateForm({ name: "" })).rejects.toBe(refusal);
 
         expect(useForm().form).toEqual(saved);
+    });
+});
+
+describe("loading the questions", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        setActivePinia(createPinia());
+        window.route = vi.fn(() => "/api/forms/form1/blocks") as unknown as typeof window.route;
+        useForm().form = { ...saved };
+    });
+
+    it("drops a reply that comes in after the editor left the form", async () => {
+        let answer!: (reply: AxiosResponse) => void;
+        vi.mocked(handler.get).mockReturnValue(
+            new Promise((resolve) => (answer = resolve)),
+        );
+
+        const loading = useForm().getBlocks();
+        useForm().clearForm();
+        answer({ status: 200, data: [{ id: 1, uuid: "b1" }] } as AxiosResponse);
+        await loading;
+
+        expect(useForm().blocks).toBeNull();
+    });
+
+    it("keeps another form's questions from a late reply", async () => {
+        let answer!: (reply: AxiosResponse) => void;
+        vi.mocked(handler.get).mockReturnValue(
+            new Promise((resolve) => (answer = resolve)),
+        );
+
+        const loading = useForm().getBlocks();
+        useForm().form = { ...saved, uuid: "form2" };
+        answer({ status: 200, data: [{ id: 1, uuid: "b1" }] } as AxiosResponse);
+        await loading;
+
+        expect(useForm().blocks).toBeNull();
     });
 });
