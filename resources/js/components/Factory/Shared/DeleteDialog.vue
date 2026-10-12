@@ -27,10 +27,11 @@
 
 <script setup lang="ts">
 import { D9Button } from "@deck9/ui";
+import { useEventListener } from "@vueuse/core";
 import ConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import DangerButton from "@/Jetstream/DangerButton.vue";
 
-defineProps<{
+const props = defineProps<{
   show: boolean;
   title: string;
   text: string;
@@ -42,4 +43,17 @@ const emit = defineEmits<{
   (e: "close"): void;
   (e: "confirm"): void;
 }>();
+
+// Escape closes only this dialog, not the logic panel under it
+useEventListener(
+  window,
+  "keydown",
+  (event: KeyboardEvent) => {
+    if (props.show && event.key === "Escape") {
+      event.stopPropagation();
+      emit("close");
+    }
+  },
+  { capture: true },
+);
 </script>

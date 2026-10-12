@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent } from "vue";
+import DeleteDialog from "./DeleteDialog.vue";
 import DeleteBlockDialog from "./DeleteBlockDialog.vue";
 import DeleteChoiceDialog from "./DeleteChoiceDialog.vue";
 import { checkDelete, useDeleteBlock } from "./useDeleteBlock";
@@ -300,6 +301,31 @@ describe("asking before a delete", () => {
             expect(wrapper.find("button.bg-red-600").text()).toBe(
                 "Delete choice",
             );
+        });
+    });
+
+    describe("DeleteDialog", () => {
+        it("closes only itself on Escape, not the logic panel under it", () => {
+            const panel = vi.fn();
+            window.addEventListener("keydown", panel);
+            const wrapper = mount(DeleteDialog, {
+                props: {
+                    show: true,
+                    title: "Delete?",
+                    text: "",
+                    confirmLabel: "Delete",
+                },
+                global: { stubs },
+            });
+
+            document.body.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+            );
+
+            expect(wrapper.emitted("close")).toHaveLength(1);
+            expect(panel).not.toHaveBeenCalled();
+            window.removeEventListener("keydown", panel);
+            wrapper.unmount();
         });
     });
 
