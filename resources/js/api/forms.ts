@@ -85,12 +85,13 @@ export function callGetForm(
 
 export function callUpdateForm(
     form: FormModel,
+    values: Partial<FormModel>,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
                 window.route("api.forms.update", { uuid: form.uuid }),
-                form,
+                values,
             );
 
             resolve(response as AxiosResponse<FormModel>);
