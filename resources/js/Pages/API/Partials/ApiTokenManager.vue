@@ -33,7 +33,9 @@ const updateApiTokenForm = useForm({
 const deleteApiTokenForm = useForm({});
 
 const displayingToken = ref(false);
+const createSection = ref(null);
 const createButton = ref(null);
+const deleteButtons = {};
 const managingPermissionsFor = ref(null);
 const apiTokenBeingDeleted = ref(null);
 
@@ -74,12 +76,22 @@ const confirmApiTokenDeletion = (token) => {
 };
 
 const deleteApiToken = () => {
+  const ids = props.tokens.map((token) => token.id);
+  const i = ids.indexOf(apiTokenBeingDeleted.value.id);
+  const nextId = ids[i + 1] ?? ids[i - 1];
+
   deleteApiTokenForm.delete(
     route("api-tokens.destroy", apiTokenBeingDeleted.value),
     {
       preserveScroll: true,
       preserveState: true,
-      onSuccess: () => (apiTokenBeingDeleted.value = null),
+      onSuccess: () => {
+        apiTokenBeingDeleted.value = null;
+        // the deleted row's button is gone, so the dialog can't give it the focus back
+        (
+          deleteButtons[nextId] ?? createSection.value.$el.querySelector("h3")
+        ).focus();
+      },
     },
   );
 };
@@ -88,7 +100,7 @@ const deleteApiToken = () => {
 <template>
   <div>
     <!-- Generate API Token -->
-    <FormSection @submitted="createApiToken">
+    <FormSection ref="createSection" @submitted="createApiToken">
       <template #title> Create API Token </template>
 
       <template #description>
@@ -184,6 +196,7 @@ const deleteApiToken = () => {
                   </button>
 
                   <button
+                    :ref="(el) => (deleteButtons[token.id] = el)"
                     class="cursor-pointer ms-6 text-sm text-red-500"
                     @click="confirmApiTokenDeletion(token)"
                   >
