@@ -34,6 +34,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form whose name starts with an emoji, Chinese text, a sign like "€" or a word like "Müller" or "Fête" shows in your form list and opens. Before, it caused a server error and hid all your forms from the list. (#241)
 -   A form keeps its brand or background image when the server can't store the new one, and the Appearance page asks you to try again. Before, the old image was deleted and the form showed none. (#240)
 -   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
+-   While your forms load, the form list shows placeholder rows. When the list can't load, it says so and offers "Try again". A search or status without forms says so and offers a way back. Before, all of these said you hadn't created a survey yet. A team without any forms now sees "Create your first form". (#249)
 
 ### Security
 
