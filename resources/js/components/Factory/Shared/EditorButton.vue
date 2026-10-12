@@ -1,5 +1,8 @@
 <template>
   <button
+    type="button"
+    :aria-label="label"
+    :aria-pressed="isActive"
     :class="[
       'rounded px-2 mx-px py-1 relative text-sm',
       isActive

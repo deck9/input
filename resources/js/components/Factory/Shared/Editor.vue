@@ -1,6 +1,8 @@
 <template>
   <div>
     <div
+      role="group"
+      aria-label="Text format"
       class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex flex-wrap gap-y-2 items-center"
     >
       <div class="px-1">
