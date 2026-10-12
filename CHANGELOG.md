@@ -9,11 +9,13 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Added
 
 -   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. A dashboard link with an unknown filter or sort now shows your forms. Before, it showed no forms at all. (#242)
+-   Search your forms by name, also without accents ("muller" finds "Müller"), and press "/" to jump to the search. The form list has status tabs with counts and sorts by latest submission, last edit, newest or name. Your choice stays in the address, so Back undoes it and a link shows the same list. Dashboard links with the old `?filter=` show all forms. (#248)
 
 ### Changed
 
 -   The form list keeps each form's status, submissions and actions in view, also with a very long name and on a phone. It shows "40 submissions" with "52 started · 77% finished" below, shows the form's uploaded avatar, and no longer shows the public link under each name. (#244)
 -   Each form in the list has one actions menu and a Copy link button. Unpublishing a form with submissions, archiving and deleting now ask first, published forms can be archived, and the list changes without reloading the page. (#245)
+-   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 
 ### Fixed
 
@@ -34,6 +36,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form whose name starts with an emoji, Chinese text, a sign like "€" or a word like "Müller" or "Fête" shows in your form list and opens. Before, it caused a server error and hid all your forms from the list. (#241)
 -   A form keeps its brand or background image when the server can't store the new one, and the Appearance page asks you to try again. Before, the old image was deleted and the form showed none. (#240)
 -   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
+-   On a phone, the app header shows the logo and your team name next to the account menu, and screen readers name the account menu. Before, it showed only a gear. (#246)
 
 ### Security
 

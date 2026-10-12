@@ -1,9 +1,11 @@
 <template>
   <div class="relative flex space-x-2">
+    <!-- phones: an icon button, its label stays for screen readers -->
     <D9Button
-      label="From template"
-      color="dark"
+      label="Import template"
+      color="light"
       icon="cloud-upload"
+      class="h-11 w-11 justify-center !bg-white !px-0 shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100 sm:h-auto sm:w-auto sm:!px-5 [&_span]:hidden sm:[&_span]:inline"
       @click="uploadInput?.click()"
     />
     <input
@@ -17,6 +19,7 @@
       label="Create form"
       icon="add"
       iconPosition="right"
+      class="h-11 sm:h-auto"
       @click="openDialog(null, '')"
     />
     <ValidationErrors

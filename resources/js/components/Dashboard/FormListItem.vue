@@ -61,7 +61,7 @@
         <span v-else>No submissions yet</span>
       </div>
       <div class="tabular-nums">
-        <span class="sr-only">Last change:</span>
+        <span class="sr-only">Last edited:</span>
         {{ new Date(form.updated_at).toLocaleDateString() }}
       </div>
     </div>
