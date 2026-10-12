@@ -45,7 +45,7 @@
       <div class="ml-auto flex items-center gap-1">
         <button
           type="button"
-          class="flex h-11 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 sm:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          class="flex h-11 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           :aria-expanded="settingsOpen"
           :aria-controls="`${id}-settings`"
           :aria-haspopup="isPhone ? 'dialog' : undefined"
@@ -60,7 +60,7 @@
         </button>
         <button
           type="button"
-          class="flex h-11 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 sm:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          class="flex h-11 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           @click="logic.showLogicEditor(block)"
         >
           Rules<span v-if="block.logics?.length" class="tabular-nums"

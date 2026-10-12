@@ -6,7 +6,7 @@
   >
     <template #button>
       <span
-        class="grid h-11 w-11 place-items-center rounded-md border border-grey-300 sm:h-9 sm:w-9 bg-white text-grey-700 hover:bg-grey-100"
+        class="grid h-11 w-11 place-items-center rounded-md border border-grey-300 lg:h-9 lg:w-9 bg-white text-grey-700 hover:bg-grey-100"
       >
         <D9Icon name="ellipsis-h" />
         <span class="sr-only">{{ label }}</span>
@@ -67,7 +67,7 @@ const store = useForm();
 const workbench = useWorkbench();
 const { addBlock } = useAddBlock();
 
-const item = "w-full text-left text-sm";
+const item = "w-full min-h-11 text-left text-sm lg:min-h-0";
 const isGroup = computed(() => props.block.type === "group");
 
 // the open block saves through the workbench: a store save swaps its object, and its next save would send the old value
