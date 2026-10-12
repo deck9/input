@@ -1,4 +1,4 @@
-import { mount, VueWrapper } from "@vue/test-utils";
+import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
 import FormDocument from "./FormDocument.vue";
@@ -42,6 +42,21 @@ describe("the form document", () => {
         await wrapper.setProps({ status: "loaded" });
         await wrapper.vm.$nextTick();
 
+        expect(scrolled).toHaveBeenCalledWith("row-b2");
+    });
+
+    it("opens and scrolls to a question picked in the outline", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        await wrapper.findAll("nav li button")[1].trigger("click");
+        await flushPromises();
+
+        expect(useWorkbench().putOnWorkbench).toHaveBeenCalledWith(blocks[1]);
         expect(scrolled).toHaveBeenCalledWith("row-b2");
     });
 });
