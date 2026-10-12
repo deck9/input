@@ -31,6 +31,9 @@ class FormController extends Controller
         $forms = $request->user()
             ->currentTeam
             ->forms()
+            // owner fields and session counts for all forms at once, not a query per form
+            ->with('user')
+            ->withSessionCounts()
             ->withMax('formSessions as latest_submission_at', 'is_completed')
             ->withFilter(is_string($filter) ? $filter : null)
             ->withOrder(is_string($sort) ? $sort : null)

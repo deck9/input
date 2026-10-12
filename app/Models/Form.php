@@ -304,18 +304,27 @@ class Form extends BaseModel
             ->count();
     }
 
-    // cached per model, so the completion rate reuses both counts
+    // both counts for a whole list in one query; same rules as the two counts below
+    public function scopeWithSessionCounts(Builder $builder)
+    {
+        return $builder->withCount([
+            'formSessions as total_sessions',
+            'formSessions as completed_sessions' => fn (Builder $query) => $query->whereNotNull('is_completed'),
+        ]);
+    }
+
+    // cached per model, so the completion rate reuses both counts; a count from withSessionCounts saves the query
     protected function totalSessions(): Attribute
     {
-        return Attribute::get(fn () => $this->formSessions()->count())->shouldCache();
+        return Attribute::get(fn ($value, array $attributes) => (int) ($attributes['total_sessions']
+            ?? $this->formSessions()->count()))->shouldCache();
     }
 
     // every completed submit, also one without answers, like the submissions page
     protected function completedSessions(): Attribute
     {
-        return Attribute::get(fn () => $this->formSessions()
-            ->whereNotNull('is_completed')
-            ->count())->shouldCache();
+        return Attribute::get(fn ($value, array $attributes) => (int) ($attributes['completed_sessions']
+            ?? $this->formSessions()->whereNotNull('is_completed')->count()))->shouldCache();
     }
 
     protected function completionRate(): Attribute
