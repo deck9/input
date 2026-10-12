@@ -52,7 +52,10 @@ export function publishCheck(blocks: FormBlockModel[]): CheckRow[] {
     if (broken > 0) {
         rows.push({
             isOk: false,
-            text: `${plural(rules.length, "rule")}, ${broken} ${broken === 1 ? "points" : "point"} to a question that no longer exists`,
+            text:
+                rules.length === 1
+                    ? "1 rule, it uses a deleted question"
+                    : `${rules.length} rules, ${broken === 1 ? "1 uses a deleted question" : `${broken} use deleted questions`}`,
         });
     } else if (rules.length > 0) {
         rows.push({

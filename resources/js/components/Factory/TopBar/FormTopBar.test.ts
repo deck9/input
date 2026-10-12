@@ -152,7 +152,7 @@ describe("form top bar", () => {
         expect(text(dialog)).toContain('Publish "Meetup RSVP"?');
         expect(text(dialog)).toContain("Warning: 3 questions, 1 without text");
         expect(text(dialog)).toContain(
-            "Warning: 2 rules, 1 points to a question that no longer exists",
+            "Warning: 2 rules, 1 uses a deleted question",
         );
         expect(text(dialog)).toContain("Note: No privacy page linked.");
         expect(text(dialog)).toContain("every change you make goes live at once");
@@ -229,7 +229,7 @@ describe("form top bar", () => {
 
         expect(callGetFormBlocks).toHaveBeenCalledWith("form1");
         expect(text(document.querySelector('[role="dialog"]'))).toContain(
-            "Warning: 1 rule, 1 points to a question that no longer exists",
+            "Warning: 1 rule, it uses a deleted question",
         );
     });
 

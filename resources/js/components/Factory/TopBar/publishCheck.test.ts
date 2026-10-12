@@ -19,4 +19,25 @@ describe("publish check", () => {
             { isOk: true, text: "1 rule, working" },
         ]);
     });
+
+    it("counts the rules that use a deleted question", () => {
+        const goto = (target: string) => ({
+            action: "goto",
+            action_payload: target,
+            conditions: [],
+        });
+        const blocks = [
+            {
+                uuid: "q1",
+                type: "input-short",
+                message: "<p>Your name?</p>",
+                logics: [goto("gone"), goto("q1"), goto("also-gone")],
+            },
+        ] as unknown as FormBlockModel[];
+
+        expect(publishCheck(blocks)[1]).toEqual({
+            isOk: false,
+            text: "3 rules, 2 use deleted questions",
+        });
+    });
 });
