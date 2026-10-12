@@ -358,11 +358,11 @@ test('template import refuses a yes/no setting that is not yes or no and keeps t
     'a list' => [['yes']],
 ]);
 
-test('template import refuses an empty yes/no setting whose column needs a value', function (string $key) {
+test('template import refuses an empty yes/no setting whose column needs a value', function (string $key, string $empty) {
     $form = Form::factory()->create([$key => true]);
 
     $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
-        'template' => json_encode([$key => '', 'blocks' => []]),
+        'template' => json_encode([$key => $empty, 'blocks' => []]),
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors($key);
@@ -375,18 +375,18 @@ test('template import refuses an empty yes/no setting whose column needs a value
     'show_cta_link',
     'show_social_links',
     'use_brighter_inputs',
-]);
+])->with(['empty' => '', 'blank' => ' ']);
 
-test('template import saves an empty form setting as empty, like the settings save', function (string $key) {
+test('template import saves an empty form setting as empty, like the settings save', function (string $key, string $empty) {
     $form = Form::factory()->create([$key => 1]);
 
     $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
-        'template' => json_encode([$key => '', 'blocks' => []]),
+        'template' => json_encode([$key => $empty, 'blocks' => []]),
     ])->assertOk();
 
     // raw, since the app reads an empty yes/no as no
     expect($form->fresh()->getRawOriginal($key))->toBeNull();
-})->with(['cta_redirect_delay', 'data_retention_days', 'show_form_progress', 'eoc_text']);
+})->with(['cta_redirect_delay', 'data_retention_days', 'show_form_progress', 'eoc_text'])->with(['empty' => '', 'blank' => ' ']);
 
 test('template import refuses a block value that does not fit and keeps the form', function (array $block, string $error) {
     $form = Form::factory()->has(FormBlock::factory())->create();
@@ -427,6 +427,9 @@ test('template import refuses a block value that does not fit and keeps the form
     'answer position blank' => [['formBlockInteractions' => [['type' => 'button', 'sequence' => ' ']]], 'blocks.0.formBlockInteractions.0.sequence'],
     'answers as text' => [['formBlockInteractions' => 'Yes'], 'blocks.0.formBlockInteractions'],
     'answers as a number' => [['formBlockInteractions' => 5], 'blocks.0.formBlockInteractions'],
+    'answers blank' => [['formBlockInteractions' => ''], 'blocks.0.formBlockInteractions'],
+    'rules as text' => [['formBlockLogics' => 'Show'], 'blocks.0.formBlockLogics'],
+    'rules blank' => [['formBlockLogics' => ''], 'blocks.0.formBlockLogics'],
 ]);
 
 test('template import takes a block title and an answer label at their column limit', function () {
@@ -468,7 +471,7 @@ test('template import takes question text, answer name and positions at their co
                     'sequence' => 2147483647,
                 ]],
             ],
-            ['type' => 'none', 'sequence' => 0, 'formBlockInteractions' => null],
+            ['type' => 'none', 'sequence' => 0, 'formBlockInteractions' => null, 'formBlockLogics' => null],
             ['type' => 'none', 'sequence' => 1, 'formBlockInteractions' => [['type' => 'button', 'sequence' => null]]],
         ]]),
     ])->assertOk();
@@ -486,6 +489,7 @@ test('template import takes question text, answer name and positions at their co
         ->and($answer->is_disabled)->toBeTrue()
         ->and($answer->sequence)->toBe(2147483647)
         ->and($empty->formBlockInteractions)->toBeEmpty()
+        ->and($empty->formBlockLogics)->toBeEmpty()
         ->and($withEmptyPosition->formBlockInteractions->first()->sequence)->toBe(0);
 });
 
