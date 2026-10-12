@@ -39,6 +39,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
 -   On a phone, the app header shows the logo and your team name next to the account menu, and screen readers name the account menu. Before, it showed only a gear. (#246)
 -   While your forms load, the form list shows placeholder rows. When the list can't load, it says so and offers "Try again". A search or status without forms says so and offers a way back, and screen readers hear how many forms a search finds. Before, all of these said you hadn't created a survey yet. A team without any forms now sees "Create your first form". A form you publish, unpublish, archive or restore in the list moves to its tab right away, and the tab counts follow. (#249)
+-   A form template with a description, language, color, button label, completion headline or link that is too long is now refused with a message that names the field, and the form stays as it was. Before, the import failed with a server error on MySQL and MariaDB. (#251)
 
 ### Security
 
