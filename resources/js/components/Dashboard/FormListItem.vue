@@ -40,7 +40,9 @@
       </div>
       <div class="lg:min-w-0">
         <template v-if="form.completed_sessions > 0">
-          <a
+          <!-- an archived form's submissions page is gone -->
+          <component
+            :is="isTrashed ? 'span' : 'a'"
             class="tabular-nums hover:text-blue-600 lg:text-grey-900"
             :href="route('forms.submissions', form.uuid)"
           >
@@ -48,7 +50,7 @@
               form.completed_sessions.toLocaleString()
             }}</span>
             {{ form.completed_sessions === 1 ? "submission" : "submissions" }}
-          </a>
+          </component>
           <div class="hidden text-xs tabular-nums text-grey-500 lg:block">
             {{ form.total_sessions.toLocaleString() }} started ·
             {{ Math.floor(form.completion_rate) }}% finished
@@ -94,19 +96,20 @@
           <D9MenuLink
             as="a"
             :href="route('forms.edit', form.uuid)"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Edit"
           />
           <D9MenuLink
             as="a"
             :href="route('forms.submissions', form.uuid)"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="View submissions"
           />
           <D9MenuLink
+            v-if="isPublished"
             as="button"
             type="button"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Copy link"
             @click="copyLink"
           />
@@ -114,20 +117,20 @@
             as="a"
             :href="route('forms.show', { uuid: form.uuid })"
             target="_blank"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Open form"
           />
           <D9MenuLink
             as="a"
             :href="route('forms.settings', form.uuid)"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Settings"
           />
           <div role="separator" class="my-1 h-px bg-grey-100"></div>
           <D9MenuLink
             as="button"
             type="button"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Duplicate…"
             @click="openDuplicateDialog"
           />
@@ -135,15 +138,15 @@
             v-if="isPublished"
             as="button"
             type="button"
-            class="block w-full text-left !text-sm"
-            label="Unpublish…"
+            :class="menuItem"
+            :label="form.completed_sessions > 0 ? 'Unpublish…' : 'Unpublish'"
             @click="askUnpublish"
           />
           <D9MenuLink
             v-else
             as="button"
             type="button"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Publish"
             @click="publish"
           />
@@ -151,7 +154,7 @@
           <D9MenuLink
             as="button"
             type="button"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Archive…"
             @click="askArchive"
           />
@@ -160,14 +163,14 @@
           <D9MenuLink
             as="button"
             type="button"
-            class="block w-full text-left !text-sm"
+            :class="menuItem"
             label="Restore"
             @click="restore"
           />
           <D9MenuLink
             as="button"
             type="button"
-            class="block w-full text-left !text-sm !text-red-700"
+            :class="[menuItem, '!text-red-700']"
             label="Delete permanently…"
             @click="askDelete"
           />
@@ -181,13 +184,14 @@
         :defaultName="copyName"
         :isSaving="isDuplicating"
         :hasFailed="hasDuplicateFailed"
-        @close="isNaming = false"
+        @close="closeNaming"
         @submit="duplicateForm"
       />
       <ConfirmationModal
         :show="question !== null"
         max-width="md"
         :closeable="!isAnswering"
+        :danger="!!question?.isDanger"
         @close="closeQuestion"
       >
         <template #title>
@@ -210,7 +214,7 @@
           <!-- shaped like the D9 Cancel next to it -->
           <DangerButton
             v-if="question?.isDanger"
-            class="ml-2 !rounded-lg !border-0 !px-5 !text-sm !font-medium !normal-case !leading-4 !tracking-normal"
+            class="ml-2 !rounded-lg !border-0 !px-5 !text-sm !font-medium !normal-case !leading-4 !tracking-normal disabled:!opacity-50"
             :disabled="isAnswering"
             @click="answer"
           >
@@ -275,7 +279,13 @@ watch(
   },
 );
 
+// 44 px tall on phones, 36 px from lg
+const menuItem = "block w-full text-left !py-3 !text-sm lg:!py-2";
+
 const row = ref<HTMLElement | null>(null);
+const menuButton = (li?: Element | null) =>
+  li?.querySelector<HTMLElement>("[aria-haspopup=menu]");
+const focusMenu = () => menuButton(row.value)?.focus();
 const cancelButton = ref<InstanceType<typeof D9Button> | null>(null);
 const question = ref<Question | null>(null);
 const isAnswering = ref(false);
@@ -292,7 +302,15 @@ const copyName = computed(() =>
 const { copy } = useClipboard({ legacy: true });
 
 const copyLink = async () => {
+  // the copy without https moves focus to a hidden field
+  const focused = document.activeElement;
   await copy(window.route("forms.show", { uuid: props.form.uuid }));
+  if (focused instanceof HTMLElement && row.value?.contains(focused)) {
+    focused.focus();
+  } else {
+    // the menu and the toast both go away
+    focusMenu();
+  }
   emit("announce", { text: "Link copied" });
 };
 
@@ -328,8 +346,15 @@ let neighbour: Element | null = null;
 
 const closeQuestion = () => {
   question.value = null;
-  const target = isDeleted.value ? neighbour : row.value;
-  target?.querySelector<HTMLElement>("[aria-haspopup=menu]")?.focus();
+  if (!isDeleted.value) {
+    return focusMenu();
+  }
+
+  // no row left: the page's Create form button
+  (
+    menuButton(neighbour) ??
+    document.querySelector<HTMLElement>('button[aria-label="Create form"]')
+  )?.focus();
 };
 
 const submissions = (count: number) =>
@@ -420,6 +445,12 @@ const askDelete = () => {
         { text: `${props.form.name} deleted.` },
       ),
   });
+};
+
+// the dialog would focus the menu item it opened from, which is gone
+const closeNaming = () => {
+  isNaming.value = false;
+  focusMenu();
 };
 
 const openDuplicateDialog = () => {

@@ -120,6 +120,10 @@ describe("duplicate a form", () => {
 
         expect(dialog()).toBeNull();
         expect(callDuplicateForm).not.toHaveBeenCalled();
+        // not the menu item it opened from, which is gone
+        expect(document.activeElement).toBe(
+            wrapper!.find("[aria-haspopup=menu]").element,
+        );
     });
 });
 
@@ -261,16 +265,27 @@ describe("row actions", () => {
             "Open form",
             "Settings",
             "Duplicate…",
-            "Unpublish…",
+            "Unpublish",
             "Archive…",
         ]);
     });
 
+    it("offers Copy link only on a published form", () => {
+        mountRow({ is_published: false });
+
+        expect(menuLabels()).not.toContain("Copy link");
+        expect(menuLabels()).toContain("Publish");
+    });
+
     it("offers only Restore and Delete permanently on an archived form, without links", () => {
-        mountRow({ is_trashed: true });
+        mountRow({ is_trashed: true, completed_sessions: 3 });
 
         expect(menuLabels()).toEqual(["Restore", "Delete permanently…"]);
         expect(wrapper!.find("a[title=Contact]").exists()).toBe(false);
+        expect(wrapper!.text()).toContain("3 submissions");
+        expect(wrapper!.find("a[href='/forms.submissions']").exists()).toBe(
+            false,
+        );
         expect(wrapper!.find("[aria-label^='Copy link']").exists()).toBe(false);
     });
 
@@ -281,6 +296,22 @@ describe("row actions", () => {
 
         expect(copy).toHaveBeenCalledWith("/forms.show");
         expect(wrapper!.emitted("announce")).toEqual([[{ text: "Link copied" }]]);
+    });
+
+    it("keeps focus on the copy button when the copy moves it away", async () => {
+        // the copy without https focuses a hidden field, then drops it
+        copy.mockImplementationOnce(() =>
+            (document.activeElement as HTMLElement).blur(),
+        );
+        mountRow();
+        const button = wrapper!.find<HTMLElement>(
+            "[aria-label='Copy link to Contact']",
+        );
+        button.element.focus();
+        await button.trigger("click");
+        await flushPromises();
+
+        expect(document.activeElement).toBe(button.element);
     });
 
     it("publishes without asking and says the form is live, with Copy link", async () => {
@@ -296,9 +327,22 @@ describe("row actions", () => {
         ]);
     });
 
+    it("focuses the menu after Copy link in the message, which goes away", async () => {
+        mountRow({ is_published: false });
+        await menuItem("Publish").trigger("click");
+        await flushPromises();
+        const [[announcement]] = wrapper!.emitted("announce") as [
+            [{ copy: () => Promise<void> }],
+        ];
+        await announcement.copy();
+
+        expect(copy).toHaveBeenCalledWith("/forms.show");
+        expect(document.activeElement).toBe(menuButton().element);
+    });
+
     it("unpublishes a form without submissions right away", async () => {
         mountRow();
-        await menuItem("Unpublish…").trigger("click");
+        await menuItem("Unpublish").trigger("click");
         await flushPromises();
 
         expect(question()).toBeNull();
@@ -323,6 +367,8 @@ describe("row actions", () => {
 
         expect(question()?.textContent).toContain('Archive "Contact"?');
         expect(question()?.textContent).toContain("It goes offline");
+        // the red warning sign is only for delete
+        expect(question()?.querySelector("svg")).toBeNull();
         expect(document.activeElement).toBe(questionButton("Cancel"));
 
         questionButton("Archive").click();
@@ -359,12 +405,27 @@ describe("row actions", () => {
         expect(questionButton("Delete permanently").className).toContain(
             "bg-red-600",
         );
+        expect(question()?.querySelector("svg")).not.toBeNull();
 
         questionButton("Delete permanently").click();
         await flushPromises();
 
         expect(callDeleteForeverForm).toHaveBeenCalled();
         expect(wrapper!.find("li").exists()).toBe(false);
+    });
+
+    it("focuses Create form after deleting the only row", async () => {
+        const create = document.createElement("button");
+        create.setAttribute("aria-label", "Create form");
+        document.body.append(create);
+        mountRow({ is_trashed: true });
+        await menuItem("Delete permanently…").trigger("click");
+        await flushPromises();
+        questionButton("Delete permanently").click();
+        await flushPromises();
+
+        expect(document.activeElement).toBe(create);
+        create.remove();
     });
 
     it("says so when an action fails and keeps the row as it was", async () => {
