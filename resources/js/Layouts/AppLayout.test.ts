@@ -19,6 +19,7 @@ const mountLayout = () =>
                 Head: true,
                 Link: { template: "<a><slot /></a>" },
                 FactoryNavigation: true,
+                FactoryNavigationRows: true,
                 JetBanner: true,
             },
         },
@@ -40,13 +41,14 @@ describe("app header", () => {
         expect(account.find(".hidden").exists()).toBe(false);
     });
 
-    it("leaves the logo out on phones on a form's pages, where the form navigation fills the header", async () => {
+    it("keeps the logo and the team name on a form's pages too", async () => {
         const wrapper = mountLayout();
         // the test pinia stubs actions, so set the state directly
         useForm().$patch({ form: { uuid: "form1" } as FormModel });
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.get("nav a").element.closest(".hidden")).not.toBeNull();
-        expect(wrapper.get("nav a").element.closest(".sm\\:flex")).not.toBeNull();
+        const team = wrapper.get("nav a");
+        expect(team.text()).toBe("Ole's Studio");
+        expect(team.element.closest(".hidden")).toBeNull();
     });
 });
