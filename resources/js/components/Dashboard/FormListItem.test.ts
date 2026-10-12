@@ -106,9 +106,9 @@ describe("form list row", () => {
         const form = {
             uuid: "form1",
             name: "Customer feedback",
-            completed_sessions: 6,
-            total_sessions: 7,
-            completion_rate: 85.71,
+            completed_sessions: 199,
+            total_sessions: 200,
+            completion_rate: 99.5,
         } as FormModel;
         const wrapper = mount(FormListItem, {
             props: { form },
@@ -116,8 +116,9 @@ describe("form list row", () => {
         });
 
         const link = wrapper.find('a[href="/forms.submissions"]');
-        expect(link.text()).toBe("6 submissions");
-        expect(wrapper.text()).toContain("7 started · 86% finished");
+        expect(link.text()).toBe("199 submissions");
+        // rounded down, so a form that misses one never shows 100%
+        expect(wrapper.text()).toContain("200 started · 99% finished");
         expect(wrapper.find('a[href="/forms.show"]').exists()).toBe(false);
     });
 

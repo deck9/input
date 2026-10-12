@@ -79,7 +79,7 @@
           </a>
           <div class="hidden text-xs tabular-nums text-grey-500 lg:block">
             {{ form.total_sessions.toLocaleString() }} started ·
-            {{ Math.round(form.completion_rate) }}% finished
+            {{ Math.floor(form.completion_rate) }}% finished
           </div>
         </template>
         <span v-else>No submissions yet</span>
