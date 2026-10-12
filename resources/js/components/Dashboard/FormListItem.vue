@@ -92,9 +92,9 @@
             class="h-2 w-2 shrink-0 rounded-full bg-blue-600"
           ></span>
           <span class="sr-only">New,</span>
-          {{ formatListDate(shownDate) }}
+          {{ formatListDate(shownDate, now) }}
         </span>
-        <template v-else>{{ formatListDate(shownDate) }}</template>
+        <template v-else>{{ formatListDate(shownDate, now) }}</template>
       </div>
     </div>
     <div
@@ -270,6 +270,7 @@
 <script setup lang="ts">
 import FormAvatar from "@/components/Dashboard/FormAvatar.vue";
 import FormNameDialog from "@/components/Dashboard/FormNameDialog.vue";
+import { useNow } from "@/components/Dashboard/useNow";
 import ConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import DangerButton from "@/Jetstream/DangerButton.vue";
 import { D9Icon, D9Menu, D9MenuLink, D9Button } from "@deck9/ui";
@@ -337,9 +338,10 @@ const shownDate = computed(() => {
   // a date that doesn't parse is shown like none, the formatters would throw
   return value && !Number.isNaN(Date.parse(value)) ? value : null;
 });
+const now = useNow();
 // a blue dot for a submission in the last 24 hours, by its date if shown
 const isNew = computed(
-  () => !!lastSubmission.value && isWithinDay(lastSubmission.value),
+  () => !!lastSubmission.value && isWithinDay(lastSubmission.value, now.value),
 );
 const isDateNew = computed(
   () => isNew.value && props.date.key === "latest_submission_at",
