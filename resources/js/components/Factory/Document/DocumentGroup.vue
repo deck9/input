@@ -6,12 +6,12 @@
     :class="isOpen && 'ring-1 ring-blue-500'"
   >
     <div
-      class="group/header flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-1"
+      class="group/header flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-3 sm:pl-1"
     >
       <span
         aria-hidden="true"
         title="Drag to reorder"
-        class="document-grip grid h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/header:opacity-100 lg:group-hover/header:opacity-100"
+        class="document-grip hidden h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 sm:grid lg:opacity-0 lg:group-focus-within/header:opacity-100 lg:group-hover/header:opacity-100"
       >
         <D9Icon name="grip-vertical" />
       </span>
