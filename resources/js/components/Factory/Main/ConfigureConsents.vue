@@ -9,7 +9,7 @@
     <Container
       v-else
       lock-axis="y"
-      drag-handle-selector="button.handle"
+      drag-handle-selector=".handle"
       orientation="vertical"
       @drop="onDrop"
     >

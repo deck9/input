@@ -9,7 +9,7 @@
     <Container
       v-else
       lock-axis="y"
-      drag-handle-selector="button.handle"
+      drag-handle-selector=".handle"
       orientation="vertical"
       @drop="onDrop"
     >
@@ -26,7 +26,7 @@
       </Draggable>
     </Container>
 
-    <div class="mt-2">
+    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <D9Button
         label="Add new option"
         icon="plus"
@@ -35,19 +35,8 @@
         :isLoading="isCreatingInteraction"
         @click="createClickInteraction"
       />
+      <span class="text-xs text-grey-600">Enter adds a choice.</span>
     </div>
-
-    <RandomizeResponsesSetting class="my-4" />
-
-    <CustomResponseSettings
-      v-if="
-        editableInteractions &&
-        editableInteractions.length > 0 &&
-        workbench.block &&
-        ['radio', 'checkbox'].includes(workbench.block.type)
-      "
-      class=""
-    />
   </div>
 </template>
 
@@ -60,8 +49,6 @@ import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
 import useActiveInteractions from "../Shared/useActiveInteractions";
-import CustomResponseSettings from "./Interactions/CustomResponseSettings.vue";
-import RandomizeResponsesSetting from "./Interactions/RandomizeResponsesSetting.vue";
 
 const workbench = useWorkbench();
 const { activeInteractions, editableInteractions } = useActiveInteractions(

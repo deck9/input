@@ -238,6 +238,8 @@ export const useForm = defineStore("form", {
         async createFormBlock(
             insertAfter: FormBlockModel | null = null,
             type: FormBlockType | null = null,
+            // for an empty group: there's no block to insert after
+            parentBlock: string | null = null,
         ) {
             if (!this.form) {
                 return;
@@ -259,6 +261,12 @@ export const useForm = defineStore("form", {
                         newBlock.parent_block = insertAfter.parent_block;
 
                         this.blocks.splice(index + 1, 0, newBlock);
+
+                        this.saveBlockSequence();
+                    } else if (parentBlock) {
+                        newBlock.parent_block = parentBlock;
+
+                        this.blocks.push(newBlock);
 
                         this.saveBlockSequence();
                     } else {

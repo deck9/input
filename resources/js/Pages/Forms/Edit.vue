@@ -1,20 +1,12 @@
 <template>
   <app-layout title="Edit Form" limit-height>
-    <div class="flex w-full">
-      <Storyboard />
-      <div class="w-full overflow-y-auto">
-        <Workbench v-if="workbench.block" :key="workbench.block.id" />
-        <WorkbenchEmpty v-else />
-      </div>
-    </div>
+    <FormDocument />
   </app-layout>
 </template>
 
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Storyboard from "@/components/Factory/Sidebar/Storyboard.vue";
-import Workbench from "@/components/Factory/Main/Workbench.vue";
-import WorkbenchEmpty from "@/components/Factory/Main/WorkbenchEmpty.vue";
+import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import { useForm, useWorkbench } from "@/stores";
 import { onBeforeUnmount, onMounted } from "vue";
 
