@@ -3,7 +3,8 @@
     <div
       role="group"
       aria-label="Text format"
-      class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex items-center overflow-x-auto [&>div]:shrink-0 sm:flex-wrap sm:gap-y-2"
+      class="mb-1 flex items-center overflow-x-auto [&>div]:shrink-0 lg:flex-wrap lg:gap-y-2"
+      :class="!bare && 'py-1 bg-white border border-grey-300 rounded-lg'"
     >
       <div class="px-1">
         <EditorButton
@@ -134,10 +135,13 @@ import { ref } from "vue";
 const {
   modelValue,
   counter = false,
+  bare = false,
   id,
 } = defineProps<{
   modelValue?: string;
   counter?: boolean;
+  // no borders of its own, for a text that sits in a card
+  bare?: boolean;
   // names the text box after the D9Label with the same id
   id?: string;
 }>();
@@ -154,8 +158,9 @@ const editor = useEditor({
   content: modelValue,
   editorProps: {
     attributes: {
-      class:
-        "form-message-prose conversation-theme focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
+      class: `form-message-prose conversation-theme focus:outline-none text-grey-800 ${
+        bare ? "" : "border border-grey-300 bg-white px-5 py-3 rounded-md"
+      }`,
       ...(id ? { id, "aria-labelledby": `${id}-label` } : {}),
     },
   },

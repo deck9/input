@@ -3,7 +3,7 @@
     <EmptyState
       v-if="editableInteractions?.length === 0"
       title="Nothing here yet."
-      description="Add your first option by clicking on the button below."
+      description="Add your first choice with the button below."
     />
 
     <Container
@@ -26,24 +26,29 @@
       </Draggable>
     </Container>
 
-    <div ref="addRow" class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-      <D9Button
-        label="Add new option"
-        class="min-h-11 sm:min-h-0"
-        icon="plus"
-        icon-position="left"
-        color="dark"
-        :isLoading="isCreatingInteraction"
-        @click="createClickInteraction"
-      />
-      <span class="text-xs text-grey-600">Enter adds a choice.</span>
-    </div>
+    <button
+      ref="addButton"
+      type="button"
+      aria-label="Add choice"
+      aria-describedby="add-choice-hint"
+      :aria-busy="isCreatingInteraction"
+      class="mt-1 flex h-11 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9"
+      @click="createClickInteraction"
+    >
+      <D9Icon name="plus" aria-hidden="true" />
+      Add choice
+      <span
+        id="add-choice-hint"
+        class="ml-auto text-xs font-normal text-grey-600"
+        >Enter adds a choice.</span
+      >
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Button } from "@deck9/ui";
+import { D9Icon } from "@deck9/ui";
 import { ref, nextTick } from "vue";
 import ClickInteraction from "./Interactions/ClickInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
@@ -52,12 +57,10 @@ import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNav
 import useActiveInteractions from "../Shared/useActiveInteractions";
 
 const workbench = useWorkbench();
-const { activeInteractions, editableInteractions } = useActiveInteractions(
-  workbench.block,
-);
+const { editableInteractions } = useActiveInteractions(workbench.block);
 
 const isCreatingInteraction = ref(false);
-const addRow = ref<HTMLElement | null>(null);
+const addButton = ref<HTMLButtonElement | null>(null);
 
 const onDrop = ({ removedIndex, addedIndex }: any): void => {
   if (removedIndex === null || addedIndex === null) {
@@ -68,6 +71,9 @@ const onDrop = ({ removedIndex, addedIndex }: any): void => {
 };
 
 const createClickInteraction = async () => {
+  // the button has no disabled state: a second click waits for the first
+  if (isCreatingInteraction.value) return;
+
   isCreatingInteraction.value = true;
 
   try {
@@ -95,7 +101,7 @@ const deleteItem = async (index: number) => {
   if (editableInteractions.value?.includes(item)) return;
 
   if (!(await focusNeighborItem(index))) {
-    addRow.value?.querySelector("button")?.focus();
+    addButton.value?.focus();
   }
 };
 
@@ -106,7 +112,7 @@ const {
   focusPreviousItem,
   focusLastItem,
   focusNeighborItem,
-} = useKeyboardNavigation(activeInteractions, async () => {
+} = useKeyboardNavigation(editableInteractions, async () => {
   await createClickInteraction();
 });
 </script>

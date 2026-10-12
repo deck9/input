@@ -76,6 +76,22 @@ describe("an open question", () => {
         },
     );
 
+    it("shows Required only when the question takes an answer", () => {
+        const stubs = { Editor: true, BlockMenu: true, QuestionSettings: true };
+        wrapper = mount(QuestionCard, {
+            props: { block: { ...block, type: "none" }, number: 1 },
+            global: { stubs },
+        });
+        expect(wrapper.text()).not.toContain("Required");
+
+        wrapper.unmount();
+        wrapper = mount(QuestionCard, {
+            props: { block, number: 4 },
+            global: { stubs },
+        });
+        expect(wrapper.text()).toContain("Required");
+    });
+
     it("points the Settings button at its panel", () => {
         mountCard(false, { Editor: true, BlockMenu: true });
 
