@@ -23,17 +23,36 @@ describe("saving form settings", () => {
     });
 
     it("sends only the page's fields and keeps what the server saved", async () => {
+        // the server trims the name
         vi.mocked(handler.post).mockResolvedValue({
-            data: { ...saved, name: "Feedback", updated_at: "2026-10-12T10:00:00Z" },
+            data: { ...saved, name: "Feedback" },
         } as AxiosResponse);
 
-        await useForm().updateForm({ name: "Feedback" });
+        await useForm().updateForm({ name: " Feedback " });
 
         expect(handler.post).toHaveBeenCalledWith("/api/forms/form1", {
-            name: "Feedback",
+            name: " Feedback ",
         });
         expect(useForm().form?.name).toBe("Feedback");
-        expect(useForm().form?.updated_at).toBe("2026-10-12T10:00:00Z");
+    });
+
+    it("keeps a newer save when an older reply comes in last", async () => {
+        let answerFirst!: (reply: AxiosResponse) => void;
+        vi.mocked(handler.post)
+            .mockReturnValueOnce(new Promise((resolve) => (answerFirst = resolve)))
+            .mockResolvedValueOnce({
+                data: { ...saved, name: "Feedback", privacy_link: "https://example.com" },
+            } as AxiosResponse);
+
+        // a save on Options, then one on Privacy before the first reply
+        const first = useForm().updateForm({ name: "Feedback" });
+        await useForm().updateForm({ privacy_link: "https://example.com" });
+        // the server saved Options first, so its reply has the old link
+        answerFirst({ data: { ...saved, name: "Feedback" } } as AxiosResponse);
+        await first;
+
+        expect(useForm().form?.name).toBe("Feedback");
+        expect(useForm().form?.privacy_link).toBe("https://example.com");
     });
 
     it("keeps the last saved values when the server refuses", async () => {
