@@ -37,8 +37,8 @@ class FormTemplateRequest extends FormRequest
         // image paths point to files of the form that uploaded them, the form keeps its own
         unset($template['avatar_path'], $template['background_path']);
 
-        // same link rule as FormController::update()
-        $link = ['nullable', 'regex:~^(https?://|mailto:)~i'];
+        // same link and length rules as FormController::update()
+        $link = ['nullable', 'max:255', 'regex:~^(https?://|mailto:)~i'];
 
         // same rules as creating a logic rule through the API
         $logicRules = collect((new FormBlockLogicRequest())->rules())
@@ -59,6 +59,13 @@ class FormTemplateRequest extends FormRequest
             'is_auto_delete_enabled' => 'boolean',
             'data_retention_days' => [Rule::excludeIf(! $autoDelete), 'required_with:is_auto_delete_enabled', 'integer', 'min:1'],
             ...$logicRules->all(),
+            'description' => 'nullable|string|max:1024',
+            'language' => 'nullable|string|max:4',
+            'brand_color' => 'nullable|string|max:255',
+            'background_color' => 'nullable|string|max:32',
+            'text_color' => 'nullable|string|max:32',
+            'cta_label' => 'nullable|string|max:255',
+            'eoc_headline' => 'nullable|string|max:255',
             'cta_link' => $link,
             'privacy_link' => $link,
             'legal_notice_link' => $link,
