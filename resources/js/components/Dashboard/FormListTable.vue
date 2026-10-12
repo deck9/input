@@ -37,7 +37,7 @@
         <button
           v-if="toast.copy"
           type="button"
-          class="shrink-0 rounded font-semibold text-blue-300 hover:text-white"
+          class="-my-3 -mr-2 shrink-0 rounded px-2 py-3 font-semibold text-blue-300 hover:text-white"
           @click="toast.copy"
         >
           Copy link
