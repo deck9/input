@@ -11,6 +11,8 @@ interface NoticeStore {
     // saves that wait for their debounce, and saves that run
     waitingSaves: Record<string, true>;
     runningSaves: number;
+    // the owner closed the red bar; a new failure shows it again
+    isBarHidden: boolean;
 }
 
 export type SaveStatus = "saving" | "failed" | "idle";
@@ -48,6 +50,7 @@ export const useNotice = defineStore("notice", {
             retries: {},
             waitingSaves: {},
             runningSaves: 0,
+            isBarHidden: false,
         };
     },
 
@@ -113,6 +116,7 @@ export const useNotice = defineStore("notice", {
 
             // delete first, so a repeated failure moves to the end and shows
             delete this.failedSaves[save];
+            this.isBarHidden = false;
 
             if (response?.status === 401 || response?.status === 419) {
                 this.failedSaves[save] =

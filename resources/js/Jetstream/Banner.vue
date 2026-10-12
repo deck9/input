@@ -58,7 +58,7 @@
 
           <div class="flex flex-shrink-0 items-center gap-2 sm:ml-3">
             <button
-              v-if="notice.message && notice.canRetry"
+              v-if="failure && notice.canRetry"
               type="button"
               class="h-11 rounded-md bg-white px-3 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-8"
               @click="notice.retrySaves()"
@@ -113,8 +113,12 @@ export default defineComponent({
   },
 
   computed: {
+    failure() {
+      return this.notice.isBarHidden ? null : this.notice.message;
+    },
+
     style() {
-      if (this.notice.message) {
+      if (this.failure) {
         return "danger";
       }
 
@@ -122,8 +126,8 @@ export default defineComponent({
     },
 
     message() {
-      if (this.notice.message) {
-        return this.notice.message;
+      if (this.failure) {
+        return this.failure;
       }
 
       return (this.show && this.$page.props.jetstream.flash?.banner) || "";
@@ -132,12 +136,9 @@ export default defineComponent({
 
   methods: {
     dismiss() {
-      if (this.notice.message) {
-        // only the failures: running saves still count for the save status
-        this.notice.$patch((state) => {
-          state.failedSaves = {};
-          state.retries = {};
-        });
+      if (this.failure) {
+        // hide only: the save status, Retry and the leave prompt still need it
+        this.notice.isBarHidden = true;
       } else {
         this.show = false;
       }

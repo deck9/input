@@ -1,5 +1,5 @@
 import { mount, VueWrapper } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import Banner from "./Banner.vue";
 import { useNotice } from "@/stores/notice";
 
@@ -11,12 +11,15 @@ const mountBanner = () =>
     });
 
 describe("banner", () => {
-    it("shows a save error until it is dismissed", async () => {
+    beforeEach(() => useNotice().$reset());
+
+    it("hides a save error when dismissed, but keeps the failed save", async () => {
         const wrapper = mountBanner();
 
         // the test pinia stubs actions, so set the state directly
         useNotice().$patch({
             failedSaves: { "saveBlock:1": "Your change wasn't saved." },
+            retries: { "saveBlock:1": vi.fn() },
         });
         await wrapper.vm.$nextTick();
 
@@ -26,8 +29,10 @@ describe("banner", () => {
 
         await wrapper.get("button[aria-label=Dismiss]").trigger("click");
 
-        expect(useNotice().message).toBeNull();
         expect(wrapper.find("[role=alert]").exists()).toBe(false);
+        // "Not saved" with Retry and the leave prompt still need it
+        expect(useNotice().saveStatus).toBe("failed");
+        expect(useNotice().canRetry).toBe(true);
     });
 
     it("offers Retry for a save that can be sent again", async () => {

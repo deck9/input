@@ -117,6 +117,16 @@ describe("notice store", () => {
         expect(notice.message).toMatch(/^Your change wasn't saved/);
     });
 
+    it("shows the hidden bar again for a new failure", () => {
+        const notice = useNotice();
+
+        notice.showSaveError(refused, "saveInteraction:1");
+        notice.isBarHidden = true;
+        notice.showSaveError(refused, "saveInteraction:2");
+
+        expect(notice.isBarHidden).toBe(false);
+    });
+
     it("shows an older failure again when the newer one is fixed", () => {
         const notice = useNotice();
         const block = { message: "Your name" } as FormBlockModel;
