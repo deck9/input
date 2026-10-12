@@ -9,7 +9,8 @@
       <FormAvatar v-bind="{ form }" />
       <component
         :is="isTrashed ? 'span' : 'a'"
-        class="min-w-0 break-words font-medium text-grey-900 line-clamp-2 hover:text-blue-600 lg:line-clamp-1"
+        class="min-w-0 break-words font-medium text-grey-900 line-clamp-2 lg:line-clamp-1"
+        :class="{ 'hover:text-blue-600': !isTrashed }"
         :href="route('forms.edit', { uuid: form.uuid })"
         :title="form.name"
         dir="auto"
@@ -43,7 +44,8 @@
           <!-- an archived form's submissions page is gone -->
           <component
             :is="isTrashed ? 'span' : 'a'"
-            class="tabular-nums hover:text-blue-600 lg:text-grey-900"
+            class="tabular-nums lg:text-grey-900"
+            :class="{ 'hover:text-blue-600': !isTrashed }"
             :href="route('forms.submissions', form.uuid)"
           >
             <span class="lg:font-semibold">{{
