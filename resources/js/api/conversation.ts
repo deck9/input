@@ -47,6 +47,7 @@ export async function callGetFormStoryboard(
 export async function callCreateFormSession(
     uuid: string,
     params: Record<string, string>,
+    preview: boolean = false,
 ): Promise<AxiosResponse<FormSessionModel>> {
     try {
         const { route } = await useRoutes();
@@ -56,9 +57,10 @@ export async function callCreateFormSession(
         });
 
         if (resolvedRoute) {
-            const response = await handler.post(resolvedRoute, {
-                params,
-            });
+            const response = await handler.post(
+                resolvedRoute,
+                preview ? { params, preview } : { params },
+            );
             return Promise.resolve(response as AxiosResponse<FormSessionModel>);
         } else {
             return Promise.reject("route not found");

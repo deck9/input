@@ -13,6 +13,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules. The copy goes right after the original. (#262)
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
+-   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
 
 ### Changed
 
