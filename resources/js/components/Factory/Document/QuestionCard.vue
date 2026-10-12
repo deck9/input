@@ -42,6 +42,7 @@
           class="flex h-9 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           :aria-expanded="settingsOpen"
           :aria-controls="`${id}-settings`"
+          :aria-haspopup="isPhone ? 'dialog' : undefined"
           @click="settingsOpen = !settingsOpen"
         >
           Settings
@@ -65,16 +66,54 @@
     </div>
 
     <QuestionSettings
-      v-if="settingsOpen"
+      v-if="settingsOpen && !isPhone"
       :id="`${id}-settings`"
       :block="block"
       :interaction-type="interactionType"
     />
+
+    <Dialog
+      :open="settingsOpen && isPhone"
+      class="relative z-50"
+      @close="settingsOpen = false"
+    >
+      <div class="fixed inset-0 bg-grey-900/40" aria-hidden="true" />
+      <DialogPanel
+        class="fixed inset-x-0 bottom-0 flex h-[70%] flex-col rounded-t-2xl bg-white shadow-xl"
+      >
+        <span
+          aria-hidden="true"
+          class="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-grey-300"
+        />
+        <div class="flex shrink-0 items-center justify-between pl-4 pr-1">
+          <DialogTitle class="text-base font-semibold text-grey-900">
+            Question {{ number }} settings
+          </DialogTitle>
+          <button
+            type="button"
+            class="h-11 rounded-md px-3 text-base font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            @click="settingsOpen = false"
+          >
+            Done
+          </button>
+        </div>
+        <div class="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-1">
+          <QuestionSettings
+            :id="`${id}-settings`"
+            :block="block"
+            :interaction-type="interactionType"
+            sheet
+          />
+        </div>
+      </DialogPanel>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, provide, ref, watch } from "vue";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
+import { useMediaQuery } from "@vueuse/core";
 import { D9Icon, D9Select, D9Switch } from "@deck9/ui";
 import { useLogic, useWorkbench } from "@/stores";
 import Editor from "@/components/Factory/Shared/Editor.vue";
@@ -105,6 +144,8 @@ const message = ref(props.block.message ?? "");
 const type = ref(types.value.find((item) => item.value === props.block.type));
 const required = ref(props.block.is_required ?? false);
 const settingsOpen = ref(false);
+// below Tailwind's sm, Settings opens as a bottom sheet
+const isPhone = useMediaQuery("(max-width: 639px)");
 
 watch(message, (value) => workbench.updateBlock({ message: value }));
 watch(required, (value) => workbench.updateBlock({ is_required: value }));
