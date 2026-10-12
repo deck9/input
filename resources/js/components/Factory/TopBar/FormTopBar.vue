@@ -51,7 +51,19 @@
       class="flex flex-none items-center justify-end gap-1 lg:min-w-0 lg:flex-1 lg:gap-2"
     >
       <slot name="save-status" />
-      <slot name="preview" />
+      <slot name="preview">
+        <!-- until the live preview lands: the form in a new tab -->
+        <a
+          :href="store.formUrl"
+          target="_blank"
+          rel="noopener"
+          class="flex h-11 w-11 flex-none items-center justify-center gap-1.5 rounded-md text-white hover:bg-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9 lg:w-auto lg:border lg:border-grey-600 lg:px-2.5 lg:text-[13px] lg:font-semibold"
+          ><D9Icon name="eye" /><span class="sr-only lg:not-sr-only"
+            >Preview</span
+          ><span aria-hidden="true" class="hidden lg:inline">↗</span
+          ><span class="sr-only">&nbsp;(opens in a new tab)</span></a
+        >
+      </slot>
       <PublishControl />
       <AccountMenu :user="$page.props.auth.user" />
     </div>

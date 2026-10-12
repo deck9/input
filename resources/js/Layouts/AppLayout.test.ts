@@ -63,4 +63,31 @@ describe("app header", () => {
             "bottom",
         );
     });
+
+    it("links a draft's bar to its form in a new tab, until the live preview fills the slot", async () => {
+        window.route = ((name: string) => `/${name}`) as typeof window.route;
+        // the real bar, without its menus
+        const wrapper = mount(AppLayout, {
+            props: { title: "Form Settings" },
+            global: {
+                mocks: { $page, route: () => "/" },
+                stubs: {
+                    Head: true,
+                    Link: true,
+                    JetBanner: true,
+                    FormMenu: true,
+                    FormPageTabs: true,
+                    PublishControl: true,
+                    AccountMenu: true,
+                },
+            },
+        });
+        useForm().$patch({ form: { uuid: "form1", is_published: false } as FormModel });
+        await wrapper.vm.$nextTick();
+
+        const preview = wrapper.get("header a[target='_blank']");
+        expect(preview.attributes("href")).toBe("/forms.show");
+        expect(preview.get("span").text()).toBe("Preview");
+        expect(preview.text()).toContain("(opens in a new tab)");
+    });
 });
