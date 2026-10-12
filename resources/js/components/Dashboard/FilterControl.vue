@@ -2,10 +2,10 @@
   <div>
     <div class="md:hidden">
       <D9Label :id="id" label="Status" class="sr-only" />
-      <!-- at 360 px the texts need the room: a wider list, less padding -->
+      <!-- at 360 px the texts need the room: a wider list, less padding; 44 px to tap -->
       <D9Select
         :id="id"
-        class="[&_[role=listbox]]:w-max [&_[role=listbox]]:min-w-full [&_button]:!pl-3 [&_button]:!pr-8"
+        class="[&_[role=listbox]]:w-max [&_[role=listbox]]:min-w-full [&_button]:h-11 [&_button]:!pl-3 [&_button]:!pr-8"
         :modelValue="options.find((option) => option.id === status)"
         :options="options"
         @update:modelValue="emit('changeStatus', $event.id as StatusSetting)"
@@ -32,7 +32,7 @@
         {{ option.name }}
         <span
           v-if="option.count !== undefined"
-          class="font-normal tabular-nums text-grey-500"
+          class="font-normal tabular-nums text-grey-600"
           >{{ option.count.toLocaleString() }}</span
         >
       </button>
