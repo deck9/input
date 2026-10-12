@@ -50,6 +50,7 @@
         <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
           <D9Button
             label="Add question"
+            class="min-h-11 sm:min-h-0"
             color="dark"
             icon="plus"
             icon-position="left"
@@ -57,6 +58,7 @@
           />
           <D9Button
             label="Add group"
+            class="min-h-11 sm:min-h-0"
             color="light"
             icon="layer-group"
             icon-position="left"

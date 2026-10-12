@@ -3,7 +3,7 @@
     <div
       role="group"
       aria-label="Text format"
-      class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex flex-wrap gap-y-2 items-center"
+      class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex items-center overflow-x-auto [&>div]:shrink-0 sm:flex-wrap sm:gap-y-2"
     >
       <div class="px-1">
         <EditorButton

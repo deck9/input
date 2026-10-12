@@ -9,7 +9,7 @@
       <span
         aria-hidden="true"
         title="Drag to reorder"
-        class="document-grip grid h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
+        class="document-grip hidden h-6 w-6 cursor-grab sm:grid place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
       >
         <D9Icon name="grip-vertical" />
       </span>

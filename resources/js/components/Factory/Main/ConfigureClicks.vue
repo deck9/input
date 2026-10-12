@@ -29,6 +29,7 @@
     <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
       <D9Button
         label="Add new option"
+        class="min-h-11 sm:min-h-0"
         icon="plus"
         icon-position="left"
         color="dark"
