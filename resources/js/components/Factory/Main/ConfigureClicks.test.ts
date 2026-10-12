@@ -92,7 +92,7 @@ describe("deleting a choice in its row", () => {
         expect(document.activeElement?.id).toBe("1_label");
     });
 
-    it("moves focus to Add new option when no choice is left", async () => {
+    it("moves focus to Add choice when no choice is left", async () => {
         mountChoices("Yes");
 
         await deleteButton("Yes").trigger("click");
@@ -100,7 +100,7 @@ describe("deleting a choice in its row", () => {
 
         const focused = document.activeElement;
         expect(focused?.tagName).toBe("BUTTON");
-        expect(focused?.textContent).toContain("Add new option");
+        expect(focused?.textContent).toContain("Add choice");
     });
 });
 
