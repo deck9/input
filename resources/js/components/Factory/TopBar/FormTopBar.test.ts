@@ -1,9 +1,16 @@
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
+import type { AxiosResponse } from "axios";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import FormTopBar from "./FormTopBar.vue";
 import FormPageTabs from "./FormPageTabs.vue";
 import AccountMenu from "./AccountMenu.vue";
+import { callGetFormBlocks } from "@/api/blocks";
 import { useForm } from "@/stores";
+
+vi.mock("@/api/blocks", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@/api/blocks")>()),
+    callGetFormBlocks: vi.fn(),
+}));
 
 // the headlessui dialog and menu need it, jsdom has none
 vi.stubGlobal(
@@ -162,6 +169,25 @@ describe("form top bar", () => {
         expect(dialog).toContain("1 rule, working");
         expect(dialog).not.toContain("Warning");
         expect(dialog).not.toContain("privacy");
+    });
+
+    it("fetches the rules for the check when the page loaded the blocks without them", async () => {
+        // Submissions loads the blocks with their answers, but without their rules
+        const withoutRules = { uuid: "q1", type: "input-short", message: "<p>Your name?</p>" };
+        vi.mocked(callGetFormBlocks).mockResolvedValueOnce({
+            data: [block("q1", "<p>Your name?</p>", [
+                { action: "goto", action_payload: "gone", conditions: [] },
+            ])],
+        } as AxiosResponse<FormBlockModel[]>);
+        const wrapper = await mountOnPage(FormTopBar, {}, [withoutRules as FormBlockModel]);
+
+        await wrapper.findAll("button").find((b) => b.text() === "Publish")?.trigger("click");
+        await flushPromises();
+
+        expect(callGetFormBlocks).toHaveBeenCalledWith("form1");
+        expect(text(document.querySelector('[role="dialog"]'))).toContain(
+            "Warning: 1 rule, 1 points to a question that no longer exists",
+        );
     });
 
     it("once live, Share shows the link, Copy link, Open form and Unpublish", async () => {

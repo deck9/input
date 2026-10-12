@@ -143,10 +143,13 @@ const isBusy = ref(false);
 const hasFailed = ref(false);
 const hasCheckFailed = ref(false);
 
-// only the editor loads the blocks, the other pages fetch them for the check
+// only the editor's blocks have their rules (Submissions loads them without),
+// the other pages fetch them for the check
+const hasRules = (blocks: FormBlockModel[] | null): blocks is FormBlockModel[] =>
+  !!blocks && (blocks.length === 0 || blocks.some((block) => "logics" in block));
 const fetched = ref<FormBlockModel[] | null>(null);
 const checks = computed(() => {
-  const blocks = store.blocks ?? fetched.value;
+  const blocks = hasRules(store.blocks) ? store.blocks : fetched.value;
   return blocks ? publishCheck(blocks) : null;
 });
 
@@ -155,7 +158,7 @@ const openCheck = async () => {
   hasCheckFailed.value = false;
   isChecking.value = true;
 
-  if (!store.blocks && store.formId) {
+  if (!hasRules(store.blocks) && store.formId) {
     try {
       fetched.value = (await callGetFormBlocks(store.formId)).data;
     } catch {
