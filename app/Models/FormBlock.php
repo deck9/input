@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Scopes\Sequence;
 use Illuminate\Support\Str;
 use App\Enums\FormBlockType;
+use Illuminate\Support\Facades\DB;
 use App\Models\FormBlockLogic;
 use App\Enums\FormBlockInteractionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -160,6 +161,25 @@ class FormBlock extends BaseModel
             $interaction = $this->formBlockInteractions->firstWhere('id', $id);
             $interaction->update(['sequence' => $pos]);
         }
+    }
+
+    public function duplicate(): FormBlock
+    {
+        return DB::transaction(function () {
+            $blocks = $this->form->formBlocks()->get();
+
+            $copy = $this->form->formBlocks()->create($this->only(self::TEMPLATE_ATTRIBUTES));
+
+            $this->formBlockInteractions->each(
+                fn ($interaction) => $copy->formBlockInteractions()->create($interaction->only(FormBlockInteraction::TEMPLATE_ATTRIBUTES))
+            );
+
+            // renumber the whole form, as older forms can have gaps and two blocks on one position
+            $blocks->splice($blocks->search(fn ($block) => $block->is($this)) + 1, 0, [$copy]);
+            $blocks->each(fn ($block, $position) => $block->update(['sequence' => $position]));
+
+            return $copy;
+        });
     }
 
     public function toTemplate()
