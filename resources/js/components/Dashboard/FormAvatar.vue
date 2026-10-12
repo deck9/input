@@ -1,20 +1,46 @@
 <template>
-  <div class="h-11 w-11 flex-shrink-0">
-    <div
-      class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full p-2"
-      :style="`background-color: ${form.brand_color ?? '#232323'};`"
-    >
-      <span
-        class="text-base font-medium font-mono tracking-wide uppercase"
-        :style="`color: ${form.contrast_color}`"
-        >{{ form.initials }}</span
-      >
-    </div>
+  <img
+    v-if="form.avatar"
+    :src="form.avatar"
+    alt=""
+    class="h-8 w-8 shrink-0 rounded-full object-cover outline outline-1 -outline-offset-1 outline-black/10 lg:h-10 lg:w-10"
+  />
+  <div
+    v-else
+    aria-hidden="true"
+    class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold lg:h-10 lg:w-10 lg:text-base"
+    :style="{
+      backgroundColor: form.brand_color ?? '#232323',
+      color: form.contrast_color ?? undefined,
+    }"
+  >
+    {{ initial }}
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from "vue";
+
+const props = defineProps<{
   form: FormModel;
 }>();
+
+// one whole character, so an emoji or an accented letter isn't split
+const firstGrapheme = (name: string) => {
+  // browsers without Intl.Segmenter get the first code point
+  if (typeof Intl.Segmenter !== "function") {
+    return Array.from(name)[0] ?? "";
+  }
+
+  const [first] = new Intl.Segmenter().segment(name);
+  return first?.segment ?? "";
+};
+
+const initial = computed(() => {
+  const grapheme = firstGrapheme(props.form.name);
+  const upper = grapheme.toUpperCase();
+
+  // "ß" turns into "SS": keep the one character
+  return [...upper].length === [...grapheme].length ? upper : grapheme;
+});
 </script>

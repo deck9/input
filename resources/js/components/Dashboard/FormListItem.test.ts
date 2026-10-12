@@ -99,3 +99,81 @@ describe("duplicate a form", () => {
         expect(callDuplicateForm).not.toHaveBeenCalled();
     });
 });
+
+describe("form list row", () => {
+    it("shows submissions with started and finished below, without the public URL", () => {
+        const route = vi.fn((name: string) => `/${name}`);
+        const form = {
+            uuid: "form1",
+            name: "Customer feedback",
+            completed_sessions: 199,
+            total_sessions: 200,
+            completion_rate: 99.5,
+        } as FormModel;
+        const wrapper = mount(FormListItem, {
+            props: { form },
+            global: { stubs, mocks: { route } },
+        });
+
+        const link = wrapper.find('a[href="/forms.submissions"]');
+        expect(link.text()).toBe("199 submissions");
+        // rounded down, so a form that misses one never shows 100%
+        expect(wrapper.text()).toContain("200 started · 99% finished");
+        expect(wrapper.find('a[href="/forms.show"]').exists()).toBe(false);
+    });
+
+    it("writes large counts with the reader's thousands separator", () => {
+        const route = vi.fn((name: string) => `/${name}`);
+        const form = {
+            uuid: "form1",
+            name: "Newsletter",
+            completed_sessions: 1031,
+            total_sessions: 1200,
+            completion_rate: 85.92,
+        } as FormModel;
+        const wrapper = mount(FormListItem, {
+            props: { form },
+            global: { stubs, mocks: { route } },
+        });
+
+        expect(wrapper.find('a[href="/forms.submissions"]').text()).toBe(
+            `${(1031).toLocaleString()} submissions`,
+        );
+        expect(wrapper.text()).toContain(
+            `${(1200).toLocaleString()} started`,
+        );
+    });
+
+    it("says when a form has no submissions yet", () => {
+        const route = vi.fn((name: string) => `/${name}`);
+        const form = {
+            uuid: "form1",
+            name: "Contact",
+            completed_sessions: 0,
+            total_sessions: 3,
+            completion_rate: 0,
+        } as FormModel;
+        const wrapper = mount(FormListItem, {
+            props: { form },
+            global: { stubs, mocks: { route } },
+        });
+
+        expect(wrapper.text()).toContain("No submissions yet");
+        expect(wrapper.find('a[href="/forms.submissions"]').exists()).toBe(
+            false,
+        );
+    });
+
+    it("puts the full name in the title and lets the browser pick its direction", () => {
+        const route = vi.fn(() => "/forms");
+        const name = "استطلاع رضا العملاء";
+        const wrapper = mount(FormListItem, {
+            props: { form: { uuid: "form1", name } as FormModel },
+            global: { stubs, mocks: { route } },
+        });
+
+        const link = wrapper.find(`[title="${name}"]`);
+        expect(link.text()).toBe(name);
+        expect(link.attributes("dir")).toBe("auto");
+    });
+});
