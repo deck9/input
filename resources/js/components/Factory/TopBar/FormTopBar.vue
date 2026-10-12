@@ -61,9 +61,10 @@
           :href="store.formUrl"
           target="_blank"
           rel="noopener"
-          class="hidden h-9 flex-none items-center gap-1.5 rounded-md border border-grey-600 px-2.5 text-[13px] font-semibold text-white hover:bg-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:flex"
-          ><D9Icon name="eye" /><span>Preview</span
-          ><span aria-hidden="true">↗</span
+          class="hidden h-9 w-9 flex-none items-center justify-center gap-1.5 rounded-md border border-grey-600 text-[13px] font-semibold text-white hover:bg-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:flex xl:w-auto xl:px-2.5"
+          ><D9Icon name="eye" /><span class="sr-only xl:not-sr-only"
+            >Preview</span
+          ><span aria-hidden="true" class="hidden xl:inline">↗</span
           ><span class="sr-only">&nbsp;(opens in a new tab)</span></a
         >
       </slot>
