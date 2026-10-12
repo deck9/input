@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\FormSessionCompletedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
+use App\Models\FormSession;
 use App\Rules\MaxSize;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\BodyParam;
@@ -17,7 +18,7 @@ class FormSubmitController extends Controller
      *
      * This endpoint submits a form. It requires a valid session token, which can be obtained by creating a new session. Using the same token will result in the old submitted data being overwritten.
      */
-    #[BodyParam('token', 'string', 'The session token', example: 'rIt8id8JgiyExtmb2hkcbuWjI9izUyRp')]
+    #[BodyParam('token', 'string', 'The session token, or `preview` for a preview session', example: 'rIt8id8JgiyExtmb2hkcbuWjI9izUyRp')]
     #[BodyParam('payload', 'object', <<<'DESC'
     The user input that you want to submit for the form. The payload is a key-value object, where the key is the form block ID and the value is the user input for this form block.
 
@@ -43,6 +44,13 @@ class FormSubmitController extends Controller
             // an answer is stored encrypted in a TEXT column (64 KB), encryption almost doubles it
             'payload.*' => [new MaxSize(30000)],
         ]);
+
+        // a preview stores and sends nothing, see CreateFormSessionController
+        if ($request->input('token') === FormSession::PREVIEW_TOKEN) {
+            $this->authorize('view', $form);
+
+            return response()->noContent();
+        }
 
         $session = $form->formSessions()
             ->where('token', $request->input('token'))
