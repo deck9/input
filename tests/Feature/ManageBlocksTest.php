@@ -371,3 +371,35 @@ it('can disable and enable a form block', function () {
 
     expect($block->fresh()->is_disabled)->toBeFalse();
 });
+
+test('the blocks list names the rules that use each question', function () {
+    $form = Form::factory()->create();
+    $first = FormBlock::factory()->for($form)->create(['sequence' => 0]);
+    $second = FormBlock::factory()->for($form)->create(['sequence' => 1]);
+    $third = FormBlock::factory()->for($form)->create(['sequence' => 2]);
+    $unused = FormBlock::factory()->for($form)->create(['sequence' => 3]);
+
+    $condition = fn (FormBlock $source) => ['source' => $source->uuid, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and'];
+    $skip = FormBlockLogic::factory()->for($first)->create([
+        'name' => 'Skip', 'conditions' => [$condition($third)], 'action' => 'goto', 'action_payload' => $third->uuid, 'evaluate' => 'after',
+    ]);
+    $jump = FormBlockLogic::factory()->for($second)->create([
+        'name' => 'Jump', 'conditions' => [$condition($first)], 'action' => 'goto', 'action_payload' => $third->uuid, 'evaluate' => 'after',
+    ]);
+    $hide = FormBlockLogic::factory()->for($third)->create([
+        'name' => 'Hide', 'conditions' => [$condition($first), $condition($second), $condition($first)], 'action' => 'hide', 'action_payload' => null,
+    ]);
+
+    $usedBy = fn (FormBlockLogic $rule, FormBlock $block, array $as) => ['id' => $rule->id, 'name' => $rule->name, 'block' => $block->uuid, 'as' => $as];
+
+    $response = $this->actingAs($form->user)
+        ->json('get', route('api.blocks.index', $form->uuid))
+        ->assertOk();
+
+    expect($response->json('*.used_by'))->toBe([
+        [$usedBy($jump, $second, ['source']), $usedBy($hide, $third, ['source'])],
+        [$usedBy($hide, $third, ['source'])],
+        [$usedBy($skip, $first, ['source', 'target']), $usedBy($jump, $second, ['target'])],
+        [],
+    ]);
+});
