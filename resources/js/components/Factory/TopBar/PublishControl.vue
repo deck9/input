@@ -45,10 +45,12 @@
             <span
               ><span class="sr-only">Note: </span>No privacy page linked. You
               can add one in
-              <a
+              <!-- a page visit: Settings reads the section from the hash on load -->
+              <Link
                 class="font-medium text-blue-700 underline"
                 :href="`${route('forms.settings', { uuid: store.formId })}#privacy`"
-                >Settings</a
+                @start="isChecking = false"
+                >Settings</Link
               >.</span
             >
           </li>
@@ -144,6 +146,7 @@
 import { computed, nextTick, ref } from "vue";
 import { D9Button } from "@deck9/ui";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { Link } from "@inertiajs/vue3";
 import { useClipboard } from "@vueuse/core";
 import DialogModal from "@/Jetstream/DialogModal.vue";
 import { callGetFormBlocks } from "@/api/blocks";

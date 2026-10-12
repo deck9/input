@@ -63,7 +63,15 @@ const mountOnPage = async (
         },
         global: {
             mocks: { $page, route },
-            stubs: { Link: { template: "<a><slot /></a>" } },
+            stubs: {
+                // Inertia's Link: a click starts a page visit
+                Link: {
+                    props: ["href"],
+                    emits: ["start"],
+                    template:
+                        "<a :href='href' data-inertia @click.prevent=\"$emit('start')\"><slot /></a>",
+                },
+            },
         },
     });
     // the test pinia stubs actions, so set the state directly
@@ -165,6 +173,24 @@ describe("form top bar", () => {
         await flushPromises();
 
         expect(text(document.activeElement)).toBe("Cancel");
+    });
+
+    it("takes the privacy note to Settings with a page visit, and closes the check", async () => {
+        const wrapper = await mountOnPage(FormTopBar, {}, [block("q1", "<p>Your name?</p>")]);
+
+        await wrapper.findAll("button").find((b) => b.text() === "Publish")?.trigger("click");
+        const settings = [...document.querySelectorAll('[role="dialog"] a')].find(
+            (a) => text(a) === "Settings",
+        );
+        // a visit loads the page again, so Settings opens Privacy even from Settings
+        expect(settings?.hasAttribute("data-inertia")).toBe(true);
+        expect(settings?.getAttribute("href")).toBe(
+            `${location.origin}/forms.settings#privacy`,
+        );
+
+        settings?.dispatchEvent(new MouseEvent("click", { cancelable: true }));
+        await flushPromises();
+        expect(text(document.body)).not.toContain('Publish "Meetup RSVP"?');
     });
 
     it("says all is well when every question has text and every rule works", async () => {
