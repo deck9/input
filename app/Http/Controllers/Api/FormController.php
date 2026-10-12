@@ -115,12 +115,12 @@ class FormController extends Controller
             'interaction_text_color' => $color('interaction_text_color'),
             'cta_label' => $changed('cta_label', 'nullable', 'string', 'max:255'),
             'eoc_headline' => $changed('eoc_headline', 'nullable', 'string', 'max:255'),
-            // a TEXT column holds 65,535 bytes, and a letter like ä takes two
+            // At most 65,535 bytes (its TEXT column), and a letter like ä takes two
             'eoc_text' => $changed('eoc_text', 'nullable', 'string', new MaxSize(65535, text: true)),
             'cta_redirect_delay' => $changed('cta_redirect_delay', 'nullable', 'integer', 'min:0', $maxInt),
             'is_notification_via_mail' => $yesNo('is_notification_via_mail'),
             'use_brighter_inputs' => $yesNo('use_brighter_inputs'),
-            // the one yes/no column that allows empty
+            // The one yes/no setting that can be empty
             'show_form_progress' => $changed('show_form_progress', 'nullable', 'boolean'),
             'cta_append_params' => $yesNo('cta_append_params'),
             'cta_append_session_id' => $yesNo('cta_append_session_id'),

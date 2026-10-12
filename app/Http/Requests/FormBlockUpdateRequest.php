@@ -30,8 +30,8 @@ class FormBlockUpdateRequest extends FormRequest
             'message' => 'string|nullable',
             'webhook_url' => 'url|nullable',
             'options' => 'array|nullable',
-            // the editor sends the whole block back on every save, so only check a changed title
-            'title' => [Rule::excludeIf($this->input('title') === $this->route('block')->title), 'string', 'nullable', 'max:1024'],
+            // the editor sends the whole block back on every save, so only check a changed title (the API docs read these rules without a block)
+            'title' => [Rule::excludeIf($this->input('title') === $this->route('block')?->title), 'string', 'nullable', 'max:1024'],
             'is_required' => 'boolean|nullable',
             'is_disabled' => 'boolean|nullable',
             'type' => [new Enum(FormBlockType::class)],
