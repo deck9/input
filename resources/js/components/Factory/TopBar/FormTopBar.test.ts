@@ -7,6 +7,12 @@ import AccountMenu from "./AccountMenu.vue";
 import { callGetFormBlocks } from "@/api/blocks";
 import { useForm } from "@/stores";
 
+const copy = vi.fn();
+vi.mock("@vueuse/core", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("@vueuse/core")>()),
+    useClipboard: () => ({ copy, copied: false }),
+}));
+
 vi.mock("@/api/blocks", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@/api/blocks")>()),
     callGetFormBlocks: vi.fn(),
@@ -246,6 +252,24 @@ describe("form top bar", () => {
         expect(open.attributes("href")).toBe(`${location.origin}/forms.show`);
         expect(open.attributes("target")).toBe("_blank");
         expect(panel.text()).toContain("goes live at once");
+    });
+
+    it("keeps the focus on Copy link when the copy moves it away", async () => {
+        // the copy without https focuses a hidden field, then drops it
+        copy.mockImplementationOnce(() => (document.activeElement as HTMLElement).blur());
+        const wrapper = await mountOnPage(FormTopBar, { is_published: true });
+
+        await wrapper.findAll("button").find((b) => b.text() === "Share")?.trigger("click");
+        const button = wrapper
+            .get('[aria-labelledby="share-title"]')
+            .findAll("button")
+            .find((b) => b.text() === "Copy link");
+        (button?.element as HTMLElement).focus();
+        await button?.trigger("click");
+        await flushPromises();
+
+        expect(copy).toHaveBeenCalledWith(`${location.origin}/forms.show`);
+        expect(document.activeElement).toBe(button?.element);
     });
 
     it("says so when Unpublish fails, and keeps the form live", async () => {

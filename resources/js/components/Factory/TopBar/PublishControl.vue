@@ -109,7 +109,7 @@
         <D9Button
           :label="copied ? 'Copied' : 'Copy link'"
           class="h-11 flex-none whitespace-nowrap lg:h-9"
-          @click="copy(store.formUrl)"
+          @click="copyLink"
         />
       </div>
       <a
@@ -226,6 +226,13 @@ const publish = async () => {
 };
 
 const { copy, copied } = useClipboard({ legacy: true });
+
+const copyLink = async () => {
+  // the copy without https moves focus to a hidden field
+  const focused = document.activeElement;
+  await copy(store.formUrl);
+  (focused as HTMLElement | null)?.focus();
+};
 
 const unpublish = async () => {
   if (
