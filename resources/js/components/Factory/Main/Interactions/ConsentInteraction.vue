@@ -6,6 +6,11 @@
     <div class="flex items-center">
       <h3 class="font-medium">Consent Policy</h3>
       <IndexItem class="ml-2" type="button" v-bind="{ index }" />
+      <ChoiceRowActions
+        class="ml-auto"
+        :label="label ? `policy “${label}”` : `policy ${index + 1}`"
+        @onDelete="workbench.deleteInteraction(item)"
+      />
     </div>
     <div class="mt-2 flex items-center">
       <section class="w-full space-y-2">
@@ -45,13 +50,12 @@
       </section>
     </div>
 
-    <InteractionHoverActions @onDelete="workbench.deleteInteraction(item)" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { D9Input, D9Textarea, D9Switch } from "@deck9/ui";
-import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
+import ChoiceRowActions from "@/components/Factory/Main/ChoiceRowActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";

@@ -1,7 +1,7 @@
 <template>
-  <div class="group relative py-1 transition duration-200">
-    <div class="flex items-center">
-      <section class="grid w-full grid-cols-2 gap-x-2">
+  <div class="py-1">
+    <div class="flex items-center gap-1">
+      <section class="grid min-w-0 flex-1 grid-cols-2 gap-x-2">
         <div :class="{ 'col-span-2': !showReply }">
           <div class="relative">
             <D9Input
@@ -35,15 +35,17 @@
           />
         </div>
       </section>
+      <ChoiceRowActions
+        :label="label ? `choice “${label}”` : `choice ${index + 1}`"
+        @onDelete="workbench.deleteInteraction(item)"
+      />
     </div>
-
-    <InteractionHoverActions @onDelete="workbench.deleteInteraction(item)" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { D9Input } from "@deck9/ui";
-import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
+import ChoiceRowActions from "@/components/Factory/Main/ChoiceRowActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
