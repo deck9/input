@@ -14,6 +14,8 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Changed
 
 -   The form list keeps each form's status, submissions and actions in view, also with a very long name and on a phone. It shows "40 submissions" with "52 started · 77% finished" below, shows the form's uploaded avatar, and no longer shows the public link under each name. (#244)
+-   Each form in the list has one actions menu and a Copy link button. Unpublishing a form with submissions, archiving and deleting now ask first, published forms can be archived, and the list changes without reloading the page. (#245)
+-   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 
 ### Fixed
 
@@ -34,6 +36,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form whose name starts with an emoji, Chinese text, a sign like "€" or a word like "Müller" or "Fête" shows in your form list and opens. Before, it caused a server error and hid all your forms from the list. (#241)
 -   A form keeps its brand or background image when the server can't store the new one, and the Appearance page asks you to try again. Before, the old image was deleted and the form showed none. (#240)
 -   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
+-   On a phone, the app header shows the logo and your team name next to the account menu, and screen readers name the account menu. Before, it showed only a gear. (#246)
 -   While your forms load, the form list shows placeholder rows. When the list can't load, it says so and offers "Try again". A search or status without forms says so and offers a way back, and screen readers hear how many forms a search finds. Before, all of these said you hadn't created a survey yet. A team without any forms now sees "Create your first form". (#249)
 
 ### Security
