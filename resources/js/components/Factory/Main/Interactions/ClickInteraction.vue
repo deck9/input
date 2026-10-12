@@ -52,7 +52,7 @@ import { D9Input } from "@deck9/ui";
 import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
-import { checkDelete } from "@/components/Factory/Shared/useDeleteBlock";
+import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
 
@@ -117,33 +117,12 @@ const keyboardCommands = async (event: KeyboardEvent) => {
   }
 };
 
-// open while the owner decides
-const asking = ref<FormBlockInteractionModel | null>(null);
-const answers = ref<number>();
-let isChecking = false;
-
-const deleteNow = async () => {
-  asking.value = null;
-  emit("onDelete", props.index);
-  await workbench.deleteInteraction(props.item);
-};
-
-// a choice nobody picked goes at once, else the owner confirms first
-const askDelete = async () => {
-  if (isChecking || !workbench.block) {
-    return;
-  }
-
-  isChecking = true;
-  answers.value = (await checkDelete(workbench.block)).choices[props.item.id];
-  isChecking = false;
-
-  if (answers.value === 0) {
-    return deleteNow();
-  }
-
-  asking.value = props.item;
-};
+const {
+  asking,
+  answers,
+  ask: askDelete,
+  confirm: deleteNow,
+} = useDeleteChoice(props.item, () => emit("onDelete", props.index));
 
 const focus = () => {
   labelElement.value?.focus();

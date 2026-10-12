@@ -69,3 +69,39 @@ export function useDeleteBlock(block: FormBlockModel) {
 
     return { check, ask, cancel, confirm };
 }
+
+// asks before a choice is deleted; one nobody picked goes at once
+export function useDeleteChoice(
+    item: FormBlockInteractionModel,
+    onDelete?: () => void,
+) {
+    const workbench = useWorkbench();
+    // open while the owner decides
+    const asking = ref<FormBlockInteractionModel | null>(null);
+    const answers = ref<number>();
+    let isChecking = false;
+
+    const confirm = async () => {
+        asking.value = null;
+        onDelete?.();
+        await workbench.deleteInteraction(item);
+    };
+
+    const ask = async () => {
+        if (isChecking || !workbench.block) {
+            return;
+        }
+
+        isChecking = true;
+        answers.value = (await checkDelete(workbench.block)).choices[item.id];
+        isChecking = false;
+
+        if (answers.value === 0) {
+            return confirm();
+        }
+
+        asking.value = item;
+    };
+
+    return { asking, answers, ask, confirm };
+}
