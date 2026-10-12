@@ -45,6 +45,13 @@ const $page = {
     },
 };
 
+// Inertia's Link: a click starts a page visit
+const inertiaLink = {
+    props: ["href"],
+    emits: ["start"],
+    template: "<a :href='href' data-inertia @click.prevent=\"$emit('start')\"><slot /></a>",
+};
+
 const block = (uuid: string, message: string, logics: unknown[] = []) =>
     ({ uuid, type: "input-short", message, logics }) as FormBlockModel;
 
@@ -63,15 +70,7 @@ const mountOnPage = async (
         },
         global: {
             mocks: { $page, route },
-            stubs: {
-                // Inertia's Link: a click starts a page visit
-                Link: {
-                    props: ["href"],
-                    emits: ["start"],
-                    template:
-                        "<a :href='href' data-inertia @click.prevent=\"$emit('start')\"><slot /></a>",
-                },
-            },
+            stubs: { Link: inertiaLink },
         },
     });
     // the test pinia stubs actions, so set the state directly
@@ -386,6 +385,24 @@ describe("account menu", () => {
 
         expect(button.get(".sr-only").text()).toBe("Account");
         expect(button.get('[aria-hidden="true"]').text()).toBe("O");
+    });
+
+    it("opens the account pages as page visits, like the old menu", async () => {
+        const wrapper = mount(AccountMenu, {
+            attachTo: document.body,
+            props: { user: $page.props.auth.user },
+            global: { mocks: { $page, route }, stubs: { Link: inertiaLink } },
+        });
+
+        await wrapper.get('[aria-haspopup="menu"]').trigger("click");
+        await flushPromises();
+
+        const visits = [...document.querySelectorAll('[role="menuitem"][data-inertia]')];
+        expect(visits.map((item) => text(item))).toEqual([
+            "Profile",
+            "Manage team",
+            "API tokens",
+        ]);
     });
 });
 

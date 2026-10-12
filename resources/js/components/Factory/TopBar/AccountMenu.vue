@@ -33,20 +33,20 @@
       Team: {{ user.current_team.name }}
     </p>
     <D9MenuLink
-      as="a"
+      :as="inertiaLink"
       :href="route('profile.show')"
       :class="menuItem"
       label="Profile"
     />
     <D9MenuLink
-      as="a"
+      :as="inertiaLink"
       :href="route('teams.show', user.current_team)"
       :class="menuItem"
       label="Manage team"
     />
     <D9MenuLink
       v-if="$page.props.jetstream.hasApiFeatures"
-      as="a"
+      :as="inertiaLink"
       :href="route('api-tokens.index')"
       :class="menuItem"
       label="API tokens"
@@ -76,13 +76,16 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { router } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { D9Menu, D9MenuLink } from "@deck9/ui";
 
 const props = defineProps<{
   // Input asks only for an email at sign-up, the name comes later
   user: { name: string | null; email: string; current_team: { name: string } };
 }>();
+
+// page visits, as in the old menu; D9MenuLink renders any component, its type says string
+const inertiaLink = Link as unknown as string;
 
 // as on the dashboard: 44 px rows on phones
 const menuItem = "block w-full text-left !py-3 !text-sm lg:!py-2";
