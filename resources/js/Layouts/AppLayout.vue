@@ -9,12 +9,22 @@
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
-            <!-- Logo -->
-            <div class="mr-6 hidden flex-shrink-0 items-center sm:flex">
-              <Link class="flex items-center" :href="route('dashboard')">
-                <jet-application-logo class="block h-8 w-auto text-white" />
+            <!-- Logo; on phones the team name shortens, so the menu fits.
+              Form pages keep phones logo-free: their navigation fills it. -->
+            <div
+              class="mr-3 min-w-0 items-center sm:mr-6 sm:flex-shrink-0"
+              :class="store.formId ? 'hidden sm:flex' : 'flex'"
+            >
+              <Link
+                class="flex min-w-0 items-center"
+                :href="route('dashboard')"
+              >
+                <jet-application-logo
+                  class="block h-8 w-auto flex-shrink-0 text-white"
+                />
                 <span
-                  class="ml-3 text-white text-xs uppercase font-bold leading-none"
+                  dir="auto"
+                  class="ml-3 truncate py-0.5 text-white text-xs uppercase font-bold leading-none"
                 >
                   {{ $page.props.auth.user.current_team.name }}
                 </span>
@@ -30,10 +40,13 @@
                   <span class="inline-flex rounded-md">
                     <button
                       type="button"
-                      class="inline-flex items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 ring-offset-2 ring-offset-grey-800 transition hover:text-blue-200 focus:outline-none focus:ring-2 focus:ring-grey-600"
+                      class="inline-flex h-11 items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 ring-offset-2 ring-offset-grey-800 transition hover:text-blue-200 focus:outline-none focus:ring-2 focus:ring-grey-600 md:h-auto"
                     >
-                      <D9Icon class="md:hidden" name="cog" />
-                      <span class="hidden md:inline-block">
+                      <D9Icon class="md:hidden" name="user" />
+                      <span v-if="$page.props.auth.user.name" class="sr-only"
+                        >Account:
+                      </span>
+                      <span class="sr-only md:not-sr-only md:inline-block">
                         {{ $page.props.auth.user.name || "Account" }}
                       </span>
                       <svg
@@ -130,6 +143,7 @@ import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
 import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
 import { D9Icon } from "@deck9/ui";
 import { Head, Link } from "@inertiajs/vue3";
+import { useForm } from "@/stores";
 
 export default defineComponent({
   props: {
@@ -148,6 +162,10 @@ export default defineComponent({
     Link,
     FactoryNavigation,
     D9Icon,
+  },
+
+  setup() {
+    return { store: useForm() };
   },
 
   data() {
