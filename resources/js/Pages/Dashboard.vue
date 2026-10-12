@@ -59,7 +59,7 @@
               Couldn't load your forms.
             </p>
             <D9Button
-              class="mt-4"
+              class="mt-4 h-11 sm:h-auto"
               color="light"
               label="Try again"
               :isLoading="isLoading"
@@ -91,9 +91,9 @@
               </div>
             </div>
             <div v-else class="px-6 py-14 text-center">
-              <p class="text-sm text-grey-600">{{ noMatch }}</p>
+              <p class="break-words text-sm text-grey-600">{{ noMatch }}</p>
               <D9Button
-                class="mt-4"
+                class="mt-4 h-11 sm:h-auto"
                 color="light"
                 :label="wayBack.label"
                 @click="takeWayBack"
