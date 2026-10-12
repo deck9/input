@@ -55,6 +55,24 @@ describe("saving form settings", () => {
         expect(useForm().form?.privacy_link).toBe("https://example.com");
     });
 
+    it.each([
+        ["for no form", null],
+        ["for another form", { uuid: "form2", name: "Contact" } as FormModel],
+    ])("leaves the store alone when the editor left the form while it saved, %s", async (_, formAfterLeaving) => {
+        let answer!: (reply: AxiosResponse) => void;
+        vi.mocked(handler.post).mockReturnValueOnce(
+            new Promise((resolve) => (answer = resolve)),
+        );
+
+        const save = useForm().updateForm({ name: "Feedback" });
+        // the settings page was left before the reply came
+        useForm().form = formAfterLeaving && { ...formAfterLeaving };
+        answer({ data: { ...saved, name: "Feedback" } } as AxiosResponse);
+
+        await expect(save).resolves.toBeUndefined();
+        expect(useForm().form).toEqual(formAfterLeaving);
+    });
+
     it("keeps the last saved values when the server refuses", async () => {
         const refusal = new AxiosError("Unprocessable", undefined, undefined, undefined, {
             status: 422,

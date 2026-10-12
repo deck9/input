@@ -188,6 +188,10 @@ export const useForm = defineStore("form", {
             }
 
             const response = await callUpdateForm(this.form, newValues);
+            // the editor may have left this form while it saved
+            if (this.form?.uuid !== response.data.uuid) {
+                return;
+            }
             // only the fields sent: an older reply that comes in last can't undo a newer save
             for (const key of Object.keys(newValues)) {
                 this.form[key] = response.data[key];
