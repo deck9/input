@@ -17,7 +17,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The form list keeps each form's status, submissions and actions in view, also with a very long name and on a phone. It shows "40 submissions" with "52 started · 77% finished" below, shows the form's uploaded avatar, and no longer shows the public link under each name. (#244)
 -   Each form in the list has one actions menu and a Copy link button. Unpublishing a form with submissions, archiving and deleting now ask first, published forms can be archived, and the list changes without reloading the page. (#245)
 -   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
--   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, the header keeps the logo and your team name, and keyboard focus shows a blue ring. (#257)
+-   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, and the header keeps the logo and your team name. On every screen, keyboard focus in the editor bar and the account menu now shows a blue ring. (#257)
 
 ### Fixed
 
