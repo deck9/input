@@ -12,6 +12,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Search your forms by name, also without accents ("muller" finds "Müller"), and press "/" to jump to the search. The form list has status tabs with counts and sorts by latest submission, last edit, newest or name. Your choice stays in the address, so Back undoes it and a link shows the same list. Dashboard links with the old `?filter=` show all forms. (#248)
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules. The copy goes right after the original. (#262)
+-   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 
 ### Changed
 
@@ -53,6 +54,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   On small phones, the form editor and submissions pages no longer scroll sideways. On phones, the submissions page's "Delete All" and "Download CSV" buttons now sit in their own row. (#260)
 -   Questions, answers and template imports now also refuse these values with a message that names the field, and nothing is changed: a question text over 65,535 bytes (a letter like "ä" counts as 2), a webhook address or answer name over 255 characters, a required, hidden or editable value that isn't yes or no, a question or answer position in a template that isn't a whole number, is below zero or is too big, and a template whose answers or logic rules aren't a list. Before, most of these failed with a server error on MySQL and MariaDB, or were saved anyway. A form setting in a template that is only spaces now counts as empty, like on the settings pages, instead of failing. (#261)
 -   While the form editor loads your questions, it now shows grey placeholder rows instead of the "Welcome to the Editor" text. When the questions can't load, it says so and offers Try again. Before, a spinner turned forever. (#263)
+-   A logic rule that uses or goes to a deleted question, or one of another form, is now refused with a message that names the field. Before, it saved and looked like it worked. The blocks API now lists, for each question, the rules that use it (`used_by`). (#264)
 
 ### Security
 

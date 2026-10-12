@@ -8,6 +8,7 @@ use App\Http\Requests\FormBlockUpdateRequest;
 use App\Models\Form;
 use App\Models\FormBlock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
@@ -20,6 +21,8 @@ class FormBlockController extends Controller
      * Get all form blocks
      *
      * This endpoint returns all form blocks of a form. A form block is like a single page on the form. Each block has a type that can contain different block interactions based on that type.
+     *
+     * Each block lists in `used_by` the logic rules that use it: `id` and `name` of the rule, `block` with the `uuid` of the block the rule is on, and `as` with `source` (a condition uses its answer) and/or `target` (the rule goes to it).
      */
     public function index(Request $request, Form $form)
     {
@@ -32,7 +35,24 @@ class FormBlockController extends Controller
             $blocks->each->setAppends(['session_count', 'interactions']);
         }
 
-        return response()->json($blocks->values()->toArray());
+        $rules = $blocks->flatMap(fn ($block) => $block->formBlockLogics->map(fn ($rule) => [
+            'id' => $rule->id,
+            'name' => $rule->name,
+            'block' => $block->uuid,
+            'sources' => collect($rule->conditions)->pluck('source'),
+            'target' => $rule->action === 'goto' ? $rule->action_payload : null,
+        ]));
+
+        return response()->json($blocks->map(fn ($block) => [
+            ...$block->toArray(),
+            'used_by' => $rules->map(fn ($rule) => [
+                ...Arr::only($rule, ['id', 'name', 'block']),
+                'as' => array_keys(array_filter([
+                    'source' => $rule['sources']->containsStrict($block->uuid),
+                    'target' => $rule['target'] === $block->uuid,
+                ])),
+            ])->filter(fn ($use) => $use['as'])->values(),
+        ])->values());
     }
 
     /**

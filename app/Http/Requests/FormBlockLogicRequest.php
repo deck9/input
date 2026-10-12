@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\FormBlockType;
 use App\Models\FormBlock;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -17,9 +18,21 @@ class FormBlockLogicRequest extends FormRequest
         return $this->user()->can('update', $this->block());
     }
 
-    protected function block(): FormBlock
+    // null while Scribe reads the rules without a route
+    protected function block(): ?FormBlock
     {
-        return $this->route('block') ?? $this->route('logic')->formBlock;
+        return $this->route('block') ?? $this->route('logic')?->formBlock;
+    }
+
+    // the template import reuses these rules without a block, and drops a rule that points to a missing block itself
+    protected function inThisForm(string $message, bool $when = true): Closure
+    {
+        /** The `uuid` of a block of this form. */
+        return function (string $attribute, mixed $value, Closure $fail) use ($message, $when) {
+            if ($when && $this->block() && ! $this->block()->form->formBlocks->pluck('uuid')->containsStrict($value)) {
+                $fail($message);
+            }
+        };
     }
 
     /**
@@ -32,12 +45,13 @@ class FormBlockLogicRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'conditions' => 'required|array',
-            'conditions.*.source' => 'required|string',
+            'conditions.*.source' => ['required', 'string', $this->inThisForm('The question of your #:position condition is not in this form.')],
             'conditions.*.operator' => 'required|string|in:equals,equalsNot,contains,containsNot,isLowerThan,isGreaterThan',
             'conditions.*.value' => 'required|string',
             'conditions.*.chainOperator' => 'required|string|in:and,or',
             'action' => 'required|string|in:hide,show,goto',
-            'action_payload' => 'nullable|string',
+            // only a goto rule uses its payload, a hide or show rule can keep an old target from the editor
+            'action_payload' => ['nullable', 'string', $this->inThisForm('The question to go to is not in this form.', when: $this->input('action') === 'goto')],
             'evaluate' => 'required|string|in:before,after',
         ];
     }
