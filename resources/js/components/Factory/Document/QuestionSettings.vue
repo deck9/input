@@ -1,5 +1,6 @@
 <template>
   <div
+    :id="id"
     role="group"
     :aria-labelledby="`${id}-title`"
     class="space-y-6 rounded-md border border-grey-200 bg-grey-50 p-3 sm:p-4"

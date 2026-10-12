@@ -42,4 +42,18 @@ describe("an open question", () => {
 
         expect(workbench.createInteraction).toHaveBeenCalledWith("input");
     });
+
+    it("points the Settings button at its panel", () => {
+        wrapper = mount(QuestionCard, {
+            props: { block, number: 4 },
+            global: { stubs: { Editor: true, BlockMenu: true } },
+        });
+        const button = wrapper
+            .findAll("button")
+            .find((b) => b.text() === "Settings")!;
+
+        const panel = wrapper.find(`#${button.attributes("aria-controls")}`);
+        expect(panel.exists()).toBe(true);
+        expect(panel.attributes("role")).toBe("group");
+    });
 });
