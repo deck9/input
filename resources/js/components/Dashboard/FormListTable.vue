@@ -19,6 +19,7 @@
         v-for="form in forms"
         @announce="announce"
         @changed="$emit('changed', $event)"
+        @deleted="$emit('deleted', $event)"
       />
     </ul>
     <!-- what to show instead of rows: loading or no match -->
@@ -64,6 +65,7 @@ defineProps<{
 
 defineEmits<{
   changed: [form: FormModel];
+  deleted: [form: FormModel];
 }>();
 
 const toast = ref<{ id: number; text: string; copy?: () => void } | null>(null);

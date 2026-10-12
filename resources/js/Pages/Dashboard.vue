@@ -75,6 +75,7 @@
             class="transition-opacity"
             :class="{ 'opacity-60': isLoading && statusForms }"
             @changed="moveForm"
+            @deleted="dropForm"
           >
             <div v-if="!statusForms">
               <span class="sr-only">Loading forms</span>
@@ -290,6 +291,12 @@ const moveForm = (form: FormModel) => {
 
   // the server knows where a restored form goes in the sort
   if (isRestored) updateList();
+};
+
+// a deleted form leaves the counts and the empty states too
+const dropForm = (form: FormModel) => {
+  forms.value = drop(forms.value, form);
+  archived.value = drop(archived.value, form);
 };
 
 // picking the current value again adds no history entry

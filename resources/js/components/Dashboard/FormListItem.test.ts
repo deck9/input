@@ -468,6 +468,9 @@ describe("row actions", () => {
 
         expect(callDeleteForeverForm).toHaveBeenCalled();
         expect(wrapper!.find("li").exists()).toBe(false);
+        // the page drops it, so it isn't counted any more
+        expect(wrapper!.emitted("deleted")).toEqual([[expect.objectContaining({ uuid: "form1" })]]);
+        expect(wrapper!.emitted("changed")).toBeUndefined();
     });
 
     it("focuses Create form after deleting the only row", async () => {

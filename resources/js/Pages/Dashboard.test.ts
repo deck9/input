@@ -133,6 +133,17 @@ describe("form list search, status and sort", () => {
         expect(callListForms).toHaveBeenNthCalledWith(3, null, "updated_at:desc");
     });
 
+    it("drops a deleted form, so the last archived one leaves an empty Archived tab", async () => {
+        await mountAt("/?status=archived");
+
+        wrapper!.findComponent(stubs.FormListTable).vm.$emit("deleted", archived[0]);
+        await nextTick();
+
+        expect(shown()).toEqual([]);
+        expect(wrapper!.text()).toContain("No archived forms.");
+        expect(wrapper!.text()).toContain("Show all forms");
+    });
+
     it("shows a status in a new history entry, and loads archived forms only when chosen", async () => {
         await mountAt("/");
         await tab("Published").trigger("click");

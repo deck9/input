@@ -268,6 +268,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   announce: [announcement: Announcement];
   changed: [form: FormModel];
+  deleted: [form: FormModel];
 }>();
 
 // the row changes in place after an action, until the list loads again
@@ -345,12 +346,16 @@ const act = async (
   try {
     await run();
     emit("announce", done);
-    // the page moves the form to its status tab and counts it there
-    emit("changed", {
-      ...props.form,
-      is_published: isPublished.value,
-      is_trashed: isTrashed.value,
-    });
+    // the page drops a deleted form, or moves it to its status tab
+    if (isDeleted.value) {
+      emit("deleted", props.form);
+    } else {
+      emit("changed", {
+        ...props.form,
+        is_published: isPublished.value,
+        is_trashed: isTrashed.value,
+      });
+    }
     // a menu item gave focus back to its menu, which may be gone now
     if (!question.value && (await isGone())) focusNeighbour();
   } catch (error) {
