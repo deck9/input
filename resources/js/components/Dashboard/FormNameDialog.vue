@@ -22,7 +22,7 @@
           autocomplete="off"
         />
         <p v-if="hasFailed" role="alert" class="mt-2 text-sm text-red-700">
-          Couldn't create the form. Try again.
+          {{ failText ?? "Couldn't create the form. Try again." }}
         </p>
       </form>
     </template>
@@ -58,6 +58,7 @@ const props = defineProps<{
   placeholder?: string;
   isSaving?: boolean;
   hasFailed?: boolean;
+  failText?: string;
 }>();
 
 const emit = defineEmits<{
