@@ -20,6 +20,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 -   The form list loads faster when a team has many forms. It now needs the same few database queries for one form or a hundred. Before, every form added 3 queries. (#256)
 -   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, and the header keeps the logo and your team name. On every screen, keyboard focus in the editor bar and the account menu now shows a blue ring. (#257)
+-   The form editor shows your whole form as one column. Each question shows its number, answer type, text, and if it is required, has rules or is hidden. The question you work on opens right there, also on a phone, where you couldn't edit questions before. Hiding a question, random order and custom answers are now under the question's Settings. (#268)
 
 ### Fixed
 
