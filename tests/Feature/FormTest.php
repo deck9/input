@@ -197,6 +197,19 @@ test('a user can sort forms by latest submission, newest first and forms without
         ->assertJsonPath('*.uuid', [$newer->uuid, $older->uuid, $none->uuid]);
 });
 
+test('forms with the same sort value are listed newest first', function (string $sort) {
+    $user = User::factory()->withTeam()->create();
+    $older = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id,
+        'name' => 'Survey', 'created_at' => '2026-10-01 08:00:00']);
+    $newer = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id,
+        'name' => 'Survey', 'created_at' => '2026-10-02 08:00:00']);
+
+    $this->actingAs($user)
+        ->getJson(route('api.forms.index', ['sort' => $sort]))
+        ->assertOk()
+        ->assertJsonPath('*.uuid', [$newer->uuid, $older->uuid]);
+})->with(['latest_submission_at:desc', 'name']);
+
 test('an unknown filter or sort value returns the default list', function (array $query) {
     $user = User::factory()->withTeam()->create();
     $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);

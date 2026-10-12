@@ -174,7 +174,8 @@ class Form extends BaseModel
             return $builder;
         }
 
-        return $builder->orderBy($attribute, $direction);
+        // equal values, like forms without submissions, keep a stable order
+        return $builder->orderBy($attribute, $direction)->orderBy('created_at', 'desc');
     }
 
     public function route()

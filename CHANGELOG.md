@@ -8,7 +8,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Added
 
--   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. A link with an unknown filter or sort now shows the form list instead of an error. (#242)
+-   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. A dashboard link with an unknown filter or sort now shows your forms. Before, it showed no forms at all. (#242)
 
 ### Fixed
 
