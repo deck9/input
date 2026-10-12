@@ -1,7 +1,7 @@
 <template>
   <Popover class="static xl:relative" v-slot="{ open }">
     <PopoverButton
-      class="flex h-12 items-center gap-3 rounded bg-grey-700 px-3 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 xl:h-full xl:gap-x-8 xl:px-4 xl:py-1"
+      class="flex h-12 w-full items-center gap-3 rounded bg-grey-700 px-3 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 xl:h-full xl:w-auto xl:gap-x-8 xl:px-4 xl:py-1"
       :class="{ 'ring-2 ring-grey-500': open }"
     >
       <div class="min-w-0 flex-1 text-left xl:flex-none">
