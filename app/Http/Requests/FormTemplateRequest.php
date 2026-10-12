@@ -46,6 +46,10 @@ class FormTemplateRequest extends FormRequest
         $link = ['nullable', 'max:255', 'regex:~^(https?://|mailto:)~i'];
         $maxInt = 'max:2147483647';
 
+        // block and answer values skip the "" → null step above, and "" skips every rule but "filled", which a number or yes/no column needs;
+        // "filled" refuses null too, so where the column takes empty, null skips the check
+        $emptyOr = fn (string ...$rules) => Rule::forEach(fn ($value) => $value === null ? [] : ['filled', ...$rules]);
+
         // same rules as creating a logic rule through the API
         $logicRules = collect((new FormBlockLogicRequest())->rules())
             ->mapWithKeys(fn ($rule, $key) => ["blocks.*.formBlockLogics.*.$key" => $rule]);
@@ -61,10 +65,20 @@ class FormTemplateRequest extends FormRequest
             'blocks.*.id' => 'nullable|string',
             'blocks.*.type' => ['required', Rule::enum(FormBlockType::class)],
             'blocks.*.title' => 'nullable|string|max:1024',
+            'blocks.*.message' => ['nullable', 'string', new MaxSize(65535, text: true)],
+            'blocks.*.is_required' => $emptyOr('boolean'),
+            'blocks.*.is_disabled' => 'filled|boolean',
+            // the largest value of an unsigned integer column
+            'blocks.*.sequence' => 'filled|integer|min:0|max:4294967295',
             // same as the sequence API, a group stays at the top level
             'blocks.*.parent_block' => 'prohibited_if:blocks.*.type,'.FormBlockType::group->value,
+            'blocks.*.formBlockInteractions' => 'nullable|array',
             'blocks.*.formBlockInteractions.*.type' => ['required', Rule::enum(FormBlockInteractionType::class)],
+            'blocks.*.formBlockInteractions.*.name' => 'nullable|string|max:255',
             'blocks.*.formBlockInteractions.*.label' => 'nullable|string|max:255',
+            'blocks.*.formBlockInteractions.*.is_editable' => 'filled|boolean',
+            'blocks.*.formBlockInteractions.*.is_disabled' => 'filled|boolean',
+            'blocks.*.formBlockInteractions.*.sequence' => $emptyOr('integer', 'min:0', $maxInt),
             'is_auto_delete_enabled' => 'boolean',
             'data_retention_days' => $autoDelete
                 ? ['required_with:is_auto_delete_enabled', 'integer', 'min:1', $maxInt]
