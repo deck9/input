@@ -76,6 +76,20 @@ describe("duplicate a form", () => {
         expect(route).toHaveBeenLastCalledWith("forms.edit", { uuid: "copy1" });
     });
 
+    it("says so in the dialog when the copy can't be created", async () => {
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        vi.mocked(callDuplicateForm).mockRejectedValue(new Error("Network Error"));
+
+        await openDuplicateDialog({ uuid: "form1", name: "Contact" } as FormModel);
+        dialogButton("Duplicate").click();
+        await flushPromises();
+
+        expect(dialog()?.querySelector("[role=alert]")?.textContent).toContain(
+            "Couldn't create the form. Try again.",
+        );
+        expect(route).not.toHaveBeenCalledWith("forms.edit", { uuid: "copy1" });
+    });
+
     it("creates no copy on Cancel", async () => {
         await openDuplicateDialog({ uuid: "form1", name: "Contact" } as FormModel);
         dialogButton("Cancel").click();

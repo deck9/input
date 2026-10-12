@@ -5,7 +5,9 @@
     :closeable="!isSaving"
     @close="emit('close')"
   >
-    <template #title>{{ title }}</template>
+    <template #title>
+      <h2 class="font-semibold">{{ title }}</h2>
+    </template>
     <template #content>
       <form @submit.prevent="submit">
         <D9Label :id="inputId" :label="label" />
@@ -19,13 +21,16 @@
           maxlength="255"
           autocomplete="off"
         />
+        <p v-if="hasFailed" role="alert" class="mt-2 text-sm text-red-700">
+          Couldn't create the form. Try again.
+        </p>
       </form>
     </template>
     <template #footer>
       <D9Button
         label="Cancel"
         color="light"
-        class="!bg-white hover:!bg-blue-100"
+        class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
         :isDisabled="isSaving"
         @click="emit('close')"
       />
@@ -52,6 +57,7 @@ const props = defineProps<{
   defaultName: string;
   placeholder?: string;
   isSaving?: boolean;
+  hasFailed?: boolean;
 }>();
 
 const emit = defineEmits<{

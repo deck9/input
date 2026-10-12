@@ -145,7 +145,7 @@
               type="button"
               class="block w-full text-left"
               label="Duplicate Form"
-              @click="isNaming = true"
+              @click="openDuplicateDialog"
             />
           </template>
           <template v-else>
@@ -173,6 +173,7 @@
         confirmLabel="Duplicate"
         :defaultName="copyName"
         :isSaving="isDuplicating"
+        :hasFailed="hasDuplicateFailed"
         @close="isNaming = false"
         @submit="duplicateForm"
       />
@@ -204,6 +205,7 @@ const isActive = ref(false);
 const isPublishMenuActive = ref(false);
 const isNaming = ref(false);
 const isDuplicating = ref(false);
+const hasDuplicateFailed = ref(false);
 // by characters like the server's 255 limit, so an emoji isn't cut in half
 const copyName = computed(() =>
   Array.from(`${props.form.name} (copy)`).slice(0, 255).join(""),
@@ -221,9 +223,15 @@ const setPublishMenuActive = () => {
   isPublishMenuActive.value = true;
 };
 
+const openDuplicateDialog = () => {
+  hasDuplicateFailed.value = false;
+  isNaming.value = true;
+};
+
 const duplicateForm = async (newName: string) => {
   try {
     isDuplicating.value = true;
+    hasDuplicateFailed.value = false;
 
     const newFormResponse = await callDuplicateForm(
       props.form,
@@ -235,6 +243,7 @@ const duplicateForm = async (newName: string) => {
     });
   } catch (error) {
     console.warn(error);
+    hasDuplicateFailed.value = true;
     isDuplicating.value = false;
   }
 };

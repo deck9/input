@@ -32,6 +32,7 @@
       placeholder="Customer feedback"
       :defaultName="defaultName"
       :isSaving="isSaving"
+      :hasFailed="hasFailed"
       @close="isNaming = false"
       @submit="submitName"
     />
@@ -50,6 +51,7 @@ import ValidationErrors from "@/components/ValidationErrors.vue";
 
 const isNaming = ref(false);
 const isSaving = ref(false);
+const hasFailed = ref(false);
 const template = ref<File | null>(null);
 const defaultName = ref("");
 const errors = ref<string[]>([]);
@@ -58,6 +60,7 @@ const uploadInput = ref<HTMLInputElement | null>(null);
 const openDialog = (file: File | null, name: string) => {
   template.value = file;
   defaultName.value = name;
+  hasFailed.value = false;
   isNaming.value = true;
 };
 
@@ -109,6 +112,7 @@ const createFromTemplate = async (file: File, formName: string) => {
 const createForm = async (formName: string) => {
   try {
     isSaving.value = true;
+    hasFailed.value = false;
 
     let response = await callCreateForm(formName || undefined);
 
@@ -117,6 +121,7 @@ const createForm = async (formName: string) => {
     }
   } catch (error) {
     console.warn(error);
+    hasFailed.value = true;
     isSaving.value = false;
   }
 };

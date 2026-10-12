@@ -120,6 +120,20 @@ describe("create a form", () => {
         expect(callCreateForm).toHaveBeenCalledWith(undefined);
     });
 
+    it("says so in the dialog when the form can't be created", async () => {
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        vi.mocked(callCreateForm).mockRejectedValue(new Error("Network Error"));
+
+        await openCreateDialog();
+        dialogButton("Create form").click();
+        await flushPromises();
+
+        expect(dialog()?.querySelector("[role=alert]")?.textContent).toContain(
+            "Couldn't create the form. Try again.",
+        );
+        expect(router.visit).not.toHaveBeenCalled();
+    });
+
     it("shows the button loading and keeps the dialog open while saving", async () => {
         vi.mocked(callCreateForm).mockReturnValue(new Promise(() => {}));
 
