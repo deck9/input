@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\QueryParam;
 
 #[Group('Forms')]
 #[Authenticated]
@@ -18,17 +19,20 @@ class FormController extends Controller
      *
      * This endpoint returns all forms of the authenticated user.
      */
+    #[QueryParam('filter', 'string', 'Only published, unpublished or trashed forms. Any other value lists all forms that are not trashed.', false, enum: ['published', 'unpublished', 'trashed'])]
+    #[QueryParam('sort', 'string', 'name, created_at, updated_at or latest_submission_at, with :asc or :desc. Any other value keeps the default order.', false, example: 'latest_submission_at:desc')]
     public function index(Request $request)
     {
-        $request->validate([
-            'filter' => 'in:published,unpublished,trashed',
-        ]);
+        $filter = $request->query('filter');
+        $sort = $request->query('sort');
 
+        // unknown values fall back to the default list, so old links keep working
         $forms = $request->user()
             ->currentTeam
             ->forms()
-            ->withFilter($request->filter ?? null)
-            ->withOrder($request->sort ?? null)
+            ->withMax('formSessions as latest_submission_at', 'is_completed')
+            ->withFilter(is_string($filter) ? $filter : null)
+            ->withOrder(is_string($sort) ? $sort : null)
             ->get();
 
         return response()->json($forms);

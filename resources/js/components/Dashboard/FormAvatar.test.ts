@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import FormAvatar from "./FormAvatar.vue";
 
 const initial = (name: string) =>
@@ -29,4 +29,15 @@ describe("form avatar", () => {
         expect(initial("استطلاع رضا العملاء")).toBe("ا");
         expect(initial("ßtraße")).toBe("ß");
     });
+
+    it("falls back to the first character without Intl.Segmenter", () => {
+        vi.stubGlobal("Intl", { ...Intl, Segmenter: undefined });
+
+        expect(initial("müller Umfrage")).toBe("M");
+        expect(initial("🎉 Party RSVP")).toBe("🎉");
+    });
+});
+
+afterEach(() => {
+    vi.unstubAllGlobals();
 });

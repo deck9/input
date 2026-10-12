@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Added
+
+-   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. A dashboard link with an unknown filter or sort now shows your forms. Before, it showed no forms at all. (#242)
+
 ### Changed
 
 -   The form list keeps each form's status, submissions and actions in view, also with a very long name and on a phone. It shows "40 submissions" with "52 started · 77% finished" below, shows the form's uploaded avatar, and no longer shows the public link under each name. (#244)
@@ -28,6 +32,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form name longer than 255 characters is now refused with a message that says so, and so is an empty name in the settings. Before, a long name failed with a server error on MySQL and MariaDB, and an empty name on every database. The description, language, colors, button label, completion headline and links are checked against their length the same way. (#239)
 -   A form whose name starts with an emoji, Chinese text, a sign like "€" or a word like "Müller" or "Fête" shows in your form list and opens. Before, it caused a server error and hid all your forms from the list. (#241)
 -   A form keeps its brand or background image when the server can't store the new one, and the Appearance page asks you to try again. Before, the old image was deleted and the form showed none. (#240)
+-   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
 
 ### Security
 

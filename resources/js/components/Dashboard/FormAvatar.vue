@@ -26,9 +26,18 @@ const props = defineProps<{
 }>();
 
 // one whole character, so an emoji or an accented letter isn't split
+const firstGrapheme = (name: string) => {
+  // browsers without Intl.Segmenter get the first code point
+  if (typeof Intl.Segmenter !== "function") {
+    return Array.from(name)[0] ?? "";
+  }
+
+  const [first] = new Intl.Segmenter().segment(name);
+  return first?.segment ?? "";
+};
+
 const initial = computed(() => {
-  const [first] = new Intl.Segmenter().segment(props.form.name);
-  const grapheme = first?.segment ?? "";
+  const grapheme = firstGrapheme(props.form.name);
   const upper = grapheme.toUpperCase();
 
   // "ß" turns into "SS": keep the one character

@@ -69,15 +69,17 @@
       <div class="lg:min-w-0">
         <template v-if="form.completed_sessions > 0">
           <a
-            class="tabular-nums hover:text-blue-600 lg:font-medium lg:text-grey-900"
+            class="tabular-nums hover:text-blue-600 lg:text-grey-900"
             :href="route('forms.submissions', form.uuid)"
           >
-            {{ form.completed_sessions }}
+            <span class="lg:font-semibold">{{
+              form.completed_sessions.toLocaleString()
+            }}</span>
             {{ form.completed_sessions === 1 ? "submission" : "submissions" }}
           </a>
           <div class="hidden text-xs tabular-nums text-grey-500 lg:block">
-            {{ form.total_sessions }} started ·
-            {{ Math.round(form.completion_rate) }}% finished
+            {{ form.total_sessions.toLocaleString() }} started ·
+            {{ Math.floor(form.completion_rate) }}% finished
           </div>
         </template>
         <span v-else>No submissions yet</span>
@@ -142,7 +144,7 @@
             type="button"
             class="block w-full text-left"
             label="Duplicate Form"
-            @click="duplicateForm"
+            @click="openDuplicateDialog"
           />
         </template>
         <template v-else>
@@ -162,14 +164,26 @@
           />
         </template>
       </D9Menu>
+      <FormNameDialog
+        :show="isNaming"
+        title="Duplicate form"
+        label="Name"
+        confirmLabel="Duplicate"
+        :defaultName="copyName"
+        :isSaving="isDuplicating"
+        :hasFailed="hasDuplicateFailed"
+        @close="isNaming = false"
+        @submit="duplicateForm"
+      />
     </div>
   </li>
 </template>
 
 <script setup lang="ts">
 import FormAvatar from "@/components/Dashboard/FormAvatar.vue";
+import FormNameDialog from "@/components/Dashboard/FormNameDialog.vue";
 import { D9Icon, D9Menu, D9MenuLink, D9Button } from "@deck9/ui";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import {
   callDeleteForeverForm,
@@ -187,6 +201,13 @@ const props = defineProps<{
 const container = ref(null);
 const isActive = ref(false);
 const isPublishMenuActive = ref(false);
+const isNaming = ref(false);
+const isDuplicating = ref(false);
+const hasDuplicateFailed = ref(false);
+// by characters like the server's 255 limit, so an emoji isn't cut in half
+const copyName = computed(() =>
+  Array.from(`${props.form.name} (copy)`).slice(0, 255).join(""),
+);
 
 onClickOutside(container, () => {
   isActive.value = false;
@@ -200,25 +221,29 @@ const setPublishMenuActive = () => {
   isPublishMenuActive.value = true;
 };
 
-const duplicateForm = async () => {
-  const form = props.form;
+const openDuplicateDialog = () => {
+  hasDuplicateFailed.value = false;
+  isNaming.value = true;
+};
 
-  isActive.value = false;
+const duplicateForm = async (newName: string) => {
+  try {
+    isDuplicating.value = true;
+    hasDuplicateFailed.value = false;
 
-  const newName = window.prompt(
-    "Please enter a name for the new form",
-    `Copy of ${form.name}`,
-  );
+    const newFormResponse = await callDuplicateForm(
+      props.form,
+      newName || copyName.value,
+    );
 
-  if (!newName) {
-    return;
+    window.location.href = window.route("forms.edit", {
+      uuid: newFormResponse.data.uuid,
+    });
+  } catch (error) {
+    console.warn(error);
+    hasDuplicateFailed.value = true;
+    isDuplicating.value = false;
   }
-
-  const newFormResponse = await callDuplicateForm(form, newName);
-
-  window.location.href = window.route("forms.edit", {
-    uuid: newFormResponse.data.uuid,
-  });
 };
 
 const publishForm = async () => {
