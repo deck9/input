@@ -46,6 +46,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The form list's dates and blue dots now update while the page stays open, every minute and when you come back to the tab. Before, "12 min ago" stayed until you reloaded the page. The status tab counts and the search count now write numbers like the rest of the list, also in a browser set to another language. (#254)
 -   A submission where every question was skipped now counts. Before, a form with only such submissions showed "0 submissions" next to a recent submission date in the form list, and "No submissions found" on its submissions page. Forms with such submissions now show a higher count and completion rate. (#253)
 -   A form settings page now saves only its own settings. Before, a bad value saved on another settings page could block the save, with an error about a field that isn't on the page. When a save is refused, the editor keeps what was last saved, so the refused change no longer shows on the other settings pages. A good image upload after a failed one no longer shows the old error. (#255)
+-   After you delete an API token or remove a team member with the keyboard, you stay in the list on the next row's button. When the list is now empty, you land on the "Create API Token" or "Add Team Member" heading. Before, you were sent back to the top of the page. (#258)
 -   On small phones, the form editor and submissions pages no longer scroll sideways. On phones, the submissions page's "Delete All" and "Download CSV" buttons now sit in their own row. (#260)
 
 ### Security
