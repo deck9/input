@@ -14,13 +14,20 @@
       </template>
       <template #content>
         <ul class="flex flex-col gap-2.5 text-sm text-grey-900">
-          <li v-if="!checks">
-            {{
-              hasCheckFailed
-                ? "Couldn't check the questions and rules."
-                : "Checking your form…"
-            }}
+          <li v-if="hasCheckFailed" class="flex flex-wrap items-center gap-x-3">
+            <span role="alert" class="text-red-700"
+              >Couldn't check the questions and rules.</span
+            >
+            <button
+              ref="checkAgainButton"
+              type="button"
+              class="h-11 rounded-md font-medium text-blue-700 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-auto"
+              @click="checkAgain"
+            >
+              Check again
+            </button>
           </li>
+          <li v-else-if="!checks">Checking your form…</li>
           <li
             v-for="row in checks ?? []"
             :key="row.text"
@@ -61,9 +68,11 @@
           @click="isChecking = false"
         />
         <D9Button
+          ref="confirmButton"
           class="ml-2"
           label="Publish"
           :isLoading="isBusy"
+          :isDisabled="!checks"
           @click="publish"
         />
       </template>
@@ -126,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { D9Button } from "@deck9/ui";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import { useClipboard } from "@vueuse/core";
@@ -153,17 +162,37 @@ const checks = computed(() => {
   return blocks ? publishCheck(blocks) : null;
 });
 
-const openCheck = async () => {
-  hasFailed.value = false;
+const loadBlocks = async () => {
+  if (!store.formId) {
+    return;
+  }
+
   hasCheckFailed.value = false;
+  fetched.value = null;
+
+  try {
+    fetched.value = (await callGetFormBlocks(store.formId)).data;
+  } catch {
+    hasCheckFailed.value = true;
+  }
+};
+
+const checkAgainButton = ref<HTMLButtonElement | null>(null);
+const confirmButton = ref<InstanceType<typeof D9Button> | null>(null);
+
+// Check again goes away while checking: hand the focus on
+const checkAgain = async () => {
+  await loadBlocks();
+  await nextTick();
+  (checks.value ? confirmButton.value?.$el : checkAgainButton.value)?.focus();
+};
+
+const openCheck = () => {
+  hasFailed.value = false;
   isChecking.value = true;
 
-  if (!hasRules(store.blocks) && store.formId) {
-    try {
-      fetched.value = (await callGetFormBlocks(store.formId)).data;
-    } catch {
-      hasCheckFailed.value = true;
-    }
+  if (!hasRules(store.blocks)) {
+    loadBlocks();
   }
 };
 

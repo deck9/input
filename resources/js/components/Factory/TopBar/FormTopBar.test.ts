@@ -45,7 +45,7 @@ const block = (uuid: string, message: string, logics: unknown[] = []) =>
 const mountOnPage = async (
     component,
     form: Partial<FormModel> = {},
-    blocks: FormBlockModel[] = [],
+    blocks: FormBlockModel[] | null = [],
 ) => {
     history.replaceState(null, "", "/forms.edit");
 
@@ -188,6 +188,39 @@ describe("form top bar", () => {
         expect(text(document.querySelector('[role="dialog"]'))).toContain(
             "Warning: 1 rule, 1 points to a question that no longer exists",
         );
+    });
+
+    it("holds Publish until the check is done, and offers to check again when it fails", async () => {
+        let fail = () => {};
+        vi.mocked(callGetFormBlocks)
+            .mockReturnValueOnce(new Promise((_, reject) => (fail = reject)))
+            .mockResolvedValueOnce({
+                data: [block("q1", "<p>Your name?</p>")],
+            } as AxiosResponse<FormBlockModel[]>);
+        // Settings, Integrations: the page has no blocks
+        const wrapper = await mountOnPage(FormTopBar, {}, null);
+        await wrapper.findAll("button").find((b) => b.text() === "Publish")?.trigger("click");
+
+        const dialog = document.querySelector('[role="dialog"]');
+        const button = (label: string) =>
+            [...dialog!.querySelectorAll("button")].find((b) => text(b) === label);
+        expect(text(dialog)).toContain("Checking your form…");
+        expect(button("Publish")?.disabled).toBe(true);
+
+        fail();
+        await flushPromises();
+        expect(dialog?.querySelector('[role="alert"]')?.textContent).toContain(
+            "Couldn't check the questions and rules.",
+        );
+        expect(button("Publish")?.disabled).toBe(true);
+
+        button("Check again")?.focus();
+        button("Check again")?.click();
+        await flushPromises();
+        expect(text(dialog)).toContain("1 question, with text");
+        expect(button("Publish")?.disabled).toBe(false);
+        // Check again went away while checking
+        expect(document.activeElement).toBe(button("Publish"));
     });
 
     it("once live, Share shows the link, Copy link, Open form and Unpublish", async () => {
