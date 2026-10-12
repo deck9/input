@@ -58,4 +58,6 @@ useEventListener(document, "keydown", (event: KeyboardEvent) => {
   event.preventDefault();
   input.value?.focus();
 });
+
+defineExpose({ focus: () => input.value?.focus() });
 </script>

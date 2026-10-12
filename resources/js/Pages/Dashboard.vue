@@ -4,54 +4,105 @@
       <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-4">
           <h1 class="text-2xl font-bold leading-8 text-grey-900">Forms</h1>
-          <CreateFormButton />
-        </div>
-        <!-- phones: search on one row, status and sort on the next -->
-        <div
-          class="mb-4 mt-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center"
-        >
-          <SearchField v-model="query" class="md:w-64 xl:w-72" />
-          <div class="grid grid-cols-2 gap-2 md:contents">
-            <FilterControl
-              :status="status"
-              :counts="counts"
-              @changeStatus="changeStatus"
-            />
-            <SortControl
-              class="md:ml-auto"
-              :sort="sort"
-              @changeSort="changeSort"
-            />
-          </div>
+          <CreateFormButton v-if="!isFirstRun" />
         </div>
 
-        <div
-          v-if="!statusForms.length"
-          class="w-full rounded bg-white px-16 py-16 text-center"
+        <section
+          v-if="isFirstRun"
+          aria-labelledby="first-run-title"
+          class="mt-6 rounded-lg border border-grey-200 bg-white px-6 py-12 text-center sm:px-16"
         >
           <h2
-            class="font-heading mb-4 text-center text-2xl font-black leading-none text-grey-900"
+            id="first-run-title"
+            class="text-balance text-xl font-bold text-grey-900"
           >
-            Start by creating a form
+            Create your first form
           </h2>
-          <p class="text-sm text-grey-600">
-            You haven't created a survey yet. Click on "New survey" in the top
-            right corner to begin with a new survey. To get you started really
-            quickly you can watch the following introduction for the BotReach
-            editor.
+          <p class="mx-auto mt-2 max-w-md text-pretty text-sm text-grey-600">
+            Build a form, share its link and read the answers here.
           </p>
-        </div>
+          <CreateFormButton class="mt-6 justify-center" />
+        </section>
 
-        <div
-          class="w-full rounded bg-white p-16 text-center"
-          v-else-if="isLoading"
-        >
-          <D9Spinner label="Loading forms" />
-        </div>
+        <template v-else>
+          <!-- phones: search on one row, status and sort on the next -->
+          <div
+            class="mb-4 mt-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center"
+          >
+            <SearchField
+              ref="searchField"
+              v-model="query"
+              class="md:w-64 xl:w-72"
+            />
+            <div class="grid grid-cols-2 gap-2 md:contents">
+              <FilterControl
+                :status="status"
+                :counts="counts"
+                @changeStatus="changeStatus"
+              />
+              <SortControl
+                class="md:ml-auto"
+                :sort="sort"
+                @changeSort="changeSort"
+              />
+            </div>
+          </div>
 
-        <div v-else>
-          <FormListTable :forms="visibleForms" />
-        </div>
+          <p role="status" class="sr-only">{{ announced }}</p>
+
+          <div
+            v-if="hasFailed"
+            role="alert"
+            class="rounded-lg border border-grey-200 bg-white p-8 text-center"
+          >
+            <p class="text-sm font-medium text-grey-900">
+              Couldn't load your forms.
+            </p>
+            <D9Button
+              class="mt-4 h-11 sm:h-auto"
+              color="light"
+              label="Try again"
+              :isLoading="isLoading"
+              @click="tryAgain"
+            />
+          </div>
+
+          <!-- a refetch keeps the list, faded, until the new one is there -->
+          <FormListTable
+            v-else
+            :forms="visibleForms"
+            :aria-busy="isLoading"
+            class="transition-opacity"
+            :class="{ 'opacity-60': isLoading && statusForms }"
+            @changed="moveForm"
+            @deleted="dropForm"
+          >
+            <div v-if="!statusForms">
+              <span class="sr-only">Loading forms</span>
+              <div
+                v-for="row in 5"
+                :key="row"
+                aria-hidden="true"
+                class="flex h-16 items-center border-b border-grey-200 px-4 last:border-0"
+              >
+                <D9Skeleton
+                  avatar
+                  :lines="0"
+                  class="w-full text-grey-200 motion-reduce:animate-none sm:w-1/2"
+                />
+              </div>
+            </div>
+            <div v-else class="px-6 py-14 text-center">
+              <p class="break-words text-sm text-grey-600">{{ noMatch }}</p>
+              <D9Button
+                class="mt-4 h-11 sm:h-auto"
+                color="light"
+                :label="wayBack.label"
+                @click="takeWayBack"
+              />
+            </div>
+          </FormListTable>
+        </template>
       </div>
     </div>
   </app-layout>
@@ -65,9 +116,10 @@ import FilterControl from "@/components/Dashboard/FilterControl.vue";
 import SearchField from "@/components/Dashboard/SearchField.vue";
 import SortControl from "@/components/Dashboard/SortControl.vue";
 
-import { computed, ref, watch } from "vue";
+import { computed, reactive, ref, useTemplateRef, watch } from "vue";
 import { callListForms } from "@/api/forms";
-import { D9Spinner } from "@deck9/ui";
+import { D9Button, D9Skeleton } from "@deck9/ui";
+import { refDebounced } from "@vueuse/core";
 
 const apiSort: Record<SortSetting, string> = {
   latest: "latest_submission_at:desc",
@@ -95,10 +147,22 @@ const sort = ref(
 );
 
 const isLoading = ref(true);
-const forms = ref<Array<FormModel>>([]);
-const archived = ref<Array<FormModel>>([]);
+// an error belongs to the list that failed, so All still shows its forms
+const failed = reactive({ forms: false, archived: false });
+const hasFailed = computed(
+  () => failed[status.value === "archived" ? "archived" : "forms"],
+);
+// null until loaded, so loading never looks like an empty list
+const forms = ref<Array<FormModel> | null>(null);
+const archived = ref<Array<FormModel> | null>(null);
+
+const isFirstRun = computed(
+  () => forms.value?.length === 0 && archived.value?.length === 0,
+);
 
 const counts = computed(() => {
+  if (!forms.value) return undefined;
+
   const published = forms.value.filter((form) => form.is_published).length;
   return {
     all: forms.value.length,
@@ -111,20 +175,44 @@ const statusForms = computed(
   () =>
     ({
       all: forms.value,
-      published: forms.value.filter((form) => form.is_published),
-      unpublished: forms.value.filter((form) => !form.is_published),
+      published: forms.value?.filter((form) => form.is_published),
+      unpublished: forms.value?.filter((form) => !form.is_published),
       archived: archived.value,
-    })[status.value],
+    })[status.value] ?? null,
 );
 
 // "muller" finds "Müller"
 const fold = (text: string) =>
   text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
+const searchText = computed(() => query.value.trim());
+
 const visibleForms = computed(() => {
-  const search = fold(query.value.trim());
-  return statusForms.value.filter((form) => fold(form.name).includes(search));
+  const folded = fold(searchText.value);
+  return (statusForms.value ?? []).filter((form) =>
+    fold(form.name).includes(folded),
+  );
 });
+
+const noMatch = computed(() => {
+  const name = status.value === "all" ? "forms" : `${status.value} forms`;
+  if (searchText.value) return `No ${name} match "${searchText.value}".`;
+  // All is empty only when every form is archived, else it's the first run
+  return status.value === "all"
+    ? "All your forms are archived."
+    : `No ${name}.`;
+});
+
+// read out while searching; an empty list says why
+const announcement = computed(() => {
+  const count = visibleForms.value.length;
+  if (!statusForms.value || hasFailed.value) return "";
+  if (!count) return noMatch.value;
+  if (!searchText.value) return "";
+  return count === 1 ? "1 form" : `${count.toLocaleString()} forms`;
+});
+// waits for a pause in typing, so it doesn't speak on every key
+const announced = refDebounced(announcement, 500);
 
 // keeps Inertia's page state, so Back shows this page with the older URL
 const writeUrl = (mode: "pushState" | "replaceState") => {
@@ -143,24 +231,72 @@ const writeUrl = (mode: "pushState" | "replaceState") => {
 // typing replaces the history entry, so Back doesn't step through letters
 watch(query, () => writeUrl("replaceState"));
 
+// only the latest request counts, so a slow older answer can't win
+let latest = 0;
+
 // the archived forms load only when they're shown
 const updateList = async (withForms = true) => {
+  const request = ++latest;
+  const withArchived = status.value === "archived";
+  const setFailed = (value: boolean) => {
+    if (withForms) failed.forms = value;
+    if (withArchived) failed.archived = value;
+  };
+
   isLoading.value = true;
   try {
     const [all, trashed] = await Promise.all([
       withForms ? callListForms(null, apiSort[sort.value]) : null,
-      status.value === "archived"
-        ? callListForms("trashed", apiSort[sort.value])
-        : null,
+      withArchived ? callListForms("trashed", apiSort[sort.value]) : null,
     ]);
 
+    // the first-run card needs to know there are no archived forms either
+    const gone =
+      all?.data.length === 0 && !trashed && !archived.value
+        ? await callListForms("trashed", apiSort[sort.value])
+        : trashed;
+    if (request !== latest) return;
+
     if (all) forms.value = all.data;
-    if (trashed) archived.value = trashed.data;
+    if (gone) archived.value = gone.data;
+    setFailed(false);
   } catch (e) {
     console.warn(e);
+    if (request === latest) setFailed(true);
   } finally {
-    isLoading.value = false;
+    if (request === latest) isLoading.value = false;
   }
+};
+
+const drop = (list: Array<FormModel> | null, form: FormModel) =>
+  list && list.filter(({ id }) => id !== form.id);
+// a changed form keeps its place, a moved one comes first
+const put = (list: Array<FormModel> | null, form: FormModel) =>
+  list &&
+  (list.some(({ id }) => id === form.id)
+    ? list.map((item) => (item.id === form.id ? form : item))
+    : [form, ...list]);
+
+// an action in a row moves the form to its status tab and its count
+const moveForm = (form: FormModel) => {
+  const isRestored =
+    !form.is_trashed && !!archived.value?.some(({ id }) => id === form.id);
+
+  forms.value = form.is_trashed
+    ? drop(forms.value, form)
+    : put(forms.value, form);
+  archived.value = form.is_trashed
+    ? put(archived.value, form)
+    : drop(archived.value, form);
+
+  // the server knows where a restored form goes in the sort
+  if (isRestored) updateList();
+};
+
+// a deleted form leaves the counts and the empty states too
+const dropForm = (form: FormModel) => {
+  forms.value = drop(forms.value, form);
+  archived.value = drop(archived.value, form);
 };
 
 // picking the current value again adds no history entry
@@ -175,9 +311,34 @@ const changeStatus = (setting: StatusSetting) => {
   if (setting === status.value) return;
   status.value = setting;
   writeUrl("pushState");
+  // a newer request drops the running one, so it loads all forms again
   if (setting === "archived") {
-    updateList(false);
+    updateList(isLoading.value || !forms.value);
   }
+};
+
+const searchField = useTemplateRef("searchField");
+
+// the way out of an empty list
+const wayBack = computed(() => {
+  if (searchText.value) {
+    return { label: "Clear search", go: () => (query.value = "") };
+  }
+  if (status.value !== "all") {
+    return { label: "Show all forms", go: () => changeStatus("all") };
+  }
+  return { label: "Show archived forms", go: () => changeStatus("archived") };
+});
+
+// the clicked button goes away, so focus moves to the search
+const takeWayBack = () => {
+  wayBack.value.go();
+  searchField.value?.focus();
+};
+
+const tryAgain = async () => {
+  await updateList();
+  if (!hasFailed.value) searchField.value?.focus();
 };
 
 // init forms on load

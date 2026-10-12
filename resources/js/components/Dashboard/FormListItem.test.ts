@@ -399,6 +399,44 @@ describe("row actions", () => {
         ]);
     });
 
+    it("tells the page the form's new status, so it can move it to its tab", async () => {
+        mountRow({ is_published: false });
+        await menuItem("Publish").trigger("click");
+        await flushPromises();
+
+        expect(wrapper!.emitted("changed")).toEqual([
+            [expect.objectContaining({ uuid: "form1", is_published: true, is_trashed: false })],
+        ]);
+    });
+
+    it("focuses the next row's menu when its form moves to another tab", async () => {
+        const row = (uuid: string, name: string) =>
+            ({ uuid, name, is_published: false, is_trashed: false, completed_sessions: 0 }) as FormModel;
+        // a tab that only shows unpublished forms
+        const Tab = {
+            components: { FormListItem },
+            data: () => ({ forms: [row("a", "Contact"), row("b", "Survey"), row("c", "Poll")] }),
+            template: `<ul><FormListItem v-for="form in forms" :key="form.uuid" :form="form"
+                @changed="(next) => (forms = forms.filter((form) => form.uuid !== next.uuid))" /></ul>`,
+        };
+        wrapper = mount(Tab, { global: { stubs, mocks: { route } }, attachTo: document.body });
+
+        await menuItem("Publish").trigger("click");
+        await flushPromises();
+
+        expect(wrapper!.findAll("li")).toHaveLength(2);
+        expect(document.activeElement?.getAttribute("aria-label")).toBe("Actions for Survey");
+
+        // the same after a question
+        await menuItem("Archive…").trigger("click");
+        await flushPromises();
+        questionButton("Archive").click();
+        await flushPromises();
+
+        expect(wrapper!.findAll("li")).toHaveLength(1);
+        expect(document.activeElement?.getAttribute("aria-label")).toBe("Actions for Poll");
+    });
+
     it("archives nothing on Cancel and focuses the menu button again", async () => {
         mountRow();
         await menuItem("Archive…").trigger("click");
@@ -430,6 +468,9 @@ describe("row actions", () => {
 
         expect(callDeleteForeverForm).toHaveBeenCalled();
         expect(wrapper!.find("li").exists()).toBe(false);
+        // the page drops it, so it isn't counted any more
+        expect(wrapper!.emitted("deleted")).toEqual([[expect.objectContaining({ uuid: "form1" })]]);
+        expect(wrapper!.emitted("changed")).toBeUndefined();
     });
 
     it("focuses Create form after deleting the only row", async () => {

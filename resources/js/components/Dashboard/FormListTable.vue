@@ -1,5 +1,6 @@
 <template>
-  <div class="rounded-lg border border-grey-200 bg-white">
+  <!-- the page fades the card while it loads, the toast stays clear -->
+  <div v-bind="$attrs" class="rounded-lg border border-grey-200 bg-white">
     <!-- each row names its own values, so screen readers skip the header -->
     <div
       aria-hidden="true"
@@ -11,38 +12,42 @@
       <div>Last edited</div>
       <div></div>
     </div>
-    <ul role="list" class="divide-y divide-grey-200">
+    <ul v-if="forms.length" role="list" class="divide-y divide-grey-200">
       <FormListItem
         :form="form"
         :key="form.id"
         v-for="form in forms"
         @announce="announce"
+        @changed="$emit('changed', $event)"
+        @deleted="$emit('deleted', $event)"
       />
     </ul>
-    <!-- the live region stays in the page, so a new message is read out -->
+    <!-- what to show instead of rows: loading or no match -->
+    <slot v-else />
+  </div>
+  <!-- the live region stays in the page, so a new message is read out -->
+  <div
+    role="status"
+    class="pointer-events-none fixed inset-x-4 bottom-6 z-50 flex justify-center"
+  >
     <div
-      role="status"
-      class="pointer-events-none fixed inset-x-4 bottom-6 z-50 flex justify-center"
+      v-if="toast"
+      :key="toast.id"
+      class="pointer-events-auto flex items-center gap-4 rounded-lg bg-grey-900 px-4 py-3 text-sm text-white shadow-lg"
+      @focusin="stopTimer"
+      @focusout="startTimer"
+      @mouseenter="stopTimer"
+      @mouseleave="startTimer"
     >
-      <div
-        v-if="toast"
-        :key="toast.id"
-        class="pointer-events-auto flex items-center gap-4 rounded-lg bg-grey-900 px-4 py-3 text-sm text-white shadow-lg"
-        @focusin="stopTimer"
-        @focusout="startTimer"
-        @mouseenter="stopTimer"
-        @mouseleave="startTimer"
+      <span class="[overflow-wrap:anywhere]">{{ toast.text }}</span>
+      <button
+        v-if="toast.copy"
+        type="button"
+        class="-my-3 -mr-2 shrink-0 rounded px-2 py-3 font-semibold text-blue-300 hover:text-white"
+        @click="toast.copy"
       >
-        <span class="[overflow-wrap:anywhere]">{{ toast.text }}</span>
-        <button
-          v-if="toast.copy"
-          type="button"
-          class="-my-3 -mr-2 shrink-0 rounded px-2 py-3 font-semibold text-blue-300 hover:text-white"
-          @click="toast.copy"
-        >
-          Copy link
-        </button>
-      </div>
+        Copy link
+      </button>
     </div>
   </div>
 </template>
@@ -52,8 +57,15 @@ import FormListItem from "@/components/Dashboard/FormListItem.vue";
 import { ref } from "vue";
 import { useTimeoutFn } from "@vueuse/core";
 
+defineOptions({ inheritAttrs: false });
+
 defineProps<{
   forms: Array<FormModel>;
+}>();
+
+defineEmits<{
+  changed: [form: FormModel];
+  deleted: [form: FormModel];
 }>();
 
 const toast = ref<{ id: number; text: string; copy?: () => void } | null>(null);
