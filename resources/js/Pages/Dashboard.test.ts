@@ -1,6 +1,7 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { AxiosResponse } from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import Dashboard from "./Dashboard.vue";
 import SortControl from "@/components/Dashboard/SortControl.vue";
 import { callListForms } from "@/api/forms";
@@ -183,6 +184,7 @@ describe("form list states", () => {
 
     afterEach(() => {
         wrapper?.unmount();
+        vi.useRealTimers();
     });
 
     it("shows skeleton rows on the first load, never the first-run text", async () => {
@@ -243,9 +245,7 @@ describe("form list states", () => {
         const search = wrapper!.get("input[type=search]");
         await search.setValue("müllr");
 
-        expect(wrapper!.get("[role=status]").text()).toContain(
-            'No published forms match "müllr".',
-        );
+        expect(list().text()).toContain('No published forms match "müllr".');
 
         await button("Clear search").trigger("click");
 
@@ -260,9 +260,7 @@ describe("form list states", () => {
         );
         await mountAt("/?status=archived");
 
-        expect(wrapper!.get("[role=status]").text()).toContain(
-            "No archived forms.",
-        );
+        expect(list().text()).toContain("No archived forms.");
 
         await button("Show all forms").trigger("click");
 
@@ -270,21 +268,30 @@ describe("form list states", () => {
         expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
     });
 
-    it("reads out how many forms the search finds", async () => {
+    it("reads out how many forms the search finds, after a pause in typing", async () => {
         await mountAt("/");
+        vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
         const live = wrapper!.get("p[role=status]");
+        const type = async (text: string) => {
+            await wrapper!.get("input[type=search]").setValue(text);
+            vi.advanceTimersByTime(500);
+            await nextTick();
+        };
         expect(live.text()).toBe("");
 
-        await wrapper!.get("input[type=search]").setValue("cust");
+        await wrapper!.get("input[type=search]").setValue("cu");
+        expect(live.text()).toBe("");
+
+        await type("cust");
         expect(live.text()).toBe("1 form");
 
-        await wrapper!.get("input[type=search]").setValue("c");
+        await type("c");
         expect(live.text()).toBe("2 forms");
 
-        await wrapper!.get("input[type=search]").setValue("zzz");
+        await type("zzz");
         expect(live.text()).toBe('No forms match "zzz".');
 
-        await wrapper!.get("input[type=search]").setValue("");
+        await type("");
         expect(live.text()).toBe("");
     });
 

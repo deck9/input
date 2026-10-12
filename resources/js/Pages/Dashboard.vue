@@ -48,7 +48,7 @@
             </div>
           </div>
 
-          <p role="status" class="sr-only">{{ announcement }}</p>
+          <p role="status" class="sr-only">{{ announced }}</p>
 
           <div
             v-if="hasFailed"
@@ -117,6 +117,7 @@ import SortControl from "@/components/Dashboard/SortControl.vue";
 import { computed, reactive, ref, useTemplateRef, watch } from "vue";
 import { callListForms } from "@/api/forms";
 import { D9Button, D9Skeleton } from "@deck9/ui";
+import { refDebounced } from "@vueuse/core";
 
 const apiSort: Record<SortSetting, string> = {
   latest: "latest_submission_at:desc",
@@ -208,6 +209,8 @@ const announcement = computed(() => {
   if (!searchText.value) return "";
   return count === 1 ? "1 form" : `${count.toLocaleString()} forms`;
 });
+// waits for a pause in typing, so it doesn't speak on every key
+const announced = refDebounced(announcement, 500);
 
 // keeps Inertia's page state, so Back shows this page with the older URL
 const writeUrl = (mode: "pushState" | "replaceState") => {
