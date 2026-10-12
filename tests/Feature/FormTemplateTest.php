@@ -258,6 +258,41 @@ test('template import only accepts http(s) and mailto links', function (string $
     expect($form->fresh()->$key)->toBe('mailto:team@example.com');
 })->with(['cta_link', 'privacy_link', 'legal_notice_link', 'twitter', 'facebook', 'instagram', 'github', 'linkedin']);
 
+test('template import refuses a value longer than its column and keeps the form', function (string $key, int $max, string $prefix) {
+    $form = Form::factory()->create();
+    $import = fn (int $length) => $this->actingAs($form->user)->postJson(route('api.forms.template-import', [
+        'form' => $form->uuid,
+    ]), [
+        'template' => json_encode([$key => str_pad($prefix, $length, 'a'), 'blocks' => []]),
+    ]);
+
+    $import($max + 1)
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect(mb_strlen((string) $form->fresh()->$key))->not->toBe($max + 1);
+
+    $import($max)->assertOk();
+
+    expect($form->fresh()->$key)->toBe(str_pad($prefix, $max, 'a'));
+})->with([
+    ['description', 1024, ''],
+    ['language', 4, ''],
+    ['brand_color', 255, ''],
+    ['background_color', 32, ''],
+    ['text_color', 32, ''],
+    ['cta_label', 255, ''],
+    ['eoc_headline', 255, ''],
+    ['cta_link', 255, 'https://'],
+    ['privacy_link', 255, 'https://'],
+    ['legal_notice_link', 255, 'https://'],
+    ['twitter', 255, 'https://'],
+    ['facebook', 255, 'https://'],
+    ['instagram', 255, 'https://'],
+    ['github', 255, 'https://'],
+    ['linkedin', 255, 'https://'],
+]);
+
 test('export, then import into another form keeps the logic rules and their targets', function () {
     $form = Form::factory()->create();
     $question = FormBlock::factory()->create(['form_id' => $form->id, 'type' => FormBlockType::short, 'sequence' => 0]);
@@ -510,6 +545,7 @@ test('a refused template creates no form', function (array $data, string $error)
     'no blocks' => [['template' => json_encode(['description' => 'Imported'])], 'blocks'],
     'unknown question type' => [['template' => json_encode(['blocks' => [['type' => 'input-magic', 'message' => 'Hi', 'sequence' => 0]]])], 'blocks.0.type'],
     'a link that is not http(s)' => [['template' => json_encode(['blocks' => [], 'cta_link' => 'javascript:alert(1)'])], 'cta_link'],
+    'a description over 1024 characters' => [['template' => json_encode(['blocks' => [], 'description' => str_repeat('a', 1025)])], 'description'],
     'auto delete below one day' => [['template' => json_encode(['blocks' => [], 'is_auto_delete_enabled' => true, 'data_retention_days' => 0])], 'data_retention_days'],
     'a group inside a group' => [['template' => json_encode(['blocks' => [
         ['id' => 'g', 'type' => 'group', 'message' => 'Outer', 'sequence' => 0],
