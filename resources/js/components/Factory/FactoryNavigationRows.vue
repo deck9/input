@@ -27,7 +27,9 @@
       </a>
     </div>
 
+    <!-- role="list": Safari drops list semantics when list-style is none -->
     <ul
+      role="list"
       aria-label="Form pages"
       class="grid grid-cols-4 gap-1 px-2 sm:flex sm:px-6"
     >

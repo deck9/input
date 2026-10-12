@@ -29,7 +29,7 @@ const mountOnPage = async (component, page: string) => {
 describe("form navigation under xl", () => {
     it("shows the form's pages as 4 labeled tabs and marks the current one by more than color", async () => {
         const wrapper = await mountOnPage(FactoryNavigationRows, "forms.settings");
-        const tabs = wrapper.get('ul[aria-label="Form pages"]').findAll("a");
+        const tabs = wrapper.get('ul[role="list"][aria-label="Form pages"]').findAll("a");
 
         expect(wrapper.classes()).toContain("xl:hidden");
         expect(tabs.map((tab) => tab.text())).toEqual([
