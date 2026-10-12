@@ -9,14 +9,10 @@
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
-            <!-- Logo; on phones the team name shortens, so the menu fits.
-              Form pages keep phones logo-free: their navigation fills it. -->
-            <div
-              class="mr-3 min-w-0 items-center sm:mr-6 sm:flex-shrink-0"
-              :class="store.formId ? 'hidden sm:flex' : 'flex'"
-            >
+            <!-- Logo; a long team name shortens, so the menus fit -->
+            <div class="mr-3 flex min-w-0 items-center sm:mr-6">
               <Link
-                class="flex min-w-0 items-center"
+                class="flex h-11 min-w-0 items-center"
                 :href="route('dashboard')"
               >
                 <jet-application-logo
@@ -40,7 +36,7 @@
                   <span class="inline-flex rounded-md">
                     <button
                       type="button"
-                      class="inline-flex h-11 items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 ring-offset-2 ring-offset-grey-800 transition hover:text-blue-200 focus:outline-none focus:ring-2 focus:ring-grey-600 md:h-auto"
+                      class="inline-flex h-11 items-center rounded-md border border-transparent bg-grey-900 px-3 py-2 text-sm font-medium leading-4 text-grey-300 ring-offset-2 ring-offset-grey-800 transition hover:text-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 md:h-auto"
                     >
                       <D9Icon class="md:hidden" name="user" />
                       <span v-if="$page.props.auth.user.name" class="sr-only"
@@ -121,6 +117,8 @@
             </div>
           </div>
         </div>
+
+        <FactoryNavigationRows />
       </nav>
 
       <!-- Page Content -->
@@ -141,9 +139,9 @@ import JetBanner from "@/Jetstream/Banner.vue";
 import JetDropdown from "@/Jetstream/Dropdown.vue";
 import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
 import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
+import FactoryNavigationRows from "@/components/Factory/FactoryNavigationRows.vue";
 import { D9Icon } from "@deck9/ui";
 import { Head, Link } from "@inertiajs/vue3";
-import { useForm } from "@/stores";
 
 export default defineComponent({
   props: {
@@ -161,11 +159,8 @@ export default defineComponent({
     // eslint-disable-next-line vue/no-reserved-component-names
     Link,
     FactoryNavigation,
+    FactoryNavigationRows,
     D9Icon,
-  },
-
-  setup() {
-    return { store: useForm() };
   },
 
   data() {

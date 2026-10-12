@@ -1,10 +1,13 @@
 <template>
-  <Popover class="relative" v-slot="{ open }">
+  <Popover class="static sm:relative" v-slot="{ open }">
     <PopoverButton
-      class="flex h-full items-center gap-x-8 rounded bg-grey-700 px-4 py-1 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus:ring-2 focus:ring-grey-600"
+      class="flex h-12 w-full items-center gap-3 rounded bg-grey-700 px-3 text-grey-100 ring-offset-2 ring-offset-grey-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 xl:h-full xl:w-auto xl:gap-x-8 xl:px-4 xl:py-1"
+      :class="{ 'ring-2 ring-grey-500': open }"
     >
-      <div class="text-left">
-        <div class="w-screen max-w-[80px] truncate font-bold md:max-w-[150px]">
+      <div class="min-w-0 flex-1 text-left xl:flex-none">
+        <div
+          class="truncate text-sm font-bold leading-5 xl:w-screen xl:max-w-[150px]"
+        >
           {{ store.form?.name ?? "-" }}
         </div>
 
@@ -26,7 +29,7 @@
       leave-to-class="-translate-y-2 opacity-0"
     >
       <PopoverPanel
-        class="absolute left-0 z-10 mt-3 w-screen max-w-xs px-4 sm:px-0"
+        class="absolute inset-x-4 top-full z-30 mt-1 sm:inset-x-auto sm:left-0 sm:w-80 xl:mt-3"
       >
         <div
           class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
@@ -83,6 +86,10 @@ import FormSummary from "@/components/Factory/FormSummary.vue";
 import Label from "@/components/Label.vue";
 import { useClipboard } from "@vueuse/core";
 
+// On phones the button fills the form row of FactoryNavigationRows and the
+// panel spans that row. From sm the panel sits under the button, 320 px
+// wide, and from xl the button sits in the header bar. The panel is z-30:
+// above the storyboard's block menus (z-10), under dialogs (z-50).
 const store = useForm();
 
 const isPublishing = ref(false);
