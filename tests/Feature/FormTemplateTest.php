@@ -358,11 +358,11 @@ test('template import refuses a yes/no setting that is not yes or no and keeps t
     'a list' => [['yes']],
 ]);
 
-test('template import refuses an empty yes/no setting whose column needs a value', function (string $key) {
+test('template import refuses an empty yes/no setting whose column needs a value', function (string $key, string $empty) {
     $form = Form::factory()->create([$key => true]);
 
     $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
-        'template' => json_encode([$key => '', 'blocks' => []]),
+        'template' => json_encode([$key => $empty, 'blocks' => []]),
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors($key);
@@ -375,18 +375,18 @@ test('template import refuses an empty yes/no setting whose column needs a value
     'show_cta_link',
     'show_social_links',
     'use_brighter_inputs',
-]);
+])->with(['empty' => '', 'blank' => ' ']);
 
-test('template import saves an empty form setting as empty, like the settings save', function (string $key) {
+test('template import saves an empty form setting as empty, like the settings save', function (string $key, string $empty) {
     $form = Form::factory()->create([$key => 1]);
 
     $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
-        'template' => json_encode([$key => '', 'blocks' => []]),
+        'template' => json_encode([$key => $empty, 'blocks' => []]),
     ])->assertOk();
 
     // raw, since the app reads an empty yes/no as no
     expect($form->fresh()->getRawOriginal($key))->toBeNull();
-})->with(['cta_redirect_delay', 'data_retention_days', 'show_form_progress', 'eoc_text']);
+})->with(['cta_redirect_delay', 'data_retention_days', 'show_form_progress', 'eoc_text'])->with(['empty' => '', 'blank' => ' ']);
 
 test('template import refuses a block value that does not fit and keeps the form', function (array $block, string $error) {
     $form = Form::factory()->has(FormBlock::factory())->create();
@@ -403,6 +403,33 @@ test('template import refuses a block value that does not fit and keeps the form
     'answer label too long' => [['formBlockInteractions' => [['type' => 'button', 'label' => str_repeat('ä', 256)]]], 'blocks.0.formBlockInteractions.0.label'],
     'unknown answer type' => [['formBlockInteractions' => [['type' => 'magic', 'label' => 'Yes']]], 'blocks.0.formBlockInteractions.0.type'],
     'no answer type' => [['formBlockInteractions' => [['label' => 'Yes']]], 'blocks.0.formBlockInteractions.0.type'],
+    // a TEXT column holds 65,535 bytes, and ä takes two
+    'question text too large' => [['message' => str_repeat('ä', 32768)], 'blocks.0.message'],
+    'answer name too long' => [['formBlockInteractions' => [['type' => 'button', 'name' => str_repeat('ä', 256)]]], 'blocks.0.formBlockInteractions.0.name'],
+    'required as text' => [['is_required' => 'maybe'], 'blocks.0.is_required'],
+    'required as a list' => [['is_required' => ['yes']], 'blocks.0.is_required'],
+    'required blank' => [['is_required' => ' '], 'blocks.0.is_required'],
+    'hidden as text' => [['is_disabled' => 'maybe'], 'blocks.0.is_disabled'],
+    'hidden blank' => [['is_disabled' => ''], 'blocks.0.is_disabled'],
+    'hidden empty' => [['is_disabled' => null], 'blocks.0.is_disabled'],
+    'answer editable as text' => [['formBlockInteractions' => [['type' => 'button', 'is_editable' => 'maybe']]], 'blocks.0.formBlockInteractions.0.is_editable'],
+    'answer editable blank' => [['formBlockInteractions' => [['type' => 'button', 'is_editable' => '']]], 'blocks.0.formBlockInteractions.0.is_editable'],
+    'answer editable empty' => [['formBlockInteractions' => [['type' => 'button', 'is_editable' => null]]], 'blocks.0.formBlockInteractions.0.is_editable'],
+    'answer hidden as text' => [['formBlockInteractions' => [['type' => 'button', 'is_disabled' => 'maybe']]], 'blocks.0.formBlockInteractions.0.is_disabled'],
+    'answer hidden empty' => [['formBlockInteractions' => [['type' => 'button', 'is_disabled' => null]]], 'blocks.0.formBlockInteractions.0.is_disabled'],
+    'position too big' => [['sequence' => 4294967296], 'blocks.0.sequence'],
+    'position below zero' => [['sequence' => -1], 'blocks.0.sequence'],
+    'position as text' => [['sequence' => 'first'], 'blocks.0.sequence'],
+    'position blank' => [['sequence' => ''], 'blocks.0.sequence'],
+    'position empty' => [['sequence' => null], 'blocks.0.sequence'],
+    'answer position too big' => [['formBlockInteractions' => [['type' => 'button', 'sequence' => 2147483648]]], 'blocks.0.formBlockInteractions.0.sequence'],
+    'answer position as text' => [['formBlockInteractions' => [['type' => 'button', 'sequence' => 'first']]], 'blocks.0.formBlockInteractions.0.sequence'],
+    'answer position blank' => [['formBlockInteractions' => [['type' => 'button', 'sequence' => ' ']]], 'blocks.0.formBlockInteractions.0.sequence'],
+    'answers as text' => [['formBlockInteractions' => 'Yes'], 'blocks.0.formBlockInteractions'],
+    'answers as a number' => [['formBlockInteractions' => 5], 'blocks.0.formBlockInteractions'],
+    'answers blank' => [['formBlockInteractions' => ''], 'blocks.0.formBlockInteractions'],
+    'rules as text' => [['formBlockLogics' => 'Show'], 'blocks.0.formBlockLogics'],
+    'rules blank' => [['formBlockLogics' => ''], 'blocks.0.formBlockLogics'],
 ]);
 
 test('template import takes a block title and an answer label at their column limit', function () {
@@ -422,6 +449,48 @@ test('template import takes a block title and an answer label at their column li
 
     expect($block->title)->toBe(str_repeat('ä', 1024))
         ->and($block->formBlockInteractions->first()->label)->toBe(str_repeat('ä', 255));
+});
+
+test('template import takes question text, answer name and positions at their column limit, and empty values where a column allows them', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [
+            [
+                'type' => 'radio',
+                // 65,535 bytes
+                'message' => str_repeat('ä', 32767).'a',
+                'is_required' => null,
+                'is_disabled' => true,
+                'sequence' => 4294967295,
+                'formBlockInteractions' => [[
+                    'type' => 'button',
+                    'name' => str_repeat('ä', 255),
+                    'is_editable' => false,
+                    'is_disabled' => true,
+                    'sequence' => 2147483647,
+                ]],
+            ],
+            ['type' => 'none', 'sequence' => 0, 'formBlockInteractions' => null, 'formBlockLogics' => null],
+            ['type' => 'none', 'sequence' => 1, 'formBlockInteractions' => [['type' => 'button', 'sequence' => null]]],
+        ]]),
+    ])->assertOk();
+
+    [$empty, $withEmptyPosition, $block] = $form->fresh()->formBlocks;
+    $answer = $block->formBlockInteractions->first();
+
+    // raw, since the app reads an empty yes/no as no
+    expect($block->getRawOriginal('is_required'))->toBeNull()
+        ->and($block->message)->toBe(str_repeat('ä', 32767).'a')
+        ->and($block->is_disabled)->toBeTrue()
+        ->and($block->sequence)->toBe(4294967295)
+        ->and($answer->name)->toBe(str_repeat('ä', 255))
+        ->and($answer->is_editable)->toBeFalse()
+        ->and($answer->is_disabled)->toBeTrue()
+        ->and($answer->sequence)->toBe(2147483647)
+        ->and($empty->formBlockInteractions)->toBeEmpty()
+        ->and($empty->formBlockLogics)->toBeEmpty()
+        ->and($withEmptyPosition->formBlockInteractions->first()->sequence)->toBe(0);
 });
 
 test('export, then import into another form keeps the logic rules and their targets', function () {

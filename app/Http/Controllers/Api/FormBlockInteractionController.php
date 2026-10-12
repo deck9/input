@@ -31,6 +31,9 @@ class FormBlockInteractionController extends Controller
                 fn ($i) => $i->value,
                 FormBlockInteractionType::cases()
             ))],
+            'name' => 'nullable|string|max:255',
+            'is_editable' => 'boolean',
+            'is_disabled' => 'boolean',
         ]);
 
         $interaction = new FormBlockInteraction($request->only('type', 'name', 'is_editable', 'is_disabled'));
@@ -62,9 +65,12 @@ class FormBlockInteractionController extends Controller
                 break;
         }
 
-        // the editor sends the stored label and uuid back on every save, so only check a changed one
+        // the editor sends the stored label, name and uuid back on every save, so only check a changed one
         $request->validate([
             'label' => [Rule::excludeIf($request->input('label') === $interaction->label), 'nullable', 'string', 'max:255'],
+            'name' => [Rule::excludeIf($request->input('name') === $interaction->name), 'nullable', 'string', 'max:255'],
+            'is_editable' => 'boolean',
+            'is_disabled' => 'boolean',
             'uuid' => [
                 Rule::excludeIf($request->input('uuid') === $interaction->uuid),
                 'sometimes',

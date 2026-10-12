@@ -247,6 +247,83 @@ test('an unchanged old block title longer than its column does not block saving'
     expect($block->fresh()->message)->toBe('Changed');
 })->skip(fn () => DB::getDriverName() !== 'sqlite', 'only SQLite keeps a value longer than its column');
 
+test('a changed question text must fit its column, counted in bytes', function () {
+    $block = FormBlock::factory()->create(['message' => 'Old text']);
+    $update = fn (string $message) => $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), ['message' => $message]);
+
+    // a TEXT column holds 65,535 bytes, and ä takes two
+    $update(str_repeat('a', 65536))->assertStatus(422)->assertJsonValidationErrors('message');
+    $update(str_repeat('ä', 32768))->assertStatus(422)->assertJsonValidationErrors('message');
+
+    expect($block->fresh()->message)->toBe('Old text');
+
+    $update(str_repeat('ä', 32767).'a')->assertSuccessful();
+
+    expect($block->fresh()->message)->toBe(str_repeat('ä', 32767).'a');
+});
+
+test('a changed webhook address must fit its column', function () {
+    $block = FormBlock::factory()->create(['webhook_url' => 'https://example.com/old']);
+    // 20 characters before the path
+    $update = fn (int $letters) => $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), ['webhook_url' => 'https://example.com/'.str_repeat('ä', $letters)]);
+
+    // the column counts letters, so a two-byte ä counts once
+    $update(236)->assertStatus(422)->assertJsonValidationErrors('webhook_url');
+
+    expect($block->fresh()->webhook_url)->toBe('https://example.com/old');
+
+    $update(235)->assertSuccessful();
+
+    expect($block->fresh()->webhook_url)->toBe('https://example.com/'.str_repeat('ä', 235));
+});
+
+test('an unchanged old question text or webhook address larger than its column does not block saving', function (string $key, string $value) {
+    // the editor sends the whole block back; only SQLite keeps a value larger than its column
+    $block = FormBlock::factory()->create([$key => $value]);
+
+    $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), [
+            $key => $value,
+            'title' => 'Changed',
+        ])
+        ->assertSuccessful();
+
+    expect($block->fresh()->title)->toBe('Changed');
+})->with([
+    'question text' => ['message', str_repeat('a', 65536)],
+    'webhook address' => ['webhook_url', 'https://example.com/'.str_repeat('a', 236)],
+])->skip(fn () => DB::getDriverName() !== 'sqlite', 'only SQLite keeps a value larger than its column');
+
+test('required and hidden on a question must be yes or no', function (string $key, mixed $value) {
+    $block = FormBlock::factory()->create(['is_required' => true, 'is_disabled' => true]);
+
+    $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), [$key => $value])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect($block->fresh()->$key)->toBeTrue();
+})->with(['is_required', 'is_disabled'])->with([
+    'text' => 'maybe',
+    'a list' => [['yes']],
+]);
+
+test('a question can be left without required, but not without hidden', function () {
+    $block = FormBlock::factory()->create(['is_required' => true, 'is_disabled' => true]);
+    $update = fn (string $key) => $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), [$key => null]);
+
+    // only the required column takes empty
+    $update('is_disabled')->assertStatus(422)->assertJsonValidationErrors('is_disabled');
+    $update('is_required')->assertSuccessful();
+
+    // raw, since the app reads an empty yes/no as no
+    expect($block->fresh()->getRawOriginal('is_required'))->toBeNull()
+        ->and($block->fresh()->is_disabled)->toBeTrue();
+});
+
 test('can make a block required for form user', function () {
     $block = FormBlock::factory()->create();
 

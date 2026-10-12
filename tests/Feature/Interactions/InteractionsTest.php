@@ -243,6 +243,92 @@ test('an unchanged old answer label longer than its column does not block saving
     expect($interaction->fresh()->name)->toBe('changed');
 })->skip(fn () => DB::getDriverName() !== 'sqlite', 'only SQLite keeps a value longer than its column');
 
+test('a new answer\'s name must fit its column', function () {
+    $block = FormBlock::factory()->create(['type' => FormBlockType::radio]);
+    $create = fn (string $name) => $this->actingAs($block->form->user)
+        ->json('post', route('api.interactions.create', $block->id), ['type' => 'button', 'name' => $name]);
+
+    // the column counts letters, so a two-byte ä counts once
+    $create(str_repeat('ä', 256))->assertStatus(422)->assertJsonValidationErrors('name');
+
+    expect($block->formBlockInteractions()->count())->toBe(0);
+
+    $create(str_repeat('ä', 255))->assertCreated();
+
+    expect($block->formBlockInteractions()->first()->name)->toBe(str_repeat('ä', 255));
+});
+
+test('a changed answer name must fit its column', function () {
+    $interaction = FormBlockInteraction::factory()->create(['name' => 'old_name']);
+    $update = fn (string $name) => $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), ['name' => $name]);
+
+    $update(str_repeat('ä', 256))->assertStatus(422)->assertJsonValidationErrors('name');
+
+    expect($interaction->fresh()->name)->toBe('old_name');
+
+    $update(str_repeat('ä', 255))->assertSuccessful();
+
+    expect($interaction->fresh()->name)->toBe(str_repeat('ä', 255));
+});
+
+test('an unchanged old answer name longer than its column does not block saving', function () {
+    // the editor sends the whole answer back; only SQLite keeps a value longer than its column
+    $interaction = FormBlockInteraction::factory()->create(['name' => str_repeat('a', 256)]);
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [
+            'name' => str_repeat('a', 256),
+            'label' => 'Changed',
+        ])
+        ->assertSuccessful();
+
+    expect($interaction->fresh()->label)->toBe('Changed');
+})->skip(fn () => DB::getDriverName() !== 'sqlite', 'only SQLite keeps a value longer than its column');
+
+test('editable and hidden on a new answer must be yes or no', function (string $key, mixed $value) {
+    $block = FormBlock::factory()->create(['type' => FormBlockType::radio]);
+
+    $this->actingAs($block->form->user)
+        ->json('post', route('api.interactions.create', $block->id), ['type' => 'button', $key => $value])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect($block->formBlockInteractions()->count())->toBe(0);
+})->with(['is_editable', 'is_disabled'])->with([
+    'text' => 'maybe',
+    'a list' => [['yes']],
+    // neither column takes empty
+    'empty' => null,
+]);
+
+test('a changed editable or hidden on an answer must be yes or no', function (string $key, mixed $value) {
+    $interaction = FormBlockInteraction::factory()->create(['is_editable' => true, 'is_disabled' => true]);
+
+    $this->actingAs($interaction->formBlock->form->user)
+        ->json('post', route('api.interactions.update', $interaction->id), [$key => $value])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect($interaction->fresh()->$key)->toBeTrue();
+})->with(['is_editable', 'is_disabled'])->with([
+    'text' => 'maybe',
+    'a list' => [['yes']],
+    'empty' => null,
+]);
+
+test('a new answer takes editable and hidden as yes or no', function () {
+    $block = FormBlock::factory()->create(['type' => FormBlockType::radio]);
+
+    $this->actingAs($block->form->user)
+        ->json('post', route('api.interactions.create', $block->id), ['type' => 'button', 'is_editable' => false, 'is_disabled' => true])
+        ->assertCreated();
+
+    expect($block->formBlockInteractions()->first())
+        ->is_editable->toBeFalse()
+        ->is_disabled->toBeTrue();
+});
+
 test('label_can_be_null_when_interaction_is_not_editable', function ($blockType, $interactionType) {
     $interaction = FormBlockInteraction::factory()->create([
         'type' => $interactionType,
