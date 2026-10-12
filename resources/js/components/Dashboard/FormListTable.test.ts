@@ -40,4 +40,17 @@ describe("form list messages", () => {
         expect(wrapper.find("[role=status]").text()).toBe("");
         vi.useRealTimers();
     });
+
+    it("keeps the message clear while the list fades", () => {
+        const wrapper = mount(FormListTable, {
+            props: { forms: [{ id: 1 } as FormModel] },
+            attrs: { class: "opacity-60", "aria-busy": "true" },
+            global: { stubs: { FormListItem } },
+        });
+
+        const card = wrapper.find("[aria-busy=true]");
+        expect(card.classes()).toContain("opacity-60");
+        expect(card.find("li").exists()).toBe(true);
+        expect(card.find("[role=status]").exists()).toBe(false);
+    });
 });
