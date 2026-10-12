@@ -20,8 +20,11 @@ const scrolled = vi.fn();
 
 describe("the form document", () => {
     beforeEach(() => {
-        Element.prototype.scrollIntoView = function (this: Element) {
-            scrolled(this.id);
+        Element.prototype.scrollIntoView = function (
+            this: Element,
+            options?: boolean | ScrollIntoViewOptions,
+        ) {
+            scrolled(this.id, (options as ScrollIntoViewOptions)?.block);
         };
         scrolled.mockClear();
         useForm().$reset();
@@ -42,7 +45,8 @@ describe("the form document", () => {
         await wrapper.setProps({ status: "loaded" });
         await wrapper.vm.$nextTick();
 
-        expect(scrolled).toHaveBeenCalledWith("row-b2");
+        // the smallest scroll, so a question already in view stays put
+        expect(scrolled).toHaveBeenCalledWith("row-b2", "nearest");
     });
 
     it("opens and scrolls to a question picked in the outline", async () => {
@@ -57,6 +61,6 @@ describe("the form document", () => {
         await flushPromises();
 
         expect(useWorkbench().putOnWorkbench).toHaveBeenCalledWith(blocks[1]);
-        expect(scrolled).toHaveBeenCalledWith("row-b2");
+        expect(scrolled).toHaveBeenCalledWith("row-b2", "start");
     });
 });

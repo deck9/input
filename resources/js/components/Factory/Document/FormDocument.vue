@@ -155,12 +155,12 @@ watch(
   },
 );
 
-// a question opened by link (?block=) may sit far down
+// a question opened by link (?block=) may sit far down; one in view stays put
 watch(
   () => props.status,
   (status) => {
     if (status === "loaded" && workbench.block) {
-      scrollToBlock(workbench.block.uuid);
+      scrollToBlock(workbench.block.uuid, "nearest");
     }
   },
 );
