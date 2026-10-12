@@ -48,6 +48,8 @@
             </div>
           </div>
 
+          <p role="status" class="sr-only">{{ announcement }}</p>
+
           <div
             v-if="hasFailed"
             role="alert"
@@ -88,10 +90,10 @@
                 />
               </div>
             </div>
-            <div v-else role="status" class="px-6 py-14 text-center">
+            <div v-else class="px-6 py-14 text-center">
               <p class="text-sm text-grey-600">{{ noMatch }}</p>
               <D9Button
-                v-if="search"
+                v-if="searchText"
                 class="mt-4"
                 color="light"
                 label="Clear search"
@@ -184,10 +186,10 @@ const statusForms = computed(
 const fold = (text: string) =>
   text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-const search = computed(() => query.value.trim());
+const searchText = computed(() => query.value.trim());
 
 const visibleForms = computed(() => {
-  const folded = fold(search.value);
+  const folded = fold(searchText.value);
   return (statusForms.value ?? []).filter((form) =>
     fold(form.name).includes(folded),
   );
@@ -195,7 +197,18 @@ const visibleForms = computed(() => {
 
 const noMatch = computed(() => {
   const name = status.value === "all" ? "forms" : `${status.value} forms`;
-  return search.value ? `No ${name} match "${search.value}".` : `No ${name}.`;
+  return searchText.value
+    ? `No ${name} match "${searchText.value}".`
+    : `No ${name}.`;
+});
+
+// read out while searching; an empty list says why
+const announcement = computed(() => {
+  const count = visibleForms.value.length;
+  if (!statusForms.value || hasFailed.value) return "";
+  if (!count) return noMatch.value;
+  if (!searchText.value) return "";
+  return count === 1 ? "1 form" : `${count.toLocaleString()} forms`;
 });
 
 // keeps Inertia's page state, so Back shows this page with the older URL

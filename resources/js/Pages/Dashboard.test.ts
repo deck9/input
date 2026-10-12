@@ -257,6 +257,24 @@ describe("form list states", () => {
         expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
     });
 
+    it("reads out how many forms the search finds", async () => {
+        await mountAt("/");
+        const live = wrapper!.get("p[role=status]");
+        expect(live.text()).toBe("");
+
+        await wrapper!.get("input[type=search]").setValue("cust");
+        expect(live.text()).toBe("1 form");
+
+        await wrapper!.get("input[type=search]").setValue("c");
+        expect(live.text()).toBe("2 forms");
+
+        await wrapper!.get("input[type=search]").setValue("zzz");
+        expect(live.text()).toBe('No forms match "zzz".');
+
+        await wrapper!.get("input[type=search]").setValue("");
+        expect(live.text()).toBe("");
+    });
+
     it("shows the latest sort when an older answer comes last", async () => {
         await mountAt("/");
         const answers: Array<(value: AxiosResponse<FormModel[]>) => void> = [];
@@ -274,6 +292,20 @@ describe("form list states", () => {
 
         expect(shown()).toEqual(["Customer feedback"]);
         expect(list().attributes("aria-busy")).toBe("false");
+    });
+
+    it("shows the error, not the first-run card, when only the archived forms fail", async () => {
+        vi.mocked(callListForms).mockImplementation(async (filter) => {
+            if (filter === "trashed") throw new Error("offline");
+            return answer(forms);
+        });
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        await mountAt("/?status=archived");
+
+        expect(wrapper!.get("[role=alert]").text()).toContain(
+            "Couldn't load your forms.",
+        );
+        expect(wrapper!.text()).not.toContain("Create your first form");
     });
 
     it("shows the first-run card only when the team has no forms at all", async () => {
