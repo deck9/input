@@ -135,7 +135,9 @@ const writeUrl = (mode: "pushState" | "replaceState") => {
 
   const text = search.toString();
   const url = `${window.location.pathname}${text ? `?${text}` : ""}`;
-  window.history[mode](window.history.state, "", url);
+  // Inertia reads this url when Back reloads the page
+  const state = window.history.state && { ...window.history.state, url };
+  window.history[mode](state, "", url);
 };
 
 // typing replaces the history entry, so Back doesn't step through letters
@@ -161,13 +163,16 @@ const updateList = async (withForms = true) => {
   }
 };
 
+// picking the current value again adds no history entry
 const changeSort = (setting: SortSetting) => {
+  if (setting === sort.value) return;
   sort.value = setting;
   writeUrl("pushState");
   updateList();
 };
 
 const changeStatus = (setting: StatusSetting) => {
+  if (setting === status.value) return;
   status.value = setting;
   writeUrl("pushState");
   if (setting === "archived") {

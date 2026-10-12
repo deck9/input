@@ -112,6 +112,28 @@ describe("form list search, status and sort", () => {
         expect(shown()).toEqual(["Old contest"]);
     });
 
+    it("puts the new url into Inertia's history state, so a reload on Back keeps it", async () => {
+        await mountAt("/");
+        window.history.replaceState({ component: "Dashboard", url: "/" }, "", "/");
+        await tab("Published").trigger("click");
+
+        expect(window.history.pushState).toHaveBeenLastCalledWith(
+            { component: "Dashboard", url: "/?status=published" },
+            "",
+            "/?status=published",
+        );
+    });
+
+    it("adds no history entry when the status or sort doesn't change", async () => {
+        await mountAt("/");
+        await tab("All").trigger("click");
+        wrapper!.findComponent(SortControl).vm.$emit("changeSort", "edited");
+        await flushPromises();
+
+        expect(window.history.pushState).not.toHaveBeenCalled();
+        expect(callListForms).toHaveBeenCalledTimes(1);
+    });
+
     it("sorts on the server and keeps the sort in a new history entry", async () => {
         await mountAt("/");
         wrapper!.findComponent(SortControl).vm.$emit("changeSort", "name");
