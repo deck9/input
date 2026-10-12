@@ -93,18 +93,10 @@
             <div v-else class="px-6 py-14 text-center">
               <p class="text-sm text-grey-600">{{ noMatch }}</p>
               <D9Button
-                v-if="searchText"
                 class="mt-4"
                 color="light"
-                label="Clear search"
-                @click="clearSearch"
-              />
-              <D9Button
-                v-else-if="status !== 'all'"
-                class="mt-4"
-                color="light"
-                label="Show all forms"
-                @click="showAll"
+                :label="wayBack.label"
+                @click="takeWayBack"
               />
             </div>
           </FormListTable>
@@ -201,8 +193,10 @@ const visibleForms = computed(() => {
 
 const noMatch = computed(() => {
   const name = status.value === "all" ? "forms" : `${status.value} forms`;
-  return searchText.value
-    ? `No ${name} match "${searchText.value}".`
+  if (searchText.value) return `No ${name} match "${searchText.value}".`;
+  // All is empty only when every form is archived, else it's the first run
+  return status.value === "all"
+    ? "All your forms are archived."
     : `No ${name}.`;
 });
 
@@ -287,16 +281,22 @@ const changeStatus = (setting: StatusSetting) => {
   }
 };
 
-// the clicked button goes away, so focus moves to the search
 const searchField = useTemplateRef("searchField");
 
-const clearSearch = () => {
-  query.value = "";
-  searchField.value?.focus();
-};
+// the way out of an empty list
+const wayBack = computed(() => {
+  if (searchText.value) {
+    return { label: "Clear search", go: () => (query.value = "") };
+  }
+  if (status.value !== "all") {
+    return { label: "Show all forms", go: () => changeStatus("all") };
+  }
+  return { label: "Show archived forms", go: () => changeStatus("archived") };
+});
 
-const showAll = () => {
-  changeStatus("all");
+// the clicked button goes away, so focus moves to the search
+const takeWayBack = () => {
+  wayBack.value.go();
   searchField.value?.focus();
 };
 

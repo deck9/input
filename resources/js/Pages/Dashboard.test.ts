@@ -348,13 +348,18 @@ describe("form list states", () => {
         expect(callListForms).toHaveBeenCalledWith("trashed", "updated_at:desc");
         wrapper!.unmount();
 
-        // archived forms only: no first run, the list says it's empty
+        // archived forms only: no first run, a way to them instead
         vi.mocked(callListForms).mockImplementation(async (filter) =>
             answer(filter === "trashed" ? archived : []),
         );
         await mountAt("/");
 
         expect(wrapper!.text()).not.toContain("Create your first form");
-        expect(wrapper!.get("[role=status]").text()).toBe("No forms.");
+        expect(list().text()).toContain("All your forms are archived.");
+
+        await button("Show archived forms").trigger("click");
+
+        expect(tab("Archived").attributes("aria-pressed")).toBe("true");
+        expect(shown()).toEqual(["Old contest"]);
     });
 });
