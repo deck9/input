@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\FormBlockType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class FormBlockUpdateRequest extends FormRequest
@@ -29,7 +30,8 @@ class FormBlockUpdateRequest extends FormRequest
             'message' => 'string|nullable',
             'webhook_url' => 'url|nullable',
             'options' => 'array|nullable',
-            'title' => 'string|nullable',
+            // the editor sends the whole block back on every save, so only check a changed title (the API docs read these rules without a block)
+            'title' => [Rule::excludeIf($this->input('title') === $this->route('block')?->title), 'string', 'nullable', 'max:1024'],
             'is_required' => 'boolean|nullable',
             'is_disabled' => 'boolean|nullable',
             'type' => [new Enum(FormBlockType::class)],

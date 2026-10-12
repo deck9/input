@@ -7,6 +7,7 @@ use App\Enums\FormBlockType;
 use App\Models\FormBlockLogic;
 use Database\Seeders\SimpleFormSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -216,6 +217,35 @@ test('can remove a title for the results view', function () {
 
     $this->assertNull($block->fresh()->title);
 });
+
+test('a changed block title must fit its column', function () {
+    $block = FormBlock::factory()->create(['title' => 'Old title']);
+    $update = fn (string $title) => $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), ['title' => $title]);
+
+    // the column counts letters, so a two-byte ä counts once
+    $update(str_repeat('ä', 1025))->assertStatus(422)->assertJsonValidationErrors('title');
+
+    expect($block->fresh()->title)->toBe('Old title');
+
+    $update(str_repeat('ä', 1024))->assertSuccessful();
+
+    expect($block->fresh()->title)->toBe(str_repeat('ä', 1024));
+});
+
+test('an unchanged old block title longer than its column does not block saving', function () {
+    // the editor sends the whole block back; only SQLite keeps a value longer than its column
+    $block = FormBlock::factory()->create(['title' => str_repeat('a', 1025)]);
+
+    $this->actingAs($block->form->user)
+        ->json('POST', route('api.blocks.update', $block->id), [
+            'title' => str_repeat('a', 1025),
+            'message' => 'Changed',
+        ])
+        ->assertSuccessful();
+
+    expect($block->fresh()->message)->toBe('Changed');
+})->skip(fn () => DB::getDriverName() !== 'sqlite', 'only SQLite keeps a value longer than its column');
 
 test('can make a block required for form user', function () {
     $block = FormBlock::factory()->create();

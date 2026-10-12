@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\FormBlockInteractionType;
 use App\Enums\FormBlockType;
+use App\Rules\MaxSize;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -37,8 +39,12 @@ class FormTemplateRequest extends FormRequest
         // image paths point to files of the form that uploaded them, the form keeps its own
         unset($template['avatar_path'], $template['background_path']);
 
-        // same link and length rules as FormController::update()
+        // raw JSON skips the API's "" → null step, so the form settings get it here and save like the settings pages
+        $template = array_map(fn ($value) => $value === '' ? null : $value, $template);
+
+        // same link, length, number and yes/no rules as FormController::update()
         $link = ['nullable', 'max:255', 'regex:~^(https?://|mailto:)~i'];
+        $maxInt = 'max:2147483647';
 
         // same rules as creating a logic rule through the API
         $logicRules = collect((new FormBlockLogicRequest())->rules())
@@ -54,10 +60,15 @@ class FormTemplateRequest extends FormRequest
             'blocks' => 'present|array',
             'blocks.*.id' => 'nullable|string',
             'blocks.*.type' => ['required', Rule::enum(FormBlockType::class)],
+            'blocks.*.title' => 'nullable|string|max:1024',
             // same as the sequence API, a group stays at the top level
             'blocks.*.parent_block' => 'prohibited_if:blocks.*.type,'.FormBlockType::group->value,
+            'blocks.*.formBlockInteractions.*.type' => ['required', Rule::enum(FormBlockInteractionType::class)],
+            'blocks.*.formBlockInteractions.*.label' => 'nullable|string|max:255',
             'is_auto_delete_enabled' => 'boolean',
-            'data_retention_days' => [Rule::excludeIf(! $autoDelete), 'required_with:is_auto_delete_enabled', 'integer', 'min:1'],
+            'data_retention_days' => $autoDelete
+                ? ['required_with:is_auto_delete_enabled', 'integer', 'min:1', $maxInt]
+                : ['nullable', 'integer', $maxInt],
             ...$logicRules->all(),
             'description' => 'nullable|string|max:1024',
             'language' => 'nullable|string|max:4',
@@ -66,6 +77,15 @@ class FormTemplateRequest extends FormRequest
             'text_color' => 'nullable|string|max:32',
             'cta_label' => 'nullable|string|max:255',
             'eoc_headline' => 'nullable|string|max:255',
+            'eoc_text' => ['nullable', 'string', new MaxSize(65535, text: true)],
+            'cta_redirect_delay' => ['nullable', 'integer', 'min:0', $maxInt],
+            'cta_append_params' => 'boolean',
+            'cta_append_session_id' => 'boolean',
+            'use_cta_redirect' => 'boolean',
+            'show_cta_link' => 'boolean',
+            'show_social_links' => 'boolean',
+            'use_brighter_inputs' => 'boolean',
+            'show_form_progress' => 'nullable|boolean',
             'cta_link' => $link,
             'privacy_link' => $link,
             'legal_notice_link' => $link,

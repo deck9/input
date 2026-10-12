@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Form;
+use App\Rules\MaxSize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -87,13 +88,17 @@ class FormController extends Controller
     {
         $this->authorize('update', $form);
 
-        // the settings pages send the whole form back on save, so only check a changed value
-        $changed = fn (string $key, string ...$rules) => [
+        // only check a changed value, so an old stored one doesn't block saving the rest of a settings page
+        $changed = fn (string $key, mixed ...$rules) => [
             Rule::excludeIf($request->input($key) === $form->$key),
             ...$rules,
         ];
         $link = fn (string $key) => $changed($key, 'nullable', 'max:255', 'regex:~^(https?://|mailto:)~i');
         $color = fn (string $key) => $changed($key, 'nullable', 'string', 'max:32');
+        $yesNo = fn (string $key) => $changed($key, 'boolean');
+        // the largest value of an integer column
+        $maxInt = 'max:2147483647';
+        $autoDelete = $request->boolean('is_auto_delete_enabled', $form->is_auto_delete_enabled);
 
         $request->validate([
             'name' => $changed('name', 'filled', 'string', 'max:255'),
@@ -110,14 +115,24 @@ class FormController extends Controller
             'interaction_text_color' => $color('interaction_text_color'),
             'cta_label' => $changed('cta_label', 'nullable', 'string', 'max:255'),
             'eoc_headline' => $changed('eoc_headline', 'nullable', 'string', 'max:255'),
+            // At most 65,535 bytes (its TEXT column), and a letter like ä takes two
+            'eoc_text' => $changed('eoc_text', 'nullable', 'string', new MaxSize(65535, text: true)),
+            'cta_redirect_delay' => $changed('cta_redirect_delay', 'nullable', 'integer', 'min:0', $maxInt),
+            'is_notification_via_mail' => $yesNo('is_notification_via_mail'),
+            'use_brighter_inputs' => $yesNo('use_brighter_inputs'),
+            // The one yes/no setting that can be empty
+            'show_form_progress' => $changed('show_form_progress', 'nullable', 'boolean'),
+            'cta_append_params' => $yesNo('cta_append_params'),
+            'cta_append_session_id' => $yesNo('cta_append_session_id'),
+            'use_cta_redirect' => $yesNo('use_cta_redirect'),
+            'has_data_privacy' => $yesNo('has_data_privacy'),
+            'show_cta_link' => $yesNo('show_cta_link'),
+            'show_social_links' => $yesNo('show_social_links'),
             'is_auto_delete_enabled' => 'boolean',
-            // checked against the value the form ends up with; the settings page also sends the hidden field while auto delete is off
-            'data_retention_days' => [
-                Rule::excludeIf(! $request->boolean('is_auto_delete_enabled', $form->is_auto_delete_enabled)),
-                'required_with:is_auto_delete_enabled',
-                'integer',
-                'min:1',
-            ],
+            // checked against the value the form ends up with; while auto delete is off the settings page still sends the hidden field, which then only has to fit its column
+            'data_retention_days' => $autoDelete
+                ? ['required_with:is_auto_delete_enabled', 'integer', 'min:1', $maxInt]
+                : $changed('data_retention_days', 'nullable', 'integer', $maxInt),
             'cta_link' => $link('cta_link'),
             'privacy_link' => $link('privacy_link'),
             'legal_notice_link' => $link('legal_notice_link'),
