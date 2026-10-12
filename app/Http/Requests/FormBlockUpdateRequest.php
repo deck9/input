@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\FormBlockType;
+use App\Rules\MaxSize;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -26,14 +27,20 @@ class FormBlockUpdateRequest extends FormRequest
      */
     public function rules()
     {
+        // the editor sends the whole block back on every save, so only check a changed value (the API docs read these rules without a block)
+        $changed = fn (string $key, mixed ...$rules) => [
+            Rule::excludeIf($this->input($key) === $this->route('block')?->$key),
+            ...$rules,
+        ];
+
         return [
-            'message' => 'string|nullable',
-            'webhook_url' => 'url|nullable',
+            // At most 65,535 bytes (its TEXT column), and a letter like ä takes two
+            'message' => $changed('message', 'string', 'nullable', new MaxSize(65535, text: true)),
+            'webhook_url' => $changed('webhook_url', 'url', 'nullable', 'max:255'),
             'options' => 'array|nullable',
-            // the editor sends the whole block back on every save, so only check a changed title (the API docs read these rules without a block)
-            'title' => [Rule::excludeIf($this->input('title') === $this->route('block')?->title), 'string', 'nullable', 'max:1024'],
+            'title' => $changed('title', 'string', 'nullable', 'max:1024'),
             'is_required' => 'boolean|nullable',
-            'is_disabled' => 'boolean|nullable',
+            'is_disabled' => 'boolean',
             'type' => [new Enum(FormBlockType::class)],
         ];
     }
