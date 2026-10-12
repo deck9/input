@@ -13,6 +13,7 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Changed
 
 -   The form list keeps each form's status, submissions and actions in view, also with a very long name and on a phone. It shows "40 submissions" with "52 started · 77% finished" below, shows the form's uploaded avatar, and no longer shows the public link under each name. (#244)
+-   Each form in the list has one actions menu and a Copy link button. Unpublishing a form with submissions, archiving and deleting now ask first, published forms can be archived, and the list changes without reloading the page. (#245)
 
 ### Fixed
 
