@@ -256,6 +256,8 @@ describe("last submission", () => {
         expect(dots(wrapper)).toHaveLength(0);
         // on phones never on the count's line
         expect(dateCell(wrapper).classes()).toContain("basis-full");
+        // the desktop column's color
+        expect(dateCell(wrapper).classes()).toContain("lg:text-grey-600");
     });
 
     it("shows a dash, read as no submissions, also for a date without a count", () => {

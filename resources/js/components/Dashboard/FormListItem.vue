@@ -70,7 +70,7 @@
       </div>
       <!-- phones: a line of its own, and no dash: the meta line says "No submissions yet" -->
       <div
-        class="basis-full tabular-nums"
+        class="basis-full tabular-nums lg:text-grey-600"
         :class="{ 'hidden lg:block': !shownDate }"
         :title="shownDate ? formatFullDate(shownDate) : 'No submissions yet'"
       >
