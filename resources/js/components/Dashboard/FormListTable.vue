@@ -18,6 +18,7 @@
         :key="form.id"
         v-for="form in forms"
         @announce="announce"
+        @changed="$emit('changed', $event)"
       />
     </ul>
     <!-- what to show instead of rows: loading or no match -->
@@ -59,6 +60,10 @@ defineOptions({ inheritAttrs: false });
 
 defineProps<{
   forms: Array<FormModel>;
+}>();
+
+defineEmits<{
+  changed: [form: FormModel];
 }>();
 
 const toast = ref<{ id: number; text: string; copy?: () => void } | null>(null);

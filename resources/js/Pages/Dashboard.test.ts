@@ -93,6 +93,46 @@ describe("form list search, status and sort", () => {
         expect(callListForms).toHaveBeenCalledWith(null, "updated_at:desc");
     });
 
+    it("moves a published or archived form to its tab and counts it there, without loading", async () => {
+        await mountAt("/?status=unpublished");
+        const list = wrapper!.findComponent(stubs.FormListTable);
+
+        list.vm.$emit("changed", { ...forms[1], is_published: true });
+        await nextTick();
+
+        expect(shown()).toEqual([]);
+        expect(tab("Published").text()).toBe("Published 3");
+        expect(tab("Unpublished").text()).toBe("Unpublished 0");
+
+        await tab("Published").trigger("click");
+        list.vm.$emit("changed", { ...forms[0], is_trashed: true });
+        await nextTick();
+
+        expect(shown()).toEqual(["Contact", "Customer feedback"]);
+        expect(tab("All").text()).toBe("All 2");
+        expect(tab("Published").text()).toBe("Published 2");
+        expect(callListForms).toHaveBeenCalledTimes(1);
+    });
+
+    it("moves a restored form out of Archived and loads the list for its place", async () => {
+        await mountAt("/?status=archived");
+        const list = wrapper!.findComponent(stubs.FormListTable);
+
+        list.vm.$emit("changed", {
+            ...archived[0],
+            is_trashed: false,
+            is_published: false,
+        });
+        await nextTick();
+
+        expect(shown()).toEqual([]);
+        expect(tab("All").text()).toBe("All 4");
+        expect(tab("Unpublished").text()).toBe("Unpublished 2");
+        // the first load asked twice, the reload asks again
+        expect(callListForms).toHaveBeenCalledTimes(4);
+        expect(callListForms).toHaveBeenNthCalledWith(3, null, "updated_at:desc");
+    });
+
     it("shows a status in a new history entry, and loads archived forms only when chosen", async () => {
         await mountAt("/");
         await tab("Published").trigger("click");

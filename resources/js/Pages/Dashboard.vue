@@ -74,6 +74,7 @@
             :aria-busy="isLoading"
             class="transition-opacity"
             :class="{ 'opacity-60': isLoading && statusForms }"
+            @changed="moveForm"
           >
             <div v-if="!statusForms">
               <span class="sr-only">Loading forms</span>
@@ -264,6 +265,31 @@ const updateList = async (withForms = true) => {
   } finally {
     if (request === latest) isLoading.value = false;
   }
+};
+
+const drop = (list: Array<FormModel> | null, form: FormModel) =>
+  list && list.filter(({ id }) => id !== form.id);
+// a changed form keeps its place, a moved one comes first
+const put = (list: Array<FormModel> | null, form: FormModel) =>
+  list &&
+  (list.some(({ id }) => id === form.id)
+    ? list.map((item) => (item.id === form.id ? form : item))
+    : [form, ...list]);
+
+// an action in a row moves the form to its status tab and its count
+const moveForm = (form: FormModel) => {
+  const isRestored =
+    !form.is_trashed && !!archived.value?.some(({ id }) => id === form.id);
+
+  forms.value = form.is_trashed
+    ? drop(forms.value, form)
+    : put(forms.value, form);
+  archived.value = form.is_trashed
+    ? put(archived.value, form)
+    : drop(archived.value, form);
+
+  // the server knows where a restored form goes in the sort
+  if (isRestored) updateList();
 };
 
 // picking the current value again adds no history entry

@@ -267,6 +267,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   announce: [announcement: Announcement];
+  changed: [form: FormModel];
 }>();
 
 // the row changes in place after an action, until the list loads again
@@ -316,14 +317,42 @@ const copyLink = async () => {
   emit("announce", { text: "Link copied" });
 };
 
+// a gone row hands the focus to its neighbour's menu
+let neighbour: Element | null = null;
+
+// after the page updated: deleted, or moved to another tab
+const isGone = async () => {
+  await nextTick();
+  return !row.value;
+};
+
+// no row left: the page's Create form button
+const focusNeighbour = () =>
+  (
+    menuButton(neighbour) ??
+    document.querySelector<HTMLElement>('button[aria-label="Create form"]')
+  )?.focus();
+
 const act = async (
   verb: string,
   run: () => Promise<unknown>,
   done: Announcement,
 ) => {
+  // taken first: a deleted row, or one that moves to another tab, is gone
+  neighbour =
+    row.value?.nextElementSibling ?? row.value?.previousElementSibling ?? null;
+
   try {
     await run();
     emit("announce", done);
+    // the page moves the form to its status tab and counts it there
+    emit("changed", {
+      ...props.form,
+      is_published: isPublished.value,
+      is_trashed: isTrashed.value,
+    });
+    // a menu item gave focus back to its menu, which may be gone now
+    if (!question.value && (await isGone())) focusNeighbour();
   } catch (error) {
     console.warn(error);
     emit("announce", { text: `Couldn't ${verb} the form. Try again.` });
@@ -343,20 +372,12 @@ const answer = async () => {
   closeQuestion();
 };
 
-// a deleted row is gone, so its neighbour's menu gets the focus
-let neighbour: Element | null = null;
-
-const closeQuestion = () => {
+const closeQuestion = async () => {
   question.value = null;
-  if (!isDeleted.value) {
-    return focusMenu();
+  if (await isGone()) {
+    return focusNeighbour();
   }
-
-  // no row left: the page's Create form button
-  (
-    menuButton(neighbour) ??
-    document.querySelector<HTMLElement>('button[aria-label="Create form"]')
-  )?.focus();
+  focusMenu();
 };
 
 const submissions = (count: number) =>
@@ -440,10 +461,6 @@ const askDelete = () => {
         "delete",
         async () => {
           await callDeleteForeverForm(props.form);
-          neighbour =
-            row.value?.nextElementSibling ??
-            row.value?.previousElementSibling ??
-            null;
           isDeleted.value = true;
         },
         { text: `${props.form.name} deleted.` },
