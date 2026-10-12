@@ -371,6 +371,35 @@ describe("form top bar", () => {
             expect.arrayContaining(["hidden", "lg:flex"]),
         );
     });
+
+    it("gives the buttons of the publish, rename and archive dialogs 44 px on phones", async () => {
+        const wrapper = await mountOnPage(FormTopBar, {}, [block("q1", "<p>Your name?</p>")]);
+        const menuItem = (label: string) =>
+            [...document.querySelectorAll<HTMLElement>('[role="menuitem"]')]
+                .find((item) => text(item) === label)
+                ?.click();
+
+        await wrapper.findAll("button").find((b) => b.text() === "Publish")?.trigger("click");
+        for (const label of ["Rename…", "Archive form…"]) {
+            await wrapper.get('[aria-haspopup="menu"]').trigger("click");
+            await flushPromises();
+            menuItem(label);
+            await flushPromises();
+        }
+
+        const buttons = [
+            ...document.querySelectorAll('[role="dialog"] button, [role="alertdialog"] button'),
+        ].filter((b) => ["Cancel", "Publish", "Rename", "Archive"].includes(text(b)!));
+        expect(buttons.map((b) => text(b)).sort()).toEqual([
+            "Archive",
+            "Cancel",
+            "Cancel",
+            "Cancel",
+            "Publish",
+            "Rename",
+        ]);
+        expect(buttons.filter((b) => !b.classList.contains("h-11"))).toEqual([]);
+    });
 });
 
 describe("account menu", () => {

@@ -30,12 +30,12 @@
       <D9Button
         label="Cancel"
         color="light"
-        class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
+        class="h-11 sm:h-8 !bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
         :isDisabled="isSaving"
         @click="emit('close')"
       />
       <D9Button
-        class="ml-2"
+        class="ml-2 h-11 sm:h-8"
         :label="confirmLabel"
         :isLoading="isSaving"
         @click="submit"

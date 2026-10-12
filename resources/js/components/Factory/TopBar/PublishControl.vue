@@ -67,13 +67,13 @@
           ref="cancelButton"
           label="Cancel"
           color="light"
-          class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
+          class="h-11 lg:h-9 !bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
           :isDisabled="isBusy"
           @click="isChecking = false"
         />
         <D9Button
           ref="confirmButton"
-          class="ml-2"
+          class="ml-2 h-11 lg:h-9"
           label="Publish"
           :isLoading="isBusy"
           :isDisabled="!checks"

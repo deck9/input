@@ -78,12 +78,12 @@
       <D9Button
         label="Cancel"
         color="light"
-        class="!bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
+        class="h-11 lg:h-9 !bg-white shadow-[inset_0_0_0_1px_theme(colors.grey.300)] hover:!bg-blue-100"
         :isDisabled="isSaving"
         @click="isArchiving = false"
       />
       <D9Button
-        class="ml-2"
+        class="ml-2 h-11 lg:h-9"
         label="Archive"
         :isLoading="isSaving"
         @click="archive"
