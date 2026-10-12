@@ -12,6 +12,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Search your forms by name, also without accents ("muller" finds "Müller"), and press "/" to jump to the search. The form list has status tabs with counts and sorts by latest submission, last edit, newest or name. Your choice stays in the address, so Back undoes it and a link shows the same list. Dashboard links with the old `?filter=` show all forms. (#248)
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
+-   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
 
 ### Changed
 
