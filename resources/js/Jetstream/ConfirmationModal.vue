@@ -14,6 +14,7 @@
       <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
         <div class="sm:flex sm:items-start">
           <div
+            v-if="danger"
             class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
           >
             <svg
@@ -32,7 +33,9 @@
             </svg>
           </div>
 
-          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+          <div
+            :class="danger && 'mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'"
+          >
             <h3 :id="titleId" class="text-lg">
               <slot name="title"></slot>
             </h3>
@@ -70,6 +73,11 @@ export default defineComponent({
       default: "2xl",
     },
     closeable: {
+      default: true,
+    },
+    // the red warning sign, for actions that can't be undone
+    danger: {
+      type: Boolean,
       default: true,
     },
   },
