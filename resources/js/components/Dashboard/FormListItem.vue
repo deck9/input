@@ -399,7 +399,7 @@ const askArchive = () =>
   ask({
     title: `Archive "${props.form.name}"?`,
     text: isPublished.value
-      ? "It goes offline and moves to Archived. You can restore it there."
+      ? "It goes offline and moves to Archived. If you restore it, it comes back unpublished."
       : "It moves to Archived. You can restore it there.",
     confirmLabel: "Archive",
     run: () =>
@@ -417,7 +417,9 @@ const restore = () =>
   act(
     "restore",
     async () => {
-      await callRestoreForm(props.form);
+      // the server decides if a restored form is live
+      const { data } = await callRestoreForm(props.form);
+      isPublished.value = data.is_published;
       isTrashed.value = false;
     },
     { text: `${props.form.name} restored.` },

@@ -7,6 +7,7 @@ import {
     callDeleteForm,
     callDuplicateForm,
     callPublishForm,
+    callRestoreForm,
     callUnpublishForm,
 } from "@/api/forms";
 
@@ -366,7 +367,9 @@ describe("row actions", () => {
         await flushPromises();
 
         expect(question()?.textContent).toContain('Archive "Contact"?');
-        expect(question()?.textContent).toContain("It goes offline");
+        expect(question()?.textContent).toContain(
+            "It goes offline and moves to Archived. If you restore it, it comes back unpublished.",
+        );
         // the red warning sign is only for delete
         expect(question()?.querySelector("svg")).toBeNull();
         expect(document.activeElement).toBe(questionButton("Cancel"));
@@ -379,6 +382,21 @@ describe("row actions", () => {
         expect(wrapper!.text()).toContain("Archived");
         expect(menuLabels()).toEqual(["Restore", "Delete permanently…"]);
         expect(document.activeElement).toBe(menuButton().element);
+    });
+
+    it("shows a restored form as the server says, unpublished", async () => {
+        vi.mocked(callRestoreForm).mockResolvedValue({
+            data: { is_published: false },
+        } as AxiosResponse);
+        mountRow({ is_trashed: true, is_published: true });
+        await menuItem("Restore").trigger("click");
+        await flushPromises();
+
+        expect(wrapper!.text()).toContain("Unpublished");
+        expect(menuLabels()).toContain("Publish");
+        expect(wrapper!.emitted("announce")).toEqual([
+            [{ text: "Contact restored." }],
+        ]);
     });
 
     it("archives nothing on Cancel and focuses the menu button again", async () => {

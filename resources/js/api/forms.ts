@@ -374,7 +374,9 @@ export function callDeleteForeverForm(form: FormModel): Promise<AxiosResponse> {
     });
 }
 
-export function callRestoreForm(form: FormModel): Promise<AxiosResponse> {
+export function callRestoreForm(
+    form: FormModel,
+): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
