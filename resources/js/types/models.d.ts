@@ -315,5 +315,5 @@ type EmbedFlags = {
 
 type ImageType = "avatar" | "background";
 
-type FilterSetting = "published" | "unpublished" | "trashed" | null;
-type SortSetting = "name:asc" | "created_at:desc" | "updated_at:desc";
+type StatusSetting = "all" | "published" | "unpublished" | "archived";
+type SortSetting = "latest" | "edited" | "newest" | "name";

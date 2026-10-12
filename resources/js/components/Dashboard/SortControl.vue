@@ -1,49 +1,38 @@
 <template>
-  <div class="w-48">
+  <div class="flex items-center gap-2">
+    <D9Label
+      :id="id"
+      label="Sort by"
+      class="sr-only shrink-0 text-sm text-grey-600 md:not-sr-only"
+    />
     <D9Select
-      block
-      v-model="sortSetting"
+      :id="id"
+      class="w-full md:w-48"
+      :modelValue="options.find((option) => option.id === sort)"
       :options="options"
-      icon="chevron-right"
+      @update:modelValue="emit('changeSort', $event.id as SortSetting)"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { D9Select } from "@deck9/ui";
-import { ref, watch } from "vue";
+import { D9Label, D9Select } from "@deck9/ui";
+import { useId } from "vue";
 
-const props = defineProps<{
+defineProps<{
   sort: SortSetting;
 }>();
 
 const emit = defineEmits<{
-  (event: "changeSort", value: SortSetting): void;
+  changeSort: [sort: SortSetting];
 }>();
 
-const options = ref([
-  { id: "name:asc", label: "Name", value: "name:asc", icon: "arrow-up-1-9" },
-  {
-    id: "created_at:desc",
-    label: "Created At",
-    value: "created_at:desc",
-    icon: "calendar",
-  },
-  {
-    id: "updated_at:desc",
-    label: "Updated At",
-    value: "updated_at:desc",
-    icon: "pencil",
-  },
-]);
+const id = useId();
 
-const sortSetting = ref(
-  options.value.find((option) => {
-    return option.value === props.sort;
-  }) ?? options.value[0],
-);
-
-watch(sortSetting, (value) => {
-  emit("changeSort", value.value as SortSetting);
-});
+const options: { id: SortSetting; label: string }[] = [
+  { id: "latest", label: "Latest submission" },
+  { id: "edited", label: "Recently edited" },
+  { id: "newest", label: "Newest first" },
+  { id: "name", label: "Name A–Z" },
+];
 </script>
