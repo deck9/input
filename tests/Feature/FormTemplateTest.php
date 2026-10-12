@@ -293,6 +293,137 @@ test('template import refuses a value longer than its column and keeps the form'
     ['linkedin', 255, 'https://'],
 ]);
 
+test('template import refuses an end text over 65,535 bytes and keeps the form', function () {
+    $form = Form::factory()->create();
+    $import = fn (string $text) => $this->actingAs($form->user)->postJson(route('api.forms.template-import', [
+        'form' => $form->uuid,
+    ]), [
+        'template' => json_encode(['eoc_text' => $text, 'blocks' => []]),
+    ]);
+
+    // a TEXT column holds 65,535 bytes, and ä takes two
+    $import(str_repeat('ä', 32768))
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('eoc_text');
+
+    expect($form->fresh()->eoc_text)->toBeNull();
+
+    $import(str_repeat('ä', 32767).'a')->assertOk();
+
+    expect($form->fresh()->eoc_text)->toBe(str_repeat('ä', 32767).'a');
+});
+
+test('template import refuses a number setting that is not a whole number or does not fit and keeps the form', function (array $template, string $error) {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode([...$template, 'blocks' => []]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($error);
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1)
+        ->and($form->fresh()->cta_redirect_delay)->toBe(0)
+        ->and($form->fresh()->data_retention_days)->toBeNull();
+})->with([
+    'redirect delay as text' => [['cta_redirect_delay' => 'soon'], 'cta_redirect_delay'],
+    'redirect delay as a fraction' => [['cta_redirect_delay' => 1.5], 'cta_redirect_delay'],
+    'redirect delay below zero' => [['cta_redirect_delay' => -1], 'cta_redirect_delay'],
+    'redirect delay too big' => [['cta_redirect_delay' => 2147483648], 'cta_redirect_delay'],
+    'retention too big, auto delete on' => [['is_auto_delete_enabled' => true, 'data_retention_days' => 2147483648], 'data_retention_days'],
+    'retention too big, auto delete off' => [['data_retention_days' => 2147483648], 'data_retention_days'],
+    'retention as text, auto delete off' => [['data_retention_days' => 'soon'], 'data_retention_days'],
+]);
+
+test('template import refuses a yes/no setting that is not yes or no and keeps the form', function (string $key, mixed $value) {
+    $form = Form::factory()->create([$key => true]);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode([$key => $value, 'blocks' => []]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect($form->fresh()->$key)->toBeTrue();
+})->with([
+    'cta_append_params',
+    'cta_append_session_id',
+    'use_cta_redirect',
+    'show_cta_link',
+    'show_social_links',
+    'use_brighter_inputs',
+    'show_form_progress',
+])->with([
+    'text' => 'maybe',
+    'a list' => [['yes']],
+]);
+
+test('template import refuses an empty yes/no setting whose column needs a value', function (string $key) {
+    $form = Form::factory()->create([$key => true]);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode([$key => '', 'blocks' => []]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($key);
+
+    expect($form->fresh()->$key)->toBeTrue();
+})->with([
+    'cta_append_params',
+    'cta_append_session_id',
+    'use_cta_redirect',
+    'show_cta_link',
+    'show_social_links',
+    'use_brighter_inputs',
+]);
+
+test('template import saves an empty form setting as empty, like the settings save', function (string $key) {
+    $form = Form::factory()->create([$key => 1]);
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode([$key => '', 'blocks' => []]),
+    ])->assertOk();
+
+    // raw, since the app reads an empty yes/no as no
+    expect($form->fresh()->getRawOriginal($key))->toBeNull();
+})->with(['cta_redirect_delay', 'data_retention_days', 'show_form_progress', 'eoc_text']);
+
+test('template import refuses a block value that does not fit and keeps the form', function (array $block, string $error) {
+    $form = Form::factory()->has(FormBlock::factory())->create();
+
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [['type' => 'radio', 'message' => 'Hi', 'sequence' => 0, ...$block]]]),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors($error);
+
+    expect($form->fresh()->formBlocks)->toHaveCount(1);
+})->with([
+    'title too long' => [['title' => str_repeat('ä', 1025)], 'blocks.0.title'],
+    'answer label too long' => [['formBlockInteractions' => [['type' => 'button', 'label' => str_repeat('ä', 256)]]], 'blocks.0.formBlockInteractions.0.label'],
+    'unknown answer type' => [['formBlockInteractions' => [['type' => 'magic', 'label' => 'Yes']]], 'blocks.0.formBlockInteractions.0.type'],
+    'no answer type' => [['formBlockInteractions' => [['label' => 'Yes']]], 'blocks.0.formBlockInteractions.0.type'],
+]);
+
+test('template import takes a block title and an answer label at their column limit', function () {
+    $form = Form::factory()->create();
+
+    // the columns count letters, so a two-byte ä counts once
+    $this->actingAs($form->user)->postJson(route('api.forms.template-import', ['form' => $form->uuid]), [
+        'template' => json_encode(['blocks' => [[
+            'type' => 'radio',
+            'title' => str_repeat('ä', 1024),
+            'sequence' => 0,
+            'formBlockInteractions' => [['type' => 'button', 'label' => str_repeat('ä', 255)]],
+        ]]]),
+    ])->assertOk();
+
+    $block = $form->fresh()->formBlocks->first();
+
+    expect($block->title)->toBe(str_repeat('ä', 1024))
+        ->and($block->formBlockInteractions->first()->label)->toBe(str_repeat('ä', 255));
+});
+
 test('export, then import into another form keeps the logic rules and their targets', function () {
     $form = Form::factory()->create();
     $question = FormBlock::factory()->create(['form_id' => $form->id, 'type' => FormBlockType::short, 'sequence' => 0]);
