@@ -39,6 +39,18 @@ const stubs = {
 const route = vi.fn(() => "/forms");
 let wrapper: VueWrapper | undefined;
 
+// numbers without a locale come out as "1.031", like in a German browser
+const toLocaleString = Number.prototype.toLocaleString;
+const germanBrowser = () =>
+    vi
+        .spyOn(Number.prototype, "toLocaleString")
+        .mockImplementation(function (this: number, locales, options) {
+            return toLocaleString.call(this, locales ?? "de-DE", options);
+        });
+afterEach(() => {
+    vi.restoreAllMocks();
+});
+
 // the dialog is teleported to the body
 const dialog = () => document.querySelector<HTMLElement>("[role=dialog]");
 const nameInput = () => dialog()?.querySelector("input") as HTMLInputElement;
@@ -150,7 +162,8 @@ describe("form list row", () => {
         expect(wrapper.find('a[href="/forms.show"]').exists()).toBe(false);
     });
 
-    it("writes large counts with the reader's thousands separator", () => {
+    it("writes large counts in English like the dates, also in a German browser", () => {
+        germanBrowser();
         const route = vi.fn((name: string) => `/${name}`);
         const form = {
             uuid: "form1",
@@ -165,11 +178,9 @@ describe("form list row", () => {
         });
 
         expect(wrapper.find('a[href="/forms.submissions"]').text()).toBe(
-            `${(1031).toLocaleString()} submissions`,
+            "1,031 submissions",
         );
-        expect(wrapper.text()).toContain(
-            `${(1200).toLocaleString()} started`,
-        );
+        expect(wrapper.text()).toContain("1,200 started");
     });
 
     it("says when a form has no submissions yet", () => {
@@ -551,12 +562,13 @@ describe("row actions", () => {
     });
 
     it("names the submissions before a permanent delete, in a danger button", async () => {
+        germanBrowser();
         mountRow({ is_trashed: true, completed_sessions: 1031 });
         await menuItem("Delete permanently…").trigger("click");
         await flushPromises();
 
         expect(question()?.textContent).toContain(
-            `Delete "Contact" and its ${(1031).toLocaleString()} submissions?`,
+            'Delete "Contact" and its 1,031 submissions?',
         );
         expect(question()?.textContent).toContain("This can't be undone.");
         expect(questionButton("Delete permanently").className).toContain(

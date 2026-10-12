@@ -57,12 +57,12 @@
             :href="route('forms.submissions', form.uuid)"
           >
             <span class="lg:font-semibold">{{
-              form.completed_sessions.toLocaleString()
+              form.completed_sessions.toLocaleString("en-GB")
             }}</span>
             {{ form.completed_sessions === 1 ? "submission" : "submissions" }}
           </component>
           <div class="hidden text-xs tabular-nums text-grey-500 lg:block">
-            {{ form.total_sessions.toLocaleString() }} started ·
+            {{ form.total_sessions.toLocaleString("en-GB") }} started ·
             {{ Math.floor(form.completion_rate) }}% finished
           </div>
         </template>
@@ -448,7 +448,7 @@ const closeQuestion = async () => {
 };
 
 const submissions = (count: number) =>
-  count === 1 ? "1 submission" : `${count.toLocaleString()} submissions`;
+  count === 1 ? "1 submission" : `${count.toLocaleString("en-GB")} submissions`;
 
 const publish = () =>
   act(
