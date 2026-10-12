@@ -691,7 +691,7 @@ test('a form with auto delete on cannot get a retention period below one day', f
     'negative' => [-5],
 ]);
 
-test('with auto delete off, the retention period is not checked', function () {
+test('with auto delete off, the minimum retention period is not checked', function () {
     $form = Form::factory()->create();
 
     // the privacy settings always send the hidden retention field along
@@ -705,6 +705,108 @@ test('with auto delete off, the retention period is not checked', function () {
 
     $this->assertEquals('https://example.com/privacy', $form->fresh()->privacy_link);
 });
+
+test('a retention period that is not a whole number or too big is refused, with auto delete on or off', function (bool $autoDelete, mixed $days) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [
+            'is_auto_delete_enabled' => $autoDelete,
+            'data_retention_days' => $days,
+        ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('data_retention_days');
+
+    expect($form->fresh()->data_retention_days)->toBeNull();
+})->with([
+    'on, too big' => [true, 2147483648],
+    'off, too big' => [false, 2147483648],
+    'off, text' => [false, 'soon'],
+]);
+
+test('the longest retention period saves and auto delete still runs', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [
+            'is_auto_delete_enabled' => true,
+            'data_retention_days' => 2147483647,
+        ])
+        ->assertSuccessful();
+
+    expect($form->fresh()->data_retention_days)->toBe(2147483647);
+
+    $this->artisan('input:auto-delete-submissions')->assertSuccessful();
+});
+
+test('a changed end text must fit its column, counted in bytes', function () {
+    $form = Form::factory()->create();
+    $update = fn (string $text) => $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['eoc_text' => $text]);
+
+    // a TEXT column holds 65,535 bytes, and ä takes two
+    $update(str_repeat('a', 65536))->assertStatus(422)->assertJsonValidationErrors('eoc_text');
+    $update(str_repeat('ä', 32768))->assertStatus(422)->assertJsonValidationErrors('eoc_text');
+
+    expect($form->fresh()->eoc_text)->toBeNull();
+
+    $update(str_repeat('ä', 32767).'a')->assertSuccessful();
+
+    expect($form->fresh()->eoc_text)->toBe(str_repeat('ä', 32767).'a');
+});
+
+test('a changed redirect delay must be a whole number that fits its column', function (mixed $delay) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['cta_redirect_delay' => $delay])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('cta_redirect_delay');
+
+    expect($form->fresh()->cta_redirect_delay)->toBe(0);
+})->with([
+    'text' => ['soon'],
+    'a fraction' => [1.5],
+    'below zero' => [-1],
+    'too big' => [2147483648],
+]);
+
+test('a redirect delay can be empty or up to the largest whole number', function (?int $delay) {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), ['cta_redirect_delay' => $delay])
+        ->assertSuccessful();
+
+    expect($form->fresh()->cta_redirect_delay)->toBe($delay);
+})->with([null, 5, 2147483647]);
+
+test('a changed yes/no setting must be yes or no', function (string $key, bool $nullable) {
+    $form = Form::factory()->create();
+    $update = fn (mixed $value) => $this->actingAs($form->user)
+        ->json('POST', route('api.forms.update', $form->uuid), [$key => $value]);
+
+    $update('maybe')->assertStatus(422)->assertJsonValidationErrors($key);
+    $update(['yes'])->assertStatus(422)->assertJsonValidationErrors($key);
+
+    expect($form->fresh()->$key)->toBeFalse();
+
+    // only a column that allows empty takes null
+    $update(null)->assertStatus($nullable ? 200 : 422);
+    $update(true)->assertSuccessful();
+
+    expect($form->fresh()->$key)->toBeTrue();
+})->with([
+    ['is_notification_via_mail', false],
+    ['use_brighter_inputs', false],
+    ['show_form_progress', true],
+    ['cta_append_params', false],
+    ['cta_append_session_id', false],
+    ['use_cta_redirect', false],
+    ['has_data_privacy', false],
+    ['show_cta_link', false],
+    ['show_social_links', false],
+]);
 
 test('a form whose name starts with an emoji or non-Latin text shows in the list and opens', function (string $name, string $initials) {
     $user = User::factory()->withTeam()->create();
