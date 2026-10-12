@@ -273,8 +273,9 @@ const changeStatus = (setting: StatusSetting) => {
   if (setting === status.value) return;
   status.value = setting;
   writeUrl("pushState");
+  // a newer request drops the running one, so it loads all forms again
   if (setting === "archived") {
-    updateList(false);
+    updateList(isLoading.value || !forms.value);
   }
 };
 

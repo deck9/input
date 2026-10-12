@@ -208,6 +208,16 @@ describe("form list states", () => {
         expect(list().classes()).toContain("opacity-60");
     });
 
+    it("still loads all forms when Archived is picked during the first load", async () => {
+        vi.mocked(callListForms).mockReturnValueOnce(new Promise(() => {}));
+        await mountAt("/");
+        await tab("Archived").trigger("click");
+        await flushPromises();
+        await tab("All").trigger("click");
+
+        expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
+    });
+
     it("says when the list failed and loads it again on Try again", async () => {
         vi.mocked(callListForms).mockRejectedValueOnce(new Error("offline"));
         vi.spyOn(console, "warn").mockImplementation(() => {});
