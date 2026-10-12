@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Added
+
+-   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. A dashboard link with an unknown filter or sort now shows your forms. Before, it showed no forms at all. (#242)
+
 ### Fixed
 
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
