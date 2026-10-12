@@ -76,9 +76,13 @@ const text = computed(() => {
     ? `“${short}”`
     : `Question ${numberOf(props.block.uuid) || ""}`.trim();
   const answers = props.check?.answers;
-  const withAnswers = answers
-    ? ` and its ${answers} ${answers === 1 ? "answer" : "answers"}`
-    : "";
+  // unknown when the counts couldn't load: there may still be answers
+  const withAnswers =
+    answers === undefined
+      ? " and its answers"
+      : answers
+        ? ` and its ${answers} ${answers === 1 ? "answer" : "answers"}`
+        : "";
 
   return `${name}${withAnswers} will be deleted. This can't be undone.`;
 });

@@ -179,6 +179,20 @@ describe("asking before a delete", () => {
             expect(wrapper.text()).not.toContain("rule");
         });
 
+        it("says the answers go too when it can't count them", () => {
+            const wrapper = mount(DeleteBlockDialog, {
+                props: {
+                    block: block("q1"),
+                    check: { questions: 0, choices: {}, usedBy: [] },
+                },
+                global: { plugins: [pinia], stubs },
+            });
+
+            expect(wrapper.text()).toContain(
+                "“Will you come to the meetup?” and its answers will be deleted. This can't be undone.",
+            );
+        });
+
         it("names a group and how many questions go with it", async () => {
             const wrapper = await open("g");
 
