@@ -55,15 +55,15 @@
     >
       <slot name="save-status" />
       <slot name="preview">
-        <!-- until the live preview lands: the form in a new tab -->
+        <!-- until the live preview lands: the form in a new tab;
+          on phones it's in the form menu, so the name keeps its room -->
         <a
           :href="store.formUrl"
           target="_blank"
           rel="noopener"
-          class="flex h-11 w-11 flex-none items-center justify-center gap-1.5 rounded-md text-white hover:bg-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9 lg:w-auto lg:border lg:border-grey-600 lg:px-2.5 lg:text-[13px] lg:font-semibold"
-          ><D9Icon name="eye" /><span class="sr-only lg:not-sr-only"
-            >Preview</span
-          ><span aria-hidden="true" class="hidden lg:inline">↗</span
+          class="hidden h-9 flex-none items-center gap-1.5 rounded-md border border-grey-600 px-2.5 text-[13px] font-semibold text-white hover:bg-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:flex"
+          ><D9Icon name="eye" /><span>Preview</span
+          ><span aria-hidden="true">↗</span
           ><span class="sr-only">&nbsp;(opens in a new tab)</span></a
         >
       </slot>

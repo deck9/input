@@ -376,6 +376,33 @@ describe("form top bar", () => {
         );
     });
 
+    it("puts Preview in the form menu on phones, where the bar has no room for it", async () => {
+        const previewItem = async (isDesktop: boolean) => {
+            window.matchMedia = ((query: string) => ({
+                matches: isDesktop && query === "(min-width: 1024px)",
+                addEventListener() {},
+                removeEventListener() {},
+            })) as unknown as typeof window.matchMedia;
+            const wrapper = await mountOnPage(FormTopBar);
+            await wrapper.get('[aria-haspopup="menu"]').trigger("click");
+            await flushPromises();
+            const item = [...document.querySelectorAll('[role="menuitem"]')].find((i) =>
+                text(i)?.startsWith("Preview"),
+            );
+            wrapper.unmount();
+            return item;
+        };
+
+        const item = await previewItem(false);
+        expect(text(item!)).toBe("Preview ↗");
+        expect(item?.getAttribute("aria-label")).toBe("Preview (opens in a new tab)");
+        expect(item?.getAttribute("href")).toBe(`${location.origin}/forms.show`);
+        expect(item?.getAttribute("target")).toBe("_blank");
+        // from 1024 px it's in the bar
+        expect(await previewItem(true)).toBeUndefined();
+        delete (window as Partial<Window>).matchMedia;
+    });
+
     it("gives the buttons of the publish, rename and archive dialogs 44 px on phones", async () => {
         const wrapper = await mountOnPage(FormTopBar, {}, [block("q1", "<p>Your name?</p>")]);
         const menuItem = (label: string) =>

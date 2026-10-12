@@ -89,5 +89,7 @@ describe("app header", () => {
         expect(preview.attributes("href")).toBe("/forms.show");
         expect(preview.get("span").text()).toBe("Preview");
         expect(preview.text()).toContain("(opens in a new tab)");
+        // on phones it's in the form menu: the name keeps its room
+        expect(preview.classes()).toEqual(expect.arrayContaining(["hidden", "lg:flex"]));
     });
 });

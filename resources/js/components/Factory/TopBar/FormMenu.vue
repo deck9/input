@@ -15,6 +15,16 @@
         <D9Icon class="flex-none" name="chevron-down" />
       </span>
     </template>
+    <!-- from lg the bar has Preview -->
+    <D9MenuLink
+      v-if="!isLarge"
+      as="a"
+      :href="store.formUrl"
+      target="_blank"
+      :class="menuItem"
+      label="Preview ↗"
+      aria-label="Preview (opens in a new tab)"
+    />
     <D9MenuLink
       as="button"
       type="button"
@@ -96,12 +106,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
+import { useMediaQuery } from "@vueuse/core";
 import { D9Button, D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import ConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import FormNameDialog from "@/components/Dashboard/FormNameDialog.vue";
 import { useForm } from "@/stores";
 
 const store = useForm();
+// Tailwind's lg
+const isLarge = useMediaQuery("(min-width: 1024px)");
 
 // as on the dashboard: 44 px rows on phones
 const menuItem = "block w-full text-left !py-3 !text-sm lg:!py-2";
