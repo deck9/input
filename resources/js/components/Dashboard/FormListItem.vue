@@ -68,9 +68,9 @@
         </template>
         <span v-else>No submissions yet</span>
       </div>
-      <!-- phones leave out the dash: the meta line says "No submissions yet" -->
+      <!-- phones: a line of its own, and no dash: the meta line says "No submissions yet" -->
       <div
-        class="tabular-nums"
+        class="basis-full tabular-nums"
         :class="{ 'hidden lg:block': !shownDate }"
         :title="shownDate ? formatFullDate(shownDate) : 'No submissions yet'"
       >
