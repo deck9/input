@@ -322,4 +322,6 @@ type SortSetting = "latest" | "edited" | "newest" | "name";
 type ListDate = {
     key: "latest_submission_at" | "updated_at" | "created_at";
     label: string;
+    // in front of the date on phones, which have no column title
+    short?: string;
 };

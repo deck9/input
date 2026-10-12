@@ -135,8 +135,8 @@ const lastSubmission: ListDate = {
 };
 const listDates: Record<SortSetting, ListDate> = {
   latest: lastSubmission,
-  edited: { key: "updated_at", label: "Last edited" },
-  newest: { key: "created_at", label: "Created" },
+  edited: { key: "updated_at", label: "Last edited", short: "Edited" },
+  newest: { key: "created_at", label: "Created", short: "Created" },
   name: lastSubmission,
 };
 const statuses: StatusSetting[] = [

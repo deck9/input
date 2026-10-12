@@ -197,11 +197,11 @@ describe("form list search, status and sort", () => {
         wrapper!.findComponent(SortControl).vm.$emit("changeSort", "edited");
         await flushPromises();
         expect(window.history.pushState).toHaveBeenLastCalledWith(null, "", "/?sort=edited");
-        expect(list.props("date")).toEqual({ key: "updated_at", label: "Last edited" });
+        expect(list.props("date")).toEqual({ key: "updated_at", label: "Last edited", short: "Edited" });
 
         wrapper!.findComponent(SortControl).vm.$emit("changeSort", "newest");
         await flushPromises();
-        expect(list.props("date")).toEqual({ key: "created_at", label: "Created" });
+        expect(list.props("date")).toEqual({ key: "created_at", label: "Created", short: "Created" });
     });
 
     it("sorts on the server and keeps the sort in a new history entry", async () => {

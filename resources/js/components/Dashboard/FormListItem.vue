@@ -75,6 +75,10 @@
         :title="shownDate ? formatFullDate(shownDate) : 'No submissions yet'"
       >
         <span class="sr-only">{{ date.label }}: </span>
+        <!-- read once: screen readers get the label above; Vue drops a plain end space -->
+        <span v-if="date.short" aria-hidden="true" class="lg:hidden"
+          >{{ date.short }}&nbsp;</span
+        >
         <template v-if="!shownDate">
           <span aria-hidden="true">—</span>
           <span class="sr-only">No submissions</span>

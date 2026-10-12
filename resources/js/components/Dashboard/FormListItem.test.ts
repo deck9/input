@@ -209,7 +209,11 @@ describe("form list row", () => {
 describe("last submission", () => {
     const now = new Date(2026, 9, 12, 10, 0);
     const route = vi.fn(() => "/forms");
-    const lastEdited: ListDate = { key: "updated_at", label: "Last edited" };
+    const lastEdited: ListDate = {
+        key: "updated_at",
+        label: "Last edited",
+        short: "Edited",
+    };
 
     const mountRow = (form: Partial<FormModel>, date?: ListDate) =>
         mount(FormListItem, {
@@ -281,7 +285,11 @@ describe("last submission", () => {
             lastEdited,
         );
 
-        expect(dateCell(wrapper).text()).toBe("Last edited: 2 Sept");
+        expect(dateCell(wrapper).text()).toBe("Last edited: Edited 2 Sept");
+        // phones see "Edited", screen readers hear only "Last edited"
+        const short = dateCell(wrapper).get("[aria-hidden=true]");
+        expect(short.text()).toBe("Edited");
+        expect(short.classes()).toContain("lg:hidden");
         expect(dateCell(wrapper).find(".bg-blue-600").exists()).toBe(false);
         expect(dots(wrapper)).toHaveLength(1);
         expect(wrapper.text()).toContain("New, 4 submissions");
