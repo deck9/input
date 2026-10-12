@@ -1,8 +1,8 @@
 <template>
   <div id="form-document" class="h-full w-full overflow-y-auto bg-white">
     <div class="mx-auto w-full max-w-[720px] px-2 pb-40 pt-6 sm:px-6 sm:pt-10">
-      <div v-if="!isLoaded" class="flex justify-center py-12">
-        <D9Spinner class="text-blue-300 opacity-50" label="Loading questions" />
+      <div v-if="status !== 'loaded'" class="pl-12">
+        <QuestionsLoadState :status="status" @retry="emit('retry')" />
       </div>
 
       <template v-else>
@@ -41,18 +41,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { D9Button, D9Spinner } from "@deck9/ui";
-import { useForm, useWorkbench } from "@/stores";
+import { computed } from "vue";
+import { D9Button } from "@deck9/ui";
+import { useForm } from "@/stores";
 import EmptyState from "@/components/EmptyState.vue";
+import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
 import { questionNumbers } from "./questionSummary";
 import { useAddBlock } from "./useAddBlock";
 
+defineProps<{
+  status: "loading" | "failed" | "loaded";
+}>();
+const emit = defineEmits<{ retry: [] }>();
+
 const store = useForm();
-const workbench = useWorkbench();
-const isLoaded = ref(false);
 const { addBlock } = useAddBlock();
 
 const numbers = computed(() => questionNumbers(store.blocks ?? []));
@@ -69,18 +73,5 @@ const countLine = computed(() => {
   }
 
   return parts.join(" · ");
-});
-
-onMounted(async () => {
-  await store.getBlocks();
-
-  if (!workbench.block && store.blocks?.length) {
-    const wanted = new URLSearchParams(window.location.search).get("block");
-    const found = store.blocks.find((block) => block.uuid === wanted);
-
-    workbench.putOnWorkbench(found ?? store.blocks[0]);
-  }
-
-  isLoaded.value = true;
 });
 </script>

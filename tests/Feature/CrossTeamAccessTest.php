@@ -88,6 +88,7 @@ test('a user from another team cannot read, change or delete team data', functio
     'create block' => ['post', fn () => route('api.blocks.create', $this->form), [], 403],
     'update block' => ['post', fn () => route('api.blocks.update', $this->block), ['message' => 'Hijacked'], 403],
     'delete block' => ['delete', fn () => route('api.blocks.delete', $this->block), [], 403],
+    'duplicate block' => ['post', fn () => route('api.blocks.duplicate', $this->block), [], 403],
     'sort blocks' => ['post', fn () => route('api.blocks.sequence', $this->form), ['sequence' => []], 403],
 
     // interactions
