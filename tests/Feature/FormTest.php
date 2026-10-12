@@ -182,6 +182,57 @@ test('the form list loads the latest submissions without a query per form', func
         ->toHaveCount(1);
 });
 
+test('the form list runs as many queries for many forms as for one', function () {
+    $user = User::factory()->withTeam()->create();
+    $member = User::factory()->withTeam($user->currentTeam)->create();
+
+    $countQueries = function () use ($user) {
+        // a fresh user each time, so no relation stays loaded from the request before
+        $actor = $user->fresh();
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        $this->actingAs($actor)->getJson(route('api.forms.index'))->assertOk();
+        DB::disableQueryLog();
+
+        return count(DB::getQueryLog());
+    };
+
+    Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    $queriesForOneForm = $countQueries();
+
+    foreach ([$user, $member] as $owner) {
+        Form::factory()->count(15)->create(['user_id' => $owner->id, 'team_id' => $user->current_team_id])
+            ->each(fn (Form $form) => FormSession::factory()->for($form)->completed()->create());
+    }
+
+    expect($countQueries())->toBe($queriesForOneForm);
+});
+
+test('each form in the list has the same data as the form itself', function () {
+    $user = User::factory()->withTeam()->create(['company_name' => 'Owner Inc.']);
+    $member = User::factory()->withTeam($user->currentTeam)->create(['company_name' => 'Member Inc.']);
+    $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+    Form::factory()->create(['user_id' => $member->id, 'team_id' => $user->current_team_id]);
+
+    // a submit without answers, and two sessions never submitted
+    FormSession::factory()->for($form)->completed()->create();
+    FormSession::factory()->for($form)->count(2)->create();
+
+    $list = $this->actingAs($user)->getJson(route('api.forms.index'))->assertOk()->json();
+
+    expect($list)->toHaveCount(2);
+    foreach ($list as $listed) {
+        // the form's own JSON counts and loads the owner per form
+        $single = json_decode(Form::where('uuid', $listed['uuid'])->sole()->toJson(), true);
+        unset($listed['latest_submission_at']);
+        ksort($listed);
+        ksort($single);
+
+        // toBe compares strictly, so a count that comes back as a string fails too
+        expect($listed)->toBe($single);
+    }
+});
+
 test('a user can sort forms by latest submission, newest first and forms without submissions last', function () {
     $user = User::factory()->withTeam()->create();
     $older = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
