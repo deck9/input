@@ -53,7 +53,7 @@ import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.v
 import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
 import { questionNumbers } from "./questionSummary";
-import { focusBlock, useAddBlock } from "./blockFocus";
+import { focusBlock, scrollToBlock, useAddBlock } from "./blockFocus";
 
 const props = defineProps<{
   status: "loading" | "failed" | "loaded";
@@ -92,6 +92,16 @@ watch(
         ? root.value?.querySelector<HTMLElement>("[role=alert] button")
         : addButtons.value?.querySelector("button");
     fallback?.focus();
+  },
+);
+
+// a question opened by link (?block=) may sit far down
+watch(
+  () => props.status,
+  (status) => {
+    if (status === "loaded" && workbench.block) {
+      scrollToBlock(workbench.block.uuid);
+    }
   },
 );
 

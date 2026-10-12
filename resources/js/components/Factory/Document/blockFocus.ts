@@ -22,6 +22,12 @@ export async function focusBlock(block: FormBlockModel | null): Promise<boolean>
     return name !== null;
 }
 
+// brings a question or group to the top of the document
+export async function scrollToBlock(uuid: string) {
+    await nextTick();
+    document.getElementById(`row-${uuid}`)?.scrollIntoView({ block: "start" });
+}
+
 // a new block opens with the cursor in it
 export function useAddBlock() {
     const store = useForm();

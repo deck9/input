@@ -1,5 +1,5 @@
 <template>
-  <div :id="`row-${block.uuid}`" class="group/question flex items-start">
+  <div :id="`row-${block.uuid}`" class="group/question flex scroll-mt-4 items-start">
     <div class="flex w-12 shrink-0 flex-col items-end gap-1 pr-2 pt-3">
       <span
         aria-hidden="true"

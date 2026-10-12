@@ -1,7 +1,8 @@
 <template>
   <section
+    :id="`row-${group.uuid}`"
     :aria-labelledby="`${id}-label`"
-    class="rounded-lg border border-grey-200 bg-grey-50 py-2 pr-2"
+    class="scroll-mt-4 rounded-lg border border-grey-200 bg-grey-50 py-2 pr-2"
     :class="isOpen && 'ring-1 ring-blue-500'"
   >
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-3">
