@@ -40,7 +40,7 @@ class FormBlockController extends Controller
             'name' => $rule->name,
             'block' => $block->uuid,
             'sources' => collect($rule->conditions)->pluck('source'),
-            'target' => $rule->action_payload,
+            'target' => $rule->action === 'goto' ? $rule->action_payload : null,
         ]));
 
         return response()->json($blocks->map(fn ($block) => [

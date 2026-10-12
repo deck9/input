@@ -25,11 +25,11 @@ class FormBlockLogicRequest extends FormRequest
     }
 
     // the template import reuses these rules without a block, and drops a rule that points to a missing block itself
-    protected function inThisForm(string $message): Closure
+    protected function inThisForm(string $message, bool $when = true): Closure
     {
         /** The `uuid` of a block of this form. */
-        return function (string $attribute, mixed $value, Closure $fail) use ($message) {
-            if ($this->block() && ! $this->block()->form->formBlocks->pluck('uuid')->containsStrict($value)) {
+        return function (string $attribute, mixed $value, Closure $fail) use ($message, $when) {
+            if ($when && $this->block() && ! $this->block()->form->formBlocks->pluck('uuid')->containsStrict($value)) {
                 $fail($message);
             }
         };
@@ -50,7 +50,8 @@ class FormBlockLogicRequest extends FormRequest
             'conditions.*.value' => 'required|string',
             'conditions.*.chainOperator' => 'required|string|in:and,or',
             'action' => 'required|string|in:hide,show,goto',
-            'action_payload' => ['nullable', 'string', $this->inThisForm('The question to go to is not in this form.')],
+            // only a goto rule uses its payload, a hide or show rule can keep an old target from the editor
+            'action_payload' => ['nullable', 'string', $this->inThisForm('The question to go to is not in this form.', when: $this->input('action') === 'goto')],
             'evaluate' => 'required|string|in:before,after',
         ];
     }

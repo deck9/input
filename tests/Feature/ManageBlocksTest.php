@@ -386,8 +386,9 @@ test('the blocks list names the rules that use each question', function () {
     $jump = FormBlockLogic::factory()->for($second)->create([
         'name' => 'Jump', 'conditions' => [$condition($first)], 'action' => 'goto', 'action_payload' => $third->uuid, 'evaluate' => 'after',
     ]);
+    // the editor keeps the old target when a rule switches from goto to hide, so this rule doesn't go to $unused
     $hide = FormBlockLogic::factory()->for($third)->create([
-        'name' => 'Hide', 'conditions' => [$condition($first), $condition($second), $condition($first)], 'action' => 'hide', 'action_payload' => null,
+        'name' => 'Hide', 'conditions' => [$condition($first), $condition($second), $condition($first)], 'action' => 'hide', 'action_payload' => $unused->uuid,
     ]);
 
     $usedBy = fn (FormBlockLogic $rule, FormBlock $block, array $as) => ['id' => $rule->id, 'name' => $rule->name, 'block' => $block->uuid, 'as' => $as];
