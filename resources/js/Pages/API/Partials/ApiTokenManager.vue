@@ -33,6 +33,7 @@ const updateApiTokenForm = useForm({
 const deleteApiTokenForm = useForm({});
 
 const displayingToken = ref(false);
+const createButton = ref(null);
 const managingPermissionsFor = ref(null);
 const apiTokenBeingDeleted = ref(null);
 
@@ -44,6 +45,12 @@ const createApiToken = () => {
       createApiTokenForm.reset();
     },
   });
+};
+
+// saving disabled the Create button and took its focus, so the dialog can't give it back
+const closeToken = () => {
+  displayingToken.value = false;
+  createButton.value?.$el.focus();
 };
 
 const manageApiTokenPermissions = (token) => {
@@ -129,6 +136,7 @@ const deleteApiToken = () => {
         </ActionMessage>
 
         <PrimaryButton
+          ref="createButton"
           :class="{ 'opacity-25': createApiTokenForm.processing }"
           :disabled="createApiTokenForm.processing"
         >
@@ -190,7 +198,7 @@ const deleteApiToken = () => {
     </div>
 
     <!-- Token Value Modal -->
-    <DialogModal :show="displayingToken" @close="displayingToken = false">
+    <DialogModal :show="displayingToken" @close="closeToken">
       <template #title> API Token </template>
 
       <template #content>
@@ -208,9 +216,7 @@ const deleteApiToken = () => {
       </template>
 
       <template #footer>
-        <SecondaryButton @click="displayingToken = false">
-          Close
-        </SecondaryButton>
+        <SecondaryButton @click="closeToken"> Close </SecondaryButton>
       </template>
     </DialogModal>
 
