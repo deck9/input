@@ -4,54 +4,109 @@
       <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-4">
           <h1 class="text-2xl font-bold leading-8 text-grey-900">Forms</h1>
-          <CreateFormButton />
-        </div>
-        <!-- phones: search on one row, status and sort on the next -->
-        <div
-          class="mb-4 mt-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center"
-        >
-          <SearchField v-model="query" class="md:w-64 xl:w-72" />
-          <div class="grid grid-cols-2 gap-2 md:contents">
-            <FilterControl
-              :status="status"
-              :counts="counts"
-              @changeStatus="changeStatus"
-            />
-            <SortControl
-              class="md:ml-auto"
-              :sort="sort"
-              @changeSort="changeSort"
-            />
-          </div>
+          <CreateFormButton v-if="!isFirstRun" />
         </div>
 
-        <div
-          v-if="!statusForms.length"
-          class="w-full rounded bg-white px-16 py-16 text-center"
+        <section
+          v-if="isFirstRun"
+          aria-labelledby="first-run-title"
+          class="mt-6 rounded-lg border border-grey-200 bg-white px-6 py-12 text-center sm:px-16"
         >
           <h2
-            class="font-heading mb-4 text-center text-2xl font-black leading-none text-grey-900"
+            id="first-run-title"
+            class="text-balance text-xl font-bold text-grey-900"
           >
-            Start by creating a form
+            Create your first form
           </h2>
-          <p class="text-sm text-grey-600">
-            You haven't created a survey yet. Click on "New survey" in the top
-            right corner to begin with a new survey. To get you started really
-            quickly you can watch the following introduction for the BotReach
-            editor.
+          <p class="mx-auto mt-2 max-w-md text-pretty text-sm text-grey-600">
+            Build a form, share its link and read the answers here.
           </p>
-        </div>
+          <CreateFormButton class="mt-6 justify-center" />
+        </section>
 
-        <div
-          class="w-full rounded bg-white p-16 text-center"
-          v-else-if="isLoading"
-        >
-          <D9Spinner label="Loading forms" />
-        </div>
+        <template v-else>
+          <!-- phones: search on one row, status and sort on the next -->
+          <div
+            class="mb-4 mt-6 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center"
+          >
+            <SearchField
+              ref="searchField"
+              v-model="query"
+              class="md:w-64 xl:w-72"
+            />
+            <div class="grid grid-cols-2 gap-2 md:contents">
+              <FilterControl
+                :status="status"
+                :counts="counts"
+                @changeStatus="changeStatus"
+              />
+              <SortControl
+                class="md:ml-auto"
+                :sort="sort"
+                @changeSort="changeSort"
+              />
+            </div>
+          </div>
 
-        <div v-else>
-          <FormListTable :forms="visibleForms" />
-        </div>
+          <div
+            v-if="hasFailed"
+            role="alert"
+            class="rounded-lg border border-grey-200 bg-white p-8 text-center"
+          >
+            <p class="text-sm font-medium text-grey-900">
+              Couldn't load your forms.
+            </p>
+            <D9Button
+              class="mt-4"
+              color="light"
+              label="Try again"
+              :isLoading="isLoading"
+              @click="updateList()"
+            />
+          </div>
+
+          <!-- a refetch keeps the list, faded, until the new one is there -->
+          <FormListTable
+            v-else
+            :forms="visibleForms"
+            :aria-busy="isLoading"
+            class="transition-opacity"
+            :class="{ 'opacity-60': isLoading && statusForms }"
+          >
+            <div v-if="!statusForms">
+              <span class="sr-only">Loading forms</span>
+              <div
+                v-for="row in 5"
+                :key="row"
+                aria-hidden="true"
+                class="flex h-16 items-center border-b border-grey-200 px-4 last:border-0"
+              >
+                <D9Skeleton
+                  avatar
+                  :lines="0"
+                  class="w-full text-grey-200 motion-reduce:animate-none sm:w-1/2"
+                />
+              </div>
+            </div>
+            <div v-else role="status" class="px-6 py-14 text-center">
+              <p class="text-sm text-grey-600">{{ noMatch }}</p>
+              <D9Button
+                v-if="search"
+                class="mt-4"
+                color="light"
+                label="Clear search"
+                @click="clearSearch"
+              />
+              <D9Button
+                v-else-if="status !== 'all'"
+                class="mt-4"
+                color="light"
+                label="Show all forms"
+                @click="showAll"
+              />
+            </div>
+          </FormListTable>
+        </template>
       </div>
     </div>
   </app-layout>
@@ -65,9 +120,9 @@ import FilterControl from "@/components/Dashboard/FilterControl.vue";
 import SearchField from "@/components/Dashboard/SearchField.vue";
 import SortControl from "@/components/Dashboard/SortControl.vue";
 
-import { computed, ref, watch } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import { callListForms } from "@/api/forms";
-import { D9Spinner } from "@deck9/ui";
+import { D9Button, D9Skeleton } from "@deck9/ui";
 
 const apiSort: Record<SortSetting, string> = {
   latest: "latest_submission_at:desc",
@@ -95,10 +150,18 @@ const sort = ref(
 );
 
 const isLoading = ref(true);
-const forms = ref<Array<FormModel>>([]);
-const archived = ref<Array<FormModel>>([]);
+const hasFailed = ref(false);
+// null until loaded, so loading never looks like an empty list
+const forms = ref<Array<FormModel> | null>(null);
+const archived = ref<Array<FormModel> | null>(null);
+
+const isFirstRun = computed(
+  () => forms.value?.length === 0 && archived.value?.length === 0,
+);
 
 const counts = computed(() => {
+  if (!forms.value) return undefined;
+
   const published = forms.value.filter((form) => form.is_published).length;
   return {
     all: forms.value.length,
@@ -111,19 +174,28 @@ const statusForms = computed(
   () =>
     ({
       all: forms.value,
-      published: forms.value.filter((form) => form.is_published),
-      unpublished: forms.value.filter((form) => !form.is_published),
+      published: forms.value?.filter((form) => form.is_published),
+      unpublished: forms.value?.filter((form) => !form.is_published),
       archived: archived.value,
-    })[status.value],
+    })[status.value] ?? null,
 );
 
 // "muller" finds "Müller"
 const fold = (text: string) =>
   text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
+const search = computed(() => query.value.trim());
+
 const visibleForms = computed(() => {
-  const search = fold(query.value.trim());
-  return statusForms.value.filter((form) => fold(form.name).includes(search));
+  const folded = fold(search.value);
+  return (statusForms.value ?? []).filter((form) =>
+    fold(form.name).includes(folded),
+  );
+});
+
+const noMatch = computed(() => {
+  const name = status.value === "all" ? "forms" : `${status.value} forms`;
+  return search.value ? `No ${name} match "${search.value}".` : `No ${name}.`;
 });
 
 // keeps Inertia's page state, so Back shows this page with the older URL
@@ -154,8 +226,17 @@ const updateList = async (withForms = true) => {
 
     if (all) forms.value = all.data;
     if (trashed) archived.value = trashed.data;
+
+    // the first-run card needs to know there are no archived forms either
+    if (forms.value?.length === 0 && !archived.value) {
+      archived.value = (
+        await callListForms("trashed", apiSort[sort.value])
+      ).data;
+    }
+    hasFailed.value = false;
   } catch (e) {
     console.warn(e);
+    hasFailed.value = true;
   } finally {
     isLoading.value = false;
   }
@@ -173,6 +254,19 @@ const changeStatus = (setting: StatusSetting) => {
   if (setting === "archived") {
     updateList(false);
   }
+};
+
+// the clicked button goes away, so focus moves to the search
+const searchField = useTemplateRef("searchField");
+
+const clearSearch = () => {
+  query.value = "";
+  searchField.value?.focus();
+};
+
+const showAll = () => {
+  changeStatus("all");
+  searchField.value?.focus();
 };
 
 // init forms on load

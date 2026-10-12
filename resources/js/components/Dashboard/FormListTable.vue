@@ -11,9 +11,11 @@
       <div>Last edited</div>
       <div></div>
     </div>
-    <ul role="list" class="divide-y divide-grey-200">
+    <ul v-if="forms.length" role="list" class="divide-y divide-grey-200">
       <FormListItem :form="form" :key="form.id" v-for="form in forms" />
     </ul>
+    <!-- what to show instead of rows: loading or no match -->
+    <slot v-else />
   </div>
 </template>
 

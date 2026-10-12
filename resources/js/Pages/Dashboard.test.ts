@@ -19,7 +19,8 @@ const stubs = {
     CreateFormButton: true,
     FormListTable: {
         props: ["forms"],
-        template: "<ul><li v-for='form in forms'>{{ form.name }}</li></ul>",
+        template:
+            "<div><ul v-if='forms.length'><li v-for='form in forms'>{{ form.name }}</li></ul><slot v-else /></div>",
     },
 };
 
@@ -141,5 +142,118 @@ describe("form list search, status and sort", () => {
 
         expect(tab("All").attributes("aria-pressed")).toBe("true");
         expect(callListForms).toHaveBeenLastCalledWith(null, "updated_at:desc");
+    });
+});
+
+describe("form list states", () => {
+    const answer = (data: FormModel[]) =>
+        ({ data }) as AxiosResponse<FormModel[]>;
+    const list = () => wrapper!.findComponent(stubs.FormListTable);
+    const button = (label: string) =>
+        wrapper!.findAll("button").find((button) => button.text() === label)!;
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        vi.mocked(callListForms).mockImplementation(async (filter) =>
+            answer(filter === "trashed" ? archived : forms),
+        );
+    });
+
+    afterEach(() => {
+        wrapper?.unmount();
+    });
+
+    it("shows skeleton rows on the first load, never the first-run text", async () => {
+        vi.mocked(callListForms).mockReturnValue(new Promise(() => {}));
+        await mountAt("/");
+
+        expect(list().attributes("aria-busy")).toBe("true");
+        expect(list().text()).toBe("Loading forms");
+        expect(wrapper!.text()).not.toContain("Create your first form");
+        expect(wrapper!.text()).not.toContain("No forms");
+        // no counts until the forms are there
+        expect(tab("All").text()).toBe("All");
+    });
+
+    it("keeps the current list, faded, while a new sort loads", async () => {
+        await mountAt("/");
+        vi.mocked(callListForms).mockReturnValue(new Promise(() => {}));
+        wrapper!.findComponent(SortControl).vm.$emit("changeSort", "name");
+        await flushPromises();
+
+        expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
+        expect(list().attributes("aria-busy")).toBe("true");
+        expect(list().classes()).toContain("opacity-60");
+    });
+
+    it("says when the list failed and loads it again on Try again", async () => {
+        vi.mocked(callListForms).mockRejectedValueOnce(new Error("offline"));
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        await mountAt("/");
+
+        expect(wrapper!.get("[role=alert]").text()).toContain(
+            "Couldn't load your forms.",
+        );
+        expect(shown()).toEqual([]);
+
+        await button("Try again").trigger("click");
+        await flushPromises();
+
+        expect(wrapper!.find("[role=alert]").exists()).toBe(false);
+        expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
+    });
+
+    it("says when a search finds nothing and clears it", async () => {
+        await mountAt("/?status=published");
+        const search = wrapper!.get("input[type=search]");
+        await search.setValue("müllr");
+
+        expect(wrapper!.get("[role=status]").text()).toContain(
+            'No published forms match "müllr".',
+        );
+
+        await button("Clear search").trigger("click");
+
+        expect((search.element as HTMLInputElement).value).toBe("");
+        expect(document.activeElement).toBe(search.element);
+        expect(shown()).toEqual(["Müller Umfrage", "Customer feedback"]);
+    });
+
+    it("says when a status has no forms and shows all of them", async () => {
+        vi.mocked(callListForms).mockImplementation(async (filter) =>
+            answer(filter === "trashed" ? [] : forms),
+        );
+        await mountAt("/?status=archived");
+
+        expect(wrapper!.get("[role=status]").text()).toContain(
+            "No archived forms.",
+        );
+
+        await button("Show all forms").trigger("click");
+
+        expect(tab("All").attributes("aria-pressed")).toBe("true");
+        expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
+    });
+
+    it("shows the first-run card only when the team has no forms at all", async () => {
+        vi.mocked(callListForms).mockResolvedValue(answer([]));
+        await mountAt("/");
+
+        expect(wrapper!.get("h2").text()).toBe("Create your first form");
+        expect(wrapper!.text()).toContain(
+            "Build a form, share its link and read the answers here.",
+        );
+        expect(wrapper!.find("input[type=search]").exists()).toBe(false);
+        expect(callListForms).toHaveBeenCalledWith("trashed", "updated_at:desc");
+        wrapper!.unmount();
+
+        // archived forms only: no first run, the list says it's empty
+        vi.mocked(callListForms).mockImplementation(async (filter) =>
+            answer(filter === "trashed" ? archived : []),
+        );
+        await mountAt("/");
+
+        expect(wrapper!.text()).not.toContain("Create your first form");
+        expect(wrapper!.get("[role=status]").text()).toBe("No forms.");
     });
 });

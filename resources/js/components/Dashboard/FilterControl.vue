@@ -46,7 +46,8 @@ import { computed, useId } from "vue";
 
 const props = defineProps<{
   status: StatusSetting;
-  counts: { all: number; published: number; unpublished: number };
+  // none while the list loads
+  counts?: { all: number; published: number; unpublished: number };
 }>();
 
 const emit = defineEmits<{
@@ -59,9 +60,9 @@ const id = useId();
 const options = computed(() =>
   (
     [
-      ["all", "All", props.counts.all],
-      ["published", "Published", props.counts.published],
-      ["unpublished", "Unpublished", props.counts.unpublished],
+      ["all", "All", props.counts?.all],
+      ["published", "Published", props.counts?.published],
+      ["unpublished", "Unpublished", props.counts?.unpublished],
       ["archived", "Archived", undefined],
     ] as const
   ).map(([id, name, count]) => ({
