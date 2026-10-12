@@ -51,7 +51,7 @@ import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNav
 import useActiveInteractions from "../Shared/useActiveInteractions";
 
 const workbench = useWorkbench();
-const { activeInteractions, editableInteractions } = useActiveInteractions(
+const { editableInteractions } = useActiveInteractions(
   workbench.block,
 );
 
@@ -105,7 +105,7 @@ const {
   focusPreviousItem,
   focusLastItem,
   focusNeighborItem,
-} = useKeyboardNavigation(activeInteractions, async () => {
+} = useKeyboardNavigation(editableInteractions, async () => {
   await createClickInteraction();
 });
 </script>
