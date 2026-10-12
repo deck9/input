@@ -37,7 +37,7 @@ class TrashedFormController extends Controller
     /**
      * Restore a form
      *
-     * This endpoint restores a form from trash.
+     * This endpoint restores a form from trash. A restored form is unpublished: publish it again to make it public.
      */
     public function restore(Request $request, $form)
     {
@@ -48,6 +48,8 @@ class TrashedFormController extends Controller
             ->firstOrFail();
 
         if ($model->trashed()) {
+            // forms archived before archiving unpublished them are still published
+            $model->published_at = null;
             $model->restore();
         }
 

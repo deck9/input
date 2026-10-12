@@ -491,15 +491,19 @@ test('can not update form of other users', function () {
         ->assertStatus(403);
 });
 
-test('can delete a form', function () {
-    $form = Form::factory()->create();
+test('can delete a form, which unpublishes it', function (?string $publishedAt) {
+    $form = Form::factory()->create(['published_at' => $publishedAt]);
 
     $this->actingAs($form->user)
         ->json('DELETE', route('api.forms.delete', $form->uuid))
         ->assertStatus(200);
 
     $this->assertNotNull($form->fresh()->deleted_at);
-});
+    $this->assertNull($form->fresh()->published_at);
+})->with([
+    'published' => '2026-01-01 00:00:00',
+    'unpublished' => null,
+]);
 
 test('a user can permanently delete a form if it was soft deleted before', function () {
     $form = Form::factory()->create();
@@ -528,6 +532,53 @@ test('a user can restore a deleted form', function () {
         ->assertStatus(200);
 
     $this->assertNotNull(Form::find($form->id));
+});
+
+test('a restored form stays offline until it is published again', function () {
+    $form = Form::factory()->create();
+
+    $this->actingAs($form->user)
+        ->json('DELETE', route('api.forms.delete', $form->uuid))
+        ->assertStatus(200);
+
+    $this->json('POST', route('api.forms.trashed.restore', $form->uuid))
+        ->assertStatus(200)
+        ->assertJsonPath('uuid', $form->uuid)
+        ->assertJsonPath('published_at', null);
+
+    auth()->forgetGuards();
+    $this->get(route('forms.show', $form->uuid))->assertStatus(404);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.publish', $form->uuid))
+        ->assertStatus(200);
+
+    auth()->forgetGuards();
+    $this->get(route('forms.show', $form->uuid))->assertStatus(200);
+});
+
+test('a form archived while still published comes back unpublished', function () {
+    // archived before archiving unpublished a form
+    $form = Form::factory()->deleted()->create(['published_at' => now()->subDay()]);
+
+    $this->actingAs($form->user)
+        ->json('POST', route('api.forms.trashed.restore', $form->uuid))
+        ->assertStatus(200)
+        ->assertJsonPath('published_at', null);
+
+    $this->assertNull($form->fresh()->deleted_at);
+    $this->assertNull($form->fresh()->published_at);
+});
+
+test('a user from another team cannot restore an archived form', function () {
+    $form = Form::factory()->deleted()->create(['published_at' => now()->subDay()]);
+    $before = $form->fresh()->getAttributes();
+
+    $this->actingAs(User::factory()->withTeam()->create())
+        ->json('POST', route('api.forms.trashed.restore', $form->uuid))
+        ->assertStatus(404);
+
+    $this->assertEquals($before, $form->fresh()->getAttributes());
 });
 
 test('can enable or disable email notifications for a form', function () {
