@@ -5,24 +5,26 @@
     :closeable="closeable"
     @close="close"
   >
-    <div class="px-6 py-4">
-      <div class="text-lg">
-        <slot name="title"> </slot>
+    <div role="dialog" aria-modal="true" :aria-labelledby="titleId">
+      <div class="px-6 py-4">
+        <div :id="titleId" class="text-lg">
+          <slot name="title"> </slot>
+        </div>
+
+        <div class="mt-4">
+          <slot name="content"> </slot>
+        </div>
       </div>
 
-      <div class="mt-4">
-        <slot name="content"> </slot>
+      <div class="bg-grey-100 px-6 py-4 text-right">
+        <slot name="footer"> </slot>
       </div>
-    </div>
-
-    <div class="bg-grey-100 px-6 py-4 text-right">
-      <slot name="footer"> </slot>
     </div>
   </modal>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 import Modal from "./Modal.vue";
 
 export default defineComponent({
@@ -42,6 +44,10 @@ export default defineComponent({
     closeable: {
       default: true,
     },
+  },
+
+  setup() {
+    return { titleId: useId() };
   },
 
   methods: {

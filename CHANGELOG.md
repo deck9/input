@@ -24,6 +24,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form name longer than 255 characters is now refused with a message that says so, and so is an empty name in the settings. Before, a long name failed with a server error on MySQL and MariaDB, and an empty name on every database. The description, language, colors, button label, completion headline and links are checked against their length the same way. (#239)
 -   A form whose name starts with an emoji, Chinese text, a sign like "€" or a word like "Müller" or "Fête" shows in your form list and opens. Before, it caused a server error and hid all your forms from the list. (#241)
 -   A form keeps its brand or background image when the server can't store the new one, and the Appearance page asks you to try again. Before, the old image was deleted and the form showed none. (#240)
+-   "Create form", "From template" and "Duplicate Form" ask for the name in a dialog, and Cancel creates nothing. Before, cancelling "Create form" still made an "Untitled Form". A copy is now named "{name} (copy)". (#243)
 
 ### Security
 
