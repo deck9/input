@@ -34,6 +34,8 @@ const updateRoleForm = useForm({
 const leaveTeamForm = useForm({});
 const removeTeamMemberForm = useForm({});
 
+const addSection = ref(null);
+const actionButtons = {};
 const currentlyManagingRole = ref(false);
 const managingRoleFor = ref(null);
 const confirmingLeavingTeam = ref(false);
@@ -84,13 +86,23 @@ const confirmTeamMemberRemoval = (teamMember) => {
 };
 
 const removeTeamMember = () => {
+  const ids = props.team.users.map((user) => user.id);
+  const i = ids.indexOf(teamMemberBeingRemoved.value.id);
+  const nextId = ids[i + 1] ?? ids[i - 1];
+
   removeTeamMemberForm.delete(
     route("team-members.destroy", [props.team, teamMemberBeingRemoved.value]),
     {
       errorBag: "removeTeamMember",
       preserveScroll: true,
       preserveState: true,
-      onSuccess: () => (teamMemberBeingRemoved.value = null),
+      onSuccess: () => {
+        teamMemberBeingRemoved.value = null;
+        // the removed row's button is gone, so the dialog can't give it the focus back
+        (
+          actionButtons[nextId] ?? addSection.value?.$el.querySelector("h3")
+        )?.focus();
+      },
     },
   );
 };
@@ -106,7 +118,7 @@ const displayableRole = (role) => {
       <SectionBorder />
 
       <!-- Add Team Member -->
-      <FormSection @submitted="addTeamMember">
+      <FormSection ref="addSection" @submitted="addTeamMember">
         <template #title> Add Team Member </template>
 
         <template #description>
@@ -323,6 +335,7 @@ const displayableRole = (role) => {
                 <!-- Leave Team -->
                 <button
                   v-if="$page.props.auth.user.id === user.id"
+                  :ref="(el) => (actionButtons[user.id] = el)"
                   class="cursor-pointer ms-6 text-sm text-red-500"
                   @click="confirmLeavingTeam"
                 >
@@ -332,6 +345,7 @@ const displayableRole = (role) => {
                 <!-- Remove Team Member -->
                 <button
                   v-else-if="userPermissions.canRemoveTeamMembers"
+                  :ref="(el) => (actionButtons[user.id] = el)"
                   class="cursor-pointer ms-6 text-sm text-red-500"
                   @click="confirmTeamMemberRemoval(user)"
                 >
