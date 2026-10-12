@@ -71,6 +71,7 @@
           <FormListTable
             v-else
             :forms="visibleForms"
+            :date="listDates[sort]"
             :aria-busy="isLoading"
             class="transition-opacity"
             :class="{ 'opacity-60': isLoading && statusForms }"
@@ -127,6 +128,17 @@ const apiSort: Record<SortSetting, string> = {
   newest: "created_at:desc",
   name: "name:asc",
 };
+// the date column shows the date the list is sorted by
+const lastSubmission: ListDate = {
+  key: "latest_submission_at",
+  label: "Last submission",
+};
+const listDates: Record<SortSetting, ListDate> = {
+  latest: lastSubmission,
+  edited: { key: "updated_at", label: "Last edited", short: "Edited" },
+  newest: { key: "created_at", label: "Created", short: "Created" },
+  name: lastSubmission,
+};
 const statuses: StatusSetting[] = [
   "all",
   "published",
@@ -143,7 +155,7 @@ const status = ref(
 const sort = ref(
   (Object.keys(apiSort) as SortSetting[]).find(
     (value) => value === params.get("sort"),
-  ) ?? "edited",
+  ) ?? "latest",
 );
 
 const isLoading = ref(true);
@@ -219,7 +231,7 @@ const writeUrl = (mode: "pushState" | "replaceState") => {
   const search = new URLSearchParams();
   if (query.value) search.set("q", query.value);
   if (status.value !== "all") search.set("status", status.value);
-  if (sort.value !== "edited") search.set("sort", sort.value);
+  if (sort.value !== "latest") search.set("sort", sort.value);
 
   const text = search.toString();
   const url = `${window.location.pathname}${text ? `?${text}` : ""}`;

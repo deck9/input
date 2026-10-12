@@ -41,6 +41,14 @@
       </div>
       <div class="lg:min-w-0">
         <template v-if="form.completed_sessions > 0">
+          <!-- the date column shows another date, so the dot sits here -->
+          <template v-if="isNew && !isDateNew">
+            <span
+              aria-hidden="true"
+              class="mr-1.5 inline-block h-2 w-2 rounded-full bg-blue-600"
+            ></span>
+            <span class="sr-only">New, </span>
+          </template>
           <!-- an archived form's submissions page is gone -->
           <component
             :is="isTrashed ? 'span' : 'a'"
@@ -49,20 +57,44 @@
             :href="route('forms.submissions', form.uuid)"
           >
             <span class="lg:font-semibold">{{
-              form.completed_sessions.toLocaleString()
+              form.completed_sessions.toLocaleString("en-GB")
             }}</span>
             {{ form.completed_sessions === 1 ? "submission" : "submissions" }}
           </component>
           <div class="hidden text-xs tabular-nums text-grey-500 lg:block">
-            {{ form.total_sessions.toLocaleString() }} started ·
+            {{ form.total_sessions.toLocaleString("en-GB") }} started ·
             {{ Math.floor(form.completion_rate) }}% finished
           </div>
         </template>
         <span v-else>No submissions yet</span>
       </div>
-      <div class="tabular-nums">
-        <span class="sr-only">Last edited:</span>
-        {{ new Date(form.updated_at).toLocaleDateString() }}
+      <!-- phones: a line of its own, and no dash: the meta line says "No submissions yet" -->
+      <div
+        class="basis-full tabular-nums lg:text-grey-600"
+        :class="{ 'hidden lg:block': !shownDate }"
+        :title="shownDate ? formatFullDate(shownDate) : 'No submissions yet'"
+      >
+        <span class="sr-only">{{ date.label }}: </span>
+        <!-- read once: screen readers get the label above; Vue drops a plain end space -->
+        <span v-if="date.short" aria-hidden="true" class="lg:hidden"
+          >{{ date.short }}&nbsp;</span
+        >
+        <template v-if="!shownDate">
+          <span aria-hidden="true">—</span>
+          <span class="sr-only">No submissions</span>
+        </template>
+        <span
+          v-else-if="isDateNew"
+          class="inline-flex items-center gap-1.5 font-medium text-blue-700"
+        >
+          <span
+            aria-hidden="true"
+            class="h-2 w-2 shrink-0 rounded-full bg-blue-600"
+          ></span>
+          <span class="sr-only">New,</span>
+          {{ formatListDate(shownDate) }}
+        </span>
+        <template v-else>{{ formatListDate(shownDate) }}</template>
       </div>
     </div>
     <div
@@ -244,6 +276,11 @@ import { D9Icon, D9Menu, D9MenuLink, D9Button } from "@deck9/ui";
 import { computed, nextTick, ref, watch } from "vue";
 import { useClipboard } from "@vueuse/core";
 import {
+  formatFullDate,
+  formatListDate,
+  isWithinDay,
+} from "@/utils/formatListDate";
+import {
   callDeleteForeverForm,
   callDeleteForm,
   callDuplicateForm,
@@ -261,9 +298,14 @@ type Question = {
   run: () => Promise<void>;
 };
 
-const props = defineProps<{
-  form: FormModel;
-}>();
+const props = withDefaults(
+  defineProps<{
+    form: FormModel;
+    // the date the list is sorted by
+    date?: ListDate;
+  }>(),
+  { date: () => ({ key: "latest_submission_at", label: "Last submission" }) },
+);
 
 const emit = defineEmits<{
   announce: [announcement: Announcement];
@@ -281,6 +323,26 @@ watch(
     isPublished.value = form.is_published;
     isTrashed.value = form.is_trashed;
   },
+);
+
+// a date without a submission count is left out, like a form without any
+const lastSubmission = computed(() =>
+  props.form.completed_sessions > 0 ? props.form.latest_submission_at : null,
+);
+const shownDate = computed(() => {
+  const value =
+    props.date.key === "latest_submission_at"
+      ? lastSubmission.value
+      : props.form[props.date.key];
+  // a date that doesn't parse is shown like none, the formatters would throw
+  return value && !Number.isNaN(Date.parse(value)) ? value : null;
+});
+// a blue dot for a submission in the last 24 hours, by its date if shown
+const isNew = computed(
+  () => !!lastSubmission.value && isWithinDay(lastSubmission.value),
+);
+const isDateNew = computed(
+  () => isNew.value && props.date.key === "latest_submission_at",
 );
 
 // 44 px tall on phones, 36 px from lg
@@ -386,7 +448,7 @@ const closeQuestion = async () => {
 };
 
 const submissions = (count: number) =>
-  count === 1 ? "1 submission" : `${count.toLocaleString()} submissions`;
+  count === 1 ? "1 submission" : `${count.toLocaleString("en-GB")} submissions`;
 
 const publish = () =>
   act(

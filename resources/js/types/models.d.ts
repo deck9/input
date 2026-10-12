@@ -47,6 +47,7 @@ interface FormModel extends BaseModel {
     total_sessions: number;
     completed_sessions: number;
     completion_rate: number;
+    latest_submission_at: string | null;
     is_published: boolean;
     is_trashed: boolean;
     initials: string | null;
@@ -317,3 +318,10 @@ type ImageType = "avatar" | "background";
 
 type StatusSetting = "all" | "published" | "unpublished" | "archived";
 type SortSetting = "latest" | "edited" | "newest" | "name";
+// the date the form list shows, and its column title
+type ListDate = {
+    key: "latest_submission_at" | "updated_at" | "created_at";
+    label: string;
+    // in front of the date on phones, which have no column title
+    short?: string;
+};
