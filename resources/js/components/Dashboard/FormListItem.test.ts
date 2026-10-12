@@ -1,6 +1,12 @@
-import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
+import {
+    enableAutoUnmount,
+    flushPromises,
+    mount,
+    VueWrapper,
+} from "@vue/test-utils";
 import { AxiosResponse } from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import FormListItem from "./FormListItem.vue";
 import {
     callDeleteForeverForm,
@@ -38,6 +44,9 @@ const stubs = {
 
 const route = vi.fn(() => "/forms");
 let wrapper: VueWrapper | undefined;
+
+// rows share one clock, so none may outlive its test
+enableAutoUnmount(afterEach);
 
 // numbers without a locale come out as "1.031", like in a German browser
 const toLocaleString = Number.prototype.toLocaleString;
@@ -78,10 +87,6 @@ describe("duplicate a form", () => {
         vi.mocked(callDuplicateForm).mockResolvedValue({
             data: { uuid: "copy1" },
         } as AxiosResponse);
-    });
-
-    afterEach(() => {
-        wrapper?.unmount();
     });
 
     it("asks for the name with the copy's name prefilled and focused", async () => {
@@ -316,6 +321,34 @@ describe("last submission", () => {
         expect(dots(wrapper)).toHaveLength(1);
         expect(wrapper.text()).toContain("New, 4 submissions");
     });
+
+    it("moves the date and the dot on every minute, with one clock for all rows", async () => {
+        const wrapper = mountRow({
+            latest_submission_at: new Date(2026, 9, 11, 10, 0, 30).toISOString(),
+        });
+        mountRow({});
+        expect(dateCell(wrapper).text()).toBe("Last submission: New, 23 hr ago");
+        expect(vi.getTimerCount()).toBe(1);
+
+        vi.advanceTimersByTime(60 * 1000);
+        await nextTick();
+
+        expect(dateCell(wrapper).text()).toBe("Last submission: Yesterday");
+        expect(dots(wrapper)).toHaveLength(0);
+    });
+
+    it("updates the date when the tab comes back into view", async () => {
+        const wrapper = mountRow({
+            latest_submission_at: new Date(2026, 9, 12, 9, 48).toISOString(),
+        });
+
+        // a hidden tab may have skipped the minutes in between
+        vi.setSystemTime(new Date(2026, 9, 12, 10, 30));
+        document.dispatchEvent(new Event("visibilitychange"));
+        await nextTick();
+
+        expect(dateCell(wrapper).text()).toBe("Last submission: New, 42 min ago");
+    });
 });
 
 describe("row actions", () => {
@@ -357,10 +390,6 @@ describe("row actions", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         window.route = route as unknown as typeof window.route;
-    });
-
-    afterEach(() => {
-        wrapper?.unmount();
     });
 
     it("shows the status as a label and one menu named after the form", () => {

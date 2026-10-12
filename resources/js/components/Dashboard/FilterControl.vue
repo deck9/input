@@ -33,7 +33,7 @@
         <span
           v-if="option.count !== undefined"
           class="font-normal tabular-nums text-grey-600"
-          >{{ option.count.toLocaleString() }}</span
+          >{{ option.count.toLocaleString("en-GB") }}</span
         >
       </button>
     </div>
@@ -70,7 +70,8 @@ const options = computed(() =>
     name,
     count,
     // the select on phones shows one text
-    label: count === undefined ? name : `${name} ${count.toLocaleString()}`,
+    label:
+      count === undefined ? name : `${name} ${count.toLocaleString("en-GB")}`,
   })),
 );
 </script>
