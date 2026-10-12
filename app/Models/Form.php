@@ -310,11 +310,11 @@ class Form extends BaseModel
         return Attribute::get(fn () => $this->formSessions()->count())->shouldCache();
     }
 
+    // every completed submit, also one without answers, like the submissions page
     protected function completedSessions(): Attribute
     {
         return Attribute::get(fn () => $this->formSessions()
             ->whereNotNull('is_completed')
-            ->whereHas('formSessionResponses')
             ->count())->shouldCache();
     }
 

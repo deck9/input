@@ -42,6 +42,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A form template with a description, language, color, button label, completion headline or link that is too long is now refused with a message that names the field, and the form stays as it was. Before, the import failed with a server error on MySQL and MariaDB. (#251)
 -   With a dialog open, Tab and Shift+Tab now stay inside the dialog, and closing it puts you back on the button that opened it. Before, Tab moved on to the page behind the dialog. (#252)
 -   The form list's dates and blue dots now update while the page stays open, every minute and when you come back to the tab. Before, "12 min ago" stayed until you reloaded the page. The status tab counts and the search count now write numbers like the rest of the list, also in a browser set to another language. (#254)
+-   A submission where every question was skipped now counts. Before, a form with only such submissions showed "0 submissions" next to a recent submission date in the form list, and "No submissions found" on its submissions page. Forms with such submissions now show a higher count and completion rate. (#253)
 
 ### Security
 

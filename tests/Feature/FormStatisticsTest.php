@@ -6,6 +6,7 @@ use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\FormSession;
 use App\Models\FormSessionResponse;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
@@ -48,8 +49,8 @@ test('form json counts its sessions in sql', function () {
         ->getJson(route('api.forms.show', $form))
         ->assertOk()
         ->assertJsonPath('total_sessions', 4)
-        ->assertJsonPath('completed_sessions', 1)
-        ->assertJsonPath('completion_rate', 25);
+        ->assertJsonPath('completed_sessions', 2)
+        ->assertJsonPath('completion_rate', 50);
 
     expect($loaded->count)->toBe(0);
 });
@@ -62,6 +63,25 @@ test('form json has a completion rate of 0 without sessions', function () {
         ->assertJsonPath('total_sessions', 0)
         ->assertJsonPath('completed_sessions', 0)
         ->assertJsonPath('completion_rate', 0);
+});
+
+test('a submit without answers counts like on the submissions page', function () {
+    $user = User::factory()->withTeam()->create();
+    $form = Form::factory()->create(['user_id' => $user->id, 'team_id' => $user->current_team_id]);
+
+    // every question skipped
+    $token = $this->postJson(route('api.public.forms.session.create', $form))->json('token');
+    $this->postJson(route('api.public.forms.submit', $form), ['token' => $token, 'payload' => []])->assertOk();
+
+    $this->actingAs($user)
+        ->getJson(route('api.forms.index'))
+        ->assertJsonPath('0.completed_sessions', 1)
+        ->assertJsonPath('0.completion_rate', 100)
+        ->assertJsonPath('0.latest_submission_at', fn ($date) => $date !== null);
+
+    $this->actingAs($user)
+        ->getJson(route('api.forms.submissions', $form))
+        ->assertJsonPath('meta.total', 1);
 });
 
 test('blocks with submissions count the answers in sql', function () {
