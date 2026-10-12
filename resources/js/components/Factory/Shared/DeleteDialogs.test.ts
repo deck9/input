@@ -8,6 +8,8 @@ import DeleteBlockDialog from "./DeleteBlockDialog.vue";
 import DeleteChoiceDialog from "./DeleteChoiceDialog.vue";
 import { checkDelete, useDeleteBlock } from "./useDeleteBlock";
 import ClickInteraction from "@/components/Factory/Main/Interactions/ClickInteraction.vue";
+import ConsentInteraction from "@/components/Factory/Main/Interactions/ConsentInteraction.vue";
+import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
 import BlockLogicRule from "@/components/Factory/Sidebar/BlockLogicRule.vue";
 import { callGetFormBlocks } from "@/api/blocks";
 import { useForm, useLogic, useWorkbench } from "@/stores";
@@ -61,6 +63,18 @@ const blocks = (): FormBlockModel[] =>
             interactions: [
                 { id: 10, label: "No", responses_count: 12 },
                 { id: 11, label: "Yes", responses_count: 0 },
+            ],
+        },
+        {
+            id: 5,
+            uuid: "c1",
+            type: "consent",
+            message: "",
+            session_count: 3,
+            used_by: [],
+            interactions: [
+                { id: 20, label: "Privacy policy", responses_count: 3 },
+                { id: 21, label: "Newsletter", responses_count: 0 },
             ],
         },
     ] as unknown as FormBlockModel[];
@@ -314,6 +328,64 @@ describe("asking before a delete", () => {
             expect(wrapper.text()).toContain("1 person picked it.");
             expect(wrapper.find("button.bg-red-600").text()).toBe(
                 "Delete choice",
+            );
+        });
+    });
+
+    describe("deleting a consent policy", () => {
+        const policy = (id: number) => {
+            const workbench = useWorkbench();
+            workbench.block = block("c1");
+            const remove = vi
+                .spyOn(workbench, "deleteInteraction")
+                .mockResolvedValue();
+            const wrapper = mount(ConsentInteraction, {
+                props: {
+                    index: 0,
+                    item: block("c1").interactions!.find(
+                        (item) => item.id === id,
+                    )!,
+                },
+                global: { plugins: [pinia], stubs },
+            });
+            const pressTrash = async () => {
+                await wrapper
+                    .findComponent(InteractionHoverActions)
+                    .find("button")
+                    .trigger("click");
+                await flushPromises();
+            };
+
+            return { wrapper, remove, pressTrash };
+        };
+
+        it("deletes a policy nobody agreed to at once", async () => {
+            const { wrapper, remove, pressTrash } = policy(21);
+
+            await pressTrash();
+
+            expect(remove).toHaveBeenCalledWith(
+                expect.objectContaining({ id: 21 }),
+            );
+            expect(wrapper.find("[role=alertdialog]").exists()).toBe(false);
+        });
+
+        it("asks first when people agreed to the policy", async () => {
+            const { wrapper, remove, pressTrash } = policy(20);
+
+            await pressTrash();
+
+            expect(remove).not.toHaveBeenCalled();
+            expect(wrapper.text()).toContain("Delete “Privacy policy”?");
+            expect(wrapper.text()).toContain(
+                "3 people picked it. Their answers to it will be deleted.",
+            );
+
+            await wrapper.find("button.bg-red-600").trigger("click");
+            await flushPromises();
+
+            expect(remove).toHaveBeenCalledWith(
+                expect.objectContaining({ id: 20 }),
             );
         });
     });
