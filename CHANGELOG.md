@@ -13,6 +13,7 @@ Lines marked **Upgrade step** need you to act after updating.
 ### Changed
 
 -   The form list keeps each form's status, submissions and actions in view, also with a very long name and on a phone. It shows "40 submissions" with "52 started · 77% finished" below, shows the form's uploaded avatar, and no longer shows the public link under each name. (#244)
+-   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 
 ### Fixed
 

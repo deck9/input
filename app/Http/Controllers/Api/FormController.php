@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Knuckles\Scribe\Attributes\Authenticated;
 use Knuckles\Scribe\Attributes\Group;
@@ -171,12 +172,16 @@ class FormController extends Controller
      * Delete a form
      *
      * This endpoint soft deletes a form and all its data. When a form is deleted, it can be restored within 30 days.
+     * Deleting a form also unpublishes it, so a restored form stays private until you publish it again.
      */
     public function delete(Form $form)
     {
         $this->authorize('delete', $form);
 
-        $form->delete();
+        DB::transaction(function () use ($form) {
+            $form->update(['published_at' => null]);
+            $form->delete();
+        });
 
         return response()->json(null, 200);
     }
