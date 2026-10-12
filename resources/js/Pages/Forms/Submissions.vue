@@ -1,7 +1,10 @@
 <template>
   <app-layout title="Submissions">
     <div class="w-full px-4 pb-8 text-left sm:px-6 lg:px-8">
-      <div v-if="store.form" class="mt-8 flex w-full items-end justify-between">
+      <div
+        v-if="store.form"
+        class="mt-8 flex w-full flex-wrap items-end justify-between gap-2"
+      >
         <div class="flex gap-x-2">
           <D9Button
             label="Submissions"
