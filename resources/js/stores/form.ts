@@ -23,9 +23,6 @@ interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
     mapping: Record<FormBlockType, FormBlockInteractionType> | null;
-    isCssTransitionEnabled: boolean;
-    isBlockMenuEnabled: boolean;
-    showLogicInStoryboard: boolean;
 }
 
 export const useForm = defineStore("form", {
@@ -34,9 +31,6 @@ export const useForm = defineStore("form", {
             form: null,
             mapping: null,
             blocks: null,
-            isCssTransitionEnabled: true,
-            isBlockMenuEnabled: true,
-            showLogicInStoryboard: true,
         };
     },
 
@@ -49,40 +43,12 @@ export const useForm = defineStore("form", {
             return state.blocks && state.blocks.length ? true : false;
         },
 
-        countGroups: (state): Record<string, number> => {
-            if (!state.blocks) {
-                return {};
-            }
-
-            const containers = { root: 0 };
-
-            state.blocks
-                .filter((i) => i.type === "group")
-                .forEach((i) => (containers[i.uuid] = 0));
-
-            return state.blocks
-                ?.map((i) => i.parent_block)
-                .reduce((acc, item) => {
-                    if (item) {
-                        acc[item] = acc[item] ? acc[item] + 1 : 1;
-                    } else {
-                        acc["root"] += 1;
-                    }
-
-                    return acc;
-                }, containers);
-        },
-
         formUrl: (state): string => {
             if (state.form) {
                 return window.route("forms.show", { uuid: state.form?.uuid });
             }
 
             return "";
-        },
-
-        showBlockMenus: (state): boolean => {
-            return state.isBlockMenuEnabled;
         },
 
         blocksTree: (state): TreeNode[] => {
@@ -112,22 +78,6 @@ export const useForm = defineStore("form", {
         clearForm() {
             this.form = null;
             this.blocks = null;
-        },
-
-        setCssTransition(payload: boolean) {
-            this.isCssTransitionEnabled = payload;
-        },
-
-        enableBlockMenu() {
-            this.isBlockMenuEnabled = true;
-        },
-
-        disableBlockMenu() {
-            this.isBlockMenuEnabled = false;
-        },
-
-        toggleLogicInStoryboard() {
-            this.showLogicInStoryboard = !this.showLogicInStoryboard;
         },
 
         async refreshForm(includeSubmissions = false) {
