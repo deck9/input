@@ -1,6 +1,6 @@
-import { flushPromises, mount } from "@vue/test-utils";
+import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import type { AxiosResponse } from "axios";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import FormTopBar from "./FormTopBar.vue";
 import FormPageTabs from "./FormPageTabs.vue";
 import AccountMenu from "./AccountMenu.vue";
@@ -78,6 +78,9 @@ const mountOnPage = async (
 };
 
 const text = (el: Element | null) => el?.textContent?.replace(/\s+/g, " ").trim();
+
+// a mounted bar from an earlier test still follows the store
+enableAutoUnmount(afterEach);
 
 beforeEach(() => {
     document.body.innerHTML = "";
@@ -243,6 +246,51 @@ describe("form top bar", () => {
         expect(open.attributes("href")).toBe(`${location.origin}/forms.show`);
         expect(open.attributes("target")).toBe("_blank");
         expect(panel.text()).toContain("goes live at once");
+    });
+
+    it("says so when Unpublish fails, and keeps the form live", async () => {
+        const wrapper = await mountOnPage(FormTopBar, { is_published: true });
+        vi.spyOn(window, "confirm").mockReturnValueOnce(true);
+        vi.mocked(useForm().unpublishForm).mockRejectedValueOnce(new Error("offline"));
+
+        await wrapper.findAll("button").find((b) => b.text() === "Share")?.trigger("click");
+        const panel = wrapper.get('[aria-labelledby="share-title"]');
+        const unpublish = panel.findAll("button").find((b) => b.text() === "Unpublish…");
+        await unpublish?.trigger("click");
+        await flushPromises();
+
+        expect(panel.get('[role="alert"]').text()).toBe(
+            "Couldn't unpublish the form. Try again.",
+        );
+        expect(unpublish?.attributes("disabled")).toBeUndefined();
+        expect(wrapper.get('nav[aria-label="Breadcrumb"]').text()).toContain("Live");
+    });
+
+    it("moves the focus to Share after Publish, and to Publish after Unpublish", async () => {
+        const wrapper = await mountOnPage(FormTopBar, {}, [block("q1", "<p>Your name?</p>")]);
+        const store = useForm();
+        const setLive = (is_published: boolean) => async () =>
+            store.$patch({ form: { is_published } });
+        vi.mocked(store.publishForm).mockImplementationOnce(setLive(true));
+        vi.mocked(store.unpublishForm).mockImplementationOnce(setLive(false));
+        vi.spyOn(window, "confirm").mockReturnValueOnce(true);
+
+        await wrapper.findAll("button").find((b) => b.text() === "Publish")?.trigger("click");
+        [...document.querySelectorAll('[role="dialog"] button')]
+            .find((b) => text(b) === "Publish")
+            ?.dispatchEvent(new MouseEvent("click"));
+        await flushPromises();
+        // the button you used is gone
+        expect(text(document.activeElement)).toBe("Share");
+
+        await wrapper.findAll("button").find((b) => b.text() === "Share")?.trigger("click");
+        await wrapper
+            .get('[aria-labelledby="share-title"]')
+            .findAll("button")
+            .find((b) => b.text() === "Unpublish…")
+            ?.trigger("click");
+        await flushPromises();
+        expect(text(document.activeElement)).toBe("Publish");
     });
 
     it("gives every phone control 44 px and a name", async () => {

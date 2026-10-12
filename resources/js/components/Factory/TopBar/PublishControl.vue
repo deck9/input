@@ -1,6 +1,7 @@
 <template>
   <div v-if="!store.form?.is_published">
     <D9Button
+      ref="publishButton"
       label="Publish"
       class="h-11 whitespace-nowrap lg:h-9"
       @click="openCheck"
@@ -82,6 +83,7 @@
   <!-- static on phones: the panel spans the bar, from lg it sits under the button -->
   <Popover v-else class="lg:relative">
     <PopoverButton
+      ref="shareButton"
       :as="D9Button"
       label="Share"
       icon="link"
@@ -130,6 +132,9 @@
       >
         Unpublish…
       </button>
+      <p v-if="hasFailed" role="alert" class="text-sm text-red-700">
+        Couldn't unpublish the form. Try again.
+      </p>
     </PopoverPanel>
   </Popover>
 </template>
@@ -196,6 +201,15 @@ const openCheck = () => {
   }
 };
 
+const publishButton = ref<InstanceType<typeof D9Button> | null>(null);
+const shareButton = ref<InstanceType<typeof PopoverButton> | null>(null);
+
+// the button you used turns into the other one: focus that
+const focusNext = async () => {
+  await nextTick();
+  (store.form?.is_published ? shareButton : publishButton).value?.$el.focus();
+};
+
 const publish = async () => {
   isBusy.value = true;
   hasFailed.value = false;
@@ -203,6 +217,7 @@ const publish = async () => {
   try {
     await store.publishForm();
     isChecking.value = false;
+    focusNext();
   } catch {
     hasFailed.value = true;
   }
@@ -214,13 +229,23 @@ const { copy, copied } = useClipboard({ legacy: true });
 
 const unpublish = async () => {
   if (
-    window.confirm(
+    !window.confirm(
       "Are you sure you want to unpublish this form? People will no longer be able to submit to it.",
     )
   ) {
-    isBusy.value = true;
-    await store.unpublishForm();
-    isBusy.value = false;
+    return;
   }
+
+  isBusy.value = true;
+  hasFailed.value = false;
+
+  try {
+    await store.unpublishForm();
+    focusNext();
+  } catch {
+    hasFailed.value = true;
+  }
+
+  isBusy.value = false;
 };
 </script>
