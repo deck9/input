@@ -1,6 +1,14 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { AxiosResponse } from "axios";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    onTestFinished,
+    vi,
+} from "vitest";
 import { nextTick } from "vue";
 import Dashboard from "./Dashboard.vue";
 import SortControl from "@/components/Dashboard/SortControl.vue";
@@ -91,6 +99,37 @@ describe("form list search, status and sort", () => {
         expect(shown()).toEqual(["Müller Umfrage", "Contact", "Customer feedback"]);
         expect(callListForms).toHaveBeenCalledTimes(1);
         expect(callListForms).toHaveBeenCalledWith(null, "latest_submission_at:desc");
+    });
+
+    it("writes the tab and search counts in English like the rows, also in a German browser", async () => {
+        // numbers without a locale come out as "1.031", like in a German browser
+        const toLocaleString = Number.prototype.toLocaleString;
+        vi.spyOn(Number.prototype, "toLocaleString").mockImplementation(
+            function (this: number, locales, options) {
+                return toLocaleString.call(this, locales ?? "de-DE", options);
+            },
+        );
+        const many = Array.from({ length: 1031 }, (_, i) => ({
+            id: i + 1,
+            name: `Survey ${i + 1}`,
+            is_published: true,
+        })) as FormModel[];
+        vi.mocked(callListForms).mockResolvedValue({
+            data: many,
+        } as AxiosResponse<FormModel[]>);
+        await mountAt("/");
+        vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+        onTestFinished(() => vi.useRealTimers());
+
+        await wrapper!.get("input[type=search]").setValue("survey");
+        vi.advanceTimersByTime(500);
+        await nextTick();
+
+        expect(tab("All").text()).toBe("All 1,031");
+        expect(tab("Published").text()).toBe("Published 1,031");
+        // the status select on phones
+        expect(wrapper!.get(".md\\:hidden").text()).toContain("All 1,031");
+        expect(wrapper!.get("p[role=status]").text()).toBe("1,031 forms");
     });
 
     it("moves a published or archived form to its tab and counts it there, without loading", async () => {

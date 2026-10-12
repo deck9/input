@@ -221,7 +221,7 @@ const announcement = computed(() => {
   if (!statusForms.value || hasFailed.value) return "";
   if (!count) return noMatch.value;
   if (!searchText.value) return "";
-  return count === 1 ? "1 form" : `${count.toLocaleString()} forms`;
+  return count === 1 ? "1 form" : `${count.toLocaleString("en-GB")} forms`;
 });
 // waits for a pause in typing, so it doesn't speak on every key
 const announced = refDebounced(announcement, 500);
