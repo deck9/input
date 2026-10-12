@@ -19,6 +19,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 -   The form list loads faster when a team has many forms. It now needs the same few database queries for one form or a hundred. Before, every form added 3 queries. (#256)
 -   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, and the header keeps the logo and your team name. On every screen, keyboard focus in the editor bar and the account menu now shows a blue ring. (#257)
+-   Deleting a question, a group, an answer choice or a logic rule in the form editor now asks first in the app's own dialog. It names the question, how many answers will be deleted with it, and the questions whose rules will stop working. A choice nobody picked is still deleted at once. (#269)
 
 ### Fixed
 
