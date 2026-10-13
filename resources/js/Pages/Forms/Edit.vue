@@ -30,6 +30,7 @@ import Storyboard from "@/components/Factory/Sidebar/Storyboard.vue";
 import Workbench from "@/components/Factory/Main/Workbench.vue";
 import WorkbenchEmpty from "@/components/Factory/Main/WorkbenchEmpty.vue";
 import { useForm, useWorkbench } from "@/stores";
+import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
 import { D9Skeleton } from "@deck9/ui";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
@@ -65,6 +66,8 @@ const loadBlocks = async () => {
 
   status.value = "loaded";
 };
+
+useSaveOnLeave();
 
 onBeforeUnmount(() => {
   store.clearForm();
