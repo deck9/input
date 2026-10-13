@@ -168,7 +168,8 @@ class FormBlock extends BaseModel
         return DB::transaction(function () {
             $blocks = $this->form->formBlocks()->get();
 
-            $copy = $this->form->formBlocks()->create($this->only(self::TEMPLATE_ATTRIBUTES));
+            // the Identifier names the answer in prefill links and webhooks, so the copy has none
+            $copy = $this->form->formBlocks()->create([...$this->only(self::TEMPLATE_ATTRIBUTES), 'title' => null]);
 
             $this->formBlockInteractions->each(
                 fn ($interaction) => $copy->formBlockInteractions()->create($interaction->only(FormBlockInteraction::TEMPLATE_ATTRIBUTES))

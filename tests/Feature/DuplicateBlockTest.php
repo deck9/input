@@ -40,7 +40,8 @@ test('duplicating a question copies it right after the original, without its rul
         ->assertJson([
             'form_id' => $this->form->id,
             'type' => 'radio',
-            'title' => 'Pick one',
+            // the Identifier names the answer in prefill links and webhooks, so the copy has none
+            'title' => null,
             'message' => 'Which color do you like?',
             'options' => ['randomize' => true],
             'is_required' => true,
@@ -52,6 +53,7 @@ test('duplicating a question copies it right after the original, without its rul
     $copy = FormBlock::where('uuid', $response->json('uuid'))->firstOrFail();
 
     expect($copy->id)->not->toBe($this->block->id)
+        ->and($this->block->fresh()->title)->toBe('Pick one')
         ->and(($this->order)())->toBe([$this->first->uuid, $this->block->uuid, $copy->uuid, $this->last->uuid])
         ->and($copy->formBlockLogics)->toHaveCount(0)
         ->and($this->block->fresh()->formBlockLogics)->toHaveCount(1);

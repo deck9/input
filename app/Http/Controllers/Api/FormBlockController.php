@@ -78,7 +78,7 @@ class FormBlockController extends Controller
     /**
      * Duplicate a form block
      *
-     * This endpoint copies a form block with its text, type, settings and interactions, but not its logic rules. The copy goes right after the original, and later blocks move down one. A group can't be duplicated.
+     * This endpoint copies a form block with its text, type, settings and interactions, but not its logic rules or its `title` (the Identifier). The copy goes right after the original, and later blocks move down one. A group can't be duplicated.
      */
     public function duplicate(FormBlock $block)
     {
