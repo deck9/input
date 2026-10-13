@@ -103,9 +103,15 @@ describe("the preview frame", () => {
         expect(iframe.attributes("title")).toBe("Preview of your form");
     });
 
-    it("starts at the first question when none is open", () => {
-        expect(mountFrame(null).get("iframe").attributes("src")).toBe(
-            "/form1?preview=1",
+    it("waits for the questions to load, so it starts at the open one instead of jumping there", async () => {
+        const wrapper = mountFrame(null);
+        expect(wrapper.find("iframe").exists()).toBe(false);
+
+        useWorkbench().block = second;
+        await nextTick();
+
+        expect(wrapper.get("iframe").attributes("src")).toBe(
+            "/form1?preview=1&block=q2uuid",
         );
     });
 

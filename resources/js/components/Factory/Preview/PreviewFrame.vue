@@ -1,6 +1,7 @@
 <template>
   <!-- the public form in preview mode: it saves no answers -->
   <iframe
+    v-if="src"
     ref="frame"
     :key="loads"
     :src="src"
@@ -35,7 +36,16 @@ const url = () => {
   return `${window.route("forms.show", { uuid: store.form?.uuid }, false)}?${query}`;
 };
 
-const src = ref(url());
+// the questions load after the panel: start at the open one, not at the
+// first and then jump
+const src = ref<string>();
+watch(
+  () => workbench.block,
+  (block) => {
+    if (block) src.value ??= url();
+  },
+  { immediate: true },
+);
 const loads = ref(0);
 // the preview tells where it starts, then each question it moves on to
 let started = false;
