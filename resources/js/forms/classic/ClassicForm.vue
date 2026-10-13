@@ -89,18 +89,19 @@ const props = defineProps<{
   flags: EmbedFlags;
 }>();
 
+// the editor's preview runs on the form page, an embed on another site never does
+const query = new URLSearchParams(window.location.search);
+const isPreview = !!window.iptSettings && query.get("preview") === "1";
+
 const isLoading = ref(true);
+// the preview never takes the cursor from the editor around it
 const focusDisabled = computed(() => {
-  return isLoading.value && !props.flags.autofocus;
+  return isPreview || (isLoading.value && !props.flags.autofocus);
 });
 provide("disableFocus", focusDisabled);
 
 // init routes
 await useRoutes();
-
-// the editor's preview runs on the form page, an embed on another site never does
-const query = new URLSearchParams(window.location.search);
-const isPreview = !!window.iptSettings && query.get("preview") === "1";
 
 // init conversation store
 const store = useConversation();
