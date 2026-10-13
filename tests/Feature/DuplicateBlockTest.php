@@ -135,10 +135,10 @@ test('a failed duplicate leaves the form unchanged', function () {
     ])->toBe($before);
 });
 
-test('a duplicate locks the form first, so duplicates at the same time keep one position each', function () {
+test('a duplicate writes to the form first, so duplicates at the same time keep one position each', function () {
     DB::enableQueryLog();
 
     $this->block->duplicate();
 
-    expect(DB::getQueryLog()[0]['query'])->toStartWith('select * from `forms` where `forms`.`id` = ?')->toEndWith('for update');
-})->skip(fn () => DB::getDriverName() === 'sqlite', 'SQLite locks the whole database on write');
+    expect(DB::getQueryLog()[0]['query'])->toMatch('/^update [`"]forms[`"] set /');
+});

@@ -166,8 +166,9 @@ class FormBlock extends BaseModel
     public function duplicate(): FormBlock
     {
         return DB::transaction(function () {
-            // duplicates at the same time wait here, else they renumber over each other or deadlock
-            $this->form()->lockForUpdate()->first();
+            // duplicates at the same time wait here, else they renumber over each other or deadlock.
+            // A write, not lockForUpdate: SQLite ignores that and fails a read that turns into a write
+            $this->form()->touch();
 
             $blocks = $this->form->formBlocks()->get();
 
