@@ -14,6 +14,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules. The copy goes right after the original. (#262)
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 -   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
+-   The form editor shows the end screen as the last block of your form. You can edit its headline, text and button right there, and the Completion Page in Settings shows the same values. (#271)
 
 ### Changed
 
