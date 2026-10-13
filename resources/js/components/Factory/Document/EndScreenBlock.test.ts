@@ -74,12 +74,17 @@ describe("the end screen in the document", () => {
         expect(text).toContain("Button: Add to calendar");
     });
 
-    it("says when it has no headline yet", () => {
+    it("shows the default headline people see when it has none", async () => {
         useForm().form = { ...form, eoc_headline: null, show_cta_link: false };
         const text = mountBlock().find("button").text();
 
-        expect(text).toContain("No headline yet");
+        expect(text).toContain("Form Submitted · default");
         expect(text).not.toContain("Button:");
+
+        const block = await open();
+        expect(
+            block.find("#end-screen-headline").attributes("placeholder"),
+        ).toBe("Form Submitted");
     });
 
     it("opens in place, closes the open question, and closes when a question opens", async () => {

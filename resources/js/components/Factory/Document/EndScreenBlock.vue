@@ -34,7 +34,8 @@
           v-model="draft.eoc_headline"
           type="text"
           dir="auto"
-          class="-ml-2 min-w-0 flex-1 border-0 border-l-2 border-transparent bg-transparent p-0 pl-1.5 text-base font-medium text-grey-900 focus:border-blue-500 focus:ring-0"
+          placeholder="Form Submitted"
+          class="-ml-2 min-w-0 flex-1 border-0 border-l-2 border-transparent bg-transparent p-0 pl-1.5 text-base font-medium text-grey-900 placeholder:font-normal placeholder:italic placeholder:text-grey-600 focus:border-blue-500 focus:ring-0"
         />
         <span
           class="shrink-0 rounded bg-grey-100 px-1.5 text-xs leading-5 text-grey-700"
@@ -109,7 +110,7 @@
               : 'font-normal italic text-grey-600'
           "
           ><span class="sr-only">End screen:&nbsp;</span
-          >{{ store.form?.eoc_headline || "No headline yet" }}</span
+          >{{ store.form?.eoc_headline || "Form Submitted · default" }}</span
         >
         <span
           aria-hidden="true"
