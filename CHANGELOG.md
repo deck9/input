@@ -15,6 +15,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 -   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
 -   Add a question right where you need it: between questions or from a question's menu, and type "/" in an empty question to pick its answer type. A picker groups the answer types as Text, Choice, Rating, Other and Content, and the new question opens ready to type. The answer types have new names, like Single choice, Short text and Text only. (#276)
+-   The form editor shows the end screen as the last block of your form. You can edit its headline, text and button right there, and the Completion Page in Settings shows the same values. (#271)
 
 ### Changed
 

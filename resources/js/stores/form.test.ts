@@ -33,9 +33,11 @@ describe("saving form settings", () => {
 
         await useForm().updateForm({ name: " Feedback " });
 
-        expect(handler.post).toHaveBeenCalledWith("/api/forms/form1", {
-            name: " Feedback ",
-        });
+        expect(handler.post).toHaveBeenCalledWith(
+            "/api/forms/form1",
+            { name: " Feedback " },
+            undefined,
+        );
         expect(useForm().form?.name).toBe("Feedback");
     });
 

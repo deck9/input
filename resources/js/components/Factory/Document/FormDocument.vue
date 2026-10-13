@@ -52,6 +52,8 @@
             @pick="addQuestion"
           />
 
+          <EndScreenBlock class="mt-2" />
+
           <div
             id="add-buttons"
             ref="addButtons"
@@ -126,6 +128,7 @@ import { useForm, useWorkbench } from "@/stores";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 import DocumentList from "./DocumentList.vue";
 import DocumentOutline from "./DocumentOutline.vue";
+import EndScreenBlock from "./EndScreenBlock.vue";
 import RuleGutter from "./Rules/RuleGutter.vue";
 import TypePicker from "./TypePicker.vue";
 import {

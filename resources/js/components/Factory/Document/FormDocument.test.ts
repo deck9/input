@@ -13,9 +13,11 @@ const blocks = [
 
 const stubs = {
     DocumentList: {
-        template: `<div><div id="row-b1" /><div id="row-b2" /></div>`,
+        template: `<div>[list]<div id="row-b1" /><div id="row-b2" /></div>`,
     },
     RuleGutter: true,
+    EmptyState: { template: "<div>[empty]</div>" },
+    EndScreenBlock: { template: "<div>[end]</div>" },
 };
 
 let wrapper: VueWrapper | undefined;
@@ -169,5 +171,20 @@ describe("the form document", () => {
         expect(
             document.querySelector("[aria-live=polite]")?.textContent,
         ).toBe("Moved to position 2 of 2");
+    });
+
+    it.each([
+        ["the questions", "[list]", blocks],
+        ["no questions", "[empty]", []],
+    ])("shows the end screen after %s", (_, first, list) => {
+        useForm().blocks = list as FormBlockModel[];
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+        });
+        const text = wrapper.text();
+
+        expect(text.indexOf(first)).toBeGreaterThan(-1);
+        expect(text.indexOf("[end]")).toBeGreaterThan(text.indexOf(first));
     });
 });

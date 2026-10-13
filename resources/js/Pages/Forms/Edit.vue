@@ -11,6 +11,7 @@ import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import { useForm, useWorkbench } from "@/stores";
 import SaveStatus from "@/components/Factory/Shared/SaveStatus.vue";
 import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
+import { useFreshForm } from "@/utils/useFreshForm";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const props = defineProps<{
@@ -67,6 +68,7 @@ onMounted(async () => {
   await store.getFormBlockMapping();
 });
 
+useFreshForm();
 workbench.clearWorkbench();
 store.$patch({
   form: props.form,
