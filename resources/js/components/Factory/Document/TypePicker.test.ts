@@ -1,10 +1,15 @@
 import { mount, VueWrapper } from "@vue/test-utils";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import TypePicker from "./TypePicker.vue";
 
 let wrapper: VueWrapper | undefined;
 
-const mountPicker = () => {
+const mountPicker = (large = true) => {
+    window.matchMedia = vi.fn().mockReturnValue({
+        matches: large,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+    });
     wrapper = mount(TypePicker, {
         props: { title: "Add a question" },
         global: {
@@ -71,6 +76,14 @@ describe("the answer type picker", () => {
 
         await input.trigger("keydown", { key: "Enter" });
         expect(wrapper!.emitted("pick")).toEqual([["input-long"]]);
+    });
+
+    it("leaves the search to a tap on a phone, where the keyboard would cover the list", () => {
+        mountPicker(false);
+
+        expect(document.activeElement?.textContent?.trim()).toBe(
+            "Add a question",
+        );
     });
 
     it("adds a type on click and closes on Escape", async () => {

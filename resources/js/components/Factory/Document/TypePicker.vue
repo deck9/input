@@ -2,11 +2,14 @@
   <section
     ref="root"
     :aria-labelledby="`${id}-title`"
-    class="rounded-lg border border-grey-200 bg-white p-2 shadow-md"
+    class="scroll-mt-4 rounded-lg border border-grey-200 bg-white p-2 shadow-md"
+    @keydown.esc.prevent="emit('close')"
   >
     <p
       :id="`${id}-title`"
-      class="px-2 pb-2 pt-1 text-base font-semibold text-grey-900 lg:text-sm"
+      ref="heading"
+      tabindex="-1"
+      class="px-2 pb-2 pt-1 text-base font-semibold text-grey-900 outline-none lg:text-sm"
     >
       {{ title }}
     </p>
@@ -86,7 +89,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, useId, watch } from "vue";
-import { onClickOutside } from "@vueuse/core";
+import { onClickOutside, useMediaQuery } from "@vueuse/core";
 import { D9Icon } from "@deck9/ui";
 import {
   typeGroups,
@@ -95,7 +98,7 @@ import {
 
 const { autofocus = true } = defineProps<{
   title: string;
-  // the empty form shows it at once: the cursor stays where it is
+  // the empty form shows it at once: the view and the cursor stay where they are
   autofocus?: boolean;
 }>();
 
@@ -104,7 +107,9 @@ const emit = defineEmits<{ pick: [type: FormBlockType]; close: [] }>();
 const id = useId();
 const { types } = useBlockTypes();
 const root = ref<HTMLElement | null>(null);
+const heading = ref<HTMLElement | null>(null);
 const search = ref<HTMLInputElement | null>(null);
+const isLarge = useMediaQuery("(min-width: 1024px)");
 const filter = ref("");
 
 const groups = computed(() => {
@@ -146,17 +151,19 @@ const onKey = (event: KeyboardEvent) => {
     if (active.value) {
       emit("pick", active.value);
     }
-  } else if (event.key === "Escape") {
-    event.preventDefault();
-    emit("close");
   }
 };
 
 onClickOutside(root, () => emit("close"));
 
 onMounted(() => {
-  if (autofocus) {
-    search.value?.focus();
+  if (!autofocus) {
+    return;
   }
+
+  // a phone shows the list from its top: it never fits the screen
+  root.value?.scrollIntoView?.({ block: isLarge.value ? "nearest" : "start" });
+  // below lg the screen keyboard would cover the list
+  (isLarge.value ? search : heading).value?.focus({ preventScroll: true });
 });
 </script>
