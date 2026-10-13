@@ -185,6 +185,19 @@ describe("the preview panel", () => {
         expect(frame.isVisible()).toBe(true);
     });
 
+    it("shows the end screen when the link isn't a web link, as the public form does", async () => {
+        screen(true);
+        useForm().form = { use_cta_redirect: true, cta_link: "mailto:hi@example.com" } as FormModel;
+        const wrapper = mountPreview();
+
+        const frame = wrapper.findComponent(PreviewFrame);
+        frame.vm.$emit("update:shown", END_SCREEN);
+        await flushPromises();
+
+        expect(wrapper.text()).not.toContain("No end screen");
+        expect(frame.isVisible()).toBe(true);
+    });
+
     it.each([true, false])("shows nothing when closed (desktop: %s)", (wide) => {
         screen(wide);
         const wrapper = mountPreview(false);
