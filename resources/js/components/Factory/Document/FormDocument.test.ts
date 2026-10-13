@@ -4,6 +4,7 @@ import { useForm, useWorkbench } from "@/stores";
 import FormDocument from "./FormDocument.vue";
 import { cursorFor } from "./blockFocus";
 import { addAt } from "./addQuestion";
+import { moveNote } from "./blockMove";
 
 const blocks = [
     { id: 1, uuid: "b1", type: "none", message: "<p>Welcome</p>" },
@@ -118,5 +119,21 @@ describe("the form document", () => {
             null,
         );
         expect(cursorFor.value).toBe("b3");
+    });
+
+    it("reads out where a moved question went", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        moveNote.value = "Moved to position 2 of 2";
+        await wrapper.vm.$nextTick();
+
+        expect(
+            document.querySelector("[aria-live=polite]")?.textContent,
+        ).toBe("Moved to position 2 of 2");
     });
 });

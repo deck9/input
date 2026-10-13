@@ -193,16 +193,14 @@ export const useForm = defineStore("form", {
             // for an empty group: there's no block to insert after
             parentBlock: string | null = null,
         ) {
-            if (!this.form) {
+            const form = this.form;
+
+            if (!form) {
                 return;
             }
 
-            try {
-                const response = await callCreateFormBlock(
-                    this.form.uuid,
-                    type,
-                );
-                useNotice().clearSaveError("createFormBlock");
+            await useNotice().send("createFormBlock", async () => {
+                const response = await callCreateFormBlock(form.uuid, type);
 
                 const newBlock = response.data;
 
@@ -230,9 +228,7 @@ export const useForm = defineStore("form", {
 
                     workbench.putOnWorkbench(newBlock);
                 }
-            } catch (error) {
-                useNotice().showSaveError(error, "createFormBlock");
-            }
+            });
         },
 
         async deleteFormBlock(block: FormBlockModel) {
@@ -242,9 +238,8 @@ export const useForm = defineStore("form", {
 
             const save = `deleteFormBlock:${block.id}`;
 
-            try {
+            const request = async () => {
                 const response = await callDeleteFormBlock(block.id);
-                useNotice().clearSaveError(save);
 
                 if (response.status === 200) {
                     const index = this.blocks?.findIndex((item) => {
@@ -266,9 +261,9 @@ export const useForm = defineStore("form", {
                             });
                     }
                 }
-            } catch (error) {
-                useNotice().showSaveError(error, save, block);
-            }
+            };
+
+            await useNotice().send(save, request, block);
         },
 
         async updateFormBlockProperty(
@@ -282,12 +277,11 @@ export const useForm = defineStore("form", {
 
             const save = `updateFormBlockProperty:${block.id}:${property}`;
 
-            try {
+            const request = async () => {
                 const response = await callUpdateFormBlock({
                     ...block,
                     [property]: newValue,
                 });
-                useNotice().clearSaveError(save);
 
                 const index = this.blocks?.findIndex(
                     (item) => item.id === block.id,
@@ -300,9 +294,9 @@ export const useForm = defineStore("form", {
                 ) {
                     this.blocks[index] = response.data;
                 }
-            } catch (error) {
-                useNotice().showSaveError(error, save, block);
-            }
+            };
+
+            await useNotice().send(save, request, block);
         },
 
         async changeBlockSequence(
@@ -371,15 +365,11 @@ export const useForm = defineStore("form", {
                 },
             );
 
-            try {
-                await callUpdateBlockSequence(
-                    this.form.uuid,
-                    saveSequenceRequestData,
-                );
-                useNotice().clearSaveError("blockSequence");
-            } catch (error) {
-                useNotice().showSaveError(error, "blockSequence");
-            }
+            const form = this.form;
+
+            await useNotice().send("blockSequence", () =>
+                callUpdateBlockSequence(form.uuid, saveSequenceRequestData),
+            );
         },
     },
 });

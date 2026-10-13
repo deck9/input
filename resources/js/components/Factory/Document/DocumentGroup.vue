@@ -7,6 +7,7 @@
   >
     <div
       class="group/header flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-3 sm:pl-1"
+      @keydown="!$event.defaultPrevented && onMoveKey($event, group)"
     >
       <span
         aria-hidden="true"
@@ -84,6 +85,7 @@ import BlockMenu from "./BlockMenu.vue";
 import DocumentList from "./DocumentList.vue";
 import TypePicker from "./TypePicker.vue";
 import { addAt, closePicker, openPicker, useAddQuestion } from "./addQuestion";
+import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
   group: FormBlockModel;
@@ -94,6 +96,7 @@ const store = useForm();
 const workbench = useWorkbench();
 const logic = useLogic();
 const { addQuestion: add } = useAddQuestion();
+const { onMoveKey } = useMoveBlock();
 
 const id = computed(() => `group-${props.group.uuid}`);
 const isOpen = computed(() => workbench.block?.id === props.group.id);

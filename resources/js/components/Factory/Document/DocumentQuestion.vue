@@ -2,6 +2,7 @@
   <div
     :id="`row-${block.uuid}`"
     class="group/question flex scroll-mt-4 items-start"
+    @keydown="onKeydown"
   >
     <div class="flex w-8 shrink-0 flex-col sm:w-12 items-end gap-1 pr-2 pt-3">
       <span
@@ -33,6 +34,7 @@
     <QuestionCard v-if="isOpen" :block="block" :number="number" />
     <button
       v-else
+      ref="row"
       type="button"
       class="min-h-14 min-w-0 flex-1 rounded-lg px-3 py-2.5 text-left hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       @click="open"
@@ -76,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { D9Icon } from "@deck9/ui";
 import { useWorkbench } from "@/stores";
 import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
@@ -84,6 +86,7 @@ import { plainText } from "./questionSummary";
 import QuestionCard from "./QuestionCard.vue";
 import { cursorFor } from "./blockFocus";
 import { openPicker } from "./addQuestion";
+import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -107,6 +110,30 @@ const choiceCount = computed(() =>
     : null,
 );
 const ruleCount = computed(() => props.block.logics?.length ?? 0);
+
+const { onMoveKey } = useMoveBlock();
+const row = ref<HTMLButtonElement | null>(null);
+
+// Alt+Up/Down moves the question, open or not; Escape closes it
+const onKeydown = async (event: KeyboardEvent) => {
+  // a select or menu inside the card handled the key already; the question
+  // text cancels every key it takes, also an Escape it doesn't use
+  const inText = (event.target as HTMLElement).closest?.(
+    "[contenteditable=true]",
+  );
+
+  if (event.defaultPrevented && !inText) {
+    return;
+  }
+
+  onMoveKey(event, props.block);
+
+  if (event.key === "Escape" && isOpen.value) {
+    workbench.clearWorkbench();
+    await nextTick();
+    row.value?.focus();
+  }
+};
 
 const open = () => {
   cursorFor.value = props.block.uuid;

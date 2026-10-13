@@ -1,5 +1,5 @@
 <template>
-  <nav :aria-labelledby="`${id}-title`" class="px-2 py-3">
+  <nav ref="nav" :aria-labelledby="`${id}-title`" class="px-2 py-3">
     <div class="flex h-11 items-center justify-between pl-2 lg:h-8">
       <h2 :id="`${id}-title`" class="text-xs font-semibold text-grey-600">
         Outline
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useId } from "vue";
+import { computed, onMounted, ref, useId, watch } from "vue";
 import { D9Icon } from "@deck9/ui";
 import { useForm, useWorkbench } from "@/stores";
 import { plainText } from "./questionSummary";
@@ -75,4 +75,15 @@ const items = computed(() => {
 
 const isCurrent = (block: FormBlockModel) =>
   workbench.block?.uuid === block.uuid;
+
+const nav = ref<HTMLElement | null>(null);
+
+// keeps the open question in view, also when the outline opens as a panel
+const showCurrent = () =>
+  nav.value
+    ?.querySelector("[aria-current=true]")
+    ?.scrollIntoView({ block: "nearest" });
+
+onMounted(showCurrent);
+watch(() => workbench.block?.uuid, showCurrent, { flush: "post" });
 </script>
