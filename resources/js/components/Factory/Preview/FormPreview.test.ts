@@ -125,6 +125,30 @@ describe("the preview panel", () => {
         expect(wrapper.text()).not.toContain("hidden by a rule");
     });
 
+    // the public form leaves them out, so no rule is to blame
+    it.each([
+        ["a hidden question", { is_disabled: true }, "is hidden"],
+        ["a question in a hidden group", { parent_block: "g1" }, "is in a hidden group"],
+    ])("says when the open one is %s", async (_, question, reason) => {
+        screen(false);
+        const blocks = [
+            { uuid: "q1", type: "input-short", parent_block: null },
+            { uuid: "g1", type: "group", parent_block: null, is_disabled: true },
+            { uuid: "q2", type: "input-short", parent_block: null, ...question },
+        ] as FormBlockModel[];
+        useForm().blocks = blocks;
+        useWorkbench().block = blocks[2];
+        const wrapper = mountPreview();
+        await flushPromises();
+
+        wrapper.findComponent(PreviewFrame).vm.$emit("update:missed", "q2");
+        await flushPromises();
+
+        expect(document.querySelector("[role=dialog]")?.textContent).toContain(
+            `Question 2 ${reason}, so the preview can't jump to it.`,
+        );
+    });
+
     it.each([true, false])("shows nothing when closed (desktop: %s)", (wide) => {
         screen(wide);
         const wrapper = mountPreview(false);

@@ -8,9 +8,8 @@
     <h2 id="preview-heading" class="w-80 text-xs font-semibold text-grey-600">
       {{ heading }}
     </h2>
-    <p v-if="hiddenNumber" class="w-80 max-w-full text-xs text-grey-600">
-      Question {{ hiddenNumber }} is hidden by a rule, so the preview can't jump
-      to it.
+    <p v-if="hidden" class="w-80 max-w-full text-xs text-grey-600">
+      {{ hidden }}, so the preview can't jump to it.
     </p>
     <p v-if="isEmpty" class="w-80 max-w-full text-sm text-grey-600">
       Add a question to see it here.
@@ -37,9 +36,8 @@
           <D9Icon name="close" aria-hidden="true" />
         </button>
       </div>
-      <p v-if="hiddenNumber" class="w-80 max-w-full text-xs text-grey-600">
-        Question {{ hiddenNumber }} is hidden by a rule, so the preview can't
-        jump to it.
+      <p v-if="hidden" class="w-80 max-w-full text-xs text-grey-600">
+        {{ hidden }}, so the preview can't jump to it.
       </p>
       <p v-if="isEmpty" class="w-80 max-w-full text-sm text-grey-600">
         Add a question to see it here.
@@ -73,12 +71,25 @@ const heading = computed(() => {
   const number = shown.value && numbers.value[shown.value];
   return number ? `Preview · question ${number}` : "Preview";
 });
-// the open question, when the preview couldn't go to it (a group has no number)
-const hiddenNumber = computed(() =>
-  missed.value && missed.value === workbench.block?.uuid
-    ? numbers.value[missed.value]
-    : undefined,
-);
+// the open question, when the preview couldn't go to it (a group has no number);
+// the public form leaves out a hidden question and each one in a hidden group
+const hidden = computed(() => {
+  const block = workbench.block;
+  const number =
+    block && missed.value === block.uuid && numbers.value[block.uuid];
+  if (!number) {
+    return undefined;
+  }
+
+  if (block.is_disabled) {
+    return `Question ${number} is hidden`;
+  }
+
+  const group = store.blocks?.find((item) => item.uuid === block.parent_block);
+  return group?.is_disabled
+    ? `Question ${number} is in a hidden group`
+    : `Question ${number} is hidden by a rule`;
+});
 
 const isWide = useMediaQuery("(min-width: 1280px)");
 // a narrower window or a turned tablet must not pop the panel over the document
