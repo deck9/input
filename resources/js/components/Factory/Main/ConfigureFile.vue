@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4">
-    <D9Label label="Allowed File Types" />
+    <D9Label label="File types" />
     <div
       v-for="fileType in availableFileTypes"
       :key="fileType.key"
@@ -12,17 +12,17 @@
         :label="fileType.label"
       />
     </div>
+    <p class="mt-1 text-xs text-grey-600">None ticked: all types allowed.</p>
   </div>
 
   <div class="mb-4">
     <D9Label
       id="file-max-files"
-      label="Max Files"
-      :description="`The maximum number of allowed files to upload (max. ${maxFiles})`"
+      label="Most files"
+      :description="`1 to ${maxFiles}`"
     />
     <D9Input
       id="file-max-files"
-      :placeholder="`The maximum number of allowed files to upload (max. ${maxFiles})`"
       type="number"
       :min="1"
       :max="maxFiles"
@@ -35,12 +35,11 @@
   <div class="mb-4">
     <D9Label
       id="file-max-size"
-      label="Max Filesize"
-      :description="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
+      label="Largest file (MB)"
+      :description="`Up to ${maxFileSize} MB per file`"
     />
     <D9Input
       id="file-max-size"
-      :placeholder="`The maximum file size in MB (max. ${maxFileSize} MB per file)`"
       type="number"
       :min="1"
       :max="maxFileSize"

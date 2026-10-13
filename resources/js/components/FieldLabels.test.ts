@@ -15,7 +15,7 @@ type Node = {
 
 // labels that head a group of controls or show a value, not a single field
 const groupLabels = [
-    "Factory/Main/ConfigureFile.vue: Allowed File Types",
+    "Factory/Main/ConfigureFile.vue: File types",
     "Factory/Settings/TemplateExport.vue: Template Files",
     "Factory/Settings/partials/ImageUpload.vue: (bound)",
     "Pages/Teams/Create.vue: Team Owner",

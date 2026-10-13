@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-4">
-      <D9Label id="textarea-placeholder" label="Placeholder Text" />
+      <D9Label id="textarea-placeholder" label="Placeholder" />
       <D9Input
         id="textarea-placeholder"
         placeholder="Your placeholder text"
@@ -13,8 +13,8 @@
     <div class="mb-4">
       <D9Label
         id="textarea-rows"
-        label="Rows"
-        description="The max allowed number of rows is 10"
+        label="Height in lines"
+        description="1 to 10"
       />
       <D9Input
         id="textarea-rows"
@@ -28,7 +28,7 @@
       />
     </div>
     <div class="mb-4">
-      <D9Label id="textarea-max-chars" label="Max Characters" />
+      <D9Label id="textarea-max-chars" label="Max characters" />
       <D9Input
         id="textarea-max-chars"
         placeholder="The maximum number of characters"

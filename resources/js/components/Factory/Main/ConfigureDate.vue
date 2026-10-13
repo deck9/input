@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="mb-4">
-      <D9Label id="date-min" label="Min Date" />
+      <D9Label id="date-min" label="Min date" />
       <D9Input id="date-min" type="date" block v-model="minDate" />
     </div>
     <div class="mb-4">
-      <D9Label id="date-max" label="Max Date" />
+      <D9Label id="date-max" label="Max date" />
       <D9Input id="date-max" type="date" block v-model="maxDate" />
     </div>
     <div class="mb-4 flex items-center justify-between">
-      <D9Label id="no-past-dates" label="Do not allow past dates" />
+      <D9Label id="no-past-dates" label="No dates in the past" />
       <D9Switch id="no-past-dates" label="" v-model="noPastDates" />
     </div>
   </div>
