@@ -136,6 +136,7 @@
 import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from "vue";
 import { Link } from "@inertiajs/vue3";
 import { D9Icon, D9Input, D9Label, D9Switch } from "@deck9/ui";
+import { useEventListener } from "@vueuse/core";
 import debounce from "lodash/debounce";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
@@ -200,14 +201,18 @@ const save = debounce(async () => {
 
 watch(draft, () => save());
 
-// save before a click on a link can load the next page
+// save before a click on a link can load the next page, also "Also in Settings" in the card
 const leave = (event: FocusEvent) => {
   const card = event.currentTarget as HTMLElement;
+  const next = event.relatedTarget as HTMLElement | null;
 
-  if (!card.contains(event.relatedTarget as Node | null)) {
+  if (!card.contains(next) || next?.closest("a")) {
     save.flush();
   }
 };
+
+// browser Back moves no focus; the old page stays until the next one has loaded
+useEventListener(window, "popstate", () => save.flush());
 
 const open = async () => {
   workbench.clearWorkbench();

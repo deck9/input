@@ -121,6 +121,32 @@ describe("the end screen in the document", () => {
         expect(useForm().form?.eoc_headline).toBe("Thanks!");
     });
 
+    it("saves right away when the focus moves to the Settings link in the block", async () => {
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        await block.find("#end-screen-headline").trigger("focusout", {
+            relatedTarget: block.find("a").element,
+        });
+        await flushPromises();
+
+        expect(callUpdateForm).toHaveBeenCalledWith(expect.anything(), {
+            eoc_headline: "Thanks!",
+        });
+    });
+
+    it("saves right away on browser Back", async () => {
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+        await flushPromises();
+
+        expect(callUpdateForm).toHaveBeenCalledWith(expect.anything(), {
+            eoc_headline: "Thanks!",
+        });
+    });
+
     it("saves on its own after a short pause while you type", async () => {
         vi.useFakeTimers();
         try {
