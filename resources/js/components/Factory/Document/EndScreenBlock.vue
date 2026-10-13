@@ -1,6 +1,6 @@
 <template>
   <div id="row-end-screen" class="flex items-start">
-    <div class="flex w-12 shrink-0 justify-end pr-2 pt-3">
+    <div class="flex w-8 shrink-0 justify-end pr-2 pt-3 sm:w-12">
       <span class="flex h-6 items-center text-grey-500">
         <D9Icon name="flag" aria-hidden="true" />
       </span>
@@ -22,7 +22,7 @@
 
     <div
       v-else-if="isOpen"
-      class="min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-sm ring-1 ring-blue-500 sm:p-4"
+      class="touch-fields min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-sm ring-1 ring-blue-500 sm:p-4"
       @focusout="leave"
     >
       <div class="flex items-center gap-3">
@@ -43,10 +43,7 @@
         >
       </div>
 
-      <!-- the same focus sign as the headline -->
-      <div
-        class="-ml-2 border-l-2 border-transparent pl-1.5 focus-within:border-blue-500"
-      >
+      <div>
         <span id="end-screen-text-label" class="sr-only">End screen text</span>
         <Editor id="end-screen-text" v-model="draft.eoc_text" bare />
       </div>
@@ -65,7 +62,7 @@
           />
           <Link
             :href="settingsLink"
-            class="ml-auto text-xs text-grey-600 underline hover:text-grey-900"
+            class="ml-auto inline-flex min-h-11 items-center text-xs text-grey-600 underline hover:text-grey-900 lg:min-h-0"
             >Also in Settings</Link
           >
         </div>

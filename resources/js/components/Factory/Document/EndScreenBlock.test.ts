@@ -112,6 +112,21 @@ describe("the end screen in the document", () => {
         expect(block.find("#end-screen-headline").exists()).toBe(false);
     });
 
+    it("has the question card's phone sizes, number column and focus bar", async () => {
+        const block = await open();
+        const [number, card] = block.findAll("#row-end-screen > div");
+
+        expect(number.classes()).toEqual(
+            expect.arrayContaining(["w-8", "sm:w-12"]),
+        );
+        expect(card.classes()).toContain("touch-fields");
+        expect(block.get("a").classes()).toContain("min-h-11");
+        // the editor draws its own bar
+        expect(block.find(".focus-within\\:border-blue-500").exists()).toBe(
+            false,
+        );
+    });
+
     it("saves only what changed, right away when you leave the block", async () => {
         const block = await open();
 
