@@ -73,6 +73,7 @@ describe("the answer type picker", () => {
             options()[1].attributes("id"),
         );
         expect(options()[1].attributes("aria-selected")).toBe("true");
+        expect(options()[1].classes()).toContain("ring-2");
 
         await input.trigger("keydown", { key: "Enter" });
         expect(wrapper!.emitted("pick")).toEqual([["input-long"]]);
@@ -84,6 +85,8 @@ describe("the answer type picker", () => {
         expect(document.activeElement?.textContent?.trim()).toBe(
             "Add a question",
         );
+        expect(options()[0].attributes("aria-selected")).toBe("true");
+        expect(options()[0].classes()).not.toContain("ring-2");
     });
 
     it("adds a type on click and closes on Escape", async () => {

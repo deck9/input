@@ -33,6 +33,8 @@
         autocomplete="off"
         class="h-11 w-full rounded-md border border-grey-300 pl-9 pr-3 text-base text-grey-900 placeholder:text-grey-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 lg:h-9 lg:text-sm"
         @keydown="onKey"
+        @focus="typing = true"
+        @blur="typing = false"
       />
     </div>
 
@@ -62,7 +64,9 @@
           role="option"
           :aria-selected="type.value === active"
           class="flex h-11 cursor-pointer items-center gap-2.5 rounded-md px-2 text-base text-grey-900 hover:bg-grey-100 lg:h-9 lg:text-sm"
-          :class="type.value === active && 'bg-grey-100'"
+          :class="
+            type.value === active && typing && 'ring-2 ring-inset ring-blue-500'
+          "
           @click="emit('pick', type.value)"
         >
           <D9Icon
@@ -109,6 +113,8 @@ const { types } = useBlockTypes();
 const root = ref<HTMLElement | null>(null);
 const heading = ref<HTMLElement | null>(null);
 const search = ref<HTMLInputElement | null>(null);
+// the highlight shows only while you type: Enter adds it
+const typing = ref(false);
 const isLarge = useMediaQuery("(min-width: 1024px)");
 const filter = ref("");
 
