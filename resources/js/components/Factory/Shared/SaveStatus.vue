@@ -8,6 +8,7 @@
       role="status"
       aria-live="polite"
       class="flex min-w-3.5 items-center justify-end gap-1.5 xl:min-w-[4.25rem]"
+      :title="words[shown]"
     >
       <template v-if="shown === 'saving'">
         <svg
@@ -95,4 +96,12 @@ watch(
 onBeforeUnmount(() => clearTimeout(timer));
 
 const shown = computed(() => (justSaved.value ? "saved" : notice.saveStatus));
+
+// a tooltip for the icon alone under xl
+const words: Record<typeof shown.value, string | undefined> = {
+  saving: "Saving…",
+  saved: "Saved",
+  failed: "Not saved",
+  idle: undefined,
+};
 </script>

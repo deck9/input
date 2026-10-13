@@ -64,6 +64,8 @@ describe("save status", () => {
             expect(live().classes()).toEqual(
                 expect.arrayContaining(["min-w-3.5", "xl:min-w-[4.25rem]"]),
             );
+            // the tooltip for the icon alone under xl
+            expect(live().attributes("title")).toBe(text || undefined);
         }
     });
 
