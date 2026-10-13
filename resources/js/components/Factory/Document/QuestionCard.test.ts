@@ -153,9 +153,10 @@ describe("an open question", () => {
     });
 
     describe("typing / in its text", () => {
+        const focus = vi.fn();
         const editorStub = {
             template: `<div><div contenteditable="true" /></div>`,
-            methods: { focus() {} },
+            methods: { focus },
         };
         const slash = async (message: string | null) => {
             useWorkbench().block = { ...block, message };
@@ -177,6 +178,23 @@ describe("an open question", () => {
                 type: "radio",
             });
             expect(wrapper!.find("[role=listbox]").exists()).toBe(false);
+        });
+
+        it("gives the cursor back after Esc, but not after a click elsewhere", async () => {
+            await slash(null);
+            focus.mockClear();
+
+            // the click's target takes the focus; tiptap would take it back a frame later
+            document.body.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+            await flushPromises();
+            expect(wrapper!.find("[role=listbox]").exists()).toBe(false);
+            expect(focus).not.toHaveBeenCalled();
+
+            await wrapper!
+                .find("[contenteditable]")
+                .trigger("keydown", { key: "/" });
+            await wrapper!.find("input").trigger("keydown", { key: "Escape" });
+            expect(focus).toHaveBeenCalledOnce();
         });
 
         it("stays a / in a question with text", async () => {

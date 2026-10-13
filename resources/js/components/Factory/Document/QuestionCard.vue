@@ -197,9 +197,12 @@ const openTypes = (event: KeyboardEvent) => {
     typesOpen.value = true;
   }
 };
-const closeTypes = () => {
+const closeTypes = (returnFocus = true) => {
   typesOpen.value = false;
-  editor.value?.focus();
+
+  if (returnFocus) {
+    editor.value?.focus();
+  }
 };
 const changeType = (value: FormBlockType) => {
   type.value = types.value.find((item) => item.value === value);

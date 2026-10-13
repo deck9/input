@@ -3,7 +3,7 @@
     ref="root"
     :aria-labelledby="`${id}-title`"
     class="scroll-mt-4 rounded-lg border border-grey-200 bg-white p-2 shadow-md"
-    @keydown.esc.prevent="emit('close')"
+    @keydown.esc.prevent="emit('close', true)"
   >
     <p
       :id="`${id}-title`"
@@ -106,7 +106,11 @@ const { autofocus = true } = defineProps<{
   autofocus?: boolean;
 }>();
 
-const emit = defineEmits<{ pick: [type: FormBlockType]; close: [] }>();
+// a click elsewhere leaves the focus where the click put it
+const emit = defineEmits<{
+  pick: [type: FormBlockType];
+  close: [returnFocus: boolean];
+}>();
 
 const id = useId();
 const { types } = useBlockTypes();
@@ -160,7 +164,7 @@ const onKey = (event: KeyboardEvent) => {
   }
 };
 
-onClickOutside(root, () => emit("close"));
+onClickOutside(root, () => emit("close", false));
 
 onMounted(() => {
   if (!autofocus) {
