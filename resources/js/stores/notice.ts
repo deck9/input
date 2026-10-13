@@ -74,11 +74,13 @@ export const useNotice = defineStore("notice", {
             this.waitingSaves[save] = true;
         },
 
-        // runs a save, and keeps it to send again if it fails
+        // runs a save, and keeps it to send again if it fails. A failed
+        // change "wasn't saved"; an action says what else failed, e.g. "duplicated"
         async send<T>(
             save: string,
             request: () => Promise<T>,
             block?: FormBlockModel | null,
+            action?: string,
         ): Promise<T | undefined> {
             delete this.waitingSaves[save];
             this.runningSaves++;
@@ -89,8 +91,9 @@ export const useNotice = defineStore("notice", {
 
                 return result;
             } catch (error) {
-                this.showSaveError(error, save, block);
-                this.retries[save] = () => this.send(save, request, block);
+                this.showSaveError(error, save, block, action);
+                this.retries[save] = () =>
+                    this.send(save, request, block, action);
             } finally {
                 this.runningSaves--;
             }
@@ -108,9 +111,12 @@ export const useNotice = defineStore("notice", {
             error: unknown,
             save: string,
             block?: FormBlockModel | null,
+            action?: string,
         ) {
             const name = block ? questionName(block) : "";
-            const change = name ? `Your change to ${name}` : "Your change";
+            const failed = action
+                ? `${name.charAt(0).toUpperCase()}${name.slice(1)} couldn't be ${action}`
+                : `Your change${name ? ` to ${name}` : ""} wasn't saved`;
             const response =
                 error instanceof AxiosError ? error.response : undefined;
 
@@ -120,17 +126,17 @@ export const useNotice = defineStore("notice", {
 
             if (response?.status === 401 || response?.status === 419) {
                 this.failedSaves[save] =
-                    `${change} wasn't saved: your session has expired. Reload the page and try again.`;
+                    `${failed}: your session has expired. Reload the page and try again.`;
             } else if (
                 response &&
                 response.status < 500 &&
                 response.data?.message
             ) {
                 this.failedSaves[save] =
-                    `${change} wasn't saved: ${response.data.message}`;
+                    `${failed}: ${response.data.message}`;
             } else {
                 this.failedSaves[save] =
-                    `${change} wasn't saved. Check your connection and try again.`;
+                    `${failed}. Check your connection and try again.`;
             }
         },
 

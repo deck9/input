@@ -6,8 +6,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "vue";
 import handler from "@/api/handler";
 import { useForm, useWorkbench } from "@/stores";
+import { useNotice } from "./notice";
 
-vi.mock("@/api/handler", () => ({ default: { get: vi.fn(), post: vi.fn() } }));
+vi.mock("@/api/handler", () => ({
+    default: { get: vi.fn(), post: vi.fn(), delete: vi.fn() },
+}));
 
 const saved = {
     uuid: "form1",
@@ -183,5 +186,42 @@ describe("duplicating a question", () => {
         await useForm().duplicateFormBlock(workbench.block);
 
         expect(posted).toEqual(["api.blocks.update", "api.blocks.duplicate"]);
+    });
+
+    it("says the question couldn't be duplicated when the copy fails", async () => {
+        vi.mocked(handler.post).mockRejectedValue(
+            new AxiosError("Network Error", "ERR_NETWORK"),
+        );
+
+        await useForm().duplicateFormBlock(useForm().blocks![1]);
+
+        expect(useNotice().message).toBe(
+            "Question 2 (“Hi”) couldn't be duplicated. Check your connection and try again.",
+        );
+        expect(useForm().blocks).toHaveLength(3);
+    });
+});
+
+describe("deleting a question", () => {
+    beforeEach(() => {
+        setActivePinia(createPinia());
+        useForm().form = { ...saved };
+        useForm().blocks = [
+            { id: 1, uuid: "q1", type: "radio", message: "<p>Hi</p>" },
+            { id: 2, uuid: "q2", type: "radio", message: "<p>Bye</p>" },
+        ] as FormBlockModel[];
+    });
+
+    it("says the question couldn't be deleted when the delete fails", async () => {
+        vi.mocked(handler.delete).mockRejectedValue(
+            new AxiosError("Network Error", "ERR_NETWORK"),
+        );
+
+        await useForm().deleteFormBlock(useForm().blocks![1]);
+
+        expect(useNotice().message).toBe(
+            "Question 2 (“Bye”) couldn't be deleted. Check your connection and try again.",
+        );
+        expect(useForm().blocks).toHaveLength(2);
     });
 });

@@ -143,14 +143,14 @@ describe("asking before a delete", () => {
                 global: { plugins: [pinia], stubs },
             });
 
-        it("names the question, its answers and the questions whose rules stop working", async () => {
+        it("names the question by number and text, its answers and the questions whose rules stop working", async () => {
             const wrapper = await open("q1");
 
             expect(wrapper.find("[role=alertdialog]").text()).toContain(
                 "Delete question?",
             );
             expect(wrapper.text()).toContain(
-                "“Will you come to the meetup?” and its 40 answers will be deleted. This can't be undone.",
+                "Question 1 (“Will you come to the meetup?”) and its 40 answers will be deleted. This can't be undone.",
             );
             expect(wrapper.text()).toContain(
                 "2 rules use this question and will stop working: question 3, group “Food and drinks”.",
@@ -164,7 +164,7 @@ describe("asking before a delete", () => {
             const wrapper = await open("q2");
 
             expect(wrapper.text()).toContain(
-                "“Any allergies?” will be deleted. This can't be undone.",
+                "Question 2 (“Any allergies?”) will be deleted. This can't be undone.",
             );
             expect(wrapper.text()).toContain(
                 "1 rule uses this question and will stop working: question 3.",
@@ -186,7 +186,7 @@ describe("asking before a delete", () => {
             });
 
             expect(wrapper.text()).toContain(
-                "“Will you come to the meetup?” and its 1 answer will be deleted.",
+                "Question 1 (“Will you come to the meetup?”) and its 1 answer will be deleted.",
             );
             expect(wrapper.text()).not.toContain("rule");
         });
@@ -201,7 +201,7 @@ describe("asking before a delete", () => {
             });
 
             expect(wrapper.text()).toContain(
-                "“Will you come to the meetup?” and its answers will be deleted. This can't be undone.",
+                "Question 1 (“Will you come to the meetup?”) and its answers will be deleted. This can't be undone.",
             );
         });
 

@@ -2,7 +2,14 @@
   <!-- sits in the dark top bar; under xl only the icons show, as in the board.
     Under lg the red save bar has Retry and stays while a save failed -->
   <div class="flex items-center justify-end gap-1 text-xs text-grey-400">
-    <p role="status" aria-live="polite" class="flex items-center gap-1.5">
+    <!-- keeps its width while empty, so the top bar doesn't move on each save:
+      the icon under xl, "Saving…" from xl -->
+    <p
+      role="status"
+      aria-live="polite"
+      class="flex min-w-3.5 items-center justify-end gap-1.5 xl:min-w-[4.25rem]"
+      :title="words[shown]"
+    >
       <template v-if="shown === 'saving'">
         <svg
           aria-hidden="true"
@@ -89,4 +96,12 @@ watch(
 onBeforeUnmount(() => clearTimeout(timer));
 
 const shown = computed(() => (justSaved.value ? "saved" : notice.saveStatus));
+
+// a tooltip for the icon alone under xl
+const words: Record<typeof shown.value, string | undefined> = {
+  saving: "Saving…",
+  saved: "Saved",
+  failed: "Not saved",
+  idle: undefined,
+};
 </script>

@@ -2,6 +2,7 @@ import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
 import QuestionCard from "./QuestionCard.vue";
+import { cursorFor } from "./blockFocus";
 
 const block = {
     id: 4,
@@ -202,5 +203,22 @@ describe("an open question", () => {
 
             expect(wrapper!.find("[role=listbox]").exists()).toBe(false);
         });
+    });
+
+    it("puts the cursor at the end of its text, e.g. in a copy", async () => {
+        // jsdom has no layout, and the editor scrolls to the cursor
+        Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
+        Range.prototype.getBoundingClientRect = () => new DOMRect();
+        cursorFor.value = "q4";
+        mountCard(false, { ...stubs, Editor: false });
+
+        await vi.waitFor(() =>
+            expect(document.activeElement?.getAttribute("role")).toBe(
+                "textbox",
+            ),
+        );
+        const selection = document.getSelection()!;
+        expect(selection.anchorNode?.textContent).toBe("Your name?");
+        expect(selection.anchorOffset).toBe("Your name?".length);
     });
 });

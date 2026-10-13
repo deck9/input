@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useEditor, EditorContent } from "@tiptap/vue-3";
+import { useEditor, EditorContent, type FocusPosition } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -205,7 +205,9 @@ const editor = useEditor({
 });
 
 // a label's for= can't focus a contenteditable, so its page calls this
-defineExpose({ focus: () => editor.value?.commands.focus() });
+defineExpose({
+  focus: (at?: FocusPosition) => editor.value?.commands.focus(at),
+});
 
 const setLink = () => {
   if (typeof editor.value === "undefined") {
