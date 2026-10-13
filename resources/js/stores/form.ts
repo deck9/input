@@ -293,7 +293,7 @@ export const useForm = defineStore("form", {
                 }
             };
 
-            await useNotice().send(save, request, block);
+            await useNotice().send(save, request, block, "deleted");
         },
 
         async updateFormBlockProperty(
