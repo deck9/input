@@ -4,8 +4,12 @@
       <span class="font-semibold [overflow-wrap:anywhere]">{{ title }}</span>
     </template>
     <template #content>
-      <p class="text-sm text-grey-600 [overflow-wrap:anywhere]">{{ text }}</p>
-      <p v-if="note" class="mt-2 text-sm text-grey-600">{{ note }}</p>
+      <p class="text-pretty text-sm text-grey-600 [overflow-wrap:anywhere]">
+        {{ text }}
+      </p>
+      <p v-if="note" class="mt-2 text-pretty text-sm text-grey-600">
+        {{ note }}
+      </p>
     </template>
     <template #footer>
       <D9Button
