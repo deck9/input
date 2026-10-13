@@ -32,7 +32,7 @@
       aria-label="Add choice"
       aria-describedby="add-choice-hint"
       :aria-busy="isCreatingInteraction"
-      class="mt-1 flex h-9 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      class="mt-1 flex h-11 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9"
       @click="createClickInteraction"
     >
       <D9Icon name="plus" aria-hidden="true" />

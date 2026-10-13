@@ -1,6 +1,9 @@
 <template>
-  <div :id="`row-${block.uuid}`" class="group/question flex items-start">
-    <div class="flex w-12 shrink-0 flex-col items-end gap-1 pr-2 pt-3">
+  <div
+    :id="`row-${block.uuid}`"
+    class="group/question flex scroll-mt-4 items-start"
+  >
+    <div class="flex w-8 shrink-0 flex-col sm:w-12 items-end gap-1 pr-2 pt-3">
       <span
         aria-hidden="true"
         class="flex h-6 items-center text-[13px] tabular-nums text-grey-600"
@@ -9,7 +12,7 @@
       <span
         aria-hidden="true"
         title="Drag to reorder"
-        class="document-grip grid h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
+        class="document-grip hidden h-6 w-6 cursor-grab sm:grid place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
       >
         <D9Icon name="grip-vertical" />
       </span>

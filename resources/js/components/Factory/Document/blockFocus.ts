@@ -22,6 +22,15 @@ export async function focusBlock(block: FormBlockModel | null): Promise<boolean>
     return name !== null;
 }
 
+// brings a question or group into view, by default to the top of the document
+export async function scrollToBlock(
+    uuid: string,
+    block: ScrollLogicalPosition = "start",
+) {
+    await nextTick();
+    document.getElementById(`row-${uuid}`)?.scrollIntoView({ block });
+}
+
 // a new block opens with the cursor in it
 export function useAddBlock() {
     const store = useForm();

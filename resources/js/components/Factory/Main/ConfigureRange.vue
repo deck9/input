@@ -61,7 +61,11 @@
           block
           show-color-picker
         />
-        <button type="button" class="text-xs text-blue-600" @click="resetColor">
+        <button
+          type="button"
+          class="inline-flex min-h-11 items-center text-xs text-blue-600 lg:min-h-0"
+          @click="resetColor"
+        >
           Use default
         </button>
       </div>
