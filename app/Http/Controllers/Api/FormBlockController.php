@@ -96,6 +96,20 @@ class FormBlockController extends Controller
     }
 
     /**
+     * Duplicate a form block
+     *
+     * This endpoint copies a form block with its text, type, settings and interactions, but not its logic rules or its `title` (the Identifier). The copy goes right after the original, and later blocks move down one. A group can't be duplicated.
+     */
+    public function duplicate(FormBlock $block)
+    {
+        $this->authorize('update', $block);
+
+        abort_if($block->type === FormBlockType::group, 422, 'A group can\'t be duplicated, only a question.');
+
+        return response()->json($block->duplicate()->fresh(), 201);
+    }
+
+    /**
      * Delete a form block
      *
      * This endpoint deletes a form block for the specified form.
