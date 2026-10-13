@@ -39,9 +39,14 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import { D9Icon } from "@deck9/ui";
 import { useMediaQuery } from "@vueuse/core";
+import { watch } from "vue";
 import PreviewFrame from "./PreviewFrame.vue";
 
 const open = defineModel<boolean>({ required: true });
 
 const isWide = useMediaQuery("(min-width: 1280px)");
+// a narrower window or a turned tablet must not pop the panel over the document
+watch(isWide, (wide) => {
+  if (!wide) open.value = false;
+});
 </script>

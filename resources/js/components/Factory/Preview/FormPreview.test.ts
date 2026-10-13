@@ -57,6 +57,22 @@ describe("the preview panel", () => {
         expect(wrapper.emitted("update:modelValue")).toEqual([[false]]);
     });
 
+    it("closes when the window gets narrower than a desktop, instead of popping over the document", async () => {
+        let change: (event: { matches: boolean }) => void = () => {};
+        vi.stubGlobal("matchMedia", () => ({
+            matches: true,
+            addEventListener: (_: string, listener: typeof change) => (change = listener),
+            removeEventListener() {},
+        }));
+        const wrapper = mountPreview();
+        expect(wrapper.find("aside").exists()).toBe(true);
+
+        change({ matches: false });
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.emitted("update:modelValue")).toEqual([[false]]);
+    });
+
     it.each([true, false])("shows nothing when closed (desktop: %s)", (wide) => {
         screen(wide);
         const wrapper = mountPreview(false);
