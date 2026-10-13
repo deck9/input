@@ -320,7 +320,7 @@ describe("the end screen in the document", () => {
         await flushPromises();
 
         expect(useNotice().message).toBe(
-            "Your change was not saved: The cta link field format is invalid.",
+            "Your change wasn't saved: The cta link field format is invalid.",
         );
         expect(useForm().form?.cta_link).toBe("https://example.com/cal");
     });
