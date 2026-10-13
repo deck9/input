@@ -61,7 +61,7 @@
               icon="plus"
               icon-position="left"
               :aria-expanded="addAt?.key === 'end'"
-              @click="openPicker({ key: 'end', after: workbench.block })"
+              @click="openPicker({ key: 'end', after: null })"
             />
             <D9Button
               label="Add group"
@@ -78,11 +78,7 @@
           <TypePicker
             v-if="addAt?.key === 'end'"
             class="ml-12 mt-2"
-            :title="
-              workbench.block
-                ? `Add a question after ${blockName(workbench.block, numbers)}`
-                : 'Add a question'
-            "
+            title="Add a question at the end"
             @pick="addQuestion"
             @close="closePicker"
           />
@@ -131,7 +127,6 @@ import DocumentOutline from "./DocumentOutline.vue";
 import TypePicker from "./TypePicker.vue";
 import {
   addAt,
-  blockName,
   closePicker,
   openPicker,
   useAddQuestion,

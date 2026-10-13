@@ -89,7 +89,7 @@ describe("the form document", () => {
         );
     });
 
-    it("adds a question after the open one, with the cursor in its text", async () => {
+    it("adds a question at the end, also with one open, with the cursor in its text", async () => {
         const added = {
             id: 3,
             uuid: "b3",
@@ -110,11 +110,12 @@ describe("the form document", () => {
             .findAll("button")
             .find((button) => button.text() === "Add question")!
             .trigger("click");
+        expect(wrapper.text()).toContain("Add a question at the end");
         await option("Email").trigger("click");
         await flushPromises();
 
         expect(useForm().createFormBlock).toHaveBeenCalledWith(
-            blocks[0],
+            null,
             "input-email",
             null,
         );
