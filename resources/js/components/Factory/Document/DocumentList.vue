@@ -26,7 +26,7 @@
           v-if="block.type !== 'group'"
           :block="block"
           :numbers="numbers"
-          class="pl-12"
+          class="pl-8 sm:pl-12"
         />
       </div>
     </Draggable>
