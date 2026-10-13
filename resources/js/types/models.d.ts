@@ -126,6 +126,16 @@ interface FormBlockModel extends BaseModel {
     form_id: number;
     interactions: FormBlockInteractionModel[] | undefined;
     logics: FormBlockLogic[] | undefined;
+    used_by?: FormBlockRuleUse[];
+}
+
+// a logic rule that uses a block
+interface FormBlockRuleUse {
+    id: number;
+    name: string | null;
+    // uuid of the block the rule is on
+    block: string;
+    as: ("source" | "target")[];
 }
 
 type FormBlockType =
