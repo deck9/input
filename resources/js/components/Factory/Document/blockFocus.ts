@@ -54,3 +54,31 @@ export function useAddBlock() {
 
     return { addBlock, duplicateBlock };
 }
+
+// the blocks around one as the document shows them, nearest first: those
+// after it, then those before it. A group's own questions go with it.
+export function blocksAround(block: FormBlockModel): FormBlockModel[] {
+    const shown = (nodes: TreeNode[]): FormBlockModel[] =>
+        nodes.flatMap((node) => [node.block, ...shown(node.children)]);
+    const order = shown(useForm().blocksTree).filter(
+        (item) => item.parent_block !== block.uuid,
+    );
+    const at = order.findIndex((item) => item.id === block.id);
+
+    return [...order.slice(at + 1), ...order.slice(0, at).reverse()];
+}
+
+// focuses a block's row: a closed question's button, an open one's text, a group's name
+export async function focusRow(block: FormBlockModel): Promise<boolean> {
+    if (block.type === "group" || useWorkbench().block?.id === block.id) {
+        return focusBlock(block);
+    }
+
+    await nextTick();
+    const button = document.querySelector<HTMLElement>(
+        `#row-${block.uuid} > button`,
+    );
+    button?.focus();
+
+    return button !== null;
+}

@@ -57,14 +57,17 @@ export function useDeleteBlock(block: FormBlockModel) {
         check.value = null;
     };
 
-    const confirm = () => {
+    // resolves once the server answered, so focus can move after it
+    const confirm = async () => {
         const workbench = useWorkbench();
         check.value = null;
-        useForm().deleteFormBlock(block);
+        const deleting = useForm().deleteFormBlock(block);
 
         if (workbench.block?.id === block.id) {
             workbench.clearWorkbench();
         }
+
+        await deleting;
     };
 
     return { check, ask, cancel, confirm };
