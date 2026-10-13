@@ -31,7 +31,7 @@
       <D9Label id="textarea-max-chars" label="Max characters" />
       <D9Input
         id="textarea-max-chars"
-        placeholder="No limit"
+        placeholder="e.g. 500"
         type="number"
         block
         v-model="maxChars"
