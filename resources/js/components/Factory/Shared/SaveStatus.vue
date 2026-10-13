@@ -1,5 +1,6 @@
 <template>
-  <!-- sits in the dark top bar; under xl only the icons show, as in the board -->
+  <!-- sits in the dark top bar; under xl only the icons show, as in the board.
+    Under lg the red save bar has Retry and stays while a save failed -->
   <div class="flex items-center justify-end gap-1 text-xs text-grey-400">
     <p role="status" aria-live="polite" class="flex items-center gap-1.5">
       <template v-if="shown === 'saving'">
@@ -55,7 +56,7 @@
     <button
       v-if="shown === 'failed' && notice.canRetry"
       type="button"
-      class="h-11 rounded px-2 font-medium text-blue-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-6 lg:px-1"
+      class="hidden h-6 rounded px-1 font-medium text-blue-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:block"
       @click="notice.retrySaves()"
     >
       Retry
