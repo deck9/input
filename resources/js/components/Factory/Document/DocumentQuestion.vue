@@ -8,7 +8,13 @@
       <span
         aria-hidden="true"
         class="flex h-6 items-center text-[13px] tabular-nums text-grey-600"
-        >{{ number }}</span
+        ><span
+          :class="
+            isJumpTarget &&
+            'relative z-10 flex h-5 items-center rounded-full border border-blue-200 bg-blue-50 px-1.5 text-xs font-semibold text-blue-700'
+          "
+          >{{ number }}</span
+        ></span
       >
       <span
         aria-hidden="true"
@@ -53,10 +59,7 @@
           </template></span
         >
         <span v-if="block.is_required" class="text-red-700">Required</span>
-        <span v-if="ruleCount" class="tabular-nums"
-          >{{ ruleCount }} {{ ruleCount === 1 ? "rule" : "rules" }}</span
-        >
-        <span v-if="block.is_disabled">Hidden</span>
+        <span v-if="block.is_disabled">Always hidden</span>
         <span v-if="block.title" class="break-all font-mono">{{
           block.title
         }}</span>
@@ -74,6 +77,7 @@ import { plainText } from "./questionSummary";
 import QuestionCard from "./QuestionCard.vue";
 import { cursorFor } from "./blockFocus";
 import { useMoveBlock } from "./blockMove";
+import { jumpTargets } from "./Rules/ruleText";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -84,6 +88,10 @@ const workbench = useWorkbench();
 const { types } = useBlockTypes();
 
 const isOpen = computed(() => workbench.block?.id === props.block.id);
+// the open question's rules jump here
+const isJumpTarget = computed(() =>
+  jumpTargets(workbench.block).includes(props.block.uuid),
+);
 
 const text = computed(() => plainText(props.block.message));
 const blockType = computed(() =>
@@ -96,7 +104,6 @@ const choiceCount = computed(() =>
       ).length
     : null,
 );
-const ruleCount = computed(() => props.block.logics?.length ?? 0);
 
 const { onMoveKey } = useMoveBlock();
 const row = ref<HTMLButtonElement | null>(null);

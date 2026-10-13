@@ -1,6 +1,4 @@
-import { useForm } from "@/stores";
 import { defineStore } from "pinia";
-import { findAllBlocksBeforeTarget } from "./helpers/queue";
 import { useNotice } from "./notice";
 
 import {
@@ -9,70 +7,19 @@ import {
     callDeleteFormBlockLogic,
 } from "@/api/logics";
 
-import { transformConditionForBackend } from "./helpers/logic";
-
+// the block whose rules are saved or removed
 interface LogicStore {
     block: FormBlockModel | null;
-    validation: ValidationError[];
-    isShowingLogicEditor: boolean;
-    hideRule: FormBlockLogic | null;
-    backup: FormBlockLogic[] | null;
 }
 
 export const useLogic = defineStore("logic", {
     state: (): LogicStore => {
         return {
             block: null,
-            isShowingLogicEditor: false,
-            hideRule: null,
-            validation: [],
-            backup: null,
         };
     },
 
     actions: {
-        showLogicEditor(block: FormBlockModel) {
-            this.block = block;
-            this.backupLogic();
-            this.isShowingLogicEditor = true;
-        },
-
-        hideLogicEditor() {
-            this.block = null;
-            this.isShowingLogicEditor = false;
-        },
-
-        backupLogic() {
-            this.backup = this.block?.logics ?? null;
-        },
-
-        restoreLogic() {
-            if (!this.block) {
-                return;
-            }
-
-            this.block.logics = this.backup ?? undefined;
-        },
-
-        addRule() {
-            if (!this.block) {
-                return;
-            }
-
-            if (!this.block.logics) {
-                this.block.logics = [];
-            }
-
-            this.block.logics.push({
-                form_block_id: this.block.id,
-                name: "Rule #" + (this.block.logics.length + 1),
-                action: "hide",
-                action_payload: null,
-                evaluate: "before",
-                conditions: [],
-            });
-        },
-
         async removeRule(index: number) {
             if (!this.block || !this.block.logics) {
                 return;
@@ -97,46 +44,6 @@ export const useLogic = defineStore("logic", {
             };
 
             await useNotice().send(`removeRule:${logic.id}`, request, block);
-        },
-
-        async saveBlockLogic() {
-            if (!this.block || !this.block.logics) {
-                return;
-            }
-
-            // reset validation before each request
-            this.validation = [];
-
-            const results = await Promise.allSettled(
-                this.block.logics.map((logic, index) =>
-                    this.saveSingleRule(logic).then((result) => ({
-                        result,
-                        index,
-                    })),
-                ),
-            );
-
-            const failedSaves = results
-                .map((result, index) => ({ ...result, originalIndex: index }))
-                .filter(
-                    (
-                        result,
-                    ): result is PromiseRejectedResult & {
-                        originalIndex: number;
-                    } => result.status === "rejected",
-                );
-
-            if (failedSaves.length > 0) {
-                failedSaves.forEach((failure) => {
-                    this.validation[failure.originalIndex] =
-                        failure.reason.response.data;
-                });
-            }
-
-            return {
-                failed: failedSaves.length,
-                totalRules: this.block.logics.length,
-            };
         },
 
         async saveSingleRule(logic: FormBlockLogic) {
@@ -172,60 +79,6 @@ export const useLogic = defineStore("logic", {
                 console.warn(`Error saving rule:`, error);
                 throw error;
             }
-        },
-
-        updateBlockLogic(logic: FormBlockLogic, index: number) {
-            if (!this.block) {
-                return;
-            }
-
-            if (!this.block.logics) {
-                this.block.logics = [];
-            }
-
-            const transformedConditions = logic.conditions.map((c) =>
-                transformConditionForBackend(c),
-            );
-
-            logic.conditions = transformedConditions;
-
-            this.block.logics[index] = logic;
-        },
-    },
-
-    getters: {
-        allBlocks(): Array<FormBlockModel> | null {
-            const formStore = useForm();
-
-            return formStore.blocks;
-        },
-
-        availableSourceBlocksWithTarget(state): Array<FormBlockModel> {
-            const formStore = useForm();
-
-            if (!state.block?.uuid) {
-                return [];
-            }
-
-            return findAllBlocksBeforeTarget(
-                formStore.blocksTree,
-                state.block.uuid,
-                { filterGroups: true, includeTarget: true },
-            );
-        },
-
-        availableSourceBlocks(state): Array<FormBlockModel> {
-            const formStore = useForm();
-
-            if (!state.block?.uuid) {
-                return [];
-            }
-
-            return findAllBlocksBeforeTarget(
-                formStore.blocksTree,
-                state.block.uuid,
-                { filterGroups: true, includeTarget: false },
-            );
         },
     },
 });

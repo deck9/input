@@ -40,6 +40,7 @@
             </button>
           </div>
 
+          <RuleGutter />
           <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
           <EmptyState
             v-else
@@ -94,7 +95,6 @@
       </DocumentOutline>
     </DialogPanel>
   </Dialog>
-  <BlockLogicEditor />
   <p class="sr-only" aria-live="polite">{{ moveNote }}</p>
 </template>
 
@@ -105,9 +105,9 @@ import { D9Button, D9Icon } from "@deck9/ui";
 import { useForm, useWorkbench } from "@/stores";
 import EmptyState from "@/components/EmptyState.vue";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
-import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
 import DocumentOutline from "./DocumentOutline.vue";
+import RuleGutter from "./Rules/RuleGutter.vue";
 import { questionNumbers } from "./questionSummary";
 import { moveNote } from "./blockMove";
 import {

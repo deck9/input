@@ -51,8 +51,9 @@ describe("a closed question in the document", () => {
         expect(text).toContain("Which days can you help?");
         expect(text).toContain("Checkboxes · 2 choices");
         expect(text).toContain("Required");
-        expect(text).toContain("1 rule");
-        expect(text).toContain("Hidden");
+        // its rules show as sentences under it
+        expect(text).not.toContain("rule");
+        expect(text).toContain("Always hidden");
         expect(text).toContain("days");
         expect(text).not.toContain(question.uuid);
     });
@@ -64,6 +65,24 @@ describe("a closed question in the document", () => {
 
         expect(text).toContain("No question text yet");
         expect(text).not.toContain(question.uuid);
+    });
+
+    it("marks its number while the open question jumps here", async () => {
+        const workbench = useWorkbench();
+        const wrapper = mountQuestion();
+        const number = () => wrapper.find("span[aria-hidden] > span");
+
+        expect(number().text()).toBe("3");
+        expect(number().classes()).not.toContain("bg-blue-50");
+
+        workbench.block = {
+            id: 1,
+            uuid: "q-1",
+            logics: [{ action: "goto", action_payload: question.uuid }],
+        } as unknown as FormBlockModel;
+        await wrapper.vm.$nextTick();
+
+        expect(number().classes()).toContain("bg-blue-50");
     });
 
     it("opens as a card when clicked", async () => {

@@ -13,7 +13,7 @@ const stubs = {
     DocumentList: {
         template: `<div><div id="row-b1" /><div id="row-b2" /></div>`,
     },
-    BlockLogicEditor: true,
+    RuleGutter: true,
 };
 
 let wrapper: VueWrapper | undefined;

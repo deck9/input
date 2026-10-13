@@ -9,9 +9,8 @@ import DeleteChoiceDialog from "./DeleteChoiceDialog.vue";
 import { checkDelete, useDeleteBlock } from "./useDeleteBlock";
 import ClickInteraction from "@/components/Factory/Main/Interactions/ClickInteraction.vue";
 import ConsentInteraction from "@/components/Factory/Main/Interactions/ConsentInteraction.vue";
-import BlockLogicRule from "@/components/Factory/Sidebar/BlockLogicRule.vue";
 import { callGetFormBlocks } from "@/api/blocks";
-import { useForm, useLogic, useWorkbench } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 
 vi.mock("@/api/blocks", async (importOriginal) => ({
     ...(await importOriginal()),
@@ -426,40 +425,6 @@ describe("asking before a delete", () => {
             expect(panel).not.toHaveBeenCalled();
             window.removeEventListener("keydown", panel);
             wrapper.unmount();
-        });
-    });
-
-    describe("deleting a rule", () => {
-        it("asks in the app's dialog, not the browser's", async () => {
-            const confirm = vi.spyOn(window, "confirm");
-            const remove = vi
-                .spyOn(useLogic(), "removeRule")
-                .mockResolvedValue();
-            const wrapper = mount(BlockLogicRule, {
-                props: {
-                    index: 2,
-                    rule: {
-                        name: "Skip",
-                        evaluate: "after",
-                        action: "goto",
-                        action_payload: "q1",
-                        conditions: [],
-                    } as unknown as FormBlockLogic,
-                },
-                global: { plugins: [pinia], stubs },
-            });
-
-            await wrapper
-                .find("button[aria-label='Delete rule']")
-                .trigger("click");
-
-            expect(confirm).not.toHaveBeenCalled();
-            expect(wrapper.text()).toContain("Delete rule “Skip”?");
-            expect(remove).not.toHaveBeenCalled();
-
-            await wrapper.find("button.bg-red-600").trigger("click");
-
-            expect(remove).toHaveBeenCalledWith(2);
         });
     });
 });

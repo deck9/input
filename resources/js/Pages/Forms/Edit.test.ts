@@ -12,7 +12,6 @@ const blocks = [
 const stubs = {
     AppLayout: { props: ["title"], template: "<main><slot /></main>" },
     DocumentList: { template: "<ol><li>questions</li></ol>" },
-    BlockLogicEditor: true,
 };
 
 let wrapper: VueWrapper | undefined;
