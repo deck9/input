@@ -23,7 +23,7 @@ The building blocks of your form are called "blocks." Each block represents a qu
 
 When you select a block, you can configure its properties in the main workbench area:
 
-1. **Block Type** - Choose the type of interaction (text, multiple choice, etc.)
+1. **Block Type** - Choose the type of interaction (text, single choice, etc.)
 2. **Question Text** - The main prompt or question for the user
 3. **Description** - Optional additional information about the question
 4. **Required Setting** - Toggle whether the user must complete this block
