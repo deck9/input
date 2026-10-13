@@ -36,7 +36,7 @@
         >Short name</label
       >
       <p :id="`${id}-identifier-help`" class="mb-1 text-xs text-grey-600">
-        Used in prefill links, webhooks, emails and the submissions table.
+        Used in prefill links, webhooks and the submissions table.
       </p>
       <D9Input
         :id="`${id}-identifier`"
