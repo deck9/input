@@ -5,7 +5,12 @@
     <jet-banner />
 
     <div class="flex min-h-screen flex-col bg-grey-50">
-      <nav class="bg-grey-800">
+      <FormTopBar v-if="form.formId">
+        <template #save-status><slot name="save-status" /></template>
+        <template #preview><slot name="preview" /></template>
+      </FormTopBar>
+
+      <nav v-else class="bg-grey-800">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
@@ -26,8 +31,6 @@
                 </span>
               </Link>
             </div>
-
-            <FactoryNavigation />
 
             <!-- Settings Dropdown -->
             <div class="relative ml-3">
@@ -117,8 +120,6 @@
             </div>
           </div>
         </div>
-
-        <FactoryNavigationRows />
       </nav>
 
       <!-- Page Content -->
@@ -128,6 +129,8 @@
       >
         <slot></slot>
       </main>
+
+      <FormPageTabs v-if="form.formId" placement="bottom" />
     </div>
   </div>
 </template>
@@ -138,8 +141,9 @@ import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
 import JetBanner from "@/Jetstream/Banner.vue";
 import JetDropdown from "@/Jetstream/Dropdown.vue";
 import JetDropdownLink from "@/Jetstream/DropdownLink.vue";
-import FactoryNavigation from "@/components/Factory/FactoryNavigation.vue";
-import FactoryNavigationRows from "@/components/Factory/FactoryNavigationRows.vue";
+import FormPageTabs from "@/components/Factory/TopBar/FormPageTabs.vue";
+import FormTopBar from "@/components/Factory/TopBar/FormTopBar.vue";
+import { useForm } from "@/stores";
 import { D9Icon } from "@deck9/ui";
 import { Head, Link } from "@inertiajs/vue3";
 
@@ -158,9 +162,14 @@ export default defineComponent({
     JetDropdownLink,
     // eslint-disable-next-line vue/no-reserved-component-names
     Link,
-    FactoryNavigation,
-    FactoryNavigationRows,
+    FormPageTabs,
+    FormTopBar,
     D9Icon,
+  },
+
+  setup() {
+    // a form's pages set the form; the dashboard has none
+    return { form: useForm() };
   },
 
   data() {

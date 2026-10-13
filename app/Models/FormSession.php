@@ -12,6 +12,9 @@ class FormSession extends Model
 {
     use HasFactory;
 
+    // a preview has no stored session, and a stored token has 32 characters, so it never matches this one
+    public const PREVIEW_TOKEN = 'preview';
+
     protected $guarded = [];
 
     protected $casts = [

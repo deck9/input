@@ -130,3 +130,57 @@ test('a rule with empty fields gets errors in the editor\'s words', function () 
     $this->json('post', route('api.logics.create', $block->id), [])
         ->assertJsonValidationErrors(['conditions' => 'Add at least one condition.']);
 });
+
+test('a rule that points to a deleted question or one of another form is refused and changes nothing', function (string $method, string $field) {
+    $block = FormBlock::factory()->create();
+    $question = FormBlock::factory()->for($block->form)->create();
+    $logic = FormBlockLogic::factory()->for($block)->create(['name' => 'Old']);
+    $deleted = FormBlock::factory()->for($block->form)->create();
+    $deleted->delete();
+    $otherForm = FormBlock::factory()->create();
+
+    $route = $method === 'create' ? route('api.logics.create', $block->id) : route('api.logics.update', $logic->id);
+    $rule = fn (string $source, string $target) => [
+        'name' => 'New',
+        'conditions' => [['source' => $source, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']],
+        'action' => 'goto',
+        'action_payload' => $target,
+        'evaluate' => 'after',
+    ];
+
+    $this->actingAs($block->form->user);
+
+    foreach ([$deleted->uuid, $otherForm->uuid] as $missing) {
+        $payload = $field === 'action_payload' ? $rule($question->uuid, $missing) : $rule($missing, $question->uuid);
+
+        $this->json('post', $route, $payload)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([$field => 'is not in this form'])
+            ->assertJsonMissingValidationErrors($field === 'action_payload' ? 'conditions.0.source' : 'action_payload');
+    }
+
+    expect(FormBlockLogic::pluck('name')->all())->toBe(['Old']);
+
+    $this->json('post', $route, $rule($question->uuid, $question->uuid))->assertSuccessful();
+})->with(['create', 'update'])->with(['conditions.0.source', 'action_payload']);
+
+test('a hide or show rule that kept an old target from a deleted question saves as before', function (string $method, string $action) {
+    $block = FormBlock::factory()->create();
+    $question = FormBlock::factory()->for($block->form)->create();
+    $logic = FormBlockLogic::factory()->for($block)->create(['name' => 'Old']);
+    $deleted = FormBlock::factory()->for($block->form)->create();
+    $deleted->delete();
+
+    // the editor keeps the old target when a rule switches from goto to hide or show
+    $this->actingAs($block->form->user)
+        ->json('post', $method === 'create' ? route('api.logics.create', $block->id) : route('api.logics.update', $logic->id), [
+            'name' => 'New',
+            'conditions' => [['source' => $question->uuid, 'operator' => 'equals', 'value' => 'yes', 'chainOperator' => 'and']],
+            'action' => $action,
+            'action_payload' => $deleted->uuid,
+            'evaluate' => 'before',
+        ])
+        ->assertSuccessful();
+
+    expect(FormBlockLogic::where('name', 'New')->value('action'))->toBe($action);
+})->with(['create', 'update'])->with(['hide', 'show']);
