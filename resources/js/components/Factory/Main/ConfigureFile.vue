@@ -1,6 +1,11 @@
 <template>
-  <div class="mb-4">
-    <D9Label label="File types" />
+  <div
+    class="mb-4"
+    role="group"
+    aria-labelledby="file-types-label"
+    aria-describedby="file-types-help"
+  >
+    <D9Label id="file-types" label="File types" />
     <div
       v-for="fileType in availableFileTypes"
       :key="fileType.key"
@@ -12,7 +17,9 @@
         :label="fileType.label"
       />
     </div>
-    <p class="mt-1 text-xs text-grey-600">None ticked: all types allowed.</p>
+    <p id="file-types-help" class="mt-1 text-xs text-grey-600">
+      None ticked: all types allowed.
+    </p>
   </div>
 
   <div class="mb-4">
