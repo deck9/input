@@ -22,6 +22,8 @@
           description="Add your first question below."
         />
 
+        <EndScreenBlock class="mt-2" />
+
         <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
           <D9Button
             label="Add question"
@@ -52,6 +54,7 @@ import EmptyState from "@/components/EmptyState.vue";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
+import EndScreenBlock from "./EndScreenBlock.vue";
 import { questionNumbers } from "./questionSummary";
 import { focusBlock, useAddBlock } from "./blockFocus";
 
