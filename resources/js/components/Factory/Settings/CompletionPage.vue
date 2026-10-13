@@ -178,7 +178,7 @@
     <D9Button
       class="mt-8"
       type="submit"
-      label="Save Completion Page"
+      label="Save end screen"
       :is-loading="isSaving"
     />
   </form>

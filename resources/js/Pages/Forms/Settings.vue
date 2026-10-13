@@ -92,7 +92,7 @@ const navigation: Array<{
   { name: "Options", component: Options, slug: "options" },
   { name: "Privacy", component: Privacy, slug: "privacy" },
   {
-    name: "Completion Page",
+    name: "End screen",
     component: CompletionPage,
     slug: "completion-page",
   },

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import CompletionPage from "./CompletionPage.vue";
 import { useForm } from "@/stores";
 
-describe("completion page", () => {
+describe("end screen settings", () => {
     it("ties the Message label to its editor", async () => {
         useForm().form = { uuid: "form1" } as FormModel;
         const wrapper = mount(CompletionPage, {
