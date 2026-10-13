@@ -1,14 +1,19 @@
 <template>
   <app-layout title="Edit Form" limit-height>
+    <template #preview><PreviewToggle v-model="isPreviewing" /></template>
     <FormDocument :status="status" @retry="loadBlocks" />
+    <FormPreview v-model="isPreviewing" />
   </app-layout>
 </template>
 
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import FormDocument from "@/components/Factory/Document/FormDocument.vue";
+import FormPreview from "@/components/Factory/Preview/FormPreview.vue";
+import PreviewToggle from "@/components/Factory/Preview/PreviewToggle.vue";
 import { useForm, useWorkbench } from "@/stores";
 import { onBeforeUnmount, onMounted, ref } from "vue";
+import { useMediaQuery } from "@vueuse/core";
 
 const props = defineProps<{
   form: FormModel;
@@ -17,6 +22,8 @@ const props = defineProps<{
 const store = useForm();
 const workbench = useWorkbench();
 const status = ref<"loading" | "failed" | "loaded">("loading");
+// on a desktop the preview sits beside the document, so it shows at once
+const isPreviewing = ref(useMediaQuery("(min-width: 1280px)").value);
 
 const loadBlocks = async () => {
   status.value = "loading";
