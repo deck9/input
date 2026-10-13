@@ -47,7 +47,7 @@ describe.each([
 
         expect(button.attributes("aria-busy")).toBe("false");
         expect(useNotice().message).toBe(
-            "Your change was not saved: The name field is required.",
+            "Your change wasn't saved: The name field is required.",
         );
     });
 

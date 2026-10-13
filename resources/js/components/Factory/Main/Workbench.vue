@@ -3,6 +3,7 @@
     v-if="workbench.block"
     class="relative mx-12 flex h-full max-w-xl flex-col justify-between px-4 pt-8 xl:mx-24"
   >
+    <SaveStatus class="absolute right-4 top-1 h-6" />
     <div class="space-y-8 pb-24">
       <template v-if="workbench.block.type === 'group'">
         <GroupSettings />
@@ -25,6 +26,7 @@ import BlockMessage from "./BlockMessage.vue";
 import BlockType from "./BlockType.vue";
 import BlockInteractions from "./BlockInteractions.vue";
 import GroupSettings from "./GroupSettings.vue";
+import SaveStatus from "@/components/Factory/Shared/SaveStatus.vue";
 import { provide } from "vue";
 
 const workbench = useWorkbench();
