@@ -175,7 +175,8 @@ watch(type, (value) => {
 const takeCursor = () => {
   if (cursorFor.value === props.block.uuid) {
     cursorFor.value = null;
-    editor.value?.focus();
+    // at the end, so typing adds to the text, e.g. in a copy
+    editor.value?.focus("end");
   }
 };
 
