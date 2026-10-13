@@ -136,5 +136,9 @@ describe("editor loading", () => {
         // a click on the text would land on a span, which the closing dialog
         // can't focus again: the button's inside lets clicks through to it
         expect(preview?.classes()).toContain("[&_*]:pointer-events-none");
+        // 32 px high, the tap area reaches 6 px above and below
+        expect(preview?.classes()).toEqual(
+            expect.arrayContaining(["before:absolute", "before:-inset-y-1.5"]),
+        );
     });
 });
