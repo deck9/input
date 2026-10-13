@@ -15,7 +15,7 @@
     @drop="onDrop"
   >
     <Draggable v-for="(block, index) in blocks" :key="block.uuid">
-      <div class="relative pb-2">
+      <div class="relative" :class="itemClass(block, index)">
         <DocumentGroup
           v-if="block.type === 'group'"
           :group="block"
@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
-import { useForm } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 import DocumentGroup from "./DocumentGroup.vue";
 import DocumentQuestion from "./DocumentQuestion.vue";
 import AddQuestionLine from "./AddQuestionLine.vue";
@@ -62,6 +62,7 @@ const props = defineProps<{
 }>();
 
 const store = useForm();
+const workbench = useWorkbench();
 const { addQuestion } = useAddQuestion();
 
 const blocks = computed(() =>
@@ -69,6 +70,22 @@ const blocks = computed(() =>
     (block) => (block.parent_block ?? undefined) === props.groupId,
   ),
 );
+
+// a line where each question starts, but not against a group's own frame;
+// the open question gets 24 px of air, an open group stays put
+const itemClass = (block: FormBlockModel, index: number) => {
+  const before = blocks.value[index - 1];
+
+  return [
+    block.type !== "group" && workbench.block?.id === block.id
+      ? "py-6"
+      : "py-2",
+    before &&
+      block.type !== "group" &&
+      before.type !== "group" &&
+      "border-t border-grey-200",
+  ];
+};
 
 const getChildPayload = (index: number) => blocks.value[index];
 

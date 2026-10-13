@@ -67,3 +67,48 @@ describe("adding a question inside the document", () => {
         );
     });
 });
+
+describe("lines and air between blocks", () => {
+    const group = { id: 4, uuid: "g1", type: "group" } as FormBlockModel;
+
+    // the box around each block, in document order
+    const items = (list: FormBlockModel[]) => {
+        useForm().blocks = list;
+        wrapper = mount(DocumentList, {
+            props: { numbers: { b1: 1, b2: 2, b3: 3 } },
+            global: { stubs: { QuestionCard: true, DocumentGroup: true } },
+        });
+        return wrapper.findAll(".smooth-dnd-draggable-wrapper > div.relative");
+    };
+
+    beforeEach(() => {
+        useForm().$reset();
+        useWorkbench().$reset();
+    });
+
+    afterEach(() => wrapper?.unmount());
+
+    it("draws a line at the start of each question but the first, not next to a group", () => {
+        const lines = items([blocks[0], group, blocks[1], blocks[2]]).map(
+            (item) => item.classes("border-t"),
+        );
+
+        expect(lines).toEqual([false, false, false, true]);
+    });
+
+    it("gives the open question 24 px above and below, the others 8 px", () => {
+        useWorkbench().block = blocks[1];
+
+        const padding = items(blocks).map((item) =>
+            ["py-2", "py-6"].filter((name) => item.classes(name)),
+        );
+
+        expect(padding).toEqual([["py-2"], ["py-6"], ["py-2"]]);
+    });
+
+    it("keeps an open group at 8 px, so its frame doesn't move", () => {
+        useWorkbench().block = group;
+
+        expect(items([blocks[0], group])[1].classes()).toContain("py-2");
+    });
+});

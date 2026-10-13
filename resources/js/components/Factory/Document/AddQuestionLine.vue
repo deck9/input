@@ -1,7 +1,7 @@
 <template>
   <!-- sits in the gap below a block; it shows on hover and keyboard focus, not on touch -->
   <div
-    class="group/add absolute -bottom-1 left-8 right-0 z-10 flex h-4 items-center justify-center sm:left-12 [@media(hover:none)]:hidden"
+    class="group/add absolute -bottom-2 left-8 right-0 z-10 flex h-4 items-center justify-center sm:left-12 [@media(hover:none)]:hidden"
   >
     <span
       aria-hidden="true"
