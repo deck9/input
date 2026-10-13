@@ -166,6 +166,9 @@ class FormBlock extends BaseModel
     public function duplicate(): FormBlock
     {
         return DB::transaction(function () {
+            // duplicates at the same time wait here, else they renumber over each other or deadlock
+            $this->form()->lockForUpdate()->first();
+
             $blocks = $this->form->formBlocks()->get();
 
             // the Identifier names the answer in prefill links and webhooks, so the copy has none

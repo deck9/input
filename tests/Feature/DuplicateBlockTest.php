@@ -7,6 +7,7 @@ use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\FormBlockLogic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -133,3 +134,11 @@ test('a failed duplicate leaves the form unchanged', function () {
         FormBlockLogic::count(),
     ])->toBe($before);
 });
+
+test('a duplicate locks the form first, so duplicates at the same time keep one position each', function () {
+    DB::enableQueryLog();
+
+    $this->block->duplicate();
+
+    expect(DB::getQueryLog()[0]['query'])->toStartWith('select * from `forms` where `forms`.`id` = ?')->toEndWith('for update');
+})->skip(fn () => DB::getDriverName() === 'sqlite', 'SQLite locks the whole database on write');
