@@ -137,6 +137,7 @@ const {
   counter = false,
   bare = false,
   id,
+  placeholder = "Type your message here...",
 } = defineProps<{
   modelValue?: string;
   counter?: boolean;
@@ -144,6 +145,7 @@ const {
   bare?: boolean;
   // names the text box after the D9Label with the same id
   id?: string;
+  placeholder?: string;
 }>();
 
 const content = ref("");
@@ -181,7 +183,7 @@ const editor = useEditor({
   extensions: [
     FontFamily,
     Placeholder.configure({
-      placeholder: "Type your message here...",
+      placeholder,
     }),
     StarterKit.configure({
       heading: {

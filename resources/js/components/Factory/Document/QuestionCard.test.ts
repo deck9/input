@@ -131,4 +131,38 @@ describe("an open question", () => {
         ).toBe(true);
         expect(document.getElementById("question-q4-settings")).not.toBeNull();
     });
+
+    describe("typing / in its text", () => {
+        const editorStub = {
+            template: `<div><div contenteditable="true" /></div>`,
+            methods: { focus() {} },
+        };
+        const slash = async (message: string | null) => {
+            useWorkbench().block = { ...block, message };
+            mountCard(false, { ...stubs, Editor: editorStub });
+            const typed = await wrapper!
+                .find("[contenteditable]")
+                .trigger("keydown", { key: "/" });
+            return typed;
+        };
+
+        it("opens the picker in an empty question, and a pick changes its type", async () => {
+            await slash(null);
+            const option = wrapper!
+                .findAll("[role=option]")
+                .find((item) => item.text() === "Single choice")!;
+            await option.trigger("click");
+
+            expect(useWorkbench().updateBlock).toHaveBeenCalledWith({
+                type: "radio",
+            });
+            expect(wrapper!.find("[role=listbox]").exists()).toBe(false);
+        });
+
+        it("stays a / in a question with text", async () => {
+            await slash("<p>Your name?</p>");
+
+            expect(wrapper!.find("[role=listbox]").exists()).toBe(false);
+        });
+    });
 });
