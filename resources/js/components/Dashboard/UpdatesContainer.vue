@@ -20,7 +20,7 @@
 
       <UpdatePost
         v-for="post in posts"
-        v-bind="{ post: post.attributes }"
+        v-bind="{ post }"
         :key="post.id"
       />
     </div>
