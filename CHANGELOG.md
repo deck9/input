@@ -31,6 +31,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Each rule now shows as a sentence under its question, and a group says when it's hidden. Edit changes a rule right there, and for choices, ratings and scales you pick the answer instead of typing it. A rule whose question was deleted shows in red and can't be saved until you fix it. (#274)
 -   The form editor uses plain words: a question's settings are headed by its answer type, like Choices or Rating, "Identifier" is now "Short name", and every switch shows on or off. Settings name what they do, like "Lowest value", "Shuffle choices" and "None ticked: all types allowed." on file uploads. (#279)
 -   The editor's preview shows the end screen while you edit it, with your latest text, and says so when your form sends people to a link instead. Its button opens in a new tab there, so you stay in the editor. Settings now calls the Completion Page "End screen", like the editor. (#280)
+-   In the form editor a thin line marks where each question starts, its number stands out more, and the question you edit gets more room around it. On a phone the editor keeps a wider margin at the sides. (#281)
 
 ### Fixed
 
