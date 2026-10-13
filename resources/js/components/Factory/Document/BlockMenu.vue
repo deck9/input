@@ -6,7 +6,7 @@
   >
     <template #button>
       <span
-        class="grid h-9 w-9 place-items-center rounded-md border border-grey-300 bg-white text-grey-700 hover:bg-grey-100"
+        class="grid h-11 w-11 place-items-center rounded-md border border-grey-300 lg:h-9 lg:w-9 bg-white text-grey-700 hover:bg-grey-100"
       >
         <D9Icon name="ellipsis-h" />
         <span class="sr-only">{{ label }}</span>
@@ -37,6 +37,20 @@
     <D9MenuLink
       as="button"
       :class="item"
+      label="Move up"
+      :disabled="!canMove(block, -1)"
+      @click="moveBlock(block, -1)"
+    />
+    <D9MenuLink
+      as="button"
+      :class="item"
+      label="Move down"
+      :disabled="!canMove(block, 1)"
+      @click="moveBlock(block, 1)"
+    />
+    <D9MenuLink
+      as="button"
+      :class="item"
       :label="isGroup ? 'Copy group ID' : 'Copy question ID'"
       @click="copy(block.uuid)"
     />
@@ -55,6 +69,7 @@ import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import { useForm, useWorkbench } from "@/stores";
 import { useAddBlock } from "./blockFocus";
+import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -66,8 +81,9 @@ const emit = defineEmits<{ addToGroup: [] }>();
 const store = useForm();
 const workbench = useWorkbench();
 const { addBlock } = useAddBlock();
+const { canMove, moveBlock } = useMoveBlock();
 
-const item = "w-full text-left text-sm";
+const item = "w-full min-h-11 text-left text-sm lg:min-h-0";
 const isGroup = computed(() => props.block.type === "group");
 
 // the open block saves through the workbench: a store save swaps its object, and its next save would send the old value

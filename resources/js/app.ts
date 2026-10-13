@@ -180,6 +180,8 @@ createInertiaApp({
                         autoHide: true,
                         placement: "auto",
                         html: true,
+                        // a tooltip shown on hover must not take the focus, e.g. from the question text
+                        noAutoFocus: true,
                     },
                 },
             })

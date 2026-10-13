@@ -22,6 +22,7 @@
           @nextSoft="focusNextItemSoft"
           @previous="focusPreviousItem"
           @onDelete="deleteItem"
+          @move="moveItem"
         />
       </Draggable>
     </Container>
@@ -32,7 +33,7 @@
       aria-label="Add choice"
       aria-describedby="add-choice-hint"
       :aria-busy="isCreatingInteraction"
-      class="mt-1 flex h-9 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      class="mt-1 flex h-11 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9"
       @click="createClickInteraction"
     >
       <D9Icon name="plus" aria-hidden="true" />
@@ -55,6 +56,10 @@ import { Container, Draggable } from "vue3-smooth-dnd";
 import EmptyState from "@/components/EmptyState.vue";
 import { useKeyboardNavigation } from "@/components/Factory/utils/useKeyboardNavigation";
 import useActiveInteractions from "../Shared/useActiveInteractions";
+import {
+  announce,
+  type Step,
+} from "@/components/Factory/Document/blockMove";
 
 const workbench = useWorkbench();
 const { editableInteractions } = useActiveInteractions(workbench.block);
@@ -105,6 +110,23 @@ const deleteItem = async (index: number) => {
   }
 };
 
+// Alt+Up/Down moves a choice; focus stays on it
+const moveItem = async (index: number, step: Step) => {
+  const choices = editableInteractions.value ?? [];
+  const item = choices[index];
+  const to = index + step;
+
+  if (!item || !choices[to]) {
+    announce(step < 0 ? "Already at the top" : "Already at the bottom");
+    return;
+  }
+
+  workbench.changeInteractionSequence(index, to);
+  await nextTick();
+  focusItem(item);
+  announce(`Moved choice to position ${to + 1} of ${choices.length}`);
+};
+
 const {
   bindTemplateRefsForTraversables,
   focusNextItem,
@@ -112,6 +134,7 @@ const {
   focusPreviousItem,
   focusLastItem,
   focusNeighborItem,
+  focusItem,
 } = useKeyboardNavigation(editableInteractions, async () => {
   await createClickInteraction();
 });

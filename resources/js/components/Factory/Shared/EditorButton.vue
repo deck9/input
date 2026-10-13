@@ -4,7 +4,7 @@
     :aria-label="label"
     :aria-pressed="isActive"
     :class="[
-      'rounded px-2 mx-px py-1 relative text-sm',
+      'rounded px-2 mx-px py-1 relative text-sm min-h-11 min-w-11 lg:min-h-0 lg:min-w-0',
       isActive
         ? 'bg-grey-300 text-grey-700'
         : 'text-grey-500 hover:bg-grey-200 bg-white',
@@ -14,7 +14,7 @@
     <D9Icon :name="icon" />
     <small
       v-if="subLabel"
-      class="absolute bottom-1 text-xxs font-bold leading-none rounded-full"
+      class="absolute bottom-3 lg:bottom-1 text-xxs font-bold leading-none rounded-full"
       >{{ subLabel }}</small
     >
   </button>
