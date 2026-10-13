@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
 import DocumentOutline from "./DocumentOutline.vue";
 
@@ -12,8 +12,17 @@ const blocks = [
 
 const numbers = { q1: 1, q2: 2, q3: 3 };
 
+const scrolled = vi.fn();
+
 describe("the outline", () => {
     beforeEach(() => {
+        // jsdom has no scrollIntoView
+        Element.prototype.scrollIntoView = function (
+            this: Element,
+            options?: boolean | ScrollIntoViewOptions,
+        ) {
+            scrolled(this.textContent, (options as ScrollIntoViewOptions)?.block);
+        };
         useForm().$reset();
         useWorkbench().$reset();
         useForm().blocks = blocks;
@@ -40,5 +49,21 @@ describe("the outline", () => {
 
         await wrapper.findAll("button")[0].trigger("click");
         expect(wrapper.emitted("pick")?.[0]).toEqual([blocks[0]]);
+    });
+
+    it("keeps the open question in view, also when it opens as a panel", async () => {
+        useWorkbench().block = blocks[3];
+        const wrapper = mount(DocumentOutline, {
+            props: { numbers },
+            attachTo: document.body,
+        });
+        await wrapper.vm.$nextTick();
+        expect(scrolled).toHaveBeenLastCalledWith("3Name?", "nearest");
+
+        useWorkbench().block = blocks[0];
+        await wrapper.vm.$nextTick();
+        expect(scrolled).toHaveBeenLastCalledWith("1Welcome", "nearest");
+
+        wrapper.unmount();
     });
 });
