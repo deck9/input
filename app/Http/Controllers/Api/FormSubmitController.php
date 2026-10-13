@@ -24,11 +24,11 @@ class FormSubmitController extends Controller
 
     For form blocks that have only one input field, you submit one payload-object with the keys "payload" and "actionId". The payload is the user input and the actionId is the ID of the form block interaction field.
 
-    For multiple choice questions, the payload is an array of payload-objects.
+    For checkbox and consent questions, the payload is an array of payload-objects, one for each ticked choice or policy. A single choice question sends one payload-object for the picked choice.
     DESC, example: [
         '7j' => ['payload' => 'Secret', 'actionId' => '59R'],
         '4x1' => ['payload' => 'mail@example.com', 'actionId' => 'pQ6'],
-        // For multiple choice questions, the payload is an array of the selected options
+        // For checkbox questions, the payload is an array of the ticked choices
         '5yB' => [
             ['payload' => 'Pineapple', 'actionId' => 'qYr'],
             ['payload' => 'Cherry', 'actionId' => 'vor'],
