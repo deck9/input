@@ -1,8 +1,14 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { router } from "@inertiajs/vue3";
+import { AxiosResponse } from "axios";
+import { callGetForm } from "@/api/forms";
 import Edit from "./Edit.vue";
 import { useForm, useWorkbench } from "@/stores";
+
+vi.mock("@/api/forms", async (importOriginal) => ({
+    ...(await importOriginal()),
+    callGetForm: vi.fn(),
+}));
 
 const form = { uuid: "form1", name: "Customer feedback" } as FormModel;
 const blocks = [
@@ -128,17 +134,15 @@ describe("editor from history", () => {
     });
 
     it("loads the form again when browser Back brings the editor back", async () => {
-        const visit = vi.spyOn(router, "visit").mockImplementation(() => {});
+        vi.mocked(callGetForm).mockResolvedValue({
+            data: { ...form, eoc_headline: "Thanks!" },
+        } as AxiosResponse);
         window.dispatchEvent(
             new PopStateEvent("popstate", { state: { component: "x" } }),
         );
 
         await mountEditor(loads(blocks));
 
-        expect(visit).toHaveBeenCalledWith(window.location.href, {
-            only: ["form"],
-            replace: true,
-            preserveScroll: true,
-        });
+        expect(useForm().form?.eoc_headline).toBe("Thanks!");
     });
 });

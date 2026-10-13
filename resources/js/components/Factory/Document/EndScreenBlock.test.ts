@@ -2,8 +2,7 @@ import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { AxiosError, AxiosResponse } from "axios";
 import { createPinia, setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { router } from "@inertiajs/vue3";
-import { callUpdateForm } from "@/api/forms";
+import { callGetForm, callUpdateForm } from "@/api/forms";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
 import { useFreshForm } from "@/utils/useFreshForm";
@@ -12,6 +11,7 @@ import EndScreenBlock from "./EndScreenBlock.vue";
 
 vi.mock("@/api/forms", async (importOriginal) => ({
     ...(await importOriginal()),
+    callGetForm: vi.fn(),
     callUpdateForm: vi.fn(),
 }));
 
@@ -159,8 +159,13 @@ describe("the end screen in the document", () => {
         });
     });
 
-    it("lets the next page reload the form only after the save made on Back", async () => {
-        const visit = vi.spyOn(router, "visit").mockImplementation(() => {});
+    it("lets the next page load the form again only after the save made on Back", async () => {
+        vi.mocked(callGetForm).mockImplementation(
+            async () =>
+                ({
+                    data: useForm().form,
+                }) as AxiosResponse,
+        );
         let answer = () => {};
         vi.mocked(callUpdateForm).mockImplementation(
             (_, values) =>
@@ -180,16 +185,20 @@ describe("the end screen in the document", () => {
         // the page Back goes to
         useFreshForm();
         await flushPromises();
-        expect(visit).not.toHaveBeenCalled();
+        expect(callGetForm).not.toHaveBeenCalled();
 
         answer();
         await flushPromises();
-        expect(visit).toHaveBeenCalledTimes(1);
-        visit.mockRestore();
+        expect(callGetForm).toHaveBeenCalledTimes(1);
     });
 
-    it("lets a page opened by a link while the save is on its way reload the form after it", async () => {
-        const visit = vi.spyOn(router, "visit").mockImplementation(() => {});
+    it("lets a page opened by a link while the save is on its way load the form again after it", async () => {
+        vi.mocked(callGetForm).mockImplementation(
+            async () =>
+                ({
+                    data: useForm().form,
+                }) as AxiosResponse,
+        );
         let answer = () => {};
         vi.mocked(callUpdateForm).mockImplementation(
             (_, values) =>
@@ -210,12 +219,11 @@ describe("the end screen in the document", () => {
         );
         useFreshForm();
         await flushPromises();
-        expect(visit).not.toHaveBeenCalled();
+        expect(callGetForm).not.toHaveBeenCalled();
 
         answer();
         await flushPromises();
-        expect(visit).toHaveBeenCalledTimes(1);
-        visit.mockRestore();
+        expect(callGetForm).toHaveBeenCalledTimes(1);
     });
 
     it("saves on its own after a short pause while you type", async () => {

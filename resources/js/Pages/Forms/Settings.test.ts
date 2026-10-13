@@ -1,12 +1,19 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { router } from "@inertiajs/vue3";
+import { AxiosResponse } from "axios";
+import { callGetForm } from "@/api/forms";
+import { useForm } from "@/stores";
 import Settings from "./Settings.vue";
 import { trackFormSave } from "@/utils/useFreshForm";
 
 vi.mock("@inertiajs/vue3", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@inertiajs/vue3")>()),
-    router: { on: vi.fn(), visit: vi.fn() },
+    router: { on: vi.fn() },
+}));
+vi.mock("@/api/forms", async (importOriginal) => ({
+    ...(await importOriginal()),
+    callGetForm: vi.fn(),
 }));
 // its code highlighter needs a global Vue
 vi.mock("@/components/Factory/Settings/Embed.vue", () => ({
@@ -21,7 +28,11 @@ const stubs = {
     AppLayout: { props: ["title"], template: "<main><slot /></main>" },
     Options: true,
     Privacy: true,
-    CompletionPage: true,
+    // like the real one, it copies the form when it loads
+    CompletionPage: {
+        setup: () => ({ headline: useForm().form?.eoc_headline }),
+        template: "<p>{{ headline }}</p>",
+    },
     Appearance: true,
     Embed: true,
     TemplateExport: true,
@@ -37,6 +48,9 @@ const mountSettings = () => {
 describe("settings page from history", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(callGetForm).mockResolvedValue({
+            data: form,
+        } as AxiosResponse);
     });
 
     afterEach(() => {
@@ -52,11 +66,7 @@ describe("settings page from history", () => {
         mountSettings();
         await flushPromises();
 
-        expect(router.visit).toHaveBeenCalledWith(window.location.href, {
-            only: ["form"],
-            replace: true,
-            preserveScroll: true,
-        });
+        expect(callGetForm).toHaveBeenCalledTimes(1);
     });
 
     it("loads nothing more on a normal visit, also one after a Back", async () => {
@@ -70,7 +80,7 @@ describe("settings page from history", () => {
         mountSettings();
         await flushPromises();
 
-        expect(router.visit).not.toHaveBeenCalled();
+        expect(callGetForm).not.toHaveBeenCalled();
     });
 
     it("lets a visit started while a save is on its way win, and its page loads the form after the save", async () => {
@@ -88,7 +98,7 @@ describe("settings page from history", () => {
         landed();
         await flushPromises();
 
-        expect(router.visit).toHaveBeenCalledTimes(1);
+        expect(callGetForm).toHaveBeenCalledTimes(1);
     });
 
     it("loads nothing more when only the tab in the address changes", async () => {
@@ -97,6 +107,27 @@ describe("settings page from history", () => {
         mountSettings();
         await flushPromises();
 
-        expect(router.visit).not.toHaveBeenCalled();
+        expect(callGetForm).not.toHaveBeenCalled();
+    });
+
+    it("keeps the tab you switch to while the form loads again", async () => {
+        let landed = () => {};
+        trackFormSave(new Promise<void>((resolve) => (landed = resolve)));
+        vi.mocked(callGetForm).mockResolvedValue({
+            data: { ...form, eoc_headline: "Thanks!" },
+        } as AxiosResponse);
+        window.dispatchEvent(
+            new PopStateEvent("popstate", { state: { component: "x" } }),
+        );
+        mountSettings();
+
+        const tab = wrapper!.findAll("button[role=tab]")[2];
+        await tab.trigger("click");
+        landed();
+        await flushPromises();
+
+        expect(location.hash).toBe("#completion-page");
+        expect(tab.attributes("aria-selected")).toBe("true");
+        expect(wrapper!.text()).toContain("Thanks!");
     });
 });

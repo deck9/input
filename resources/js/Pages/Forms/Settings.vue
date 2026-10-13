@@ -52,7 +52,7 @@
             </h3>
 
             <div class="mt-6 pb-6">
-              <component :is="item.component" />
+              <component :is="item.component" :key="freshForms" />
             </div>
           </TabPanel>
         </TabPanels>
@@ -122,8 +122,9 @@ if (foundIndex !== -1) {
   tabChanged(0);
 }
 
-// after the hash, so the reload keeps the tab
-useFreshForm();
+// the panels copy the form when they load
+const freshForms = ref(0);
+useFreshForm(() => freshForms.value++);
 
 onBeforeUnmount(() => {
   store.clearForm();
