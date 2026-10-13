@@ -13,9 +13,7 @@ const heading = (type: string, interactionType?: FormBlockInteractionType) =>
             } as unknown as FormBlockModel,
             interactionType,
         },
-    })
-        .find("h3")
-        .text();
+    }).find("h3");
 
 describe("the settings heading", () => {
     it.each([
@@ -26,12 +24,22 @@ describe("the settings heading", () => {
         ["scale", "range", "Scale"],
         ["date", "date", "Date"],
         ["input-file", "file", "File upload"],
-        ["consent", "consent", "Consent"],
-        ["none", undefined, "Settings"],
     ] as const)(
         "names a %s question's settings %s → %s",
         (type, interaction, text) => {
-            expect(heading(type, interaction)).toBe(text);
+            expect(heading(type, interaction).text()).toBe(text);
+            expect(heading(type, interaction).classes()).not.toContain(
+                "sr-only",
+            );
         },
     );
+
+    // their panel holds only Short name and Hide this question
+    it.each([
+        ["consent", "consent"],
+        ["none", undefined],
+    ] as const)("shows no heading for a %s question", (type, interaction) => {
+        expect(heading(type, interaction).text()).toBe("Settings");
+        expect(heading(type, interaction).classes()).toContain("sr-only");
+    });
 });

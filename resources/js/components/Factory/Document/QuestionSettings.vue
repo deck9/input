@@ -9,9 +9,9 @@
     <h3
       :id="`${id}-title`"
       class="text-xs font-semibold text-grey-600"
-      :class="sheet && 'sr-only'"
+      :class="(sheet || !heading) && 'sr-only'"
     >
-      {{ heading }}
+      {{ heading || "Settings" }}
     </h3>
 
     <ConfigureInput v-if="interactionType === 'input'" />
@@ -88,23 +88,21 @@ const props = defineProps<{
 const workbench = useWorkbench();
 const { editableInteractions } = useActiveInteractions(props.block);
 
-// named by answer type; "Text only" has no answer settings
+// named by answer type; Consent and Text only have no settings of their own,
+// so their panel shows no heading
 const headings: Partial<Record<FormBlockInteractionType, string>> = {
   button: "Choices",
   input: "Answer field",
   textarea: "Answer field",
   date: "Date",
   file: "File upload",
-  consent: "Consent",
 };
 const heading = computed(() => {
   if (props.interactionType === "range") {
     return props.block.type === "scale" ? "Scale" : "Rating";
   }
 
-  return (
-    (props.interactionType && headings[props.interactionType]) ?? "Settings"
-  );
+  return props.interactionType && headings[props.interactionType];
 });
 
 const title = ref(props.block.title ?? "");
