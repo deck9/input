@@ -7,8 +7,8 @@ The Number input type is specifically designed for collecting numerical data wit
 1. Choose **Number** as the input type
 2. Enter the question or prompt
 3. Configure the number options:
-   - **Decimal Places**: How many decimal digits to allow (0-10)
-   - **Symbol**: Optional character(s) to display before the number (e.g., $, €, %)
+   - **Decimal places**: How many decimal digits to allow (0-10). Leave empty for whole numbers only
+   - **Symbol**: Shown next to the number, e.g. € or kg
    - **Placeholder**: Hint text to show when the field is empty
 4. Toggle the "Required" option if necessary
 

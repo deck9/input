@@ -7,9 +7,9 @@ The File upload input type allows users to attach files to their form responses.
 1. Choose **File upload** as the input type
 2. Enter instructions for what files users should upload
 3. Configure the upload settings:
-    - **Maximum Files**: Set how many files users can upload
-    - **Maximum File Size**: Limit file size (in MB)
-    - **Allowed File Types**: Choose which file formats are accepted
+    - **Most files**: How many files users can upload (1 to 10)
+    - **Largest file (MB)**: Up to 8 MB per file
+    - **File types**: Choose which file formats are accepted. None ticked: all types allowed
 
 ::: tip Best Practice
 < Be specific about what files you're looking for and any requirements (format, size, resolution, etc.) to avoid confusion and unsuccessful uploads.

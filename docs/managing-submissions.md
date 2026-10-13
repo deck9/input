@@ -28,7 +28,7 @@ The Table View displays each individual submission in a tabular format:
 
 The Summary View provides an aggregated analysis of your submissions:
 
--   For multiple choice questions: shows response distributions with visual graphs
+-   For single choice and checkbox questions: shows response distributions with visual graphs
 -   For text inputs: displays common responses
 -   For numerical inputs: shows average values and ranges
 -   For rating scales: presents average ratings with visual indicators

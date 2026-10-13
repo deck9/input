@@ -14,7 +14,7 @@ This input type allows users to select one option from a list of choices, perfec
 -   **Single Selection**: Users can select exactly one option
 -   **Visual Clarity**: Clear indication of which option is selected
 -   **Option Ordering**: Arrange options in a meaningful sequence
--   **Randomization**: Option to randomize choice order to reduce bias (if available)
+-   **Shuffle choices**: Show the choices in a random order to reduce bias
 
 ## Example Uses:
 

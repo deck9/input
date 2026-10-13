@@ -14,7 +14,7 @@ Each question shows:
 
 -   Its number and an icon for its answer type
 -   Its text, on up to two lines
--   A line below with the answer type, the number of choices, **Required**, the number of rules, **Hidden**, and its identifier if you gave it one
+-   A line below with the answer type, the number of choices, **Required**, the number of rules, **Hidden**, and its short name if you gave it one
 
 Groups show their name with their questions inside. An empty group says how to add a question to it.
 
@@ -26,7 +26,7 @@ Click a question, or move to it with Tab and press Enter, to open it in place. T
 2. **Choices** - For single choice and checkboxes. Each row has a grip to drag it and a delete button. Alt+Up and Alt+Down move a choice
 3. **Answer type** - Change what kind of answer the question takes
 4. **Required** - Whether people must answer it
-5. **Settings** - The settings of this answer type, the identifier and **Hide this question**. On a phone they open as a sheet from the bottom
+5. **Settings** - The settings of this answer type under its own heading (for example **Choices** or **Rating**), then **Short name** and **Hide this question**. On a phone they open as a sheet from the bottom
 6. **Rules** - Logic rules for this question, see [Conditional Logic](./conditional-logic.md)
 7. **Menu (…)** - Duplicate, Add question below, Move up, Move down, Copy question ID and Delete
 

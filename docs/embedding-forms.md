@@ -115,13 +115,13 @@ https://app.getinput.co/form-uuid?iframe=1&hideTitle=1&alignLeft=1
 
 ## Prefill Questions
 
-You can fill in answers with URL parameters. The parameter name is the question's Identifier (open the question, then "More Settings"). For example, this fills the question with the Identifier `email`:
+You can fill in answers with URL parameters. The parameter name is the question's short name (open the question, then **Settings**, then **Short name**). For example, this fills the question with the short name `email`:
 
 ```
 https://app.getinput.co/form-uuid?email=ada@example.com
 ```
 
--   Works for short text, long text, email, number, phone and link questions. Parameters for other question types or unknown Identifiers are ignored.
+-   Works for short text, long text, email, number, phone and link questions. Parameters for other question types or unknown short names are ignored.
 -   The question still shows, so the visitor can check and change the answer. A question skipped by a jump doesn't send its prefilled answer.
 -   The value shows as plain text. Encode special characters: `%2B` for `+`, `%20` for a space.
 -   Number questions take digits with a dot as decimal separator, like `price=12.5`, rounded to the question's decimal places. Anything else is ignored.

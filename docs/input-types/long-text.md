@@ -7,8 +7,8 @@ The Long text input type provides a multi-line text area for collecting detailed
 1. Select **Long text** as the input type
 2. Enter the question or prompt
 3. Configure the text area options:
-   - **Rows**: Number of visible text rows (1-10, default: 5)
-   - **Maximum Characters**: Limit on response length (default: 500)
+   - **Height in lines**: How many lines the field shows (1 to 10, default: 5)
+   - **Max characters**: Limit on response length (default: 500)
    - **Placeholder**: Hint text shown when the field is empty
 4. Toggle the "Required" option if necessary
 

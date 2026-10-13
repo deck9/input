@@ -7,10 +7,10 @@ The Rating input type allows users to provide feedback on a visual scale using i
 1. Choose **Rating** as the input type
 2. Enter the prompt for what's being rated
 3. Configure the rating options:
-   - **Min Rating**: Starting point for the scale (default: 1)
-   - **Max Rating**: Maximum value on the scale (default: 5)
-   - **Left Label**: Optional text at the start of the scale (e.g., "Poor")
-   - **Right Label**: Optional text at the end of the scale (e.g., "Excellent")
+   - **Lowest value**: Starting point for the scale (default: 1)
+   - **Highest value**: Maximum value on the scale (default: 5)
+   - **Label for lowest**: Optional text at the start of the scale (e.g., "Poor")
+   - **Label for highest**: Optional text at the end of the scale (e.g., "Excellent")
    - **Icon**: Choose from stars, hearts, trophies, and other symbols
    - **Color**: Customize the color of the rating icons
 4. Toggle the "Required" option if necessary

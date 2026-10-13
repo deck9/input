@@ -7,10 +7,10 @@ The Scale input type presents users with a numerical range from which they can s
 1. Select **Scale** as the input type
 2. Enter the question or prompt
 3. Configure the scale options:
-   - **Min Rating**: Starting number for the scale (default: 1)
-   - **Max Rating**: Ending number for the scale (default: 5)
-   - **Left Label**: Text description for the low end of the scale (e.g., "Strongly Disagree")
-   - **Right Label**: Text description for the high end of the scale (e.g., "Strongly Agree")
+   - **Lowest value**: Starting number for the scale (default: 1)
+   - **Highest value**: Ending number for the scale (default: 5)
+   - **Label for lowest**: Text description for the low end of the scale (e.g., "Strongly Disagree")
+   - **Label for highest**: Text description for the high end of the scale (e.g., "Strongly Agree")
 4. Toggle the "Required" option if necessary
 
 ## Features:
