@@ -72,9 +72,12 @@ const text = computed(() => {
 
   const plain = getTextFromHtml(props.block.message ?? "").trim();
   const short = plain.length > 80 ? `${plain.slice(0, 78).trim()}…` : plain;
-  const name = short
-    ? `“${short}”`
-    : `Question ${numberOf(props.block.uuid) || ""}`.trim();
+  const quoted = short ? `“${short}”` : "";
+  const number = numberOf(props.block.uuid);
+  // the number first: a copy from Duplicate has the same text
+  const name = number
+    ? `Question ${number}${quoted ? ` (${quoted})` : ""}`
+    : quoted || "The question";
   const answers = props.check?.answers;
   // unknown when the counts couldn't load: there may still be answers
   const withAnswers =
