@@ -37,14 +37,14 @@ Input offers a variety of block types to gather different kinds of information:
 
 To add a new block to your form:
 
-1. Click the "+" button at the bottom of an existing block
-2. Choose the block type from the dropdown menu
-3. The new block will be inserted below the current block
+1. Click **Add question** at the end of the form, or **Add question below** in a question's menu (…)
+2. The new question opens with the cursor in its text
+3. Choose its answer type at the bottom of the question
 
 ## Block Groups
 
 Organize related blocks together:
 
-1. **Creating a Group**: Select multiple blocks and click "Group"
-2. **Group Settings**: Add a group title and description
-3. **Collapsing/Expanding**: Control group visibility in the editor
+1. **Creating a Group**: Click **Add group** at the end of the form and give it a name
+2. **Filling a Group**: Use **Add question to this group** in the group's menu, or drag questions into it
+3. **Hiding a Group**: **Hide group** in its menu hides all its questions at once, and a rule on the group shows or hides them together

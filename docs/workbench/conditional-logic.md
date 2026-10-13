@@ -14,8 +14,8 @@ Conditional logic lets you control the flow of your form based on how users resp
 
 To add logic to any block in your form:
 
-1. Select the block you want to apply logic to
-2. Click the **Block Logic** button in the block footer
+1. Open the question you want to apply logic to (for a group: use its header)
+2. Click **Rules** at the bottom of the question
 3. In the slide-out panel that appears, click the **Rule** button to add a new rule
 4. Give your rule a descriptive name (e.g., "Skip to payment if premium selected")
 5. Configure your conditions and actions (detailed below)
@@ -73,9 +73,7 @@ Go to logic is evaluated after a user interacts with the current block. When sel
 
 ## Logic Visualization
 
-Blocks with logic rules applied are indicated by a blue highlight on the **Block Logic** button. If a block has multiple rules, a counter will show the number of applied rules (e.g., "Block Logic (2)").
-
-When viewing the Storyboard with logic visualization enabled, you can see a visual representation of all logic rules, making it easier to understand your form's conditional flow.
+In the editor, the line below each question shows how many rules it has (e.g., "2 rules"), and its **Rules** button shows the same count (e.g., "Rules (2)").
 
 ## Best Practices
 
