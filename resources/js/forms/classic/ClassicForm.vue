@@ -13,6 +13,13 @@
       }"
     >
       <div>
+        <!-- also on a copied preview link: nobody mistakes it for the real form -->
+        <p
+          v-if="isPreview"
+          class="mt-4 w-fit rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-semibold text-yellow-800"
+        >
+          Preview: answers aren't saved
+        </p>
         <Header v-if="!flags.hideTitle" :form="store.form" />
 
         <div class="h-full w-full max-w-screen-sm py-10">
