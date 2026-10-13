@@ -25,9 +25,14 @@ export function openPicker(spot: AddSpot) {
     addAt.value = spot;
 }
 
-export function closePicker() {
+export function closePicker(returnFocus = true) {
     const spot = addAt.value;
     addAt.value = null;
+
+    // a click elsewhere leaves the focus where the click put it
+    if (!returnFocus) {
+        return;
+    }
 
     if (opener?.isConnected) {
         opener.focus();

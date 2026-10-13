@@ -123,6 +123,38 @@ describe("the form document", () => {
         expect(cursorFor.value).toBe("b3");
     });
 
+    it("gives the cursor back to the end button after Esc, but not after a click elsewhere", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+        const button = wrapper
+            .findAll("button")
+            .find((item) => item.text() === "Add question")!;
+        const open = async () => {
+            (button.element as HTMLElement).focus();
+            await button.trigger("click");
+        };
+
+        // a click into the open question's text keeps the cursor there
+        const text = document.createElement("textarea");
+        document.body.append(text);
+        await open();
+        text.focus();
+        text.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        await flushPromises();
+        expect(addAt.value).toBeNull();
+        expect(document.activeElement).toBe(text);
+        text.remove();
+
+        await open();
+        await wrapper.find("input").trigger("keydown", { key: "Escape" });
+        expect(addAt.value).toBeNull();
+        expect(document.activeElement).toBe(button.element);
+    });
+
     it("reads out where a moved question went", async () => {
         useForm().blocks = blocks;
         wrapper = mount(FormDocument, {
