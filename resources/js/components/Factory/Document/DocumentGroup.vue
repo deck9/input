@@ -25,12 +25,12 @@
         type="text"
         placeholder="Group"
         title="Use a group to show or hide several questions with one rule."
-        class="h-9 min-w-0 flex-1 rounded-md border-0 bg-transparent px-2 text-sm font-semibold text-grey-700 placeholder:text-grey-600 hover:bg-grey-100 focus:bg-white focus:ring-2 focus:ring-blue-500"
+        class="h-11 min-w-0 flex-1 rounded-md border-0 bg-transparent px-2 text-base font-semibold lg:h-9 lg:text-sm text-grey-700 placeholder:text-grey-600 hover:bg-grey-100 focus:bg-white focus:ring-2 focus:ring-blue-500"
       />
       <span v-if="group.is_disabled" class="text-xs text-grey-600">Hidden</span>
       <button
         type="button"
-        class="flex h-9 items-center rounded-md px-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="flex h-11 items-center rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         @click="logic.showLogicEditor(group)"
       >
         Rules<span v-if="group.logics?.length" class="tabular-nums"

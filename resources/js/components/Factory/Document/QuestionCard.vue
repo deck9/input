@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-sm ring-1 ring-blue-500 sm:p-4"
+    class="touch-fields min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-sm ring-1 ring-blue-500 sm:p-4"
   >
     <span :id="`${id}-text-label`" class="sr-only"
       >Question {{ number }} text</span
@@ -90,7 +90,7 @@
     >
       <div class="fixed inset-0 bg-grey-900/40" aria-hidden="true" />
       <DialogPanel
-        class="fixed inset-x-0 bottom-0 flex h-[70%] flex-col rounded-t-2xl bg-white shadow-xl"
+        class="touch-fields fixed inset-x-0 bottom-0 flex h-[70%] flex-col rounded-t-2xl bg-white shadow-xl"
       >
         <span
           aria-hidden="true"

@@ -1,7 +1,11 @@
 <template>
   <div class="mb-4">
     <D9Label label="Allowed File Types" />
-    <div v-for="fileType in availableFileTypes" :key="fileType.key">
+    <div
+      v-for="fileType in availableFileTypes"
+      :key="fileType.key"
+      class="flex min-h-11 items-center lg:min-h-0"
+    >
       <D9Checkbox
         :id="'check' + fileType.key"
         v-model="allowedFileTypes[fileType.key]"
