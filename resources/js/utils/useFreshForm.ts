@@ -11,6 +11,7 @@ let savesOnTheirWay = 0;
 let saves: Promise<unknown> = Promise.resolve();
 // counts page changes, so a late form load can see that the page moved on
 let navigations = 0;
+let loading: Promise<unknown> = Promise.resolve();
 
 window.addEventListener("popstate", (event) => {
     fromHistory = event.state !== null;
@@ -50,7 +51,7 @@ export function useFreshForm(onFresh?: () => void) {
     // a visit started meanwhile wins; the address and the tab stay as they are
     const formHere = () => (page === navigations ? store.form : null);
 
-    saves
+    loading = saves
         .then(() => {
             const form = formHere();
             return form && callGetForm(form);
@@ -65,3 +66,7 @@ export function useFreshForm(onFresh?: () => void) {
         .catch(() => {});
 }
 
+// a copy of the form taken before this lands can be older than the page's form
+export function freshFormLoaded() {
+    return loading;
+}

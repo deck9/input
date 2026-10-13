@@ -226,6 +226,36 @@ describe("the end screen in the document", () => {
         expect(callGetForm).toHaveBeenCalledTimes(1);
     });
 
+    it("opens with the form loaded again after Back, not the older one the page came with", async () => {
+        let answer = () => {};
+        vi.mocked(callGetForm).mockImplementation(
+            () =>
+                new Promise((resolve) => {
+                    answer = () =>
+                        resolve({
+                            data: { ...form, eoc_headline: "Thanks!" },
+                        } as AxiosResponse);
+                }),
+        );
+        window.dispatchEvent(
+            new PopStateEvent("popstate", { state: { component: "x" } }),
+        );
+        // the page Back goes to
+        useFreshForm();
+        const block = mountBlock();
+        await flushPromises();
+
+        await block.find("button").trigger("click");
+        answer();
+        await vi.waitFor(() =>
+            expect(block.find("#end-screen-headline").exists()).toBe(true),
+        );
+
+        expect(
+            block.get<HTMLInputElement>("#end-screen-headline").element.value,
+        ).toBe("Thanks!");
+    });
+
     it("saves on its own after a short pause while you type", async () => {
         vi.useFakeTimers();
         try {

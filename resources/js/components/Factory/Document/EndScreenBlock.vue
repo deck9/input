@@ -140,7 +140,7 @@ import debounce from "lodash/debounce";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
 import Editor from "@/components/Factory/Shared/Editor.vue";
-import { trackFormSave } from "@/utils/useFreshForm";
+import { freshFormLoaded, trackFormSave } from "@/utils/useFreshForm";
 import { plainText } from "./questionSummary";
 
 const store = useForm();
@@ -218,6 +218,7 @@ const open = async () => {
   workbench.clearWorkbench();
   // a change made before it closed may still be on its way
   await save.flush();
+  await freshFormLoaded();
   Object.assign(draft, saved());
   isOpen.value = true;
 
