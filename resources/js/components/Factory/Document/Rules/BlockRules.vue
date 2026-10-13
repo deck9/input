@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick } from "vue";
+import { computed, nextTick, onBeforeUnmount } from "vue";
 import RuleEditor from "./RuleEditor.vue";
 import RuleLine from "./RuleLine.vue";
-import { editing, editRule, returnFocus } from "./ruleEditing";
+import { editing, editRule, returnFocus, stopEditing } from "./ruleEditing";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -40,6 +40,11 @@ const owner = computed(() =>
 
 const isEditing = (index: number) =>
   editing.value?.block === props.block.uuid && editing.value.index === index;
+
+// leaving the page ends editing: coming back shows the sentence again
+onBeforeUnmount(() => {
+  if (editing.value?.block === props.block.uuid) stopEditing();
+});
 
 // the cursor goes back to the rule's Edit, or where it was for a dropped rule
 const returnTo = async (index: number) => {

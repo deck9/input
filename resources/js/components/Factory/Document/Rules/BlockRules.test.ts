@@ -370,6 +370,18 @@ describe("adding a rule", () => {
         expect(owner.logics).toHaveLength(0);
     });
 
+    it("ends when the editor is left, and an unsaved rule goes with it", async () => {
+        const owner = find("q-come");
+        addRule(owner);
+        const wrapper = mountRules("q-come");
+        await wrapper.vm.$nextTick();
+
+        wrapper.unmount();
+
+        expect(editing.value).toBeNull();
+        expect(owner.logics).toHaveLength(0);
+    });
+
     it("hides a group by default", () => {
         const group = find("g-1");
         addRule(group);
