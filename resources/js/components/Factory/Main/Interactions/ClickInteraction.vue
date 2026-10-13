@@ -37,9 +37,15 @@
       </section>
       <ChoiceRowActions
         :label="label ? `choice “${label}”` : `choice ${index + 1}`"
-        @onDelete="emit('onDelete', index)"
+        @onDelete="askDelete"
       />
     </div>
+    <DeleteChoiceDialog
+      :choice="asking"
+      :answers="answers"
+      @close="asking = null"
+      @confirm="deleteNow"
+    />
   </div>
 </template>
 
@@ -47,6 +53,8 @@
 import { D9Input } from "@deck9/ui";
 import ChoiceRowActions from "@/components/Factory/Main/ChoiceRowActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
+import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
+import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
 import type { Step } from "@/components/Factory/Document/blockMove";
@@ -104,7 +112,7 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 
     case "Backspace":
       if (event.metaKey) {
-        emit("onDelete", props.index);
+        await askDelete();
       }
       break;
 
@@ -115,6 +123,13 @@ const keyboardCommands = async (event: KeyboardEvent) => {
       return emit("nextSoft", props.index);
   }
 };
+
+const {
+  asking,
+  answers,
+  ask: askDelete,
+  confirm: deleteNow,
+} = useDeleteChoice(props.item, () => emit("onDelete", props.index));
 
 const focus = () => {
   labelElement.value?.focus();

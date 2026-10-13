@@ -1,8 +1,15 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
+import { AxiosResponse } from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { callGetFormBlocks } from "@/api/blocks";
 import { useForm, useWorkbench } from "@/stores";
 import ConfigureClicks from "./ConfigureClicks.vue";
 import { moveNote } from "@/components/Factory/Document/blockMove";
+
+vi.mock("@/api/blocks", async (importOriginal) => ({
+    ...(await importOriginal()),
+    callGetFormBlocks: vi.fn(),
+}));
 
 const choice = (id: number, label: string) =>
     ({
@@ -50,6 +57,20 @@ const mountList = (interactions: FormBlockInteractionModel[]) => {
             );
         },
     );
+
+    // nobody picked these choices yet, so a delete doesn't ask first
+    useForm().form = { uuid: "form1" } as FormModel;
+    vi.mocked(callGetFormBlocks).mockResolvedValue({
+        data: [
+            {
+                ...workbench.block,
+                interactions: interactions.map((item) => ({
+                    ...item,
+                    responses_count: 0,
+                })),
+            },
+        ],
+    } as unknown as AxiosResponse<FormBlockModel[]>);
 
     wrapper = mount(ConfigureClicks, { attachTo: document.body });
     return wrapper;

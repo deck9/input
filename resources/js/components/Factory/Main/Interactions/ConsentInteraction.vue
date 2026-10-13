@@ -9,7 +9,7 @@
       <ChoiceRowActions
         class="ml-auto"
         :label="label ? `policy “${label}”` : `policy ${index + 1}`"
-        @onDelete="emit('onDelete', index)"
+        @onDelete="askDelete"
       />
     </div>
     <div class="mt-2 flex items-center">
@@ -50,6 +50,13 @@
       </section>
     </div>
 
+    <DeleteChoiceDialog
+      policy
+      :choice="asking"
+      :answers="answers"
+      @close="asking = null"
+      @confirm="deleteNow"
+    />
   </div>
 </template>
 
@@ -57,6 +64,8 @@
 import { D9Input, D9Textarea, D9Switch } from "@deck9/ui";
 import ChoiceRowActions from "@/components/Factory/Main/ChoiceRowActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
+import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
+import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
 
@@ -95,6 +104,13 @@ watch([label, message, isRequired], (newValues) => {
 
   workbench.updateInteraction(update);
 });
+
+const {
+  asking,
+  answers,
+  ask: askDelete,
+  confirm: deleteNow,
+} = useDeleteChoice(props.item, () => emit("onDelete", props.index));
 
 const focus = () => {
   labelElement.value.focus();
