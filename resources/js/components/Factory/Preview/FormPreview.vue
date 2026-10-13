@@ -74,6 +74,7 @@ import { computed, ref, watch } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { questionNumbers } from "@/components/Factory/Document/questionSummary";
 import { END_SCREEN } from "@/forms/classic/previewTarget";
+import { isAllowedLink } from "@/utils/sanitize";
 import PreviewFrame from "./PreviewFrame.vue";
 
 const open = defineModel<boolean>({ required: true });
@@ -97,7 +98,9 @@ const heading = computed(() => {
 });
 // the preview doesn't follow the link, so its end screen is one nobody sees
 const redirect = computed(() =>
-  shown.value === END_SCREEN && store.form?.use_cta_redirect
+  shown.value === END_SCREEN &&
+  store.form?.use_cta_redirect &&
+  isAllowedLink(store.form.cta_link, ["http:", "https:"])
     ? store.form.cta_link
     : undefined,
 );

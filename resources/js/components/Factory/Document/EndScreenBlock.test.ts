@@ -459,6 +459,15 @@ describe("the end screen in the document", () => {
         );
     });
 
+    // the public form only goes to a web link, else it shows the end screen
+    it("shows the end screen when the link isn't a web link", () => {
+        useForm().form = { ...form, use_cta_redirect: true, cta_link: "mailto:hi@example.com" };
+        const block = mountBlock();
+
+        expect(block.text()).not.toContain("No end screen");
+        expect(block.find("button").text()).toContain("See you on Thursday!");
+    });
+
     it("stays in step with the Settings page through the form store", async () => {
         const block = await open();
         await block.find("#end-screen-headline").setValue("Thanks!");

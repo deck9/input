@@ -8,12 +8,12 @@
 
     <!-- the public form then skips the end screen -->
     <div
-      v-if="store.form?.use_cta_redirect"
+      v-if="redirects"
       class="min-h-14 min-w-0 flex-1 px-3 py-2.5 text-sm text-grey-700"
     >
       <p class="break-words">
         <span class="font-medium text-grey-900">No end screen:</span>
-        people go to {{ store.form.cta_link }}
+        people go to {{ store.form?.cta_link }}
       </p>
       <Link :href="settingsLink" class="text-xs text-grey-600 underline"
         >Change in Settings</Link
@@ -135,6 +135,7 @@ import debounce from "lodash/debounce";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
 import { keepAlive } from "@/api/handler";
+import { isAllowedLink } from "@/utils/sanitize";
 import Editor from "@/components/Factory/Shared/Editor.vue";
 import { freshFormLoaded, trackFormSave } from "@/utils/useFreshForm";
 import { plainText } from "./questionSummary";
@@ -150,6 +151,12 @@ const isOpen = endScreenOpen;
 const settingsLink = computed(
   () =>
     `${window.route("forms.settings", { uuid: store.form?.uuid })}#completion-page`,
+);
+// the public form only goes to a web link, else it shows the end screen
+const redirects = computed(
+  () =>
+    store.form?.use_cta_redirect &&
+    isAllowedLink(store.form.cta_link, ["http:", "https:"]),
 );
 const text = computed(() => plainText(store.form?.eoc_text ?? null));
 // the public form shows the button only with a link
