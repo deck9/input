@@ -2,7 +2,7 @@
   <span
     class="inline-flex items-center gap-1 rounded bg-red-50 px-1.5 font-medium text-red-700 ring-1 ring-inset ring-red-200"
   >
-    <D9Icon name="triangle-exclamation" aria-hidden="true" />Deleted question
+    <D9Icon name="triangle-exclamation" aria-hidden="true" />a deleted question
   </span>
 </template>
 

@@ -173,7 +173,7 @@ describe("a rule under its question", () => {
         const broken = wrapper.findAll(".text-red-700");
 
         expect(broken).toHaveLength(2);
-        expect(broken[0].text()).toContain("Deleted question");
+        expect(broken[0].text()).toContain("a deleted question");
     });
 });
 
