@@ -16,7 +16,7 @@
       class="h-full min-w-0 flex-1 overflow-y-auto bg-white"
     >
       <div
-        class="mx-auto w-full max-w-[720px] px-2 pb-40 pt-6 sm:px-6 sm:pt-10"
+        class="mx-auto w-full max-w-[720px] px-4 pb-40 pt-6 sm:px-6 sm:pt-10"
       >
         <div v-if="status !== 'loaded'" class="pl-12">
           <QuestionsLoadState :status="status" @retry="retry" />

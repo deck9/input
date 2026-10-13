@@ -26,7 +26,7 @@
         type="text"
         placeholder="e.g. About you"
         title="Use a group to show or hide several questions with one rule."
-        class="h-11 min-w-0 flex-1 rounded-md border-0 bg-transparent px-2 text-base font-semibold lg:h-9 lg:text-sm text-grey-700 placeholder:text-grey-600 hover:bg-grey-100 focus:bg-white focus:ring-2 focus:ring-blue-500"
+        class="h-11 min-w-40 flex-1 rounded-md border-0 bg-transparent px-2 text-base font-semibold lg:h-9 lg:text-sm text-grey-700 placeholder:text-grey-600 hover:bg-grey-100 focus:bg-white focus:ring-2 focus:ring-blue-500"
       />
       <span v-if="group.is_disabled" class="text-xs text-grey-600"
         >Always hidden</span
