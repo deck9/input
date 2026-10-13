@@ -1,17 +1,38 @@
-import { enableAutoUnmount, mount, type VueWrapper } from "@vue/test-utils";
+import {
+    enableAutoUnmount,
+    flushPromises,
+    mount,
+    type VueWrapper,
+} from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, getActivePinia, setActivePinia, type Pinia } from "pinia";
-import { nextTick } from "vue";
+import { PiniaDebounce } from "@pinia/plugin-debounce";
+import debounce from "lodash/debounce";
+import type { AxiosResponse } from "axios";
+import { createApp, nextTick } from "vue";
 import { useForm, useLogic, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
+import { callUpdateFormBlock } from "@/api/blocks";
+import { callUpdateFormBlockInteraction } from "@/api/interactions";
 import PreviewFrame from "./PreviewFrame.vue";
+
+vi.mock("@/api/blocks", () => ({ callUpdateFormBlock: vi.fn() }));
+vi.mock("@/api/interactions", () => ({
+    callUpdateFormBlockInteraction: vi.fn(),
+}));
 
 // the form page is /<uuid>
 window.route = ((name: string, params?: { uuid?: string }) =>
     `/${params?.uuid ?? name}`) as typeof window.route;
 
 const block = (id: number, uuid: string, type = "input-short") =>
-    ({ id, uuid, type, interactions: [{ options: [] }] }) as unknown as FormBlockModel;
+    ({
+        id,
+        uuid,
+        type,
+        title: "",
+        interactions: [{ id: id * 10, label: "Red", options: [] }],
+    }) as unknown as FormBlockModel;
 const first = block(1, "q1uuid");
 const second = block(2, "q2uuid");
 const group = block(3, "g3uuid", "group");
@@ -19,12 +40,30 @@ const group = block(3, "g3uuid", "group");
 // the testing pinia from the setup file: a test with a real one sets it back
 const testing = getActivePinia() as Pinia;
 
+// a real one, whose typing saves wait a second as in the app
+const realPinia = () => {
+    const pinia = createPinia();
+    createApp({}).use(pinia);
+    pinia.use(PiniaDebounce(debounce));
+    setActivePinia(pinia);
+    return pinia;
+};
+
+// the server answers each save when the test says so
+const answers: Array<() => void> = [];
+const answerLater = () =>
+    new Promise<AxiosResponse>((resolve) =>
+        answers.push(() => resolve({ status: 200 } as AxiosResponse)),
+    );
+
 enableAutoUnmount(afterEach);
 
 const mountFrame = (open: FormBlockModel | null = first, pinia?: Pinia) => {
     useForm().form = { uuid: "form1" } as FormModel;
-    useForm().blocks = [{ ...first }, { ...second }, { ...group }];
-    useWorkbench().block = open;
+    // copies, which the editor changes
+    useForm().blocks = structuredClone([first, second, group]);
+    useWorkbench().block =
+        useForm().blocks!.find((item) => item.uuid === open?.uuid) ?? null;
 
     return mount(PreviewFrame, {
         attachTo: document.body,
@@ -54,6 +93,7 @@ describe("the preview frame", () => {
     beforeEach(() => {
         setActivePinia(testing);
         vi.clearAllMocks();
+        answers.length = 0;
     });
 
     it("runs the public form in preview mode at the open question", () => {
@@ -167,16 +207,13 @@ describe("the preview frame", () => {
     });
 
     it.each([
-        ["a save", () => useNotice().clearSaveError("saveBlock:1")],
+        ["a new choice", () => useNotice().clearSaveError("createInteraction:2")],
         ["saved rules", () => useLogic().saveBlockLogic()],
     ])("loads the form again at the open question after %s", async (_, save) => {
-        const pinia = createPinia();
-        setActivePinia(pinia);
-        const wrapper = mountFrame(first, pinia);
+        const wrapper = mountFrame(first, realPinia());
         const before = wrapper.get("iframe").element;
 
         useWorkbench().block = second;
-        useForm().blocks![1].message = "<p>Changed</p>";
         await save();
         await nextTick();
         await nextTick();
@@ -187,9 +224,7 @@ describe("the preview frame", () => {
     });
 
     it("loads the form again after a delete, which takes the question out after its save", async () => {
-        const pinia = createPinia();
-        setActivePinia(pinia);
-        const wrapper = mountFrame(first, pinia);
+        const wrapper = mountFrame(first, realPinia());
         const before = wrapper.get("iframe").element;
 
         useNotice().clearSaveError("deleteBlock:2");
@@ -200,37 +235,49 @@ describe("the preview frame", () => {
         expect(wrapper.get("iframe").element).not.toBe(before);
     });
 
-    it("keeps running after a save that changed nothing", async () => {
-        const pinia = createPinia();
-        setActivePinia(pinia);
-        const wrapper = mountFrame(first, pinia);
-        const before = wrapper.get("iframe").element;
-
-        // opening a card saves its answer field: empty settings come as [], go back as {}
-        useForm().blocks![0].interactions = [
-            { options: {} },
-        ] as unknown as FormBlockInteractionModel[];
-        useNotice().clearSaveError("saveInteraction:1");
-        await nextTick();
-
-        expect(wrapper.get("iframe").element).toBe(before);
-    });
-
-    it("compares with the questions as they load, after the preview", async () => {
-        const pinia = createPinia();
-        setActivePinia(pinia);
-        useForm().form = { uuid: "form1" } as FormModel;
-        const wrapper = mount(PreviewFrame, {
-            attachTo: document.body,
-            global: { plugins: [pinia] },
+    describe("while typing, which saves a second later", () => {
+        beforeEach(() => {
+            vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+            vi.mocked(callUpdateFormBlock).mockImplementation(answerLater);
+            vi.mocked(callUpdateFormBlockInteraction).mockImplementation(
+                answerLater,
+            );
         });
-        const before = wrapper.get("iframe").element;
+        afterEach(() => vi.useRealTimers());
 
-        useForm().blocks = [{ ...first }];
-        await nextTick();
-        useNotice().clearSaveError("saveInteraction:1");
-        await nextTick();
+        it("shows two saves that overlap: the first comes back before the second is sent", async () => {
+            const wrapper = mountFrame(first, realPinia());
+            const frame = () => wrapper.get("iframe").element;
+            const start = frame();
 
-        expect(wrapper.get("iframe").element).toBe(before);
+            useWorkbench().updateBlock({ title: "Your colour?" });
+            await vi.advanceTimersByTimeAsync(500);
+            useWorkbench().updateInteraction({ id: 10, label: "Green" });
+            await vi.advanceTimersByTimeAsync(500);
+            answers[0]();
+            await flushPromises();
+            const shown = frame();
+            expect(shown).not.toBe(start);
+
+            // the choice reached the server only now
+            await vi.advanceTimersByTimeAsync(500);
+            answers[1]();
+            await flushPromises();
+            expect(frame()).not.toBe(shown);
+        });
+
+        it("keeps running after a save that changed nothing", async () => {
+            const wrapper = mountFrame(first, realPinia());
+            const before = wrapper.get("iframe").element;
+
+            // opening a card saves its answer field: empty settings come as [], go back as {}
+            useWorkbench().updateInteraction({ id: 10, options: {} });
+            await vi.advanceTimersByTimeAsync(1000);
+            answers[0]();
+            await flushPromises();
+
+            expect(callUpdateFormBlockInteraction).toHaveBeenCalledOnce();
+            expect(wrapper.get("iframe").element).toBe(before);
+        });
     });
 });

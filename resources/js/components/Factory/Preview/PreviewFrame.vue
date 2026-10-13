@@ -58,38 +58,51 @@ const goto = (block: string) => {
 };
 onBeforeUnmount(() => clearTimeout(waiting));
 
-// the questions as the preview loaded them: a save that changed nothing,
-// like the one when a card opens, keeps the preview and its answers;
-// the server sends empty settings as [], a card saves them as {}
-const content = () =>
-  JSON.stringify(store.blocks, (_, value) =>
-    Array.isArray(value) && !value.length ? {} : value,
-  );
-let loaded: string | null = null;
-watch(
-  () => store.blocks,
-  (blocks) => {
-    loaded ??= blocks ? content() : null;
-  },
-  { immediate: true },
-);
-
 // a change reached the server: show it, at the open question
 const reload = () => {
-  if (content() === loaded) {
-    return;
-  }
-
-  loaded = content();
   src.value = url();
   loads.value++;
   started = false;
   clearTimeout(waiting);
 };
-// every save that works clears its error; rules save on their own;
-// a delete splices after it, so wait a tick to see the new list
-useNotice().$onAction(({ name, after }) => {
-  if (name === "clearSaveError") after(() => nextTick(reload));
+
+// the server sends empty settings as [], a card saves them as {}
+const content = () =>
+  JSON.stringify(store.blocks, (_, value) =>
+    Array.isArray(value) && !value.length ? {} : value,
+  );
+// typing saves a second later, so another save can come back and reload
+// before the change is on the server; opening a card saves it unchanged,
+// which must keep the preview and its answers: reload after each save that
+// carries a change
+const edits = { updateBlock: "saveBlock", updateInteraction: "saveInteraction" };
+const changed = new Set<string>();
+const sending = new Set<string>();
+workbench.$onAction(({ name, args, after }) => {
+  if (name === "updateBlock" || name === "updateInteraction") {
+    const before = content();
+    after(() => {
+      if (content() !== before) changed.add(edits[name]);
+    });
+  } else if (
+    (name === "saveBlock" || name === "saveInteraction") &&
+    changed.delete(name)
+  ) {
+    sending.add(`${name}:${args[0].id}`);
+  }
+});
+// every other save that works changes the form; rules save on their own;
+// the store takes in the answer after it (a new question opens, a deleted
+// one leaves), so wait a tick to reload at the open question
+useNotice().$onAction(({ name, args, after }) => {
+  if (name !== "clearSaveError") {
+    return;
+  }
+
+  const [save] = args;
+  if (sending.delete(save) || !/^save(Block|Interaction):/.test(save)) {
+    after(() => nextTick(reload));
+  }
 });
 useLogic().$onAction(({ name, after }) => {
   if (name === "saveBlockLogic") after(() => nextTick(reload));
