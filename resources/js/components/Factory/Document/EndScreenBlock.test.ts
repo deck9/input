@@ -131,6 +131,14 @@ describe("the end screen in the document", () => {
         expect(endScreenOpen.value).toBe(false);
     });
 
+    it("gets 24 px above and below when open, like an open question", async () => {
+        expect(mountBlock().get("#row-end-screen").classes()).toContain("pt-2");
+
+        const row = (await open()).get("#row-end-screen");
+        expect(row.classes()).toContain("py-6");
+        expect(row.classes()).not.toContain("pt-2");
+    });
+
     it("has the question card's phone sizes, number column and focus bar", async () => {
         const block = await open();
         const [number, card] = block.findAll("#row-end-screen > div");

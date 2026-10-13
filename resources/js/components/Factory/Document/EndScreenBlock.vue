@@ -1,5 +1,9 @@
 <template>
-  <div id="row-end-screen" class="relative flex items-start">
+  <div
+    id="row-end-screen"
+    class="relative flex items-start"
+    :class="isOpen ? 'py-6' : 'pt-2'"
+  >
     <div class="flex w-8 shrink-0 justify-end pr-2 pt-3 sm:w-12">
       <span class="flex h-6 items-center text-grey-500">
         <D9Icon name="flag" aria-hidden="true" />

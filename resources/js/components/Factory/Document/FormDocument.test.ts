@@ -218,4 +218,30 @@ describe("the form document", () => {
         expect(text.indexOf(first)).toBeGreaterThan(-1);
         expect(text.indexOf("[end]")).toBeGreaterThan(text.indexOf(first));
     });
+
+    it("starts the end screen with a line, but not against a group's frame", () => {
+        const group = { id: 3, uuid: "g1", type: "group" } as FormBlockModel;
+        const inGroup = {
+            id: 4,
+            uuid: "b4",
+            type: "none",
+            parent_block: "g1",
+        } as FormBlockModel;
+        const line = (list: FormBlockModel[]) => {
+            wrapper?.unmount();
+            useForm().blocks = list;
+            wrapper = mount(FormDocument, {
+                props: { status: "loaded" },
+                global: { stubs },
+            });
+            return wrapper
+                .findAll("div")
+                .find((item) => item.text() === "[end]")!
+                .classes("border-t");
+        };
+
+        expect(line(blocks)).toBe(true);
+        expect(line([...blocks, group, inGroup])).toBe(false);
+        expect(line([])).toBe(false);
+    });
 });

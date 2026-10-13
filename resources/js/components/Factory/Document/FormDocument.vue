@@ -61,7 +61,7 @@
             @pick="addQuestion"
           />
 
-          <EndScreenBlock class="mt-2" />
+          <EndScreenBlock :class="endLine && 'border-t border-grey-200'" />
 
           <div
             id="add-buttons"
@@ -219,6 +219,13 @@ const pick = async (block: FormBlockModel) => {
 };
 
 const numbers = computed(() => questionNumbers(store.blocks ?? []));
+
+// the end screen starts with a line like a question, but not against a group's frame
+const endLine = computed(() => {
+  const top = (store.blocks ?? []).filter((block) => !block.parent_block);
+
+  return top.length > 0 && top[top.length - 1].type !== "group";
+});
 
 const countLine = computed(() => {
   const questions = Object.keys(numbers.value).length;
