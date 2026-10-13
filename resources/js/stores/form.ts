@@ -257,6 +257,7 @@ export const useForm = defineStore("form", {
                 `duplicateFormBlock:${block.id}`,
                 request,
                 block,
+                "duplicated",
             );
         },
 
