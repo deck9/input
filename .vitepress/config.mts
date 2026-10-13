@@ -29,8 +29,8 @@ export default defineConfig({
                         text: "Managing Forms",
                         link: "/workbench/managing-forms",
                     },
-                    { text: "Workbench", link: "/workbench/workbench" },
-                    { text: "Storyboard", link: "/workbench/storyboard" },
+                    { text: "Form Editor", link: "/workbench/workbench" },
+                    { text: "Outline", link: "/workbench/storyboard" },
                     { text: "Form Blocks", link: "/workbench/form-blocks" },
                     {
                         text: "Conditional Logic",

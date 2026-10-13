@@ -14,6 +14,13 @@
     </template>
 
     <D9MenuLink
+      v-if="!isGroup"
+      as="button"
+      :class="item"
+      label="Duplicate"
+      @click="duplicateBlock(block)"
+    />
+    <D9MenuLink
       v-if="isGroup"
       as="button"
       :class="item"
@@ -58,9 +65,15 @@
       as="button"
       :class="[item, 'text-red-700']"
       :label="isGroup ? 'Delete group…' : 'Delete…'"
-      @click="deleteBlock"
+      @click="ask"
     />
   </D9Menu>
+
+  <DeleteBlockDialog
+    v-bind="{ block, check }"
+    @close="cancel"
+    @confirm="deleteBlock"
+  />
 </template>
 
 <script setup lang="ts">
@@ -68,7 +81,9 @@ import { computed } from "vue";
 import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import { useForm, useWorkbench } from "@/stores";
-import { useAddBlock } from "./blockFocus";
+import DeleteBlockDialog from "@/components/Factory/Shared/DeleteBlockDialog.vue";
+import { useDeleteBlock } from "@/components/Factory/Shared/useDeleteBlock";
+import { blocksAround, focusRow, useAddBlock } from "./blockFocus";
 import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
@@ -80,7 +95,7 @@ const emit = defineEmits<{ addToGroup: [] }>();
 
 const store = useForm();
 const workbench = useWorkbench();
-const { addBlock } = useAddBlock();
+const { addBlock, duplicateBlock } = useAddBlock();
 const { canMove, moveBlock } = useMoveBlock();
 
 const item = "w-full min-h-11 text-left text-sm lg:min-h-0";
@@ -97,19 +112,21 @@ const toggleHidden = () => {
   }
 };
 
-const deleteBlock = () => {
-  const question = isGroup.value
-    ? "Do you really want to delete this group? All blocks inside this group will be deleted as well."
-    : "Do you really want to delete this block?";
+const { check, ask, cancel, confirm } = useDeleteBlock(props.block);
 
-  if (!window.confirm(question)) {
-    return;
-  }
+// focus never falls to the page: the next row, else the one before, else Add question
+const deleteBlock = async () => {
+  const near = blocksAround(props.block);
+  await confirm();
 
-  store.deleteFormBlock(props.block);
+  const left = new Set((store.blocks ?? []).map((item) => item.id));
+  // a failed delete keeps the block: back to its row
+  const target = left.has(props.block.id)
+    ? props.block
+    : near.find((item) => left.has(item.id));
 
-  if (workbench.block?.id === props.block.id) {
-    workbench.clearWorkbench();
+  if (!target || !(await focusRow(target))) {
+    document.querySelector<HTMLElement>("#add-buttons button")?.focus();
   }
 };
 </script>

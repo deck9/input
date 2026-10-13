@@ -1,47 +1,51 @@
-# Workbench Overview
+# The Form Editor
 
-The Workbench is the core interface of Input where you build and design your forms. It provides a powerful, intuitive environment for creating engaging form experiences without requiring any coding knowledge.
+The editor is where you build your form. It shows the whole form as one document: every question in order, with groups as sections. You edit a question right where it sits in the form, on a computer, a tablet or a phone.
 
-## Workbench Layout
+## Layout
 
-The Workbench is divided into several key areas:
+1. **Top bar** - The form's name and menu, Draft or Live, the form's pages (Editor, Settings, Integrations, Submissions), the save status, Preview and Publish
+2. **Outline** - A short list of all questions and groups to jump to one. On wide screens it sits on the left; on smaller screens the **Outline** button opens it as a panel. See [Outline](./storyboard.md)
+3. **Document** - Your questions in the order people answer them
 
-1. **Main Workbench Area** - The central area where you can see and interact with the currently selected form block
-2. **Sidebar** - Contains a list of all form blocks and tools for adding new blocks
-3. **Top Navigation** - Access to form settings, preview, and publishing options
+## Reading the document
 
-## Working with Blocks
+Each question shows:
 
-The building blocks of your form are called "blocks." Each block represents a question, content, or interaction in your form:
+-   Its number and an icon for its answer type
+-   Its text, on up to two lines
+-   A line below with the answer type, the number of choices, **Required**, the number of rules, **Hidden**, and its identifier if you gave it one
 
-1. **Adding Blocks** - Click the "+" button at the bottom of any block to add a new block below it
-2. **Selecting Blocks** - Click on any block in the sidebar to select it and edit its properties in the main workbench area
-3. **Rearranging Blocks** - Drag and drop blocks in the sidebar to reorder them in your form
-4. **Deleting Blocks** - Select a block and click the trash icon to remove it
+Groups show their name with their questions inside. An empty group says how to add a question to it.
 
-## Block Configuration
+## Editing a question
 
-When you select a block, you can configure its properties in the main workbench area:
+Click a question, or move to it with Tab and press Enter, to open it in place. The open question shows:
 
-1. **Block Type** - Choose the type of interaction (text, multiple choice, etc.)
-2. **Question Text** - The main prompt or question for the user
-3. **Description** - Optional additional information about the question
-4. **Required Setting** - Toggle whether the user must complete this block
-5. **Advanced Settings** - Access additional options specific to each block type
+1. **Text** - The question with a toolbar for bold, links, images, headings, lists and more
+2. **Choices** - For multiple choice and checkboxes. Each row has a grip to drag it and a delete button. Alt+Up and Alt+Down move a choice
+3. **Answer type** - Change what kind of answer the question takes
+4. **Required** - Whether people must answer it
+5. **Settings** - The settings of this answer type, the identifier and **Hide this question**. On a phone they open as a sheet from the bottom
+6. **Rules** - Logic rules for this question, see [Conditional Logic](./conditional-logic.md)
+7. **Menu (…)** - Duplicate, Add question below, Move up, Move down, Copy question ID and Delete
 
-## Preview Mode
+Press Escape to close the question. A link with `?block=` opens that question and scrolls it into view.
 
-To see how your form will appear to users:
+## Adding, moving and deleting
 
-1. Click the "Preview" button in the top navigation
-2. A new browser tab will open showing your form as users will see it
-3. Navigate through your form as a user would
-4. Test interactions, conditional logic, and overall flow
-5. Close the preview tab to return to the Workbench
+-   **Add** - Use **Add question** or **Add group** at the end of the form, or **Add question below** in a question's menu
+-   **Duplicate** - The copy goes right below the question and opens
+-   **Move** - Drag a question by its grip; the page scrolls when you drag near its edge. With the keyboard, press Alt+Up or Alt+Down. On touch screens, use **Move up** and **Move down** in the menu. A screen reader hears the new position, for example "Moved to position 3 of 34"
+-   **Delete** - The editor asks first. It names the question, how many answers will be deleted with it, and the questions whose rules will stop working
 
-## Auto-Save
+## Preview
 
-Input automatically saves your work as you make changes, so you never have to worry about losing progress. The saving status is indicated in the top navigation bar.
+Click **Preview** in the top bar to open your form in a new tab, as people will see it. Test the questions, the rules and the flow, then close the tab to return to the editor.
+
+## Saving
+
+Every change saves on its own. The top bar shows "Saving…", then "Saved" for a moment. When a change can't be saved, it says "Not saved" and offers **Retry**. On smaller screens only the icon shows.
 
 ## Published vs. Unpublished Forms
 
@@ -50,6 +54,6 @@ Forms in Input can be either published or unpublished:
 - **Published** - The form is visible to the public and can receive submissions
 - **Unpublished** - The form is only visible to you and team members with access
 
-When you make changes to a form in the Workbench, these changes are saved immediately. If the form is published, these changes will be visible to users right away. There is no separate draft state - any changes you make to a published form will be live immediately.
+When you make changes to a form in the editor, these changes are saved immediately. If the form is published, these changes will be visible to users right away. There is no separate draft state - any changes you make to a published form will be live immediately.
 
-You can toggle a form between published and unpublished states using the publish/unpublish controls in the form settings.
+Use **Publish** in the top bar to publish a form. Once it is live, **Share** has its link, Open form and Unpublish.

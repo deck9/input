@@ -48,7 +48,11 @@
             description="Add your first question below."
           />
 
-          <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
+          <div
+            id="add-buttons"
+            ref="addButtons"
+            class="mt-4 flex flex-wrap gap-2 pl-12"
+          >
             <D9Button
               label="Add question"
               class="min-h-11 lg:min-h-0"

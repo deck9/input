@@ -63,6 +63,13 @@ export function callUpdateFormBlock(
     });
 }
 
+// the copy goes right after the original; the server renumbers the form
+export function callDuplicateFormBlock(
+    id: number
+): Promise<AxiosResponse<FormBlockModel>> {
+    return handler.post(window.route("api.blocks.duplicate", { block: id }));
+}
+
 export function callDeleteFormBlock(id: number): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
         try {
