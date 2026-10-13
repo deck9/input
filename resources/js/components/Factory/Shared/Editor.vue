@@ -53,7 +53,7 @@
           v-bind="{
             isActive: editor?.isActive('heading', { level: 2 }) ?? false,
             icon: 'heading',
-            label: 'Heading 1',
+            label: 'Heading',
             subLabel: '1',
           }"
           @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -62,7 +62,7 @@
           v-bind="{
             isActive: editor?.isActive('heading', { level: 3 }) ?? false,
             icon: 'heading',
-            label: 'Heading 2',
+            label: 'Subheading',
             subLabel: '2',
           }"
           @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
@@ -73,7 +73,7 @@
           v-bind="{
             isActive: editor?.isActive('bulletList') ?? false,
             icon: 'list-ul',
-            label: 'Bullet List',
+            label: 'Bullet list',
           }"
           @click="editor?.chain().focus().toggleBulletList().run()"
         />
@@ -81,7 +81,7 @@
           v-bind="{
             isActive: editor?.isActive('orderedList') ?? false,
             icon: 'list-ol',
-            label: 'Ordered List',
+            label: 'Numbered list',
           }"
           @click="editor?.chain().focus().toggleOrderedList().run()"
         />
@@ -109,7 +109,7 @@
           v-bind="{
             isActive: false,
             icon: 'remove-format',
-            label: 'Remove Formatting',
+            label: 'Clear formatting',
           }"
           @click="editor?.chain().focus().clearNodes().unsetAllMarks().run()"
         />
@@ -117,7 +117,7 @@
     </div>
     <editor-content :editor="editor" />
     <div v-if="counter" class="mt-1 text-xs text-grey-600">
-      {{ chars }} chars, {{ words }} words
+      {{ chars }} characters
     </div>
   </div>
 </template>
@@ -150,7 +150,7 @@ const {
 
 const content = ref("");
 
-const { chars, words } = useContentLength(content);
+const { chars } = useContentLength(content);
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
@@ -215,7 +215,7 @@ const setLink = () => {
   }
 
   const previousUrl = editor.value.getAttributes("link").href;
-  const url = window.prompt("URL", previousUrl);
+  const url = window.prompt("Link address", previousUrl);
 
   // cancelled
   if (url === null) {
@@ -244,7 +244,7 @@ const setImage = () => {
   }
 
   const previousUrl = editor.value.getAttributes("image").src;
-  const url = window.prompt("URL", previousUrl);
+  const url = window.prompt("Image address", previousUrl);
 
   // cancelled
   if (url === null || url === "") {
@@ -252,7 +252,7 @@ const setImage = () => {
   }
 
   if (!url.startsWith("https")) {
-    window.alert("Please enter a valid secure URL");
+    window.alert("The image address must start with https://");
     return;
   }
 

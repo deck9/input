@@ -72,23 +72,15 @@ describe("block text counter", () => {
     editor.commands.undo();
     await nextTick();
 
-    expect(opened).toMatch(/^\d+ chars, \d+ words$/);
+    expect(opened).toMatch(/^\d+ characters$/);
     expect(opened).toBe(counter(wrapper));
   });
 
-  it("counts an empty text as 0 chars, 0 words", async () => {
-    expect(counter(await open())).toBe("0 chars, 0 words");
+  it("counts an empty text as 0 characters", async () => {
+    expect(counter(await open())).toBe("0 characters");
   });
 
-  it.each([
-    ["<h2>Hi</h2><p>there</p>", 2],
-    ["<ul><li><p>one</p></li><li><p>two</p></li></ul>", 2],
-    ["<p></p><p></p>", 0],
-  ])("counts %s as %i words", async (html, words) => {
-    expect(counter(await open(html))).toMatch(`, ${words} words`);
-  });
-
-  it("counts a text of only spaces as 0 words", async () => {
+  it("counts spaces as characters", async () => {
     const wrapper = await open();
     const editor = wrapper
       .findComponent(EditorContent)
@@ -97,7 +89,7 @@ describe("block text counter", () => {
     editor.view.dispatch(editor.state.tr.insertText("   "));
     await nextTick();
 
-    expect(counter(wrapper)).toBe("3 chars, 0 words");
+    expect(counter(wrapper)).toBe("3 characters");
   });
 });
 
@@ -114,6 +106,6 @@ describe("a bare editor", () => {
       .findComponent(EditorContent)
       .props("editor") as TiptapEditor;
     expect(editor.view.dom.classList).not.toContain("border");
-    expect(wrapper.text()).not.toContain("chars");
+    expect(wrapper.text()).not.toContain("characters");
   });
 });
