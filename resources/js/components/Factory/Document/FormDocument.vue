@@ -30,7 +30,7 @@
           <button
             v-if="store.hasBlocks"
             type="button"
-            class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:h-8 lg:absolute lg:left-4 lg:top-3 lg:z-10 xl:hidden"
+            class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:absolute lg:left-4 lg:top-3 lg:z-10 lg:h-8 xl:hidden"
             aria-haspopup="dialog"
             :aria-expanded="outlineOpen"
             @click="outlineOpen = true"
