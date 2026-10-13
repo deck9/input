@@ -31,16 +31,14 @@ export async function scrollToBlock(
     document.getElementById(`row-${uuid}`)?.scrollIntoView({ block });
 }
 
-// a new block opens with the cursor in it
+// a new block or a copy opens with the cursor in it
 export function useAddBlock() {
     const store = useForm();
     const workbench = useWorkbench();
 
-    const addBlock = async (
-        ...args: Parameters<typeof store.createFormBlock>
-    ) => {
+    const opens = async (create: () => Promise<void>) => {
         const before = workbench.block;
-        await store.createFormBlock(...args);
+        await create();
 
         // a failed create keeps the open block: leave the cursor where it is
         if (workbench.block !== before) {
@@ -48,5 +46,11 @@ export function useAddBlock() {
         }
     };
 
-    return { addBlock };
+    const addBlock = (...args: Parameters<typeof store.createFormBlock>) =>
+        opens(() => store.createFormBlock(...args));
+
+    const duplicateBlock = (block: FormBlockModel) =>
+        opens(() => store.duplicateFormBlock(block));
+
+    return { addBlock, duplicateBlock };
 }

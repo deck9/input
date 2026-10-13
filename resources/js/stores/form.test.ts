@@ -1,8 +1,11 @@
+import { PiniaDebounce } from "@pinia/plugin-debounce";
 import { AxiosError, AxiosResponse } from "axios";
+import debounce from "lodash/debounce";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createApp } from "vue";
 import handler from "@/api/handler";
-import { useForm } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 
 vi.mock("@/api/handler", () => ({ default: { get: vi.fn(), post: vi.fn() } }));
 
@@ -120,5 +123,63 @@ describe("loading the questions", () => {
         await loading;
 
         expect(useForm().blocks).toBeNull();
+    });
+});
+
+describe("duplicating a question", () => {
+    const question = (id: number, uuid: string) =>
+        ({ id, uuid, type: "radio", message: "<p>Hi</p>" }) as FormBlockModel;
+
+    let posted: string[];
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        // the debounce the app uses (plugins run only once pinia is in an app)
+        const pinia = createPinia();
+        pinia.use(PiniaDebounce(debounce));
+        createApp({}).use(pinia);
+        setActivePinia(pinia);
+
+        window.route = vi.fn(
+            (name: string) => name,
+        ) as unknown as typeof window.route;
+        posted = [];
+        vi.mocked(handler.post).mockImplementation(async (url: string) => {
+            posted.push(url);
+            return {
+                status: 201,
+                data: url === "api.blocks.duplicate" ? question(4, "copy") : {},
+            } as AxiosResponse;
+        });
+
+        useForm().form = { ...saved };
+        useForm().blocks = [
+            question(1, "q1"),
+            question(2, "q2"),
+            question(3, "q3"),
+        ];
+    });
+
+    it("puts the copy right after the question and opens it", async () => {
+        await useForm().duplicateFormBlock(useForm().blocks![1]);
+
+        expect(posted).toEqual(["api.blocks.duplicate"]);
+        expect(useForm().blocks!.map((block) => block.uuid)).toEqual([
+            "q1",
+            "q2",
+            "copy",
+            "q3",
+        ]);
+        expect(useWorkbench().block?.uuid).toBe("copy");
+    });
+
+    it("saves a change still waiting in the open question first, so the copy has it", async () => {
+        const workbench = useWorkbench();
+        workbench.block = useForm().blocks![1];
+        workbench.updateBlock({ message: "<p>Hi there</p>" });
+
+        await useForm().duplicateFormBlock(workbench.block);
+
+        expect(posted).toEqual(["api.blocks.update", "api.blocks.duplicate"]);
     });
 });

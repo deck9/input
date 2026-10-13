@@ -14,6 +14,7 @@ import {
     callCreateFormBlock,
     callUpdateBlockSequence,
     callDeleteFormBlock,
+    callDuplicateFormBlock,
     callUpdateFormBlock,
 } from "@/api/blocks";
 import { useWorkbench } from ".";
@@ -229,6 +230,34 @@ export const useForm = defineStore("form", {
                     workbench.putOnWorkbench(newBlock);
                 }
             });
+        },
+
+        // the copy goes right after the question and opens
+        async duplicateFormBlock(block: FormBlockModel) {
+            const workbench = useWorkbench();
+
+            // the copy must have the last change to the open question
+            if (workbench.block?.id === block.id) {
+                await workbench.sendWaitingSaves();
+            }
+
+            const request = async () => {
+                const copy = (await callDuplicateFormBlock(block.id)).data;
+                const index =
+                    this.blocks?.findIndex((item) => item.id === block.id) ??
+                    -1;
+
+                if (index !== -1) {
+                    this.blocks?.splice(index + 1, 0, copy);
+                    workbench.putOnWorkbench(copy);
+                }
+            };
+
+            await useNotice().send(
+                `duplicateFormBlock:${block.id}`,
+                request,
+                block,
+            );
         },
 
         async deleteFormBlock(block: FormBlockModel) {

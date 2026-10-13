@@ -8,6 +8,8 @@ const blocks = [
     { id: 2, uuid: "q2", type: "radio" },
 ] as FormBlockModel[];
 
+const group = { id: 3, uuid: "g1", type: "group" } as FormBlockModel;
+
 let wrapper: VueWrapper | undefined;
 
 const openMenu = async (block: FormBlockModel) => {
@@ -61,5 +63,21 @@ describe("a block's menu", () => {
         await openMenu(blocks[1]);
         expect(item("Move up")?.getAttribute("aria-disabled")).toBeNull();
         expect(item("Move down")?.getAttribute("aria-disabled")).toBe("true");
+    });
+
+    it("duplicates a question", async () => {
+        await openMenu(blocks[0]);
+
+        item("Duplicate")!.click();
+        await flushPromises();
+
+        expect(useForm().duplicateFormBlock).toHaveBeenCalledWith(blocks[0]);
+    });
+
+    it("has no Duplicate for a group, which the server can't copy", async () => {
+        await openMenu(group);
+
+        expect(item("Duplicate")).toBeUndefined();
+        expect(item("Add question to this group")).toBeDefined();
     });
 });

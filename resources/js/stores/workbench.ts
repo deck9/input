@@ -108,6 +108,14 @@ export const useWorkbench = defineStore("workbench", {
             );
         },
 
+        // sends the saves that wait for their debounce now, and waits for them
+        async sendWaitingSaves() {
+            await Promise.all([
+                (this.saveBlock as DebouncedFunc<any>).flush(),
+                (this.saveInteraction as DebouncedFunc<any>).flush(),
+            ]);
+        },
+
         // sends the saves that wait for their debounce now, as the page closes
         flushSaves() {
             isLeaving = true;

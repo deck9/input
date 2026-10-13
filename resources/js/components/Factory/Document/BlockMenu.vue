@@ -14,6 +14,13 @@
     </template>
 
     <D9MenuLink
+      v-if="!isGroup"
+      as="button"
+      :class="item"
+      label="Duplicate"
+      @click="duplicateBlock(block)"
+    />
+    <D9MenuLink
       v-if="isGroup"
       as="button"
       :class="item"
@@ -80,7 +87,7 @@ const emit = defineEmits<{ addToGroup: [] }>();
 
 const store = useForm();
 const workbench = useWorkbench();
-const { addBlock } = useAddBlock();
+const { addBlock, duplicateBlock } = useAddBlock();
 const { canMove, moveBlock } = useMoveBlock();
 
 const item = "w-full min-h-11 text-left text-sm lg:min-h-0";
