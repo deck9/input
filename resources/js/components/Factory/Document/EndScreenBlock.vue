@@ -22,7 +22,7 @@
 
     <div
       v-else-if="isOpen"
-      class="touch-fields min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-sm ring-1 ring-blue-500 sm:p-4"
+      class="touch-fields min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-md ring-1 ring-blue-500 sm:p-4"
       @focusout="leave"
     >
       <div class="flex items-center gap-3">
