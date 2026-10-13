@@ -28,6 +28,7 @@ import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import FormPreview from "@/components/Factory/Preview/FormPreview.vue";
 import PreviewToggle from "@/components/Factory/Preview/PreviewToggle.vue";
 import { useForm, useWorkbench } from "@/stores";
+import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
 import { onBeforeUnmount, onMounted, provide, ref } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import { D9Icon } from "@deck9/ui";
@@ -78,6 +79,8 @@ const loadBlocks = async () => {
 };
 
 let left = false;
+
+useSaveOnLeave();
 
 onBeforeUnmount(() => {
   left = true;
