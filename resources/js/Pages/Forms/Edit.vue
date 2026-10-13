@@ -2,10 +2,11 @@
   <app-layout title="Edit Form" limit-height>
     <template #preview><PreviewToggle v-model="isPreviewing" /></template>
     <FormDocument :status="status" @retry="loadBlocks">
-      <!-- a phone's top bar has no room for Preview -->
+      <!-- a phone's top bar has no room for Preview; a click inside lands on
+        the button, so closing the preview puts focus back on it -->
       <template #actions>
         <D9Button
-          class="lg:hidden"
+          class="lg:hidden [&_*]:pointer-events-none"
           label="Preview"
           color="light"
           icon="eye"

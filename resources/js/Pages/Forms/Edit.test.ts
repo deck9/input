@@ -133,5 +133,8 @@ describe("editor loading", () => {
         await preview?.trigger("click");
 
         expect(editor.find("aside").exists()).toBe(true);
+        // a click on the text would land on a span, which the closing dialog
+        // can't focus again: the button's inside lets clicks through to it
+        expect(preview?.classes()).toContain("[&_*]:pointer-events-none");
     });
 });
