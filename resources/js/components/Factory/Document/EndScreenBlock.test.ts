@@ -129,6 +129,7 @@ describe("the end screen in the document", () => {
         expect(callUpdateForm).toHaveBeenCalledWith(
             expect.objectContaining({ uuid: "form1" }),
             { eoc_headline: "Thanks!" },
+            undefined,
         );
         expect(useForm().form?.eoc_headline).toBe("Thanks!");
     });
@@ -142,9 +143,11 @@ describe("the end screen in the document", () => {
         });
         await flushPromises();
 
-        expect(callUpdateForm).toHaveBeenCalledWith(expect.anything(), {
-            eoc_headline: "Thanks!",
-        });
+        expect(callUpdateForm).toHaveBeenCalledWith(
+            expect.anything(),
+            { eoc_headline: "Thanks!" },
+            undefined,
+        );
     });
 
     it("saves right away on browser Back", async () => {
@@ -154,9 +157,11 @@ describe("the end screen in the document", () => {
         window.dispatchEvent(new PopStateEvent("popstate"));
         await flushPromises();
 
-        expect(callUpdateForm).toHaveBeenCalledWith(expect.anything(), {
-            eoc_headline: "Thanks!",
-        });
+        expect(callUpdateForm).toHaveBeenCalledWith(
+            expect.anything(),
+            { eoc_headline: "Thanks!" },
+            undefined,
+        );
     });
 
     it("lets the next page load the form again only after the save made on Back", async () => {
@@ -265,9 +270,11 @@ describe("the end screen in the document", () => {
             vi.advanceTimersByTime(1000);
             await flushPromises();
 
-            expect(callUpdateForm).toHaveBeenCalledWith(expect.anything(), {
-                eoc_headline: "Thanks!",
-            });
+            expect(callUpdateForm).toHaveBeenCalledWith(
+                expect.anything(),
+                { eoc_headline: "Thanks!" },
+                undefined,
+            );
         } finally {
             vi.useRealTimers();
         }
@@ -294,10 +301,11 @@ describe("the end screen in the document", () => {
         await block.find("#end-screen-button").trigger("focusout");
         await flushPromises();
 
-        expect(callUpdateForm).toHaveBeenCalledWith(expect.anything(), {
-            cta_link: "mailto:a@b.co",
-            show_cta_link: false,
-        });
+        expect(callUpdateForm).toHaveBeenCalledWith(
+            expect.anything(),
+            { cta_link: "mailto:a@b.co", show_cta_link: false },
+            undefined,
+        );
         expect(block.find("#end-screen-button-label").exists()).toBe(false);
     });
 
@@ -323,6 +331,87 @@ describe("the end screen in the document", () => {
             "Your change wasn't saved: The cta link field format is invalid.",
         );
         expect(useForm().form?.cta_link).toBe("https://example.com/cal");
+    });
+
+    it("shows Saving in the save status from the first key until the save lands", async () => {
+        let answer = () => {};
+        vi.mocked(callUpdateForm).mockImplementation(
+            (_, values) =>
+                new Promise((resolve) => {
+                    answer = () =>
+                        resolve({
+                            data: { ...useForm().form, ...values },
+                        } as AxiosResponse);
+                }),
+        );
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        expect(useNotice().saveStatus).toBe("saving");
+
+        await block.find("#end-screen-headline").trigger("focusout");
+        expect(useNotice().saveStatus).toBe("saving");
+
+        answer();
+        await flushPromises();
+        expect(useNotice().saveStatus).toBe("idle");
+    });
+
+    it("sends a refused change again on Retry", async () => {
+        vi.mocked(callUpdateForm).mockRejectedValueOnce(new AxiosError());
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        await block.find("#end-screen-headline").trigger("focusout");
+        await flushPromises();
+        expect(useNotice().saveStatus).toBe("failed");
+
+        useNotice().retrySaves();
+        await flushPromises();
+
+        expect(callUpdateForm).toHaveBeenCalledTimes(2);
+        expect(useForm().form?.eoc_headline).toBe("Thanks!");
+        expect(useNotice().saveStatus).toBe("idle");
+    });
+
+    it("sends a Retry only to the form it was made in", async () => {
+        vi.mocked(callUpdateForm).mockRejectedValueOnce(new AxiosError());
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        await block.find("#end-screen-headline").trigger("focusout");
+        await flushPromises();
+        // you open another form, then click Retry
+        block.unmount();
+        wrapper = undefined;
+        useForm().form = { ...form, uuid: "form2" };
+        useNotice().retrySaves();
+        await flushPromises();
+
+        expect(callUpdateForm).toHaveBeenCalledTimes(1);
+    });
+
+    it("stops showing Saving when it closes with a change still in its pause", async () => {
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        block.unmount();
+        wrapper = undefined;
+
+        expect(useNotice().saveStatus).toBe("idle");
+    });
+
+    it("sends a change still in its pause when the page closes, so it outlives the page", async () => {
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        window.dispatchEvent(new Event("pagehide"));
+
+        expect(callUpdateForm).toHaveBeenCalledWith(
+            expect.anything(),
+            { eoc_headline: "Thanks!" },
+            { adapter: "fetch", fetchOptions: { keepalive: true } },
+        );
     });
 
     it("only links to Settings while the form sends people to a link instead", () => {

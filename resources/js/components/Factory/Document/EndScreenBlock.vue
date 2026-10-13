@@ -139,6 +139,7 @@ import { useEventListener } from "@vueuse/core";
 import debounce from "lodash/debounce";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
+import { keepAlive } from "@/api/handler";
 import Editor from "@/components/Factory/Shared/Editor.vue";
 import { freshFormLoaded, trackFormSave } from "@/utils/useFreshForm";
 import { plainText } from "./questionSummary";
@@ -177,8 +178,19 @@ const saved = () => ({
 
 const draft = reactive(saved());
 
-// sends what differs from the saved form, so a refused value is sent again until it's fixed
-const save = debounce(async () => {
+const SAVE = "saveEndScreen";
+// a Retry can run after you opened another form
+const formUuid = store.form?.uuid;
+// true while the page closes: the save must outlive it
+let isLeaving = false;
+
+// sends what differs from the saved form, so a refused value is sent again
+// until it's fixed, also by Retry
+const sendChanges = async () => {
+  if (store.form?.uuid !== formUuid) {
+    return;
+  }
+
   const before = saved();
   const changes = Object.fromEntries(
     fields
@@ -190,16 +202,17 @@ const save = debounce(async () => {
     return;
   }
 
-  try {
-    // the next page may load before this lands: it loads the form again after
-    await trackFormSave(store.updateForm(changes));
-    notice.clearSaveError("saveEndScreen");
-  } catch (error) {
-    notice.showSaveError(error, "saveEndScreen");
-  }
-}, 1000);
+  const config = isLeaving ? keepAlive(changes) : undefined;
+  // the next page may load before this lands: it loads the form again after
+  await trackFormSave(store.updateForm(changes, config));
+};
 
-watch(draft, () => save());
+const save = debounce(() => notice.send(SAVE, sendChanges), 1000);
+
+watch(draft, () => {
+  notice.waitForSave(SAVE);
+  save();
+});
 
 // save before a click on a link can load the next page, also "Also in Settings" in the card
 const leave = (event: FocusEvent) => {
@@ -213,6 +226,20 @@ const leave = (event: FocusEvent) => {
 
 // browser Back moves no focus; the old page stays until the next one has loaded
 useEventListener(window, "popstate", () => save.flush());
+
+// a reload or a closed tab within the pause would drop the change
+const saveOnLeave = () => {
+  isLeaving = true;
+
+  try {
+    save.flush();
+  } finally {
+    isLeaving = false;
+  }
+};
+
+useEventListener(window, "pagehide", saveOnLeave);
+useEventListener(window, "beforeunload", saveOnLeave);
 
 const open = async () => {
   workbench.clearWorkbench();
@@ -238,5 +265,8 @@ watch(
 );
 
 // the page cleared the form before this unmounts: a later save would go to the next page's form
-onBeforeUnmount(() => save.cancel());
+onBeforeUnmount(() => {
+  save.cancel();
+  delete notice.waitingSaves[SAVE];
+});
 </script>

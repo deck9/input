@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { AxiosRequestConfig } from "axios";
 import {
     callDeleteFormImage,
     callUpdateForm,
@@ -134,12 +135,15 @@ export const useForm = defineStore("form", {
         },
 
         // only the page's own fields, and the store changes only once they're saved
-        async updateForm(newValues: Partial<FormModel>) {
+        async updateForm(
+            newValues: Partial<FormModel>,
+            config?: AxiosRequestConfig,
+        ) {
             if (!this.form) {
                 return;
             }
 
-            const response = await callUpdateForm(this.form, newValues);
+            const response = await callUpdateForm(this.form, newValues, config);
             // the editor may have left this form while it saved
             if (this.form?.uuid !== response.data.uuid) {
                 return;
