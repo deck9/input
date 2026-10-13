@@ -54,11 +54,9 @@
         <button
           type="button"
           class="flex h-9 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          @click="logic.showLogicEditor(block)"
+          @click="addRule(block)"
         >
-          Rules<span v-if="block.logics?.length" class="tabular-nums"
-            >&nbsp;({{ block.logics.length }})</span
-          >
+          Add rule
         </button>
         <BlockMenu :block="block" :label="`Options for question ${number}`" />
       </div>
@@ -77,7 +75,7 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref, watch } from "vue";
 import { D9Icon, D9Select, D9Switch } from "@deck9/ui";
-import { useLogic, useWorkbench } from "@/stores";
+import { useWorkbench } from "@/stores";
 import Editor from "@/components/Factory/Shared/Editor.vue";
 import ConfigureClicks from "@/components/Factory/Main/ConfigureClicks.vue";
 import ConfigureConsents from "@/components/Factory/Main/ConfigureConsents.vue";
@@ -85,6 +83,7 @@ import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
 import BlockMenu from "./BlockMenu.vue";
 import QuestionSettings from "./QuestionSettings.vue";
 import { cursorFor } from "./blockFocus";
+import { addRule } from "./Rules/ruleEditing";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -95,7 +94,6 @@ const props = defineProps<{
 provide("block", props.block);
 
 const workbench = useWorkbench();
-const logic = useLogic();
 const { types } = useBlockTypes();
 
 const id = computed(() => `question-${props.block.uuid}`);

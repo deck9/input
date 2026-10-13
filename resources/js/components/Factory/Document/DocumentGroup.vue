@@ -30,11 +30,9 @@
       <button
         type="button"
         class="flex h-9 items-center rounded-md px-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        @click="logic.showLogicEditor(group)"
+        @click="addRule(group)"
       >
-        Rules<span v-if="group.logics?.length" class="tabular-nums"
-          >&nbsp;({{ group.logics.length }})</span
-        >
+        Add rule
       </button>
       <BlockMenu
         :block="group"
@@ -42,6 +40,7 @@
         @add-to-group="addQuestion"
       />
     </div>
+    <BlockRules :block="group" :numbers="numbers" class="pb-2 pl-9" />
 
     <div class="relative">
       <DocumentList
@@ -71,9 +70,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { D9Icon } from "@deck9/ui";
-import { useForm, useLogic, useWorkbench } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 import BlockMenu from "./BlockMenu.vue";
 import DocumentList from "./DocumentList.vue";
+import BlockRules from "./Rules/BlockRules.vue";
+import { addRule } from "./Rules/ruleEditing";
 import { useAddBlock } from "./blockFocus";
 
 const props = defineProps<{
@@ -83,7 +84,6 @@ const props = defineProps<{
 
 const store = useForm();
 const workbench = useWorkbench();
-const logic = useLogic();
 const { addBlock } = useAddBlock();
 
 const id = computed(() => `group-${props.group.uuid}`);

@@ -15,6 +15,7 @@
           {{ countLine }}
         </p>
 
+        <RuleGutter />
         <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
         <EmptyState
           v-else
@@ -41,7 +42,6 @@
       </template>
     </div>
   </div>
-  <BlockLogicEditor />
 </template>
 
 <script setup lang="ts">
@@ -50,8 +50,8 @@ import { D9Button } from "@deck9/ui";
 import { useForm, useWorkbench } from "@/stores";
 import EmptyState from "@/components/EmptyState.vue";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
-import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
+import RuleGutter from "./Rules/RuleGutter.vue";
 import { questionNumbers } from "./questionSummary";
 import { focusBlock, useAddBlock } from "./blockFocus";
 

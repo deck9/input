@@ -22,6 +22,12 @@
           :numbers="numbers"
         />
         <DocumentQuestion v-else :block="block" :number="numbers[block.uuid]" />
+        <BlockRules
+          v-if="block.type !== 'group'"
+          :block="block"
+          :numbers="numbers"
+          class="pl-12"
+        />
       </div>
     </Draggable>
   </Container>
@@ -33,6 +39,7 @@ import { Container, Draggable } from "vue3-smooth-dnd";
 import { useForm } from "@/stores";
 import DocumentGroup from "./DocumentGroup.vue";
 import DocumentQuestion from "./DocumentQuestion.vue";
+import BlockRules from "./Rules/BlockRules.vue";
 
 const props = defineProps<{
   groupId?: string;
