@@ -43,6 +43,9 @@ function questionName(block: FormBlockModel): string {
     return quoted ? `question ${number} (${quoted})` : `question ${number}`;
 }
 
+// saves without a block, by what they change
+const saveNames: Record<string, string> = { saveEndScreen: "the end screen" };
+
 export const useNotice = defineStore("notice", {
     state: (): NoticeStore => {
         return {
@@ -109,7 +112,9 @@ export const useNotice = defineStore("notice", {
             save: string,
             block?: FormBlockModel | null,
         ) {
-            const name = block ? questionName(block) : "";
+            const name = block
+                ? questionName(block)
+                : (saveNames[save] ?? "");
             const change = name ? `Your change to ${name}` : "Your change";
             const response =
                 error instanceof AxiosError ? error.response : undefined;
