@@ -15,7 +15,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 -   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
 -   Add a question right where you need it: between questions or from a question's menu, and type "/" in an empty question to pick its answer type. A picker groups the answer types as Text, Choice, Rating, Other and Content, and the new question opens ready to type. The answer types have new names, like Single choice, Short text and Text only. (#276)
--   The form editor shows the end screen as the last block of your form. You can edit its headline, text and button right there, and the Completion Page in Settings shows the same values. (#271)
+-   The form editor shows the end screen as the last block of your form. You can edit its headline, text and button right there, and the End screen tab in Settings shows the same values. (#271)
 -   "Preview" in the editor shows your form beside the questions, on tablet and phone as a panel. It follows the question you edit, and the editor follows when you click Next in it. On the other form pages, "Preview" opens your form in a new tab in preview mode. Answers in either preview aren't saved. (#273)
 
 ### Changed
@@ -30,7 +30,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Deleting a question, a group, an answer choice, a consent policy or a logic rule in the form editor now asks first in the app's own dialog. It names the question, how many answers will be deleted with it, and the questions whose rules will stop working. A choice nobody picked, or a policy nobody agreed to, is still deleted at once. (#269)
 -   Each rule now shows as a sentence under its question, and a group says when it's hidden. Edit changes a rule right there, and for choices, ratings and scales you pick the answer instead of typing it. A rule whose question was deleted shows in red and can't be saved until you fix it. (#274)
 -   The form editor uses plain words: a question's settings are headed by its answer type, like Choices or Rating, "Identifier" is now "Short name", and every switch shows on or off. Settings name what they do, like "Lowest value", "Shuffle choices" and "None ticked: all types allowed." on file uploads. (#279)
--   The editor's preview shows the end screen while you edit it, with your latest text, and says so when your form sends people to a link instead. Settings now calls the Completion Page "End screen", like the editor. (#280)
+-   The editor's preview shows the end screen while you edit it, with your latest text, and says so when your form sends people to a link instead. Its button opens in a new tab there, so you stay in the editor. Settings now calls the Completion Page "End screen", like the editor. (#280)
 
 ### Fixed
 
