@@ -4,6 +4,7 @@ import { AxiosResponse } from "axios";
 import { callGetForm } from "@/api/forms";
 import Edit from "./Edit.vue";
 import FormMenu from "@/components/Factory/TopBar/FormMenu.vue";
+import PreviewFrame from "@/components/Factory/Preview/PreviewFrame.vue";
 import { useForm, useWorkbench } from "@/stores";
 
 vi.mock("@/api/forms", async (importOriginal) => ({
@@ -162,6 +163,26 @@ describe("editor loading", () => {
         );
         expect(preview?.get("span").classes()).toEqual(["sr-only", "sm:not-sr-only"]);
         expect(preview?.attributes("aria-haspopup")).toBe("dialog");
+    });
+
+    it("closes the preview on Esc inside it and puts focus back on Preview", async () => {
+        const editor = await mountEditor(loads(blocks), {
+            stubs: { ...stubs, FormPreview: false, PreviewFrame: true },
+            mocks: { route: () => "/" },
+        });
+        const preview = editor
+            .findAll("button")
+            .find((button) => button.text() === "Preview");
+        await preview?.trigger("click");
+        await flushPromises();
+        expect(document.activeElement?.closest("[role=dialog]")).not.toBeNull();
+
+        // after a click into the frame, the form there gets the key and tells the editor
+        editor.findComponent(PreviewFrame).vm.$emit("escape");
+        await flushPromises();
+
+        expect(document.querySelector("[role=dialog]")).toBeNull();
+        expect(document.activeElement).toBe(preview?.element);
     });
 
     it("puts focus back on the form menu when a preview opened from it closes", async () => {

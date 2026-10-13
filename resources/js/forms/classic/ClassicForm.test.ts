@@ -62,12 +62,31 @@ describe("the public form", () => {
     });
 
     // the editor's preview frame: the cursor must stay in the editor
-    it("never takes the focus on its own in preview mode", async () => {
+    it("takes no focus in preview mode while the owner works in the editor", async () => {
         window.iptSettings = {} as typeof window.iptSettings;
         await mountForm("?preview=1&block=q1");
 
+        expect(document.hasFocus()).toBe(false);
         expect(useConversation().isPreview).toBe(true);
         expect(useConversation().current).toBe("q2");
+        expect(document.activeElement).toBe(document.body);
+    });
+
+    it("moves the cursor on in preview mode while the owner works in the preview", async () => {
+        window.iptSettings = {} as typeof window.iptSettings;
+        await mountForm("?preview=1&block=q1");
+
+        // a click into the frame focuses its window
+        window.dispatchEvent(new FocusEvent("focus"));
+        useConversation().startAt("q1");
+        await flushPromises();
+        expect(document.activeElement?.tagName).toBe("INPUT");
+
+        // back in the editor
+        (document.activeElement as HTMLElement).blur();
+        window.dispatchEvent(new FocusEvent("blur"));
+        useConversation().startAt("q2");
+        await flushPromises();
         expect(document.activeElement).toBe(document.body);
     });
 });

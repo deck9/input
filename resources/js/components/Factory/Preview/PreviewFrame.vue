@@ -22,6 +22,8 @@ import { END_SCREEN } from "@/forms/classic/previewTarget";
 // the question (or END_SCREEN) the preview shows, and an open one it didn't go to
 const shown = defineModel<string | null>("shown", { default: null });
 const missed = defineModel<string | null>("missed", { default: null });
+// Esc inside the frame
+const emit = defineEmits<{ escape: [] }>();
 
 const store = useForm();
 const workbench = useWorkbench();
@@ -134,10 +136,17 @@ useEventListener(window, "message", async (event: MessageEvent) => {
   if (
     event.origin !== origin ||
     !frame.value?.contentWindow ||
-    event.source !== frame.value.contentWindow ||
-    data?.type !== "input:preview:block" ||
-    typeof data.block !== "string"
+    event.source !== frame.value.contentWindow
   ) {
+    return;
+  }
+
+  if (data?.type === "input:preview:escape") {
+    emit("escape");
+    return;
+  }
+
+  if (data?.type !== "input:preview:block" || typeof data.block !== "string") {
     return;
   }
 

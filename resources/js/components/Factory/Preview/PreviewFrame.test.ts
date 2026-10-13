@@ -234,6 +234,19 @@ describe("the preview frame", () => {
         expect(wrapper.emitted("update:shown")).toEqual([["q1uuid"], ["q2uuid"]]);
     });
 
+    // after a click into the frame, the form there gets the key
+    it("passes on Esc from the form in the frame, from no other origin or window", () => {
+        const wrapper = mountFrame();
+        const escape = { type: "input:preview:escape" };
+
+        fromFrame(wrapper, escape, { origin: "https://evil.example" });
+        fromFrame(wrapper, escape, { source: window });
+        expect(wrapper.emitted("escape")).toBeUndefined();
+
+        fromFrame(wrapper, escape);
+        expect(wrapper.emitted("escape")).toEqual([[]]);
+    });
+
     it("tells when the preview doesn't go to the open question, as when a rule hides it", async () => {
         vi.useFakeTimers();
         const wrapper = mountFrame();

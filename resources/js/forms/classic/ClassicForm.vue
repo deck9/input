@@ -80,6 +80,7 @@ import { useBeforeUnload } from "@/utils/useBeforeUnload";
 import { computed, onMounted, provide, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
+import { useWindowFocus } from "@vueuse/core";
 import { useRouteParams } from "@/utils/useRouteParams";
 import { useRoutes } from "@/utils/useRoutes";
 import { usePreviewMessages } from "@/forms/classic/usePreviewMessages";
@@ -94,9 +95,14 @@ const query = new URLSearchParams(window.location.search);
 const isPreview = !!window.iptSettings && query.get("preview") === "1";
 
 const isLoading = ref(true);
-// the preview never takes the cursor from the editor around it
+// the preview never takes the cursor from the editor around it,
+// but moves it on as the real form does once the owner clicks into it
+const windowFocused = useWindowFocus();
 const focusDisabled = computed(() => {
-  return isPreview || (isLoading.value && !props.flags.autofocus);
+  return (
+    (isPreview && !windowFocused.value) ||
+    (isLoading.value && !props.flags.autofocus)
+  );
 });
 provide("disableFocus", focusDisabled);
 
