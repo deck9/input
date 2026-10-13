@@ -48,6 +48,25 @@ describe("save status", () => {
         expect(useNotice().retrySaves).toHaveBeenCalled();
     });
 
+    it("keeps its width in every state, so the top bar doesn't move", async () => {
+        const states: [string, object][] = [
+            ["", {}],
+            ["Saving…", { runningSaves: 1 }],
+            ["Saved", { runningSaves: 0 }],
+            ["Not saved", { failedSaves: { "saveBlock:1": "Not saved." } }],
+        ];
+
+        for (const [text, state] of states) {
+            useNotice().$patch(state);
+            await wrapper.vm.$nextTick();
+
+            expect(live().text()).toBe(text);
+            expect(live().classes()).toEqual(
+                expect.arrayContaining(["min-w-3.5", "xl:min-w-[4.25rem]"]),
+            );
+        }
+    });
+
     it("shows no Saved after a failed save", async () => {
         useNotice().$patch({ runningSaves: 1 });
         await wrapper.vm.$nextTick();
