@@ -16,13 +16,25 @@
           >{{ number }}</span
         ></span
       >
-      <span
-        aria-hidden="true"
-        title="Drag to reorder"
-        class="document-grip hidden h-6 w-6 cursor-grab sm:grid place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
-      >
-        <D9Icon name="grip-vertical" />
-      </span>
+      <!-- from lg the + sits left of the grip, out into the page margin -->
+      <div class="flex">
+        <button
+          type="button"
+          :aria-label="`Add question after question ${number}`"
+          :title="`Add question after question ${number}`"
+          class="hidden h-6 w-6 place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:grid lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
+          @click="openPicker({ key: `after-${block.uuid}`, after: block })"
+        >
+          <D9Icon name="plus" />
+        </button>
+        <span
+          aria-hidden="true"
+          title="Drag to reorder"
+          class="document-grip hidden h-6 w-6 cursor-grab sm:grid place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
+        >
+          <D9Icon name="grip-vertical" />
+        </span>
+      </div>
     </div>
 
     <QuestionCard v-if="isOpen" :block="block" :number="number" />
@@ -76,6 +88,7 @@ import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
 import { plainText } from "./questionSummary";
 import QuestionCard from "./QuestionCard.vue";
 import { cursorFor } from "./blockFocus";
+import { openPicker } from "./addQuestion";
 import { useMoveBlock } from "./blockMove";
 import { jumpTargets } from "./Rules/ruleText";
 

@@ -2,6 +2,8 @@ import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
 import FormDocument from "./FormDocument.vue";
+import { cursorFor } from "./blockFocus";
+import { addAt } from "./addQuestion";
 import { moveNote } from "./blockMove";
 
 const blocks = [
@@ -17,6 +19,8 @@ const stubs = {
 };
 
 let wrapper: VueWrapper | undefined;
+const option = (name: string) =>
+    wrapper!.findAll("[role=option]").find((item) => item.text() === name)!;
 const scrolled = vi.fn();
 
 describe("the form document", () => {
@@ -30,6 +34,8 @@ describe("the form document", () => {
         scrolled.mockClear();
         useForm().$reset();
         useWorkbench().$reset();
+        addAt.value = null;
+        cursorFor.value = null;
     });
 
     afterEach(() => wrapper?.unmount());
@@ -63,6 +69,90 @@ describe("the form document", () => {
 
         expect(useWorkbench().putOnWorkbench).toHaveBeenCalledWith(blocks[1]);
         expect(scrolled).toHaveBeenCalledWith("row-b2", "start");
+    });
+
+    it("shows the picker on an empty form and adds the first question", async () => {
+        useForm().blocks = [];
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        expect(wrapper.text()).toContain("Add your first question");
+        expect(wrapper.text()).not.toContain("0 questions");
+        await option("Short text").trigger("click");
+
+        expect(useForm().createFormBlock).toHaveBeenCalledWith(
+            null,
+            "input-short",
+            null,
+        );
+    });
+
+    it("adds a question at the end, also with one open, with the cursor in its text", async () => {
+        const added = {
+            id: 3,
+            uuid: "b3",
+            type: "input-email",
+        } as FormBlockModel;
+        useForm().blocks = blocks;
+        useWorkbench().block = blocks[0];
+        vi.mocked(useForm().createFormBlock).mockImplementation(async () => {
+            useWorkbench().block = added;
+        });
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        await wrapper
+            .findAll("button")
+            .find((button) => button.text() === "Add question")!
+            .trigger("click");
+        expect(wrapper.text()).toContain("Add a question at the end");
+        await option("Email").trigger("click");
+        await flushPromises();
+
+        expect(useForm().createFormBlock).toHaveBeenCalledWith(
+            null,
+            "input-email",
+            null,
+        );
+        expect(cursorFor.value).toBe("b3");
+    });
+
+    it("gives the cursor back to the end button after Esc, but not after a click elsewhere", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+        const button = wrapper
+            .findAll("button")
+            .find((item) => item.text() === "Add question")!;
+        const open = async () => {
+            (button.element as HTMLElement).focus();
+            await button.trigger("click");
+        };
+
+        // a click into the open question's text keeps the cursor there
+        const text = document.createElement("textarea");
+        document.body.append(text);
+        await open();
+        text.focus();
+        text.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        await flushPromises();
+        expect(addAt.value).toBeNull();
+        expect(document.activeElement).toBe(text);
+        text.remove();
+
+        await open();
+        await wrapper.find("input").trigger("keydown", { key: "Escape" });
+        expect(addAt.value).toBeNull();
+        expect(document.activeElement).toBe(button.element);
     });
 
     it("reads out where a moved question went", async () => {

@@ -110,8 +110,8 @@ Once you have Input up and running, follow these steps to create your first form
 5. Preview your form to ensure it looks and works as expected
 6. Publish your form when it's ready to share
 
-![Multiple Choice Example](/assets/multiplechoice.gif)
-_Example: Adding a multiple choice question to your form_
+![Single choice example](/assets/multiplechoice.gif)
+_Example: Adding a single choice question to your form_
 
 ## Troubleshooting Common Issues
 

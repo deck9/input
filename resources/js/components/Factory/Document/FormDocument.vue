@@ -24,11 +24,13 @@
 
         <template v-else>
           <h1 class="sr-only">Questions</h1>
-          <div class="mb-4 flex items-center justify-between gap-2 pl-12">
+          <div
+            v-if="store.hasBlocks"
+            class="mb-4 flex items-center justify-between gap-2 pl-12"
+          >
             <p class="text-sm tabular-nums text-grey-600">{{ countLine }}</p>
             <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view -->
             <button
-              v-if="store.hasBlocks"
               type="button"
               class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:absolute lg:h-8 lg:left-4 lg:top-3 lg:z-10 xl:hidden"
               aria-haspopup="dialog"
@@ -42,24 +44,28 @@
 
           <RuleGutter />
           <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
-          <EmptyState
+          <TypePicker
             v-else
-            title="No questions yet"
-            description="Add your first question below."
+            class="ml-12"
+            title="Add your first question"
+            :autofocus="false"
+            @pick="addQuestion"
           />
 
           <div
             id="add-buttons"
             ref="addButtons"
-            class="mt-4 flex flex-wrap gap-2 pl-12"
+            class="mt-4 flex flex-wrap items-center gap-2 pl-12"
           >
             <D9Button
+              v-if="store.hasBlocks"
               label="Add question"
               class="min-h-11 lg:min-h-0"
               color="dark"
               icon="plus"
               icon-position="left"
-              @click="addBlock()"
+              :aria-expanded="addAt?.key === 'end'"
+              @click="openPicker({ key: 'end', after: null })"
             />
             <D9Button
               label="Add group"
@@ -69,7 +75,17 @@
               icon-position="left"
               @click="addBlock(null, 'group')"
             />
+            <span v-if="store.hasBlocks" class="text-xs text-grey-600"
+              >or type / in an empty question</span
+            >
           </div>
+          <TypePicker
+            v-if="addAt?.key === 'end'"
+            class="ml-12 mt-2"
+            title="Add a question at the end"
+            @pick="addQuestion"
+            @close="closePicker"
+          />
         </template>
       </div>
     </div>
@@ -107,11 +123,17 @@ import { computed, nextTick, ref, watch } from "vue";
 import { Dialog, DialogPanel } from "@headlessui/vue";
 import { D9Button, D9Icon } from "@deck9/ui";
 import { useForm, useWorkbench } from "@/stores";
-import EmptyState from "@/components/EmptyState.vue";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 import DocumentList from "./DocumentList.vue";
 import DocumentOutline from "./DocumentOutline.vue";
 import RuleGutter from "./Rules/RuleGutter.vue";
+import TypePicker from "./TypePicker.vue";
+import {
+  addAt,
+  closePicker,
+  openPicker,
+  useAddQuestion,
+} from "./addQuestion";
 import { questionNumbers } from "./questionSummary";
 import { moveNote } from "./blockMove";
 import {
@@ -129,6 +151,7 @@ const emit = defineEmits<{ retry: [] }>();
 const store = useForm();
 const workbench = useWorkbench();
 const { addBlock } = useAddBlock();
+const { addQuestion } = useAddQuestion();
 const root = ref<HTMLElement | null>(null);
 const addButtons = ref<HTMLElement | null>(null);
 

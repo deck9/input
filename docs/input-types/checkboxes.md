@@ -36,5 +36,5 @@ Checkboxes allow users to select multiple options from a list, making them perfe
 -   When you want to offer comprehensive option coverage
 
 ::: warning Note
-If you want users to select only one option from a list, use the **Multiple Choice (Radio)** input type instead.
+If you want users to select only one option from a list, use the **Single choice** input type instead.
 :::

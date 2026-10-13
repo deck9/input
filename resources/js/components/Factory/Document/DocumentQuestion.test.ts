@@ -19,6 +19,9 @@ const question = {
     ],
 } as unknown as FormBlockModel;
 
+// the closed question's own button; the gutter's + is named by aria-label
+const row = "button:not([aria-label])";
+
 const mountQuestion = (block = question) =>
     mount(DocumentQuestion, {
         props: { block, number: 3 },
@@ -45,7 +48,7 @@ describe("a closed question in the document", () => {
     });
 
     it("shows its number, text and a meta line, never its random id", () => {
-        const text = mountQuestion().find("button").text();
+        const text = mountQuestion().find(row).text();
 
         expect(text).toContain("Question 3:");
         expect(text).toContain("Which days can you help?");
@@ -60,7 +63,7 @@ describe("a closed question in the document", () => {
 
     it("says when a question has no text yet instead of naming it by id", () => {
         const text = mountQuestion({ ...question, message: "" })
-            .find("button")
+            .find(row)
             .text();
 
         expect(text).toContain("No question text yet");
@@ -89,13 +92,13 @@ describe("a closed question in the document", () => {
         const workbench = useWorkbench();
         const wrapper = mountQuestion();
 
-        await wrapper.find("button").trigger("click");
+        await wrapper.find(row).trigger("click");
         expect(workbench.putOnWorkbench).toHaveBeenCalledWith(question);
 
         workbench.block = question;
         await wrapper.vm.$nextTick();
         expect(wrapper.text()).toContain("card");
-        expect(wrapper.find("button").exists()).toBe(false);
+        expect(wrapper.find(row).exists()).toBe(false);
     });
 
     it("moves with Alt+Up/Down, closed or open", async () => {

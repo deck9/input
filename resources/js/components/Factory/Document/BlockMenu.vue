@@ -32,7 +32,7 @@
       as="button"
       :class="item"
       label="Add question below"
-      @click="addBlock(block)"
+      @click="openPicker({ key: `after-${block.uuid}`, after: block })"
     />
     <D9MenuLink
       v-if="isGroup"
@@ -83,6 +83,7 @@ import copy from "copy-text-to-clipboard";
 import { useForm, useWorkbench } from "@/stores";
 import DeleteBlockDialog from "@/components/Factory/Shared/DeleteBlockDialog.vue";
 import { useDeleteBlock } from "@/components/Factory/Shared/useDeleteBlock";
+import { openPicker } from "./addQuestion";
 import { blocksAround, focusRow, useAddBlock } from "./blockFocus";
 import { useMoveBlock } from "./blockMove";
 
@@ -95,7 +96,7 @@ const emit = defineEmits<{ addToGroup: [] }>();
 
 const store = useForm();
 const workbench = useWorkbench();
-const { addBlock, duplicateBlock } = useAddBlock();
+const { duplicateBlock } = useAddBlock();
 const { canMove, moveBlock } = useMoveBlock();
 
 const item = "w-full min-h-11 text-left text-sm lg:min-h-0";

@@ -5,7 +5,20 @@
     <span :id="`${id}-text-label`" class="sr-only"
       >Question {{ number }} text</span
     >
-    <Editor :id="`${id}-text`" ref="editor" v-model="message" bare />
+    <Editor
+      :id="`${id}-text`"
+      ref="editor"
+      v-model="message"
+      bare
+      placeholder="Type a question, or / for answer types"
+      @keydown="openTypes"
+    />
+    <TypePicker
+      v-if="typesOpen"
+      title="Change the answer type"
+      @pick="changeType"
+      @close="closeTypes"
+    />
 
     <ConfigureClicks v-if="interactionType === 'button'" />
     <ConfigureConsents v-else-if="interactionType === 'consent'" />
@@ -128,8 +141,10 @@ import ConfigureConsents from "@/components/Factory/Main/ConfigureConsents.vue";
 import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
 import BlockMenu from "./BlockMenu.vue";
 import QuestionSettings from "./QuestionSettings.vue";
+import TypePicker from "./TypePicker.vue";
 import { cursorFor } from "./blockFocus";
 import { addRule } from "./Rules/ruleEditing";
+import { plainText } from "./questionSummary";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -169,6 +184,28 @@ watch(type, (value) => {
     workbench.updateBlock({ type: value.value });
   }
 });
+
+// "/" in an empty question picks its answer type
+const typesOpen = ref(false);
+const openTypes = (event: KeyboardEvent) => {
+  const inText = (event.target as HTMLElement).closest("[contenteditable]");
+
+  if (event.key === "/" && inText && !plainText(message.value)) {
+    event.preventDefault();
+    typesOpen.value = true;
+  }
+};
+const closeTypes = (returnFocus = true) => {
+  typesOpen.value = false;
+
+  if (returnFocus) {
+    editor.value?.focus();
+  }
+};
+const changeType = (value: FormBlockType) => {
+  type.value = types.value.find((item) => item.value === value);
+  closeTypes();
+};
 
 const takeCursor = () => {
   if (cursorFor.value === props.block.uuid) {

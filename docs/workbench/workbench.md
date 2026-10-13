@@ -23,7 +23,7 @@ Groups show their name with their questions inside. An empty group says how to a
 Click a question, or move to it with Tab and press Enter, to open it in place. The open question shows:
 
 1. **Text** - The question with a toolbar for bold, links, images, headings, lists and more
-2. **Choices** - For multiple choice and checkboxes. Each row has a grip to drag it and a delete button. Alt+Up and Alt+Down move a choice
+2. **Choices** - For single choice and checkboxes. Each row has a grip to drag it and a delete button. Alt+Up and Alt+Down move a choice
 3. **Answer type** - Change what kind of answer the question takes
 4. **Required** - Whether people must answer it
 5. **Settings** - The settings of this answer type, the identifier and **Hide this question**. On a phone they open as a sheet from the bottom

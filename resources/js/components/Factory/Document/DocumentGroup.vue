@@ -68,6 +68,13 @@
         </p>
       </div>
     </div>
+    <TypePicker
+      v-if="addAt?.key === `group-${group.uuid}`"
+      class="ml-12 mt-2"
+      title="Add a question to this group"
+      @pick="add"
+      @close="closePicker"
+    />
   </section>
 </template>
 
@@ -79,7 +86,8 @@ import BlockMenu from "./BlockMenu.vue";
 import DocumentList from "./DocumentList.vue";
 import BlockRules from "./Rules/BlockRules.vue";
 import { addRule } from "./Rules/ruleEditing";
-import { useAddBlock } from "./blockFocus";
+import TypePicker from "./TypePicker.vue";
+import { addAt, closePicker, openPicker, useAddQuestion } from "./addQuestion";
 import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
@@ -89,7 +97,7 @@ const props = defineProps<{
 
 const store = useForm();
 const workbench = useWorkbench();
-const { addBlock } = useAddBlock();
+const { addQuestion: add } = useAddQuestion();
 const { onMoveKey } = useMoveBlock();
 
 const id = computed(() => `group-${props.group.uuid}`);
@@ -116,9 +124,13 @@ const addQuestion = () => {
   const last = children.value.at(-1);
 
   if (last) {
-    addBlock(last);
+    openPicker({ key: `after-${last.uuid}`, after: last });
   } else {
-    addBlock(null, null, props.group.uuid);
+    openPicker({
+      key: `group-${props.group.uuid}`,
+      after: null,
+      parent: props.group.uuid,
+    });
   }
 };
 </script>
