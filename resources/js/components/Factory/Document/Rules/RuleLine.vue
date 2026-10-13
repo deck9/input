@@ -28,7 +28,7 @@
       :id="`${id}-edit`"
       type="button"
       :aria-label="`Edit rule ${index + 1} of ${owner}`"
-      class="flex h-11 shrink-0 items-center rounded-md px-2 text-[13px] sm:h-8 font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      class="flex h-11 shrink-0 items-center rounded-md px-2 text-[13px] lg:h-8 font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       @click="emit('edit')"
     >
       Edit

@@ -2,7 +2,7 @@
   <div
     role="group"
     :aria-label="`Rule ${index + 1} of ${owner}`"
-    class="my-1 space-y-3 rounded-lg border border-grey-200 bg-white p-3 text-[13px] text-grey-700 shadow-sm"
+    class="my-1 space-y-3 rounded-lg border border-grey-200 bg-white p-3 text-[13px] text-grey-700 shadow-sm max-lg:[&_[aria-haspopup=listbox]]:py-[13px] max-lg:[&_input]:py-[13px]"
     @keydown.esc="onEscape"
   >
     <div v-for="(condition, i) in draft.conditions" :key="i" class="space-y-1">
@@ -107,7 +107,7 @@
           v-if="draft.conditions.length > 1"
           type="button"
           :aria-label="`Remove condition ${i + 1}`"
-          class="grid h-11 w-11 shrink-0 place-items-center rounded-md sm:h-8 sm:w-8 text-grey-600 hover:bg-grey-100 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          class="grid h-11 w-11 shrink-0 place-items-center rounded-md lg:h-8 lg:w-8 text-grey-600 hover:bg-grey-100 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           @click="draft.conditions.splice(i, 1)"
         >
           <D9Icon name="trash" aria-hidden="true" />
@@ -128,7 +128,7 @@
 
     <button
       type="button"
-      class="flex h-11 items-center rounded-md px-2 font-semibold sm:h-8 text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      class="flex h-11 items-center rounded-md px-2 font-semibold lg:h-8 text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       @click="addCondition"
     >
       Add condition
@@ -184,21 +184,29 @@
       <button
         v-if="rule.id !== undefined"
         type="button"
-        class="flex h-11 items-center rounded-md px-2 font-semibold sm:h-8 text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="flex h-11 items-center rounded-md px-2 font-semibold lg:h-8 text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         @click="isAsking = true"
       >
         Remove rule
       </button>
-      <span class="flex-1" />
-      <D9Button label="Cancel" color="light" size="small" @click="cancel" />
-      <D9Button
-        label="Save rule"
-        size="small"
-        :is-loading="saving"
-        :is-disabled="broken"
-        :disabled="broken"
-        @click="save"
-      />
+      <div class="ml-auto flex gap-2">
+        <D9Button
+          label="Cancel"
+          color="light"
+          size="small"
+          class="min-h-11 lg:min-h-0"
+          @click="cancel"
+        />
+        <D9Button
+          label="Save rule"
+          size="small"
+          class="min-h-11 lg:min-h-0"
+          :is-loading="saving"
+          :is-disabled="broken"
+          :disabled="broken"
+          @click="save"
+        />
+      </div>
     </div>
 
     <DeleteDialog
