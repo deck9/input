@@ -376,9 +376,12 @@ describe("asking before a delete", () => {
             await pressTrash();
 
             expect(remove).not.toHaveBeenCalled();
-            expect(wrapper.text()).toContain("Delete “Privacy policy”?");
+            expect(wrapper.text()).toContain("Delete policy “Privacy policy”?");
             expect(wrapper.text()).toContain(
-                "3 people picked it. Their answers to it will be deleted.",
+                "3 people agreed to it. Their answers to it will be deleted.",
+            );
+            expect(wrapper.find("button.bg-red-600").text()).toBe(
+                "Delete policy",
             );
 
             await wrapper.find("button.bg-red-600").trigger("click");
@@ -386,6 +389,22 @@ describe("asking before a delete", () => {
 
             expect(remove).toHaveBeenCalledWith(
                 expect.objectContaining({ id: 20 }),
+            );
+        });
+    });
+
+    describe("DeleteChoiceDialog for a policy", () => {
+        it("says the answers go when it can't count them", () => {
+            const wrapper = mount(DeleteChoiceDialog, {
+                props: {
+                    choice: { id: 20, label: "Privacy policy" },
+                    policy: true,
+                },
+                global: { plugins: [pinia], stubs },
+            });
+
+            expect(wrapper.text()).toContain(
+                "The answers that agreed to it will be deleted.",
             );
         });
     });

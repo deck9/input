@@ -47,6 +47,7 @@
 
     <InteractionHoverActions @onDelete="askDelete" />
     <DeleteChoiceDialog
+      policy
       :choice="asking"
       :answers="answers"
       @close="asking = null"

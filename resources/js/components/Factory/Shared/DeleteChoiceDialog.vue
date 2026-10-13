@@ -1,9 +1,9 @@
 <template>
   <DeleteDialog
     :show="choice !== null"
-    :title="choice?.label ? `Delete “${choice.label}”?` : 'Delete this choice?'"
+    :title="title"
     :text="text"
-    confirm-label="Delete choice"
+    :confirm-label="policy ? 'Delete policy' : 'Delete choice'"
     @close="emit('close')"
     @confirm="emit('confirm')"
   />
@@ -18,6 +18,8 @@ const props = defineProps<{
   choice: Pick<FormBlockInteractionModel, "id" | "label"> | null;
   // missing when the server couldn't say
   answers?: number;
+  // a consent policy: people agree to it
+  policy?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -25,13 +27,25 @@ const emit = defineEmits<{
   (e: "confirm"): void;
 }>();
 
+const title = computed(() => {
+  const label = props.choice?.label;
+
+  if (props.policy) {
+    return label ? `Delete policy “${label}”?` : "Delete this policy?";
+  }
+
+  return label ? `Delete “${label}”?` : "Delete this choice?";
+});
+
 const text = computed(() => {
+  const picked = props.policy ? "agreed to" : "picked";
+
   if (props.answers === undefined) {
-    return "The answers that picked it will be deleted.";
+    return `The answers that ${picked} it will be deleted.`;
   }
 
   const people = props.answers === 1 ? "1 person" : `${props.answers} people`;
 
-  return `${people} picked it. Their answers to it will be deleted.`;
+  return `${people} ${picked} it. Their answers to it will be deleted.`;
 });
 </script>
