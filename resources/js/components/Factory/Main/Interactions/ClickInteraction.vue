@@ -37,7 +37,13 @@
       </section>
     </div>
 
-    <InteractionHoverActions @onDelete="workbench.deleteInteraction(item)" />
+    <InteractionHoverActions @onDelete="askDelete" />
+    <DeleteChoiceDialog
+      :choice="asking"
+      :answers="answers"
+      @close="asking = null"
+      @confirm="deleteNow"
+    />
   </div>
 </template>
 
@@ -45,6 +51,8 @@
 import { D9Input } from "@deck9/ui";
 import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
+import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
+import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
 
@@ -97,8 +105,7 @@ const keyboardCommands = async (event: KeyboardEvent) => {
 
     case "Backspace":
       if (event.metaKey) {
-        emit("onDelete", props.index);
-        await workbench.deleteInteraction(props.item);
+        await askDelete();
       }
       break;
 
@@ -109,6 +116,13 @@ const keyboardCommands = async (event: KeyboardEvent) => {
       return emit("nextSoft", props.index);
   }
 };
+
+const {
+  asking,
+  answers,
+  ask: askDelete,
+  confirm: deleteNow,
+} = useDeleteChoice(props.item, () => emit("onDelete", props.index));
 
 const focus = () => {
   labelElement.value?.focus();
