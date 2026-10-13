@@ -1,5 +1,6 @@
 <template>
-  <div class="flex items-center justify-end gap-1 text-xs text-grey-600">
+  <!-- sits in the dark top bar; under xl only the icons show, as in the board -->
+  <div class="flex items-center justify-end gap-1 text-xs text-grey-400">
     <p role="status" aria-live="polite" class="flex items-center gap-1.5">
       <template v-if="shown === 'saving'">
         <svg
@@ -13,12 +14,12 @@
         >
           <path d="M21 12a9 9 0 1 1-6.2-8.6" />
         </svg>
-        <span>Saving…</span>
+        <span class="sr-only xl:not-sr-only">Saving…</span>
       </template>
       <template v-else-if="shown === 'saved'">
         <svg
           aria-hidden="true"
-          class="h-3.5 w-3.5 text-green-700"
+          class="h-3.5 w-3.5"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -28,11 +29,11 @@
         >
           <path d="M5 12l5 5L20 7" />
         </svg>
-        <span>Saved</span>
+        <span class="sr-only xl:not-sr-only">Saved</span>
       </template>
       <span
         v-else-if="shown === 'failed'"
-        class="flex items-center gap-1 font-medium text-red-700"
+        class="flex items-center gap-1 font-medium text-red-300"
       >
         <svg
           aria-hidden="true"
@@ -48,13 +49,13 @@
             d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"
           />
         </svg>
-        Not saved
+        <span class="sr-only xl:not-sr-only">Not saved</span>
       </span>
     </p>
     <button
       v-if="shown === 'failed' && notice.canRetry"
       type="button"
-      class="h-6 rounded px-1 font-medium text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+      class="h-11 rounded px-2 font-medium text-blue-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-6 lg:px-1"
       @click="notice.retrySaves()"
     >
       Retry

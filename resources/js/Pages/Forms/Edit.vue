@@ -1,5 +1,6 @@
 <template>
   <app-layout title="Edit Form" limit-height>
+    <template #save-status><SaveStatus /></template>
     <FormDocument :status="status" @retry="loadBlocks" />
   </app-layout>
 </template>
@@ -8,6 +9,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import { useForm, useWorkbench } from "@/stores";
+import SaveStatus from "@/components/Factory/Shared/SaveStatus.vue";
 import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
