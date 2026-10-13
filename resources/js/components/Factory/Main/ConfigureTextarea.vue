@@ -18,7 +18,7 @@
       />
       <D9Input
         id="textarea-rows"
-        placeholder="The size of the textarea"
+        placeholder="e.g. 4"
         type="number"
         :min="1"
         :max="10"
@@ -31,7 +31,7 @@
       <D9Label id="textarea-max-chars" label="Max characters" />
       <D9Input
         id="textarea-max-chars"
-        placeholder="The maximum number of characters"
+        placeholder="No limit"
         type="number"
         block
         v-model="maxChars"

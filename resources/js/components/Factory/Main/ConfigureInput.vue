@@ -19,7 +19,6 @@
       />
       <D9Input
         id="input-decimal-places"
-        placeholder="Number of decimal places"
         type="number"
         :min="0"
         :max="10"
