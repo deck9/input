@@ -37,6 +37,20 @@
     <D9MenuLink
       as="button"
       :class="item"
+      label="Move up"
+      :disabled="!canMove(block, -1)"
+      @click="moveBlock(block, -1)"
+    />
+    <D9MenuLink
+      as="button"
+      :class="item"
+      label="Move down"
+      :disabled="!canMove(block, 1)"
+      @click="moveBlock(block, 1)"
+    />
+    <D9MenuLink
+      as="button"
+      :class="item"
       :label="isGroup ? 'Copy group ID' : 'Copy question ID'"
       @click="copy(block.uuid)"
     />
@@ -55,6 +69,7 @@ import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import { useForm, useWorkbench } from "@/stores";
 import { useAddBlock } from "./blockFocus";
+import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -66,6 +81,7 @@ const emit = defineEmits<{ addToGroup: [] }>();
 const store = useForm();
 const workbench = useWorkbench();
 const { addBlock } = useAddBlock();
+const { canMove, moveBlock } = useMoveBlock();
 
 const item = "w-full min-h-11 text-left text-sm lg:min-h-0";
 const isGroup = computed(() => props.block.type === "group");
