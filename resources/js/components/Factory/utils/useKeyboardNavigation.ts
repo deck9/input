@@ -61,6 +61,10 @@ export function useKeyboardNavigation(
         traversables.value[destination.id].focus();
     };
 
+    const focusItem = (item: { id: number }) => {
+        traversables.value[item.id]?.focus();
+    };
+
     const focusLastItem = async () => {
         if (!currentInteractions.value) {
             return;
@@ -80,5 +84,6 @@ export function useKeyboardNavigation(
         focusNextItem,
         focusPreviousItem,
         focusLastItem,
+        focusItem,
     };
 }

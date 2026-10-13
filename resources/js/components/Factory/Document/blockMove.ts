@@ -6,7 +6,15 @@ import { cursorFor } from "./blockFocus";
 // what the document's live region says after a move
 export const moveNote = ref("");
 
-type Step = -1 | 1;
+export type Step = -1 | 1;
+
+// reads a short text out in the document's live region
+export async function announce(text: string) {
+    // a repeated text is only read out again after a change
+    moveNote.value = "";
+    await nextTick();
+    moveNote.value = text;
+}
 
 // where one step takes a block: a question steps into a group next to it and
 // out at its ends, a group steps over a whole block
@@ -49,18 +57,11 @@ export function useMoveBlock() {
     const canMove = (block: FormBlockModel, step: Step) =>
         stepTarget(store.blocks ?? [], block, step) !== null;
 
-    const say = async (text: string) => {
-        // a repeated text is only read out again after a change
-        moveNote.value = "";
-        await nextTick();
-        moveNote.value = text;
-    };
-
     const moveBlock = async (block: FormBlockModel, step: Step) => {
         const target = stepTarget(store.blocks ?? [], block, step);
 
         if (!target) {
-            await say(step < 0 ? "Already at the top" : "Already at the bottom");
+            await announce(step < 0 ? "Already at the top" : "Already at the bottom");
             return false;
         }
 
@@ -89,7 +90,7 @@ export function useMoveBlock() {
             blocks.find((item) => item.uuid === uuid)?.title || "Group";
 
         if (block.type === "group") {
-            await say(
+            await announce(
                 `Moved group ${groupName(block.uuid)} to position ${top.findIndex((item) => item.id === block.id) + 1} of ${top.length}`,
             );
             return true;
@@ -98,11 +99,11 @@ export function useMoveBlock() {
         const to = `to position ${numbers[block.uuid]} of ${Object.keys(numbers).length}`;
 
         if (target.scope === from) {
-            await say(`Moved ${to}`);
+            await announce(`Moved ${to}`);
         } else if (target.scope) {
-            await say(`Moved into group ${groupName(target.scope)}, ${to}`);
+            await announce(`Moved into group ${groupName(target.scope)}, ${to}`);
         } else {
-            await say(`Moved out of group ${groupName(from)}, ${to}`);
+            await announce(`Moved out of group ${groupName(from)}, ${to}`);
         }
 
         return true;
