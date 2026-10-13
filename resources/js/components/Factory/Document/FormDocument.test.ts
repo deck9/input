@@ -1,30 +1,100 @@
-import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
-import { useForm } from "@/stores";
+import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useForm, useWorkbench } from "@/stores";
 import FormDocument from "./FormDocument.vue";
+import { moveNote } from "./blockMove";
 
-const mountDocument = () =>
-    mount(FormDocument, {
-        props: { status: "loaded" },
-        global: {
-            stubs: {
-                DocumentList: { template: "<div>questions</div>" },
-                EmptyState: { template: "<div>no questions</div>" },
-                EndScreenBlock: { template: "<div>end screen</div>" },
-                BlockLogicEditor: true,
-            },
-        },
-    });
+const blocks = [
+    { id: 1, uuid: "b1", type: "none", message: "<p>Welcome</p>" },
+    { id: 2, uuid: "b2", type: "none", message: "<p>Second</p>" },
+] as FormBlockModel[];
+
+const stubs = {
+    DocumentList: {
+        template: `<div>[list]<div id="row-b1" /><div id="row-b2" /></div>`,
+    },
+    EmptyState: { template: "<div>[empty]</div>" },
+    EndScreenBlock: { template: "<div>[end]</div>" },
+    BlockLogicEditor: true,
+};
+
+let wrapper: VueWrapper | undefined;
+const scrolled = vi.fn();
 
 describe("the form document", () => {
+    beforeEach(() => {
+        Element.prototype.scrollIntoView = function (
+            this: Element,
+            options?: boolean | ScrollIntoViewOptions,
+        ) {
+            scrolled(this.id, (options as ScrollIntoViewOptions)?.block);
+        };
+        scrolled.mockClear();
+        useForm().$reset();
+        useWorkbench().$reset();
+    });
+
+    afterEach(() => wrapper?.unmount());
+
+    it("scrolls the question opened by link into view once it loads", async () => {
+        wrapper = mount(FormDocument, {
+            props: { status: "loading" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        useForm().blocks = blocks;
+        useWorkbench().block = blocks[1];
+        await wrapper.setProps({ status: "loaded" });
+        await wrapper.vm.$nextTick();
+
+        // the smallest scroll, so a question already in view stays put
+        expect(scrolled).toHaveBeenCalledWith("row-b2", "nearest");
+    });
+
+    it("opens and scrolls to a question picked in the outline", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        await wrapper.findAll("nav li button")[1].trigger("click");
+        await flushPromises();
+
+        expect(useWorkbench().putOnWorkbench).toHaveBeenCalledWith(blocks[1]);
+        expect(scrolled).toHaveBeenCalledWith("row-b2", "start");
+    });
+
+    it("reads out where a moved question went", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        moveNote.value = "Moved to position 2 of 2";
+        await wrapper.vm.$nextTick();
+
+        expect(
+            document.querySelector("[aria-live=polite]")?.textContent,
+        ).toBe("Moved to position 2 of 2");
+    });
+
     it.each([
-        ["questions", [{ uuid: "q1", type: "input-short" }]],
-        ["no questions", []],
-    ])("shows the end screen after %s", (first, blocks) => {
-        useForm().blocks = blocks as FormBlockModel[];
-        const text = mountDocument().text();
+        ["the questions", "[list]", blocks],
+        ["no questions", "[empty]", []],
+    ])("shows the end screen after %s", (_, first, list) => {
+        useForm().blocks = list as FormBlockModel[];
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+        });
+        const text = wrapper.text();
 
         expect(text.indexOf(first)).toBeGreaterThan(-1);
-        expect(text.indexOf("end screen")).toBeGreaterThan(text.indexOf(first));
+        expect(text.indexOf("[end]")).toBeGreaterThan(text.indexOf(first));
     });
 });

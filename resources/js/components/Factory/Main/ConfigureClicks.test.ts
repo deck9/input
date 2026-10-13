@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { callGetFormBlocks } from "@/api/blocks";
 import { useForm, useWorkbench } from "@/stores";
 import ConfigureClicks from "./ConfigureClicks.vue";
+import { moveNote } from "@/components/Factory/Document/blockMove";
 
 vi.mock("@/api/blocks", async (importOriginal) => ({
     ...(await importOriginal()),
@@ -143,5 +144,56 @@ describe("Enter on the last choice", () => {
         await flushPromises();
 
         expect(useWorkbench().createInteraction).toHaveBeenCalledWith("button");
+    });
+});
+
+describe("moving a choice with Alt+Up/Down", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        useWorkbench().$reset();
+        useForm().$reset();
+    });
+
+    afterEach(() => wrapper?.unmount());
+
+    const label = (id: number) =>
+        wrapper!.find<HTMLInputElement>(`[id='${id}_label']`);
+
+    it("moves the choice, keeps focus on it and says where it went", async () => {
+        const workbench = useWorkbench();
+        mountChoices("Yes", "No", "Maybe");
+        vi.mocked(workbench.changeInteractionSequence).mockImplementation(
+            async (from, to) => {
+                const list = [...workbench.block!.interactions!].sort(
+                    (a, b) => a.sequence - b.sequence,
+                );
+                list.splice(to, 0, list.splice(from, 1)[0]);
+                list.forEach((item, index) => (item.sequence = index));
+            },
+        );
+        // the question around it must not move as well
+        const outside = vi.fn();
+        document.body.addEventListener("keydown", outside);
+
+        label(2).element.focus();
+        await label(2).trigger("keydown", { key: "ArrowUp", altKey: true });
+        await label(2).trigger("keyup", { key: "ArrowUp", altKey: true });
+        await flushPromises();
+
+        expect(workbench.changeInteractionSequence).toHaveBeenCalledWith(1, 0);
+        expect((document.activeElement as HTMLInputElement).value).toBe("No");
+        expect(moveNote.value).toBe("Moved choice to position 1 of 3");
+        expect(outside).not.toHaveBeenCalled();
+        document.body.removeEventListener("keydown", outside);
+    });
+
+    it("stays put at the top and says so", async () => {
+        mountChoices("Yes", "No");
+
+        await label(1).trigger("keydown", { key: "ArrowUp", altKey: true });
+        await flushPromises();
+
+        expect(useWorkbench().changeInteractionSequence).not.toHaveBeenCalled();
+        expect(moveNote.value).toBe("Already at the top");
     });
 });

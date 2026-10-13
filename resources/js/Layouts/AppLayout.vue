@@ -4,7 +4,9 @@
 
     <jet-banner />
 
-    <div class="flex min-h-screen flex-col bg-grey-50">
+    <div
+      class="flex min-h-screen flex-col bg-grey-50 supports-[height:100dvh]:min-h-dvh"
+    >
       <FormTopBar v-if="form.formId">
         <template #save-status><slot name="save-status" /></template>
         <template #preview><slot name="preview" /></template>

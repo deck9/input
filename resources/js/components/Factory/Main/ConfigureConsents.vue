@@ -3,7 +3,7 @@
     <EmptyState
       v-if="workbench.currentInteractions?.length === 0"
       title="Nothing here yet."
-      description="Add your first option by clicking on the button below."
+      description="Add your first policy with the button below."
     />
 
     <Container
@@ -26,22 +26,23 @@
       </Draggable>
     </Container>
 
-    <div ref="addRow" class="mt-8">
-      <D9Button
-        label="Add new policy"
-        icon="plus"
-        icon-position="left"
-        color="dark"
-        :isLoading="isCreatingInteraction"
+    <div ref="addRow" class="mt-1">
+      <button
+        type="button"
+        :aria-busy="isCreatingInteraction"
+        class="flex h-11 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9"
         @click="createConsentPolicy"
-      />
+      >
+        <D9Icon name="plus" aria-hidden="true" />
+        Add policy
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Button } from "@deck9/ui";
+import { D9Icon } from "@deck9/ui";
 import { ref, nextTick } from "vue";
 import ConsentInteraction from "./Interactions/ConsentInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";

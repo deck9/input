@@ -16,8 +16,10 @@
           block
           placeholder="Label"
           @keyup.enter="keyboardCommands"
-          @keyup.up="keyboardCommands"
-          @keyup.down="keyboardCommands"
+          @keyup.up.exact="keyboardCommands"
+          @keyup.down.exact="keyboardCommands"
+          @keydown.alt.up.exact.prevent.stop="emit('move', index, -1)"
+          @keydown.alt.down.exact.prevent.stop="emit('move', index, 1)"
           @keydown.meta.delete.prevent="keyboardCommands"
         />
         <D9Input
@@ -55,6 +57,7 @@ import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.v
 import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
+import type { Step } from "@/components/Factory/Document/blockMove";
 
 const workbench = useWorkbench();
 
@@ -74,6 +77,7 @@ const emit = defineEmits<{
   (e: "nextSoft", index: number): void;
   (e: "previous", index: number): void;
   (e: "onDelete", index: number): void;
+  (e: "move", index: number, step: Step): void;
 }>();
 
 // the row draws the border, so its fields are bare

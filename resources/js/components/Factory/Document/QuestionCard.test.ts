@@ -11,37 +11,70 @@ const block = {
     interactions: [],
 } as unknown as FormBlockModel;
 
+const stubs = {
+    Editor: true,
+    BlockMenu: true,
+    QuestionSettings: {
+        props: ["id"],
+        template: `<div :id="id">settings</div>`,
+    },
+};
+
 let wrapper: VueWrapper | undefined;
+
+const mountCard = (phone: boolean, withStubs: object = stubs) => {
+    window.matchMedia = vi.fn().mockReturnValue({
+        matches: phone,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+    });
+    wrapper = mount(QuestionCard, {
+        props: { block: useWorkbench().block ?? block, number: 4 },
+        global: { stubs: withStubs },
+        attachTo: document.body,
+    });
+    return wrapper;
+};
+const settingsButton = () =>
+    wrapper!.findAll("button").find((b) => b.text() === "Settings")!;
 
 describe("an open question", () => {
     beforeEach(() => {
+        globalThis.ResizeObserver ??= class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as unknown as typeof ResizeObserver;
         useWorkbench().$reset();
         useForm().$reset();
     });
 
     afterEach(() => wrapper?.unmount());
 
-    it("makes its answer field without opening Settings", async () => {
-        const workbench = useWorkbench();
-        useForm().mapping = { "input-short": "input" } as Record<
-            FormBlockType,
-            FormBlockInteractionType
-        >;
-        workbench.block = { ...block, interactions: [] };
-        vi.mocked(workbench.createInteraction).mockResolvedValue({
-            id: 9,
-            type: "input",
-            label: "",
-        } as unknown as FormBlockInteractionModel);
+    it.each([
+        ["a wider screen", false],
+        ["a phone", true],
+    ])(
+        "makes its answer field without opening Settings, on %s",
+        async (_, phone) => {
+            const workbench = useWorkbench();
+            useForm().mapping = { "input-short": "input" } as Record<
+                FormBlockType,
+                FormBlockInteractionType
+            >;
+            workbench.block = { ...block, interactions: [] };
+            vi.mocked(workbench.createInteraction).mockResolvedValue({
+                id: 9,
+                type: "input",
+                label: "",
+            } as unknown as FormBlockInteractionModel);
 
-        wrapper = mount(QuestionCard, {
-            props: { block: workbench.block, number: 4 },
-            global: { stubs: { Editor: true, BlockMenu: true } },
-        });
-        await flushPromises();
+            mountCard(phone, { Editor: true, BlockMenu: true });
+            await flushPromises();
 
-        expect(workbench.createInteraction).toHaveBeenCalledWith("input");
-    });
+            expect(workbench.createInteraction).toHaveBeenCalledWith("input");
+        },
+    );
 
     it("shows Required only when the question takes an answer", () => {
         const stubs = { Editor: true, BlockMenu: true, QuestionSettings: true };
@@ -60,16 +93,62 @@ describe("an open question", () => {
     });
 
     it("points the Settings button at its panel", () => {
-        wrapper = mount(QuestionCard, {
-            props: { block, number: 4 },
-            global: { stubs: { Editor: true, BlockMenu: true } },
-        });
-        const button = wrapper
-            .findAll("button")
-            .find((b) => b.text() === "Settings")!;
+        mountCard(false, { Editor: true, BlockMenu: true });
 
-        const panel = wrapper.find(`#${button.attributes("aria-controls")}`);
+        const panel = wrapper!.find(
+            `#${settingsButton().attributes("aria-controls")}`,
+        );
         expect(panel.exists()).toBe(true);
         expect(panel.attributes("role")).toBe("group");
+    });
+
+    it("opens its settings inside the card on a wider screen", async () => {
+        mountCard(false);
+        await settingsButton().trigger("click");
+
+        expect(wrapper!.find("#question-q4-settings").isVisible()).toBe(true);
+        expect(document.querySelector("[role=dialog]")).toBeNull();
+    });
+
+    it("opens its settings as a bottom sheet on a phone, and Done closes it", async () => {
+        mountCard(true);
+        await settingsButton().trigger("click");
+        await flushPromises();
+
+        const sheet = document.querySelector<HTMLElement>("[role=dialog]");
+        expect(sheet?.textContent).toContain("Question 4 settings");
+        expect(sheet?.textContent).toContain("settings");
+
+        const done = [...sheet!.querySelectorAll("button")].find(
+            (b) => b.textContent?.trim() === "Done",
+        );
+        done!.click();
+        await flushPromises();
+
+        // closed but kept, hidden: its answer field settings stay mounted
+        expect(
+            document.querySelector<HTMLElement>("[role=dialog]")?.hidden,
+        ).toBe(true);
+        expect(document.getElementById("question-q4-settings")).not.toBeNull();
+        // the kept sheet doesn't give focus back by itself
+        expect(document.activeElement).toBe(settingsButton().element);
+    });
+
+    it("gives focus back to Settings when Esc closes the sheet", async () => {
+        mountCard(true);
+        await settingsButton().trigger("click");
+        await flushPromises();
+
+        document
+            .querySelector("[role=dialog]")!
+            .dispatchEvent(
+                new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+            );
+        await flushPromises();
+
+        expect(
+            document.querySelector<HTMLElement>("[role=dialog]")?.hidden,
+        ).toBe(true);
+        expect(document.activeElement).toBe(settingsButton().element);
     });
 });

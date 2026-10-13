@@ -1,16 +1,18 @@
 <template>
   <section
+    :id="`row-${group.uuid}`"
     :aria-labelledby="`${id}-label`"
-    class="rounded-lg border border-grey-200 bg-grey-50 py-2 pr-2"
+    class="scroll-mt-4 rounded-lg border border-grey-200 bg-grey-50 py-2 pr-2"
     :class="isOpen && 'ring-1 ring-blue-500'"
   >
     <div
-      class="group/header flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-1"
+      class="group/header flex flex-wrap items-center gap-x-2 gap-y-1 pb-2 pl-3 sm:pl-1"
+      @keydown="!$event.defaultPrevented && onMoveKey($event, group)"
     >
       <span
         aria-hidden="true"
         title="Drag to reorder"
-        class="document-grip grid h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/header:opacity-100 lg:group-hover/header:opacity-100"
+        class="document-grip hidden h-6 w-6 cursor-grab place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 sm:grid lg:opacity-0 lg:group-focus-within/header:opacity-100 lg:group-hover/header:opacity-100"
       >
         <D9Icon name="grip-vertical" />
       </span>
@@ -24,12 +26,12 @@
         type="text"
         placeholder="Group"
         title="Use a group to show or hide several questions with one rule."
-        class="h-9 min-w-0 flex-1 rounded-md border-0 bg-transparent px-2 text-sm font-semibold text-grey-700 placeholder:text-grey-600 hover:bg-grey-100 focus:bg-white focus:ring-2 focus:ring-blue-500"
+        class="h-11 min-w-0 flex-1 rounded-md border-0 bg-transparent px-2 text-base font-semibold lg:h-9 lg:text-sm text-grey-700 placeholder:text-grey-600 hover:bg-grey-100 focus:bg-white focus:ring-2 focus:ring-blue-500"
       />
       <span v-if="group.is_disabled" class="text-xs text-grey-600">Hidden</span>
       <button
         type="button"
-        class="flex h-9 items-center rounded-md px-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="flex h-11 items-center rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         @click="logic.showLogicEditor(group)"
       >
         Rules<span v-if="group.logics?.length" class="tabular-nums"
@@ -75,6 +77,7 @@ import { useForm, useLogic, useWorkbench } from "@/stores";
 import BlockMenu from "./BlockMenu.vue";
 import DocumentList from "./DocumentList.vue";
 import { useAddBlock } from "./blockFocus";
+import { useMoveBlock } from "./blockMove";
 
 const props = defineProps<{
   group: FormBlockModel;
@@ -85,6 +88,7 @@ const store = useForm();
 const workbench = useWorkbench();
 const logic = useLogic();
 const { addBlock } = useAddBlock();
+const { onMoveKey } = useMoveBlock();
 
 const id = computed(() => `group-${props.group.uuid}`);
 const isOpen = computed(() => workbench.block?.id === props.group.id);
