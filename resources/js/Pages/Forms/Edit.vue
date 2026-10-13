@@ -41,8 +41,9 @@ const workbench = useWorkbench();
 const status = ref<"loading" | "failed" | "loaded">("loading");
 // on a desktop the preview sits beside the document, so it shows at once
 const isPreviewing = ref(useMediaQuery("(min-width: 1280px)").value);
-// the form menu's Preview, for when the button above the questions scrolled away
-provide("openPreview", () => (isPreviewing.value = true));
+// the form menu's Preview, for when the button above the questions scrolled away;
+// it opens once the menu gave focus back to its button, so closing returns there
+provide("openPreview", () => setTimeout(() => (isPreviewing.value = true)));
 
 const loadBlocks = async () => {
   status.value = "loading";

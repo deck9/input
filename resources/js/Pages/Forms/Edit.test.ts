@@ -1,7 +1,18 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Edit from "./Edit.vue";
+import FormMenu from "@/components/Factory/TopBar/FormMenu.vue";
 import { useForm, useWorkbench } from "@/stores";
+
+// the headlessui dialog and menu need it, jsdom has none
+vi.stubGlobal(
+    "ResizeObserver",
+    class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    },
+);
 
 const form = { uuid: "form1", name: "Customer feedback" } as FormModel;
 const blocks = [
@@ -22,11 +33,14 @@ const stubs = {
 let wrapper: VueWrapper | undefined;
 
 // the test pinia stubs actions: getBlocks does what each test tells it to
-const mountEditor = async (load: () => Promise<void>) => {
+const mountEditor = async (
+    load: () => Promise<void>,
+    global: { stubs?: object; mocks?: object } = { stubs },
+) => {
     vi.mocked(useForm().getBlocks).mockImplementation(load);
     wrapper = mount(Edit, {
         props: { form },
-        global: { stubs },
+        global,
         attachTo: document.body,
     });
     await flushPromises();
@@ -142,5 +156,38 @@ describe("editor loading", () => {
         );
         expect(preview?.get("span").classes()).toEqual(["sr-only", "sm:not-sr-only"]);
         expect(preview?.attributes("aria-haspopup")).toBe("dialog");
+    });
+
+    it("puts focus back on the form menu when a preview opened from it closes", async () => {
+        // the menu item is gone by then, so the dialog can't focus it again
+        const editor = await mountEditor(loads(blocks), {
+            stubs: {
+                ...stubs,
+                AppLayout: {
+                    components: { FormMenu },
+                    template: "<main><FormMenu /><slot /></main>",
+                },
+                FormPreview: false,
+                PreviewFrame: true,
+            },
+            mocks: { route: () => "/" },
+        });
+        const menu = editor.get('[aria-haspopup="menu"]').element as HTMLElement;
+        // a mouse hits the name inside the button
+        menu.querySelector("span")?.click();
+        await flushPromises();
+        [...document.querySelectorAll<HTMLElement>('[role="menuitem"]')]
+            .find((item) => item.textContent?.trim() === "Preview")
+            ?.click();
+        await new Promise((resolve) => setTimeout(resolve));
+        await flushPromises();
+        expect(document.activeElement?.closest("[role=dialog]")).not.toBeNull();
+
+        document.activeElement?.dispatchEvent(
+            new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+        );
+        await flushPromises();
+
+        expect(document.activeElement).toBe(menu);
     });
 });
