@@ -50,7 +50,7 @@ describe("editor loading", () => {
         const editor = await mountEditor(() => new Promise(() => {}));
 
         expect(editor.get("[role=status]").text()).toBe("Loading questions");
-        expect(editor.text()).not.toContain("No questions yet");
+        expect(editor.text()).not.toContain("Add your first question");
         expect(editor.find("[role=alert]").exists()).toBe(false);
     });
 
@@ -60,7 +60,7 @@ describe("editor loading", () => {
 
         const alert = editor.get("[role=alert]");
         expect(alert.text()).toContain("Couldn't load the questions.");
-        expect(editor.text()).not.toContain("No questions yet");
+        expect(editor.text()).not.toContain("Add your first question");
 
         getBlocks.mockImplementation(loads(blocks));
         await alert.get("button").trigger("click");
@@ -76,7 +76,7 @@ describe("editor loading", () => {
     it("shows the empty-form text for a loaded form without questions", async () => {
         const editor = await mountEditor(loads([]));
 
-        expect(editor.text()).toContain("No questions yet");
+        expect(editor.text()).toContain("Add your first question");
         expect(editor.find("[role=status]").exists()).toBe(false);
     });
 
@@ -85,7 +85,7 @@ describe("editor loading", () => {
         const editor = await mountEditor(loads(blocks));
 
         expect(editor.text()).toContain("questions");
-        expect(editor.text()).not.toContain("No questions yet");
+        expect(editor.text()).not.toContain("Add your first question");
     });
 
     it("puts focus on Add question after Try again loads, and back on Try again when it fails again", async () => {

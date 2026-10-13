@@ -41,20 +41,27 @@
           </div>
 
           <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
-          <EmptyState
+          <TypePicker
             v-else
-            title="No questions yet"
-            description="Add your first question below."
+            class="ml-12"
+            title="Add your first question"
+            :autofocus="false"
+            @pick="addQuestion"
           />
 
-          <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
+          <div
+            ref="addButtons"
+            class="mt-4 flex flex-wrap items-center gap-2 pl-12"
+          >
             <D9Button
+              v-if="store.hasBlocks"
               label="Add question"
               class="min-h-11 lg:min-h-0"
               color="dark"
               icon="plus"
               icon-position="left"
-              @click="addBlock()"
+              :aria-expanded="addAt?.key === 'end'"
+              @click="openPicker({ key: 'end', after: workbench.block })"
             />
             <D9Button
               label="Add group"
@@ -64,7 +71,21 @@
               icon-position="left"
               @click="addBlock(null, 'group')"
             />
+            <span v-if="store.hasBlocks" class="text-xs text-grey-600"
+              >or type / in an empty question</span
+            >
           </div>
+          <TypePicker
+            v-if="addAt?.key === 'end'"
+            class="ml-12 mt-2"
+            :title="
+              workbench.block
+                ? `Add a question after ${blockName(workbench.block, numbers)}`
+                : 'Add a question'
+            "
+            @pick="addQuestion"
+            @close="closePicker"
+          />
         </template>
       </div>
     </div>
@@ -102,11 +123,18 @@ import { computed, nextTick, ref, watch } from "vue";
 import { Dialog, DialogPanel } from "@headlessui/vue";
 import { D9Button, D9Icon } from "@deck9/ui";
 import { useForm, useWorkbench } from "@/stores";
-import EmptyState from "@/components/EmptyState.vue";
 import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
 import DocumentList from "./DocumentList.vue";
 import DocumentOutline from "./DocumentOutline.vue";
+import TypePicker from "./TypePicker.vue";
+import {
+  addAt,
+  blockName,
+  closePicker,
+  openPicker,
+  useAddQuestion,
+} from "./addQuestion";
 import { questionNumbers } from "./questionSummary";
 import {
   cursorFor,
@@ -123,6 +151,7 @@ const emit = defineEmits<{ retry: [] }>();
 const store = useForm();
 const workbench = useWorkbench();
 const { addBlock } = useAddBlock();
+const { addQuestion } = useAddQuestion();
 const root = ref<HTMLElement | null>(null);
 const addButtons = ref<HTMLElement | null>(null);
 

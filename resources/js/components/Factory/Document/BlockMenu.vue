@@ -25,7 +25,7 @@
       as="button"
       :class="item"
       label="Add question below"
-      @click="addBlock(block)"
+      @click="openPicker({ key: `after-${block.uuid}`, after: block })"
     />
     <D9MenuLink
       v-if="isGroup"
@@ -54,7 +54,7 @@ import { computed } from "vue";
 import { D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
 import copy from "copy-text-to-clipboard";
 import { useForm, useWorkbench } from "@/stores";
-import { useAddBlock } from "./blockFocus";
+import { openPicker } from "./addQuestion";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -65,7 +65,6 @@ const emit = defineEmits<{ addToGroup: [] }>();
 
 const store = useForm();
 const workbench = useWorkbench();
-const { addBlock } = useAddBlock();
 
 const item = "w-full min-h-11 text-left text-sm lg:min-h-0";
 const isGroup = computed(() => props.block.type === "group");

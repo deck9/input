@@ -2,6 +2,8 @@ import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
 import FormDocument from "./FormDocument.vue";
+import { cursorFor } from "./blockFocus";
+import { addAt } from "./addQuestion";
 
 const blocks = [
     { id: 1, uuid: "b1", type: "none", message: "<p>Welcome</p>" },
@@ -16,6 +18,8 @@ const stubs = {
 };
 
 let wrapper: VueWrapper | undefined;
+const option = (name: string) =>
+    wrapper!.findAll("[role=option]").find((item) => item.text() === name)!;
 const scrolled = vi.fn();
 
 describe("the form document", () => {
@@ -29,6 +33,8 @@ describe("the form document", () => {
         scrolled.mockClear();
         useForm().$reset();
         useWorkbench().$reset();
+        addAt.value = null;
+        cursorFor.value = null;
     });
 
     afterEach(() => wrapper?.unmount());
@@ -62,5 +68,55 @@ describe("the form document", () => {
 
         expect(useWorkbench().putOnWorkbench).toHaveBeenCalledWith(blocks[1]);
         expect(scrolled).toHaveBeenCalledWith("row-b2", "start");
+    });
+
+    it("shows the picker on an empty form and adds the first question", async () => {
+        useForm().blocks = [];
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        expect(wrapper.text()).toContain("Add your first question");
+        await option("Short text").trigger("click");
+
+        expect(useForm().createFormBlock).toHaveBeenCalledWith(
+            null,
+            "input-short",
+            null,
+        );
+    });
+
+    it("adds a question after the open one, with the cursor in its text", async () => {
+        const added = {
+            id: 3,
+            uuid: "b3",
+            type: "input-email",
+        } as FormBlockModel;
+        useForm().blocks = blocks;
+        useWorkbench().block = blocks[0];
+        vi.mocked(useForm().createFormBlock).mockImplementation(async () => {
+            useWorkbench().block = added;
+        });
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        await wrapper
+            .findAll("button")
+            .find((button) => button.text() === "Add question")!
+            .trigger("click");
+        await option("Email").trigger("click");
+        await flushPromises();
+
+        expect(useForm().createFormBlock).toHaveBeenCalledWith(
+            blocks[0],
+            "input-email",
+            null,
+        );
+        expect(cursorFor.value).toBe("b3");
     });
 });
