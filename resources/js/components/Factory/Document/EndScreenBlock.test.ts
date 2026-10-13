@@ -76,6 +76,13 @@ describe("the end screen in the document", () => {
         expect(text).toContain("Button: Add to calendar");
     });
 
+    it("keeps its hidden label inside the document's scroll box", () => {
+        // else the absolute sr-only label stretches the whole page
+        expect(mountBlock().get("#row-end-screen").classes()).toContain(
+            "relative",
+        );
+    });
+
     it("shows the default headline people see when it has none", async () => {
         useForm().form = { ...form, eoc_headline: null, show_cta_link: false };
         const text = mountBlock().find("button").text();
