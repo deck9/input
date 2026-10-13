@@ -41,12 +41,27 @@ describe("banner", () => {
 
         useNotice().$patch({
             failedSaves: { "saveBlock:1": "Your change wasn't saved." },
+            retries: { "saveBlock:1": vi.fn() },
         });
         await wrapper.vm.$nextTick();
 
         expect(wrapper.get("button[aria-label=Dismiss]").classes()).toContain(
             "max-lg:hidden",
         );
+    });
+
+    // e.g. settings pages: without Retry the bar would never go away
+    it("lets phones close a failed save that has no Retry", async () => {
+        const wrapper = mountBanner();
+
+        useNotice().$patch({
+            failedSaves: { saveSettings: "Your settings weren't saved." },
+        });
+        await wrapper.vm.$nextTick();
+
+        expect(
+            wrapper.get("button[aria-label=Dismiss]").classes(),
+        ).not.toContain("max-lg:hidden");
     });
 
     it("lets phones close any other banner", () => {
