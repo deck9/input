@@ -159,7 +159,10 @@ const editor = useEditor({
   editorProps: {
     attributes: {
       class: `form-message-prose conversation-theme focus:outline-none text-grey-800 ${
-        bare ? "" : "border border-grey-300 bg-white px-5 py-3 rounded-md"
+        bare
+          ? // a 2 px bar shows focus; margin, border and padding add up to 0
+            "-ml-2 border-l-2 border-transparent pl-1.5 focus:border-blue-500"
+          : "border border-grey-300 bg-white px-5 py-3 rounded-md"
       }`,
       ...(id ? { id, "aria-labelledby": `${id}-label` } : {}),
     },
