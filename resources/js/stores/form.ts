@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { AxiosRequestConfig } from "axios";
 import {
     callDeleteFormImage,
     callUpdateForm,
@@ -14,6 +15,7 @@ import {
     callCreateFormBlock,
     callUpdateBlockSequence,
     callDeleteFormBlock,
+    callDuplicateFormBlock,
     callUpdateFormBlock,
 } from "@/api/blocks";
 import { useWorkbench } from ".";
@@ -23,9 +25,6 @@ interface FormStore {
     form: FormModel | null;
     blocks: FormBlockModel[] | null;
     mapping: Record<FormBlockType, FormBlockInteractionType> | null;
-    isCssTransitionEnabled: boolean;
-    isBlockMenuEnabled: boolean;
-    showLogicInStoryboard: boolean;
 }
 
 export const useForm = defineStore("form", {
@@ -34,9 +33,6 @@ export const useForm = defineStore("form", {
             form: null,
             mapping: null,
             blocks: null,
-            isCssTransitionEnabled: true,
-            isBlockMenuEnabled: true,
-            showLogicInStoryboard: true,
         };
     },
 
@@ -49,40 +45,12 @@ export const useForm = defineStore("form", {
             return state.blocks && state.blocks.length ? true : false;
         },
 
-        countGroups: (state): Record<string, number> => {
-            if (!state.blocks) {
-                return {};
-            }
-
-            const containers = { root: 0 };
-
-            state.blocks
-                .filter((i) => i.type === "group")
-                .forEach((i) => (containers[i.uuid] = 0));
-
-            return state.blocks
-                ?.map((i) => i.parent_block)
-                .reduce((acc, item) => {
-                    if (item) {
-                        acc[item] = acc[item] ? acc[item] + 1 : 1;
-                    } else {
-                        acc["root"] += 1;
-                    }
-
-                    return acc;
-                }, containers);
-        },
-
         formUrl: (state): string => {
             if (state.form) {
                 return window.route("forms.show", { uuid: state.form?.uuid });
             }
 
             return "";
-        },
-
-        showBlockMenus: (state): boolean => {
-            return state.isBlockMenuEnabled;
         },
 
         blocksTree: (state): TreeNode[] => {
@@ -114,22 +82,6 @@ export const useForm = defineStore("form", {
             this.blocks = null;
         },
 
-        setCssTransition(payload: boolean) {
-            this.isCssTransitionEnabled = payload;
-        },
-
-        enableBlockMenu() {
-            this.isBlockMenuEnabled = true;
-        },
-
-        disableBlockMenu() {
-            this.isBlockMenuEnabled = false;
-        },
-
-        toggleLogicInStoryboard() {
-            this.showLogicInStoryboard = !this.showLogicInStoryboard;
-        },
-
         async refreshForm(includeSubmissions = false) {
             if (this.form) {
                 const response = await callGetForm(this.form);
@@ -155,10 +107,12 @@ export const useForm = defineStore("form", {
                 return;
             }
 
-            const response = await callGetFormBlocks(
-                this.form.uuid,
-                includeSubmissions,
-            );
+            const uuid = this.form.uuid;
+            const response = await callGetFormBlocks(uuid, includeSubmissions);
+            // the editor may have left this form while it loaded
+            if (this.form?.uuid !== uuid) {
+                return;
+            }
 
             this.blocks = response.data;
         },
@@ -182,12 +136,15 @@ export const useForm = defineStore("form", {
         },
 
         // only the page's own fields, and the store changes only once they're saved
-        async updateForm(newValues: Partial<FormModel>) {
+        async updateForm(
+            newValues: Partial<FormModel>,
+            config?: AxiosRequestConfig,
+        ) {
             if (!this.form) {
                 return;
             }
 
-            const response = await callUpdateForm(this.form, newValues);
+            const response = await callUpdateForm(this.form, newValues, config);
             // the editor may have left this form while it saved
             if (this.form?.uuid !== response.data.uuid) {
                 return;
@@ -238,6 +195,8 @@ export const useForm = defineStore("form", {
         async createFormBlock(
             insertAfter: FormBlockModel | null = null,
             type: FormBlockType | null = null,
+            // for an empty group: there's no block to insert after
+            parentBlock: string | null = null,
         ) {
             const form = this.form;
 
@@ -259,6 +218,12 @@ export const useForm = defineStore("form", {
                         this.blocks.splice(index + 1, 0, newBlock);
 
                         this.saveBlockSequence();
+                    } else if (parentBlock) {
+                        newBlock.parent_block = parentBlock;
+
+                        this.blocks.push(newBlock);
+
+                        this.saveBlockSequence();
                     } else {
                         this.blocks.push(newBlock);
                     }
@@ -269,6 +234,35 @@ export const useForm = defineStore("form", {
                     workbench.putOnWorkbench(newBlock);
                 }
             });
+        },
+
+        // the copy goes right after the question and opens
+        async duplicateFormBlock(block: FormBlockModel) {
+            const workbench = useWorkbench();
+
+            // the copy must have the last change to the open question
+            if (workbench.block?.id === block.id) {
+                await workbench.sendWaitingSaves();
+            }
+
+            const request = async () => {
+                const copy = (await callDuplicateFormBlock(block.id)).data;
+                const index =
+                    this.blocks?.findIndex((item) => item.id === block.id) ??
+                    -1;
+
+                if (index !== -1) {
+                    this.blocks?.splice(index + 1, 0, copy);
+                    workbench.putOnWorkbench(copy);
+                }
+            };
+
+            await useNotice().send(
+                `duplicateFormBlock:${block.id}`,
+                request,
+                block,
+                "duplicated",
+            );
         },
 
         async deleteFormBlock(block: FormBlockModel) {
@@ -303,7 +297,7 @@ export const useForm = defineStore("form", {
                 }
             };
 
-            await useNotice().send(save, request, block);
+            await useNotice().send(save, request, block, "deleted");
         },
 
         async updateFormBlockProperty(

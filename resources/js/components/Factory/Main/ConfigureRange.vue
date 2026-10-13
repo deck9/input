@@ -1,20 +1,18 @@
 <template>
   <div v-if="isInitialized">
     <div class="mb-4">
-      <D9Label id="range-min" label="Min Rating" />
+      <D9Label id="range-min" label="Lowest value" />
       <D9Input
         id="range-min"
-        placeholder="Min Rating"
         type="number"
         block
         v-model="startValue"
       />
     </div>
     <div class="mb-4">
-      <D9Label id="range-max" label="Max Rating" />
+      <D9Label id="range-max" label="Highest value" />
       <D9Input
         id="range-max"
-        placeholder="Max Rating"
         type="number"
         block
         v-model="endValue"
@@ -22,20 +20,20 @@
     </div>
 
     <div class="mb-4">
-      <D9Label id="range-label-left" label="Left Label" />
+      <D9Label id="range-label-left" label="Label for lowest" />
       <D9Input
         id="range-label-left"
-        placeholder="Left Label"
+        placeholder="e.g. Not likely"
         type="text"
         block
         v-model="labelLeft"
       />
     </div>
     <div class="mb-4">
-      <D9Label id="range-label-right" label="Right Label" />
+      <D9Label id="range-label-right" label="Label for highest" />
       <D9Input
         id="range-label-right"
-        placeholder="Right Label"
+        placeholder="e.g. Very likely"
         type="text"
         block
         v-model="labelRight"
@@ -61,7 +59,11 @@
           block
           show-color-picker
         />
-        <button type="button" class="text-xs text-blue-600" @click="resetColor">
+        <button
+          type="button"
+          class="inline-flex min-h-11 items-center text-xs text-blue-600 lg:min-h-0"
+          @click="resetColor"
+        >
           Use default
         </button>
       </div>

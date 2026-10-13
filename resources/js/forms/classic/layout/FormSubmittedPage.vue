@@ -11,6 +11,7 @@
         v-if="store.form?.show_cta_link && store.callToActionUrl"
         :href="store.callToActionUrl"
         :label="store.form?.cta_label ?? t('close')"
+        :new-tab="store.isPreview"
       />
       <SocialLinks v-if="store.form?.show_social_links" class="mt-8" />
     </div>

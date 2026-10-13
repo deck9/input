@@ -1,5 +1,5 @@
 /* eslint-disable no-async-promise-executor */
-import { AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import handler from "./handler";
 
 export function callListForms(
@@ -86,12 +86,14 @@ export function callGetForm(
 export function callUpdateForm(
     form: FormModel,
     values: Partial<FormModel>,
+    config?: AxiosRequestConfig,
 ): Promise<AxiosResponse<FormModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
                 window.route("api.forms.update", { uuid: form.uuid }),
                 values,
+                config,
             );
 
             resolve(response as AxiosResponse<FormModel>);

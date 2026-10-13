@@ -13,6 +13,13 @@
       }"
     >
       <div>
+        <!-- also on a copied preview link: nobody mistakes it for the real form -->
+        <p
+          v-if="isPreview"
+          class="mt-4 w-fit rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-semibold text-yellow-800"
+        >
+          Preview: answers aren't saved
+        </p>
         <Header v-if="!flags.hideTitle" :form="store.form" />
 
         <div class="h-full w-full max-w-screen-sm py-10">
@@ -73,6 +80,7 @@ import { useBeforeUnload } from "@/utils/useBeforeUnload";
 import { computed, onMounted, provide, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
+import { useWindowFocus } from "@vueuse/core";
 import { useRouteParams } from "@/utils/useRouteParams";
 import { useRoutes } from "@/utils/useRoutes";
 import { usePreviewMessages } from "@/forms/classic/usePreviewMessages";
@@ -82,18 +90,24 @@ const props = defineProps<{
   flags: EmbedFlags;
 }>();
 
+// the editor's preview runs on the form page, an embed on another site never does
+const query = new URLSearchParams(window.location.search);
+const isPreview = !!window.iptSettings && query.get("preview") === "1";
+
 const isLoading = ref(true);
+// the preview never takes the cursor from the editor around it,
+// but moves it on as the real form does once the owner clicks into it
+const windowFocused = useWindowFocus();
 const focusDisabled = computed(() => {
-  return isLoading.value && !props.flags.autofocus;
+  return (
+    (isPreview && !windowFocused.value) ||
+    (isLoading.value && !props.flags.autofocus)
+  );
 });
 provide("disableFocus", focusDisabled);
 
 // init routes
 await useRoutes();
-
-// the editor's preview runs on the form page, an embed on another site never does
-const query = new URLSearchParams(window.location.search);
-const isPreview = !!window.iptSettings && query.get("preview") === "1";
 
 // init conversation store
 const store = useConversation();

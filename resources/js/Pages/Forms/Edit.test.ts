@@ -1,7 +1,26 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AxiosResponse } from "axios";
+import { callGetForm } from "@/api/forms";
 import Edit from "./Edit.vue";
+import FormMenu from "@/components/Factory/TopBar/FormMenu.vue";
+import PreviewFrame from "@/components/Factory/Preview/PreviewFrame.vue";
 import { useForm, useWorkbench } from "@/stores";
+
+vi.mock("@/api/forms", async (importOriginal) => ({
+    ...(await importOriginal()),
+    callGetForm: vi.fn(),
+}));
+
+// the headlessui dialog and menu need it, jsdom has none
+vi.stubGlobal(
+    "ResizeObserver",
+    class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    },
+);
 
 const form = { uuid: "form1", name: "Customer feedback" } as FormModel;
 const blocks = [
@@ -11,20 +30,31 @@ const blocks = [
 
 const stubs = {
     AppLayout: { props: ["title"], template: "<main><slot /></main>" },
-    BlockContainer: { template: "<ol><li>questions</li></ol>" },
-    BlockLogicEditor: true,
-    Workbench: true,
+    DocumentList: { template: "<ol><li>questions</li></ol>" },
+    FormPreview: {
+        props: ["modelValue"],
+        template: "<aside v-if='modelValue'>preview</aside>",
+    },
 };
 
 let wrapper: VueWrapper | undefined;
 
 // the test pinia stubs actions: getBlocks does what each test tells it to
-const mountEditor = async (load: () => Promise<void>) => {
+const mountEditor = async (
+    load: () => Promise<void>,
+    global: { stubs?: object; mocks?: object } = { stubs },
+) => {
     vi.mocked(useForm().getBlocks).mockImplementation(load);
-    wrapper = mount(Edit, { props: { form }, global: { stubs } });
+    wrapper = mount(Edit, {
+        props: { form },
+        global,
+        attachTo: document.body,
+    });
     await flushPromises();
     return wrapper;
 };
+const focused = () =>
+    document.activeElement?.closest("button")?.textContent?.trim();
 const loads = (result: FormBlockModel[]) => async () => {
     useForm().blocks = result;
 };
@@ -45,8 +75,7 @@ describe("editor loading", () => {
         const editor = await mountEditor(() => new Promise(() => {}));
 
         expect(editor.get("[role=status]").text()).toBe("Loading questions");
-        expect(editor.text()).not.toContain("Welcome to the Editor");
-        expect(editor.text()).not.toContain("No blocks found");
+        expect(editor.text()).not.toContain("Add your first question");
         expect(editor.find("[role=alert]").exists()).toBe(false);
     });
 
@@ -56,8 +85,7 @@ describe("editor loading", () => {
 
         const alert = editor.get("[role=alert]");
         expect(alert.text()).toContain("Couldn't load the questions.");
-        expect(editor.text()).not.toContain("Welcome to the Editor");
-        expect(editor.text()).not.toContain("No blocks found");
+        expect(editor.text()).not.toContain("Add your first question");
 
         getBlocks.mockImplementation(loads(blocks));
         await alert.get("button").trigger("click");
@@ -73,8 +101,7 @@ describe("editor loading", () => {
     it("shows the empty-form text for a loaded form without questions", async () => {
         const editor = await mountEditor(loads([]));
 
-        expect(editor.text()).toContain("Welcome to the Editor");
-        expect(editor.text()).toContain("No blocks found");
+        expect(editor.text()).toContain("Add your first question");
         expect(editor.find("[role=status]").exists()).toBe(false);
     });
 
@@ -83,6 +110,132 @@ describe("editor loading", () => {
         const editor = await mountEditor(loads(blocks));
 
         expect(editor.text()).toContain("questions");
-        expect(editor.text()).not.toContain("Welcome to the Editor");
+        expect(editor.text()).not.toContain("Add your first question");
+    });
+
+    it("puts focus on Add question after Try again loads, and back on Try again when it fails again", async () => {
+        const getBlocks = vi.mocked(useForm().getBlocks);
+        const editor = await mountEditor(() => Promise.reject(new Error("500")));
+
+        await editor.get("[role=alert] button").trigger("click");
+        await flushPromises();
+        expect(focused()).toBe("Try again");
+
+        // putOnWorkbench is a stub, so no question is open to take the focus
+        getBlocks.mockImplementation(loads(blocks));
+        await editor.get("[role=alert] button").trigger("click");
+        await flushPromises();
+        expect(focused()).toBe("Add question");
+    });
+
+    it("opens no question when the questions arrive after the editor closed", async () => {
+        let arrive!: () => void;
+        const editor = await mountEditor(
+            () => new Promise<void>((resolve) => (arrive = resolve)),
+        );
+
+        editor.unmount();
+        wrapper = undefined;
+        useForm().blocks = blocks;
+        arrive();
+        await flushPromises();
+
+        expect(useWorkbench().putOnWorkbench).not.toHaveBeenCalled();
+    });
+
+    // the top bar has its Preview from lg
+    it("opens the preview from the document on a phone", async () => {
+        const editor = await mountEditor(loads(blocks));
+        expect(editor.find("aside").exists()).toBe(false);
+
+        const preview = editor
+            .findAll("button")
+            .find((button) => button.text() === "Preview");
+        await preview?.trigger("click");
+
+        expect(editor.find("aside").exists()).toBe(true);
+        // a click on the text would land on a span, which the closing dialog
+        // can't focus again: the button's inside lets clicks through to it
+        expect(preview?.classes()).toContain("[&_*]:pointer-events-none");
+        // a 44 px icon below sm, so Outline fits beside it; the label from sm
+        expect(preview?.classes()).toEqual(
+            expect.arrayContaining(["h-11", "w-11", "sm:w-auto"]),
+        );
+        expect(preview?.get("span").classes()).toEqual(["sr-only", "sm:not-sr-only"]);
+        expect(preview?.attributes("aria-haspopup")).toBe("dialog");
+    });
+
+    it("closes the preview on Esc inside it and puts focus back on Preview", async () => {
+        const editor = await mountEditor(loads(blocks), {
+            stubs: { ...stubs, FormPreview: false, PreviewFrame: true },
+            mocks: { route: () => "/" },
+        });
+        const preview = editor
+            .findAll("button")
+            .find((button) => button.text() === "Preview");
+        await preview?.trigger("click");
+        await flushPromises();
+        expect(document.activeElement?.closest("[role=dialog]")).not.toBeNull();
+
+        // after a click into the frame, the form there gets the key and tells the editor
+        editor.findComponent(PreviewFrame).vm.$emit("escape");
+        await flushPromises();
+
+        expect(document.querySelector("[role=dialog]")).toBeNull();
+        expect(document.activeElement).toBe(preview?.element);
+    });
+
+    it("puts focus back on the form menu when a preview opened from it closes", async () => {
+        // the menu item is gone by then, so the dialog can't focus it again
+        const editor = await mountEditor(loads(blocks), {
+            stubs: {
+                ...stubs,
+                AppLayout: {
+                    components: { FormMenu },
+                    template: "<main><FormMenu /><slot /></main>",
+                },
+                FormPreview: false,
+                PreviewFrame: true,
+            },
+            mocks: { route: () => "/" },
+        });
+        const menu = editor.get('[aria-haspopup="menu"]').element as HTMLElement;
+        // a mouse hits the name inside the button
+        menu.querySelector("span")?.click();
+        await flushPromises();
+        [...document.querySelectorAll<HTMLElement>('[role="menuitem"]')]
+            .find((item) => item.textContent?.trim() === "Preview")
+            ?.click();
+        await new Promise((resolve) => setTimeout(resolve));
+        await flushPromises();
+        expect(document.activeElement?.closest("[role=dialog]")).not.toBeNull();
+
+        document.activeElement?.dispatchEvent(
+            new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+        );
+        await flushPromises();
+
+        expect(document.activeElement).toBe(menu);
+    });
+});
+
+describe("editor from history", () => {
+    afterEach(() => {
+        wrapper?.unmount();
+        wrapper = undefined;
+        vi.restoreAllMocks();
+    });
+
+    it("loads the form again when browser Back brings the editor back", async () => {
+        vi.mocked(callGetForm).mockResolvedValue({
+            data: { ...form, eoc_headline: "Thanks!" },
+        } as AxiosResponse);
+        window.dispatchEvent(
+            new PopStateEvent("popstate", { state: { component: "x" } }),
+        );
+
+        await mountEditor(loads(blocks));
+
+        expect(useForm().form?.eoc_headline).toBe("Thanks!");
     });
 });

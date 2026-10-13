@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4">
-    <D9Label id="input-placeholder" label="Placeholder Text" />
+    <D9Label id="input-placeholder" label="Placeholder" />
     <D9Input
       id="input-placeholder"
       placeholder="Your placeholder text"
@@ -14,12 +14,11 @@
     <div class="mb-4">
       <D9Label
         id="input-decimal-places"
-        label="Decimal Places"
-        description="If empty, no decimal places are allowed"
+        label="Decimal places"
+        description="Leave empty for whole numbers only."
       />
       <D9Input
         id="input-decimal-places"
-        placeholder="Number of decimal places"
         type="number"
         :min="0"
         :max="10"
@@ -29,7 +28,11 @@
       />
     </div>
     <div class="mb-4">
-      <D9Label id="input-symbol" label="Show Symbol" />
+      <D9Label
+        id="input-symbol"
+        label="Symbol"
+        description="Shown next to the number, e.g. € or kg."
+      />
       <D9Input id="input-symbol" v-model="useSymbol" block maxlength="3" />
     </div>
   </template>

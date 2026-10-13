@@ -57,23 +57,27 @@ export function useDeleteBlock(block: FormBlockModel) {
         check.value = null;
     };
 
-    const confirm = () => {
+    // resolves once the server answered, so focus can move after it
+    const confirm = async () => {
         const workbench = useWorkbench();
         check.value = null;
-        useForm().deleteFormBlock(block);
+        const deleting = useForm().deleteFormBlock(block);
 
         if (workbench.block?.id === block.id) {
             workbench.clearWorkbench();
         }
+
+        await deleting;
     };
 
     return { check, ask, cancel, confirm };
 }
 
-// asks before a choice is deleted; one nobody picked goes at once
+// asks before a choice is deleted; one nobody picked goes at once.
+// `remove` does the delete, so a list can move focus once the row is gone.
 export function useDeleteChoice(
     item: FormBlockInteractionModel,
-    onDelete?: () => void,
+    remove: () => unknown = () => useWorkbench().deleteInteraction(item),
 ) {
     const workbench = useWorkbench();
     // open while the owner decides
@@ -83,8 +87,7 @@ export function useDeleteChoice(
 
     const confirm = async () => {
         asking.value = null;
-        onDelete?.();
-        await workbench.deleteInteraction(item);
+        await remove();
     };
 
     const ask = async () => {

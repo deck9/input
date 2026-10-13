@@ -1,43 +1,45 @@
 <template>
-  <div class="group relative py-1 transition duration-200">
-    <div class="flex items-center">
-      <section class="grid w-full grid-cols-2 gap-x-2">
-        <div :class="{ 'col-span-2': !showReply }">
-          <div class="relative">
-            <D9Input
-              :id="item.id + '_label'"
-              class="!pl-12"
-              name="label"
-              ref="labelElement"
-              type="text"
-              v-model="label"
-              block
-              placeholder="Label"
-              @keyup.enter="keyboardCommands"
-              @keyup.up="keyboardCommands"
-              @keyup.down="keyboardCommands"
-              @keydown.meta.delete.prevent="keyboardCommands"
-            />
-            <span class="absolute inset-y-0 flex items-center px-3">
-              <IndexItem type="button" v-bind="{ index, showColors: false }" />
-            </span>
-          </div>
-        </div>
-        <div v-if="showReply">
-          <D9Input
-            :id="item.id + '_message'"
-            name="message"
-            type="text"
-            v-model="message"
-            block
-            placeholder="Reply"
-            @keyup.enter="keyboardCommands"
-          />
-        </div>
+  <div class="py-1">
+    <div
+      class="flex min-h-9 items-center gap-2 rounded-md border border-grey-300 bg-white pl-2 pr-1 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
+    >
+      <IndexItem type="button" v-bind="{ index, showColors: false }" />
+      <section class="flex min-w-0 flex-1 gap-x-2 [&>*]:min-w-0">
+        <D9Input
+          :id="item.id + '_label'"
+          :class="field"
+          :aria-label="`Choice ${index + 1}`"
+          name="label"
+          ref="labelElement"
+          type="text"
+          v-model="label"
+          block
+          :placeholder="`Choice ${index + 1}`"
+          @keyup.enter="keyboardCommands"
+          @keyup.up.exact="keyboardCommands"
+          @keyup.down.exact="keyboardCommands"
+          @keydown.alt.up.exact.prevent.stop="emit('move', index, -1)"
+          @keydown.alt.down.exact.prevent.stop="emit('move', index, 1)"
+          @keydown.meta.delete.prevent="keyboardCommands"
+        />
+        <D9Input
+          v-if="showReply"
+          :id="item.id + '_message'"
+          :class="[field, '!border-l !border-grey-200']"
+          :aria-label="`Reply for choice ${index + 1}`"
+          name="message"
+          type="text"
+          v-model="message"
+          block
+          placeholder="Reply"
+          @keyup.enter="keyboardCommands"
+        />
       </section>
+      <ChoiceRowActions
+        :label="label ? `choice “${label}”` : `choice ${index + 1}`"
+        @onDelete="askDelete"
+      />
     </div>
-
-    <InteractionHoverActions @onDelete="askDelete" />
     <DeleteChoiceDialog
       :choice="asking"
       :answers="answers"
@@ -49,12 +51,13 @@
 
 <script setup lang="ts">
 import { D9Input } from "@deck9/ui";
-import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
+import ChoiceRowActions from "@/components/Factory/Main/ChoiceRowActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
 import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
 import { useWorkbench } from "@/stores";
 import { Ref, ref, watch } from "vue";
+import type { Step } from "@/components/Factory/Document/blockMove";
 
 const workbench = useWorkbench();
 
@@ -74,7 +77,11 @@ const emit = defineEmits<{
   (e: "nextSoft", index: number): void;
   (e: "previous", index: number): void;
   (e: "onDelete", index: number): void;
+  (e: "move", index: number, step: Step): void;
 }>();
+
+// the row draws the border, so its fields are bare
+const field = "!border-0 !bg-transparent !px-1 !py-2 focus:!ring-0";
 
 const labelElement = ref<InstanceType<typeof D9Input> | null>(null);
 

@@ -2,14 +2,13 @@
   <div>
     <EmptyState
       v-if="workbench.currentInteractions?.length === 0"
-      title="Nothing here yet."
-      description="Add your first option by clicking on the button below."
+      title="No consents yet."
     />
 
     <Container
       v-else
       lock-axis="y"
-      drag-handle-selector="button.handle"
+      drag-handle-selector=".handle"
       orientation="vertical"
       @drop="onDrop"
     >
@@ -21,26 +20,28 @@
           v-bind="{ item, index }"
           :key="`${item.id}-${index}`"
           :ref="bindTemplateRefsForTraversables.bind(index)"
+          @onDelete="deleteItem"
         />
       </Draggable>
     </Container>
 
-    <div class="mt-8">
-      <D9Button
-        label="Add new policy"
-        icon="plus"
-        icon-position="left"
-        color="dark"
-        :isLoading="isCreatingInteraction"
+    <div ref="addRow" class="mt-1">
+      <button
+        type="button"
+        :aria-busy="isCreatingInteraction"
+        class="flex h-11 w-full items-center gap-2 rounded-md border border-dashed border-grey-300 px-2 text-sm font-medium text-grey-700 hover:border-grey-400 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-9"
         @click="createConsentPolicy"
-      />
+      >
+        <D9Icon name="plus" aria-hidden="true" />
+        Add consent
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
-import { D9Button } from "@deck9/ui";
+import { D9Icon } from "@deck9/ui";
 import { ref, nextTick } from "vue";
 import ConsentInteraction from "./Interactions/ConsentInteraction.vue";
 import { Container, Draggable } from "vue3-smooth-dnd";
@@ -51,6 +52,7 @@ import { storeToRefs } from "pinia";
 const workbench = useWorkbench();
 const { currentInteractions } = storeToRefs(workbench);
 const isCreatingInteraction = ref(false);
+const addRow = ref<HTMLElement | null>(null);
 
 const onDrop = ({ removedIndex, addedIndex }: any): void => {
   if (removedIndex === null || addedIndex === null) {
@@ -78,7 +80,21 @@ const createConsentPolicy = async () => {
   }
 };
 
-const { bindTemplateRefsForTraversables, focusLastItem } =
+const deleteItem = async (index: number) => {
+  const item = currentInteractions.value?.[index];
+  if (!item) return;
+
+  await workbench.deleteInteraction(item);
+
+  // a failed delete keeps the policy, and focus stays in it
+  if (currentInteractions.value?.includes(item)) return;
+
+  if (!(await focusNeighborItem(index))) {
+    addRow.value?.querySelector("button")?.focus();
+  }
+};
+
+const { bindTemplateRefsForTraversables, focusLastItem, focusNeighborItem } =
   useKeyboardNavigation(currentInteractions, () => {
     return;
   });

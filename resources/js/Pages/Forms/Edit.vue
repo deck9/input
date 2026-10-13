@@ -1,38 +1,40 @@
 <template>
   <app-layout title="Edit Form" limit-height>
-    <div class="flex w-full">
-      <Storyboard :status="status" @retry="loadBlocks" />
-      <div class="w-full overflow-y-auto">
-        <Workbench v-if="workbench.block" :key="workbench.block.id" />
-        <div
-          v-else-if="status === 'loading'"
-          aria-hidden="true"
-          class="mx-12 max-w-xl space-y-4 px-4 pt-8 xl:mx-24"
+    <template #save-status><SaveStatus /></template>
+    <template #preview><PreviewToggle v-model="isPreviewing" /></template>
+    <FormDocument :status="status" @retry="loadBlocks">
+      <!-- a phone's top bar has no room for Preview; it looks like Outline beside it,
+        an icon below sm; a click inside lands on the button, so closing the
+        preview puts focus back on it -->
+      <template #actions>
+        <button
+          type="button"
+          class="flex h-11 w-11 items-center justify-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:w-auto lg:hidden [&_*]:pointer-events-none"
+          aria-haspopup="dialog"
+          :aria-expanded="isPreviewing"
+          @click="isPreviewing = true"
         >
-          <D9Skeleton
-            v-for="bar in ['h-8 w-3/5', 'h-24', 'h-11 w-3/4']"
-            :key="bar"
-            :title="false"
-            :lines="0"
-            class="rounded-md bg-grey-200 motion-reduce:animate-none"
-            :class="bar"
-          />
-        </div>
-        <WorkbenchEmpty v-else-if="status === 'loaded' && !store.hasBlocks" />
-      </div>
-    </div>
+          <D9Icon name="eye" aria-hidden="true" />
+          <span class="sr-only sm:not-sr-only">Preview</span>
+        </button>
+      </template>
+    </FormDocument>
+    <FormPreview v-model="isPreviewing" />
   </app-layout>
 </template>
 
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Storyboard from "@/components/Factory/Sidebar/Storyboard.vue";
-import Workbench from "@/components/Factory/Main/Workbench.vue";
-import WorkbenchEmpty from "@/components/Factory/Main/WorkbenchEmpty.vue";
+import FormDocument from "@/components/Factory/Document/FormDocument.vue";
+import FormPreview from "@/components/Factory/Preview/FormPreview.vue";
+import PreviewToggle from "@/components/Factory/Preview/PreviewToggle.vue";
 import { useForm, useWorkbench } from "@/stores";
+import SaveStatus from "@/components/Factory/Shared/SaveStatus.vue";
 import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
-import { D9Skeleton } from "@deck9/ui";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { useFreshForm } from "@/utils/useFreshForm";
+import { onBeforeUnmount, onMounted, provide, ref } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+import { D9Icon } from "@deck9/ui";
 
 const props = defineProps<{
   form: FormModel;
@@ -41,6 +43,11 @@ const props = defineProps<{
 const store = useForm();
 const workbench = useWorkbench();
 const status = ref<"loading" | "failed" | "loaded">("loading");
+// on a desktop the preview sits beside the document, so it shows at once
+const isPreviewing = ref(useMediaQuery("(min-width: 1280px)").value);
+// the form menu's Preview, for when the button above the questions scrolled away;
+// it opens once the menu gave focus back to its button, so closing returns there
+provide("openPreview", () => setTimeout(() => (isPreviewing.value = true)));
 
 const loadBlocks = async () => {
   status.value = "loading";
@@ -48,7 +55,14 @@ const loadBlocks = async () => {
   try {
     await store.getBlocks();
   } catch {
-    status.value = "failed";
+    if (!left) {
+      status.value = "failed";
+    }
+    return;
+  }
+
+  // a late reply must not open a question, and so change the address, on the next page
+  if (left) {
     return;
   }
 
@@ -67,9 +81,12 @@ const loadBlocks = async () => {
   status.value = "loaded";
 };
 
+let left = false;
+
 useSaveOnLeave();
 
 onBeforeUnmount(() => {
+  left = true;
   store.clearForm();
 });
 
@@ -78,6 +95,7 @@ onMounted(async () => {
   await store.getFormBlockMapping();
 });
 
+useFreshForm();
 workbench.clearWorkbench();
 store.$patch({
   form: props.form,

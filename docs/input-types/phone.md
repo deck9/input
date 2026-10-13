@@ -4,7 +4,7 @@ This input type is specifically designed for collecting phone numbers with appro
 
 ## How to use:
 
-1. Select **Phone Number** as the input type
+1. Select **Phone** as the input type
 2. Enter the prompt asking for the phone number
 3. Optionally, add a placeholder showing the expected format
 4. Configure validation requirements if needed
@@ -28,7 +28,7 @@ This input type is specifically designed for collecting phone numbers with appro
 🌟 Always specify what the phone number will be used for and include a privacy statement. For international forms, include example formatting or country code instructions.
 :::
 
-## When to use Phone Number input:
+## When to use Phone input:
 
 - When you need to contact users by phone or SMS
 - For authentication or verification purposes

@@ -59,6 +59,7 @@ const mountOnPage = async (
     component,
     form: Partial<FormModel> = {},
     blocks: FormBlockModel[] | null = [],
+    provide: Record<string, unknown> = {},
 ) => {
     history.replaceState(null, "", "/forms.edit");
 
@@ -71,6 +72,7 @@ const mountOnPage = async (
         global: {
             mocks: { $page, route },
             stubs: { Link: inertiaLink },
+            provide,
         },
     });
     // the test pinia stubs actions, so set the state directly
@@ -396,10 +398,35 @@ describe("form top bar", () => {
         const item = await previewItem(false);
         expect(text(item!)).toBe("Preview ↗");
         expect(item?.getAttribute("aria-label")).toBe("Preview (opens in a new tab)");
-        expect(item?.getAttribute("href")).toBe(`${location.origin}/forms.show`);
+        // in preview mode: no answers are stored
+        expect(item?.getAttribute("href")).toBe(`${location.origin}/forms.show?preview=1`);
         expect(item?.getAttribute("target")).toBe("_blank");
         // from 1024 px it's in the bar
         expect(await previewItem(true)).toBeUndefined();
+        delete (window as Partial<Window>).matchMedia;
+    });
+
+    it("opens the editor's preview from the form menu on phones", async () => {
+        window.matchMedia = (() => ({
+            matches: false,
+            addEventListener() {},
+            removeEventListener() {},
+        })) as unknown as typeof window.matchMedia;
+        const openPreview = vi.fn();
+        const wrapper = await mountOnPage(FormTopBar, {}, [], { openPreview });
+        await wrapper.get('[aria-haspopup="menu"]').trigger("click");
+        await flushPromises();
+
+        const item = [...document.querySelectorAll('[role="menuitem"]')].find((i) =>
+            text(i)?.startsWith("Preview"),
+        ) as HTMLElement;
+        // it stays in the editor: no new tab
+        expect(item.tagName).toBe("BUTTON");
+        expect(text(item)).toBe("Preview");
+        item.click();
+        expect(openPreview).toHaveBeenCalledOnce();
+
+        wrapper.unmount();
         delete (window as Partial<Window>).matchMedia;
     });
 

@@ -52,7 +52,7 @@
             </h3>
 
             <div class="mt-6 pb-6">
-              <component :is="item.component" />
+              <component :is="item.component" :key="freshForms" />
             </div>
           </TabPanel>
         </TabPanels>
@@ -73,6 +73,7 @@ import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
+import { useFreshForm } from "@/utils/useFreshForm";
 import { onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
@@ -91,7 +92,7 @@ const navigation: Array<{
   { name: "Options", component: Options, slug: "options" },
   { name: "Privacy", component: Privacy, slug: "privacy" },
   {
-    name: "Completion Page",
+    name: "End screen",
     component: CompletionPage,
     slug: "completion-page",
   },
@@ -120,6 +121,10 @@ if (foundIndex !== -1) {
 } else {
   tabChanged(0);
 }
+
+// the panels copy the form when they load
+const freshForms = ref(0);
+useFreshForm(() => freshForms.value++);
 
 onBeforeUnmount(() => {
   store.clearForm();

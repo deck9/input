@@ -61,8 +61,8 @@ import { D9Icon } from "@deck9/ui";
 const mailingLists = [
   {
     id: 1,
-    title: "Show completion page",
-    description: "Configure a custom completion page",
+    title: "Show end screen",
+    description: "Configure a custom end screen",
     value: false,
   },
   {

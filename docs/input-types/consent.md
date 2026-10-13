@@ -7,7 +7,7 @@ The Consent input type is designed specifically for gathering agreement from use
 1. Choose **Consent** as the input type
 2. Enter a clear message explaining what the user is consenting to
 3. Configure the consent option with a concise label
-4. Toggle "Opt-In Required" if the consent is mandatory to proceed
+4. Turn on "Must be ticked" if people must agree to go on
 
 ::: tip Best Practice
 < Keep consent messages clear and specific. Explain exactly what users are agreeing to, and include links to relevant policies when appropriate.

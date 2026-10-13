@@ -4,8 +4,13 @@
     :class="[index === 0 ? 'mt-4' : 'mt-8']"
   >
     <div class="flex items-center">
-      <h3 class="font-medium">Consent Policy</h3>
+      <h3 class="font-medium">Consent</h3>
       <IndexItem class="ml-2" type="button" v-bind="{ index }" />
+      <ChoiceRowActions
+        class="ml-auto"
+        :label="label ? `consent “${label}”` : `consent ${index + 1}`"
+        @onDelete="askDelete"
+      />
     </div>
     <div class="mt-2 flex items-center">
       <section class="w-full space-y-2">
@@ -32,20 +37,17 @@
         </div>
         <div class="flex items-center">
           <D9Switch
-            onLabel="Yes"
-            offLabel="No"
-            label="Opt-In Required"
+            label="Must be ticked"
             :id="item.id + '_required'"
             v-model="isRequired"
           />
           <label :for="item.id + '_required'" class="ml-2 inline-block"
-            >Consent required</label
+            >Must be ticked</label
           >
         </div>
       </section>
     </div>
 
-    <InteractionHoverActions @onDelete="askDelete" />
     <DeleteChoiceDialog
       policy
       :choice="asking"
@@ -58,7 +60,7 @@
 
 <script setup lang="ts">
 import { D9Input, D9Textarea, D9Switch } from "@deck9/ui";
-import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
+import ChoiceRowActions from "@/components/Factory/Main/ChoiceRowActions.vue";
 import IndexItem from "@/components/Factory/Shared/IndexItem.vue";
 import DeleteChoiceDialog from "@/components/Factory/Shared/DeleteChoiceDialog.vue";
 import { useDeleteChoice } from "@/components/Factory/Shared/useDeleteBlock";
@@ -70,6 +72,10 @@ const workbench = useWorkbench();
 const props = defineProps<{
   index: number;
   item: FormBlockInteractionModel;
+}>();
+
+const emit = defineEmits<{
+  (e: "onDelete", index: number): void;
 }>();
 
 const labelElement = ref(null) as unknown as Ref<HTMLElement>;
@@ -102,7 +108,7 @@ const {
   answers,
   ask: askDelete,
   confirm: deleteNow,
-} = useDeleteChoice(props.item);
+} = useDeleteChoice(props.item, () => emit("onDelete", props.index));
 
 const focus = () => {
   labelElement.value.focus();

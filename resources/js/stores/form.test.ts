@@ -1,10 +1,16 @@
+import { PiniaDebounce } from "@pinia/plugin-debounce";
 import { AxiosError, AxiosResponse } from "axios";
+import debounce from "lodash/debounce";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createApp } from "vue";
 import handler from "@/api/handler";
-import { useForm } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
+import { useNotice } from "./notice";
 
-vi.mock("@/api/handler", () => ({ default: { post: vi.fn() } }));
+vi.mock("@/api/handler", () => ({
+    default: { get: vi.fn(), post: vi.fn(), delete: vi.fn() },
+}));
 
 const saved = {
     uuid: "form1",
@@ -30,9 +36,11 @@ describe("saving form settings", () => {
 
         await useForm().updateForm({ name: " Feedback " });
 
-        expect(handler.post).toHaveBeenCalledWith("/api/forms/form1", {
-            name: " Feedback ",
-        });
+        expect(handler.post).toHaveBeenCalledWith(
+            "/api/forms/form1",
+            { name: " Feedback " },
+            undefined,
+        );
         expect(useForm().form?.name).toBe("Feedback");
     });
 
@@ -83,5 +91,137 @@ describe("saving form settings", () => {
         await expect(useForm().updateForm({ name: "" })).rejects.toBe(refusal);
 
         expect(useForm().form).toEqual(saved);
+    });
+});
+
+describe("loading the questions", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        setActivePinia(createPinia());
+        window.route = vi.fn(() => "/api/forms/form1/blocks") as unknown as typeof window.route;
+        useForm().form = { ...saved };
+    });
+
+    it("drops a reply that comes in after the editor left the form", async () => {
+        let answer!: (reply: AxiosResponse) => void;
+        vi.mocked(handler.get).mockReturnValue(
+            new Promise((resolve) => (answer = resolve)),
+        );
+
+        const loading = useForm().getBlocks();
+        useForm().clearForm();
+        answer({ status: 200, data: [{ id: 1, uuid: "b1" }] } as AxiosResponse);
+        await loading;
+
+        expect(useForm().blocks).toBeNull();
+    });
+
+    it("keeps another form's questions from a late reply", async () => {
+        let answer!: (reply: AxiosResponse) => void;
+        vi.mocked(handler.get).mockReturnValue(
+            new Promise((resolve) => (answer = resolve)),
+        );
+
+        const loading = useForm().getBlocks();
+        useForm().form = { ...saved, uuid: "form2" };
+        answer({ status: 200, data: [{ id: 1, uuid: "b1" }] } as AxiosResponse);
+        await loading;
+
+        expect(useForm().blocks).toBeNull();
+    });
+});
+
+describe("duplicating a question", () => {
+    const question = (id: number, uuid: string) =>
+        ({ id, uuid, type: "radio", message: "<p>Hi</p>" }) as FormBlockModel;
+
+    let posted: string[];
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        // the debounce the app uses (plugins run only once pinia is in an app)
+        const pinia = createPinia();
+        pinia.use(PiniaDebounce(debounce));
+        createApp({}).use(pinia);
+        setActivePinia(pinia);
+
+        window.route = vi.fn(
+            (name: string) => name,
+        ) as unknown as typeof window.route;
+        posted = [];
+        vi.mocked(handler.post).mockImplementation(async (url: string) => {
+            posted.push(url);
+            return {
+                status: 201,
+                data: url === "api.blocks.duplicate" ? question(4, "copy") : {},
+            } as AxiosResponse;
+        });
+
+        useForm().form = { ...saved };
+        useForm().blocks = [
+            question(1, "q1"),
+            question(2, "q2"),
+            question(3, "q3"),
+        ];
+    });
+
+    it("puts the copy right after the question and opens it", async () => {
+        await useForm().duplicateFormBlock(useForm().blocks![1]);
+
+        expect(posted).toEqual(["api.blocks.duplicate"]);
+        expect(useForm().blocks!.map((block) => block.uuid)).toEqual([
+            "q1",
+            "q2",
+            "copy",
+            "q3",
+        ]);
+        expect(useWorkbench().block?.uuid).toBe("copy");
+    });
+
+    it("saves a change still waiting in the open question first, so the copy has it", async () => {
+        const workbench = useWorkbench();
+        workbench.block = useForm().blocks![1];
+        workbench.updateBlock({ message: "<p>Hi there</p>" });
+
+        await useForm().duplicateFormBlock(workbench.block);
+
+        expect(posted).toEqual(["api.blocks.update", "api.blocks.duplicate"]);
+    });
+
+    it("says the question couldn't be duplicated when the copy fails", async () => {
+        vi.mocked(handler.post).mockRejectedValue(
+            new AxiosError("Network Error", "ERR_NETWORK"),
+        );
+
+        await useForm().duplicateFormBlock(useForm().blocks![1]);
+
+        expect(useNotice().message).toBe(
+            "Question 2 (“Hi”) couldn't be duplicated. Check your connection and try again.",
+        );
+        expect(useForm().blocks).toHaveLength(3);
+    });
+});
+
+describe("deleting a question", () => {
+    beforeEach(() => {
+        setActivePinia(createPinia());
+        useForm().form = { ...saved };
+        useForm().blocks = [
+            { id: 1, uuid: "q1", type: "radio", message: "<p>Hi</p>" },
+            { id: 2, uuid: "q2", type: "radio", message: "<p>Bye</p>" },
+        ] as FormBlockModel[];
+    });
+
+    it("says the question couldn't be deleted when the delete fails", async () => {
+        vi.mocked(handler.delete).mockRejectedValue(
+            new AxiosError("Network Error", "ERR_NETWORK"),
+        );
+
+        await useForm().deleteFormBlock(useForm().blocks![1]);
+
+        expect(useNotice().message).toBe(
+            "Question 2 (“Bye”) couldn't be deleted. Check your connection and try again.",
+        );
+        expect(useForm().blocks).toHaveLength(2);
     });
 });

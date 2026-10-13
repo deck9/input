@@ -7,9 +7,9 @@ The Date input type allows users to select dates from a calendar interface, maki
 1. Choose **Date** as the input type
 2. Enter the question or prompt asking for a date
 3. Configure the date restrictions (optional):
-    - **Minimum Date**: Earliest date users can select
-    - **Maximum Date**: Latest date users can select
-    - **No Past Dates**: Toggle to prevent selection of dates before today
+    - **Min date**: Earliest date users can select
+    - **Max date**: Latest date users can select
+    - **No dates in the past**: Turn on to prevent selection of dates before today
 
 ::: tip Best Practice
 < Always specify what kind of date you're asking for (appointment date, birth date, event date, etc.) and the expected format in your prompt.

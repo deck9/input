@@ -9,10 +9,8 @@ import DeleteChoiceDialog from "./DeleteChoiceDialog.vue";
 import { checkDelete, useDeleteBlock } from "./useDeleteBlock";
 import ClickInteraction from "@/components/Factory/Main/Interactions/ClickInteraction.vue";
 import ConsentInteraction from "@/components/Factory/Main/Interactions/ConsentInteraction.vue";
-import InteractionHoverActions from "@/components/Factory/Main/InteractionHoverActions.vue";
-import BlockLogicRule from "@/components/Factory/Sidebar/BlockLogicRule.vue";
 import { callGetFormBlocks } from "@/api/blocks";
-import { useForm, useLogic, useWorkbench } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 
 vi.mock("@/api/blocks", async (importOriginal) => ({
     ...(await importOriginal()),
@@ -145,14 +143,14 @@ describe("asking before a delete", () => {
                 global: { plugins: [pinia], stubs },
             });
 
-        it("names the question, its answers and the questions whose rules stop working", async () => {
+        it("names the question by number and text, its answers and the questions whose rules stop working", async () => {
             const wrapper = await open("q1");
 
             expect(wrapper.find("[role=alertdialog]").text()).toContain(
                 "Delete question?",
             );
             expect(wrapper.text()).toContain(
-                "“Will you come to the meetup?” and its 40 answers will be deleted. This can't be undone.",
+                "Question 1 (“Will you come to the meetup?”) and its 40 answers will be deleted. This can't be undone.",
             );
             expect(wrapper.text()).toContain(
                 "2 rules use this question and will stop working: question 3, group “Food and drinks”.",
@@ -166,7 +164,7 @@ describe("asking before a delete", () => {
             const wrapper = await open("q2");
 
             expect(wrapper.text()).toContain(
-                "“Any allergies?” will be deleted. This can't be undone.",
+                "Question 2 (“Any allergies?”) will be deleted. This can't be undone.",
             );
             expect(wrapper.text()).toContain(
                 "1 rule uses this question and will stop working: question 3.",
@@ -188,7 +186,7 @@ describe("asking before a delete", () => {
             });
 
             expect(wrapper.text()).toContain(
-                "“Will you come to the meetup?” and its 1 answer will be deleted.",
+                "Question 1 (“Will you come to the meetup?”) and its 1 answer will be deleted.",
             );
             expect(wrapper.text()).not.toContain("rule");
         });
@@ -203,7 +201,7 @@ describe("asking before a delete", () => {
             });
 
             expect(wrapper.text()).toContain(
-                "“Will you come to the meetup?” and its answers will be deleted. This can't be undone.",
+                "Question 1 (“Will you come to the meetup?”) and its answers will be deleted. This can't be undone.",
             );
         });
 
@@ -266,9 +264,6 @@ describe("asking before a delete", () => {
         const choice = (id: number, index: number) => {
             const workbench = useWorkbench();
             workbench.block = block("q3");
-            const remove = vi
-                .spyOn(workbench, "deleteInteraction")
-                .mockResolvedValue();
             const wrapper = mount(ClickInteraction, {
                 props: {
                     index,
@@ -279,7 +274,7 @@ describe("asking before a delete", () => {
                 global: { plugins: [pinia], stubs },
             });
 
-            return { wrapper, remove };
+            return { wrapper };
         };
 
         const pressCmdBackspace = (wrapper: ReturnType<typeof mount>) =>
@@ -288,24 +283,22 @@ describe("asking before a delete", () => {
                 .trigger("keydown", { key: "Backspace", metaKey: true });
 
         it("deletes a choice nobody picked at once", async () => {
-            const { wrapper, remove } = choice(11, 1);
+            const { wrapper } = choice(11, 1);
 
             await pressCmdBackspace(wrapper);
             await flushPromises();
 
-            expect(remove).toHaveBeenCalledWith(
-                expect.objectContaining({ id: 11 }),
-            );
+            expect(wrapper.emitted("onDelete")).toHaveLength(1);
             expect(wrapper.find("[role=alertdialog]").exists()).toBe(false);
         });
 
         it("asks first when people picked the choice", async () => {
-            const { wrapper, remove } = choice(10, 0);
+            const { wrapper } = choice(10, 0);
 
             await pressCmdBackspace(wrapper);
             await flushPromises();
 
-            expect(remove).not.toHaveBeenCalled();
+            expect(wrapper.emitted("onDelete")).toBeUndefined();
             expect(wrapper.text()).toContain("Delete “No”?");
             expect(wrapper.text()).toContain(
                 "12 people picked it. Their answers to it will be deleted.",
@@ -314,9 +307,7 @@ describe("asking before a delete", () => {
             await wrapper.find("button.bg-red-600").trigger("click");
             await flushPromises();
 
-            expect(remove).toHaveBeenCalledWith(
-                expect.objectContaining({ id: 10 }),
-            );
+            expect(wrapper.emitted("onDelete")).toHaveLength(1);
         });
 
         it("says 1 person for a single answer", () => {
@@ -336,9 +327,6 @@ describe("asking before a delete", () => {
         const policy = (id: number) => {
             const workbench = useWorkbench();
             workbench.block = block("c1");
-            const remove = vi
-                .spyOn(workbench, "deleteInteraction")
-                .mockResolvedValue();
             const wrapper = mount(ConsentInteraction, {
                 props: {
                     index: 0,
@@ -350,46 +338,41 @@ describe("asking before a delete", () => {
             });
             const pressTrash = async () => {
                 await wrapper
-                    .findComponent(InteractionHoverActions)
-                    .find("button")
+                    .find("button[aria-label^=Delete]")
                     .trigger("click");
                 await flushPromises();
             };
 
-            return { wrapper, remove, pressTrash };
+            return { wrapper, pressTrash };
         };
 
         it("deletes a policy nobody agreed to at once", async () => {
-            const { wrapper, remove, pressTrash } = policy(21);
+            const { wrapper, pressTrash } = policy(21);
 
             await pressTrash();
 
-            expect(remove).toHaveBeenCalledWith(
-                expect.objectContaining({ id: 21 }),
-            );
+            expect(wrapper.emitted("onDelete")).toHaveLength(1);
             expect(wrapper.find("[role=alertdialog]").exists()).toBe(false);
         });
 
         it("asks first when people agreed to the policy", async () => {
-            const { wrapper, remove, pressTrash } = policy(20);
+            const { wrapper, pressTrash } = policy(20);
 
             await pressTrash();
 
-            expect(remove).not.toHaveBeenCalled();
-            expect(wrapper.text()).toContain("Delete policy “Privacy policy”?");
+            expect(wrapper.emitted("onDelete")).toBeUndefined();
+            expect(wrapper.text()).toContain("Delete consent “Privacy policy”?");
             expect(wrapper.text()).toContain(
                 "3 people agreed to it. Their answers to it will be deleted.",
             );
             expect(wrapper.find("button.bg-red-600").text()).toBe(
-                "Delete policy",
+                "Delete consent",
             );
 
             await wrapper.find("button.bg-red-600").trigger("click");
             await flushPromises();
 
-            expect(remove).toHaveBeenCalledWith(
-                expect.objectContaining({ id: 20 }),
-            );
+            expect(wrapper.emitted("onDelete")).toHaveLength(1);
         });
     });
 
@@ -442,40 +425,6 @@ describe("asking before a delete", () => {
             expect(panel).not.toHaveBeenCalled();
             window.removeEventListener("keydown", panel);
             wrapper.unmount();
-        });
-    });
-
-    describe("deleting a rule", () => {
-        it("asks in the app's dialog, not the browser's", async () => {
-            const confirm = vi.spyOn(window, "confirm");
-            const remove = vi
-                .spyOn(useLogic(), "removeRule")
-                .mockResolvedValue();
-            const wrapper = mount(BlockLogicRule, {
-                props: {
-                    index: 2,
-                    rule: {
-                        name: "Skip",
-                        evaluate: "after",
-                        action: "goto",
-                        action_payload: "q1",
-                        conditions: [],
-                    } as unknown as FormBlockLogic,
-                },
-                global: { plugins: [pinia], stubs },
-            });
-
-            await wrapper
-                .find("button[aria-label='Delete rule']")
-                .trigger("click");
-
-            expect(confirm).not.toHaveBeenCalled();
-            expect(wrapper.text()).toContain("Delete rule “Skip”?");
-            expect(remove).not.toHaveBeenCalled();
-
-            await wrapper.find("button.bg-red-600").trigger("click");
-
-            expect(remove).toHaveBeenCalledWith(2);
         });
     });
 });

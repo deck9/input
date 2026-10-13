@@ -1,0 +1,149 @@
+<template>
+  <div
+    :id="`row-${block.uuid}`"
+    class="group/question flex scroll-mt-4 items-start"
+    @keydown="onKeydown"
+  >
+    <div class="flex w-8 shrink-0 flex-col sm:w-12 items-end gap-1 pr-2 pt-3">
+      <span
+        aria-hidden="true"
+        class="flex h-6 items-center text-sm font-semibold tabular-nums text-grey-700"
+        ><span
+          :class="
+            isJumpTarget &&
+            'relative z-10 flex h-5 items-center rounded-full border border-blue-200 bg-blue-50 px-1.5 text-xs font-semibold text-blue-700'
+          "
+          >{{ number }}</span
+        ></span
+      >
+      <!-- from lg the + sits left of the grip, out into the page margin -->
+      <div class="flex">
+        <button
+          type="button"
+          :aria-label="`Add question after question ${number}`"
+          :title="`Add question after question ${number}`"
+          class="hidden h-6 w-6 place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:grid lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
+          @click="openPicker({ key: `after-${block.uuid}`, after: block })"
+        >
+          <D9Icon name="plus" />
+        </button>
+        <span
+          aria-hidden="true"
+          title="Drag to reorder"
+          class="document-grip hidden h-6 w-6 cursor-grab sm:grid place-items-center rounded text-grey-500 hover:bg-grey-100 hover:text-grey-900 lg:opacity-0 lg:group-focus-within/question:opacity-100 lg:group-hover/question:opacity-100"
+        >
+          <D9Icon name="grip-vertical" />
+        </span>
+      </div>
+    </div>
+
+    <QuestionCard v-if="isOpen" :block="block" :number="number" />
+    <button
+      v-else
+      ref="row"
+      type="button"
+      class="min-h-14 min-w-0 flex-1 rounded-lg px-3 py-2.5 text-left hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      @click="open"
+    >
+      <span class="flex items-start gap-2">
+        <D9Icon
+          :name="blockType?.icon ?? 'question'"
+          aria-hidden="true"
+          class="mt-1 h-4 w-4 shrink-0 text-grey-500"
+        />
+        <span
+          dir="auto"
+          class="line-clamp-2 break-words text-base"
+          :class="
+            text
+              ? 'font-medium text-grey-900'
+              : 'font-normal italic text-grey-600'
+          "
+          ><span class="sr-only">Question {{ number }}:&nbsp;</span
+          >{{ text || "No question text yet" }}</span
+        >
+      </span>
+      <span class="mt-1 flex flex-wrap gap-x-2 pl-6 text-xs text-grey-600">
+        <span
+          >{{ blockType?.label ?? block.type
+          }}<template v-if="choiceCount !== null">
+            · {{ choiceCount }} {{ choiceCount === 1 ? "choice" : "choices" }}
+          </template></span
+        >
+        <span v-if="block.is_required" class="text-red-700">Required</span>
+        <span v-if="block.is_disabled">Always hidden</span>
+        <span v-if="block.title" class="break-all font-mono">{{
+          block.title
+        }}</span>
+      </span>
+    </button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, nextTick, ref } from "vue";
+import { D9Icon } from "@deck9/ui";
+import { useWorkbench } from "@/stores";
+import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
+import { plainText } from "./questionSummary";
+import QuestionCard from "./QuestionCard.vue";
+import { cursorFor } from "./blockFocus";
+import { openPicker } from "./addQuestion";
+import { useMoveBlock } from "./blockMove";
+import { jumpTargets } from "./Rules/ruleText";
+
+const props = defineProps<{
+  block: FormBlockModel;
+  number: number;
+}>();
+
+const workbench = useWorkbench();
+const { types } = useBlockTypes();
+
+const isOpen = computed(() => workbench.block?.id === props.block.id);
+// the open question's rules jump here
+const isJumpTarget = computed(() =>
+  jumpTargets(workbench.block).includes(props.block.uuid),
+);
+
+const text = computed(() => plainText(props.block.message));
+const blockType = computed(() =>
+  types.value.find((type) => type.value === props.block.type),
+);
+const choiceCount = computed(() =>
+  ["radio", "checkbox"].includes(props.block.type)
+    ? (props.block.interactions ?? []).filter(
+        (item) => item.type === "button" && item.is_editable,
+      ).length
+    : null,
+);
+
+const { onMoveKey } = useMoveBlock();
+const row = ref<HTMLButtonElement | null>(null);
+
+// Alt+Up/Down moves the question, open or not; Escape closes it
+const onKeydown = async (event: KeyboardEvent) => {
+  // a select or menu inside the card handled the key already; the question
+  // text cancels every key it takes, also an Escape it doesn't use
+  const inText = (event.target as HTMLElement).closest?.(
+    "[contenteditable=true]",
+  );
+
+  if (event.defaultPrevented && !inText) {
+    return;
+  }
+
+  onMoveKey(event, props.block);
+
+  if (event.key === "Escape" && isOpen.value) {
+    workbench.clearWorkbench();
+    await nextTick();
+    row.value?.focus();
+  }
+};
+
+const open = () => {
+  cursorFor.value = props.block.uuid;
+  workbench.putOnWorkbench(props.block);
+};
+</script>

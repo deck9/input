@@ -1,4 +1,4 @@
-import { Ref, ref } from "vue";
+import { nextTick, Ref, ref } from "vue";
 
 export function useKeyboardNavigation(
     currentInteractions,
@@ -19,13 +19,16 @@ export function useKeyboardNavigation(
     };
 
     // choose a next item
-    const focusNeighborItem = (fromIndex: number) => {
-        if (!currentInteractions.value) {
-            return;
-        }
+    // once the row at fromIndex is gone: focus the row before it, or the
+    // new first row. False when no row is left.
+    const focusNeighborItem = async (fromIndex: number) => {
+        await nextTick();
 
-        const targetIndex = fromIndex === 0 ? 0 : fromIndex - 1;
-        focusNextItemSoft(targetIndex - 1);
+        const destination =
+            currentInteractions.value?.[Math.max(fromIndex - 1, 0)];
+        traversables.value[destination?.id]?.focus();
+
+        return Boolean(destination);
     };
 
     const focusNextItem = async (fromIndex: number, create = true) => {
@@ -58,6 +61,10 @@ export function useKeyboardNavigation(
         traversables.value[destination.id].focus();
     };
 
+    const focusItem = (item: { id: number }) => {
+        traversables.value[item.id]?.focus();
+    };
+
     const focusLastItem = async () => {
         if (!currentInteractions.value) {
             return;
@@ -77,5 +84,6 @@ export function useKeyboardNavigation(
         focusNextItem,
         focusPreviousItem,
         focusLastItem,
+        focusItem,
     };
 }

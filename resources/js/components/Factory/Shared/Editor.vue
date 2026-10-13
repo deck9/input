@@ -1,7 +1,10 @@
 <template>
   <div>
     <div
-      class="mb-1 py-1 bg-white border border-grey-300 rounded-lg flex flex-wrap gap-y-2 items-center"
+      role="group"
+      aria-label="Text format"
+      class="mb-1 flex items-center overflow-x-auto [&>div]:shrink-0 lg:flex-wrap lg:gap-y-2"
+      :class="!bare && 'py-1 bg-white border border-grey-300 rounded-lg'"
     >
       <div class="px-1">
         <EditorButton
@@ -50,7 +53,7 @@
           v-bind="{
             isActive: editor?.isActive('heading', { level: 2 }) ?? false,
             icon: 'heading',
-            label: 'Heading 1',
+            label: 'Heading',
             subLabel: '1',
           }"
           @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -59,7 +62,7 @@
           v-bind="{
             isActive: editor?.isActive('heading', { level: 3 }) ?? false,
             icon: 'heading',
-            label: 'Heading 2',
+            label: 'Subheading',
             subLabel: '2',
           }"
           @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
@@ -70,7 +73,7 @@
           v-bind="{
             isActive: editor?.isActive('bulletList') ?? false,
             icon: 'list-ul',
-            label: 'Bullet List',
+            label: 'Bullet list',
           }"
           @click="editor?.chain().focus().toggleBulletList().run()"
         />
@@ -78,7 +81,7 @@
           v-bind="{
             isActive: editor?.isActive('orderedList') ?? false,
             icon: 'list-ol',
-            label: 'Ordered List',
+            label: 'Numbered list',
           }"
           @click="editor?.chain().focus().toggleOrderedList().run()"
         />
@@ -106,7 +109,7 @@
           v-bind="{
             isActive: false,
             icon: 'remove-format',
-            label: 'Remove Formatting',
+            label: 'Clear formatting',
           }"
           @click="editor?.chain().focus().clearNodes().unsetAllMarks().run()"
         />
@@ -114,13 +117,13 @@
     </div>
     <editor-content :editor="editor" />
     <div v-if="counter" class="mt-1 text-xs text-grey-600">
-      {{ chars }} chars, {{ words }} words
+      {{ chars }} characters
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useEditor, EditorContent } from "@tiptap/vue-3";
+import { useEditor, EditorContent, type FocusPosition } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -132,17 +135,22 @@ import { ref } from "vue";
 const {
   modelValue,
   counter = false,
+  bare = false,
   id,
+  placeholder = "Type your text…",
 } = defineProps<{
   modelValue?: string;
   counter?: boolean;
+  // no borders of its own, for a text that sits in a card
+  bare?: boolean;
   // names the text box after the D9Label with the same id
   id?: string;
+  placeholder?: string;
 }>();
 
 const content = ref("");
 
-const { chars, words } = useContentLength(content);
+const { chars } = useContentLength(content);
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
@@ -152,8 +160,12 @@ const editor = useEditor({
   content: modelValue,
   editorProps: {
     attributes: {
-      class:
-        "form-message-prose conversation-theme focus:outline-none border border-grey-300 bg-white text-grey-800 px-5 py-3 rounded-md",
+      class: `form-message-prose conversation-theme focus:outline-none text-grey-800 ${
+        bare
+          ? // a 2 px bar shows focus; margin, border and padding add up to 0
+            "-ml-2 border-l-2 border-transparent pl-1.5 focus:border-blue-500"
+          : "border border-grey-300 bg-white px-5 py-3 rounded-md"
+      }`,
       ...(id ? { id, "aria-labelledby": `${id}-label` } : {}),
     },
   },
@@ -171,7 +183,7 @@ const editor = useEditor({
   extensions: [
     FontFamily,
     Placeholder.configure({
-      placeholder: "Type your message here...",
+      placeholder,
     }),
     StarterKit.configure({
       heading: {
@@ -193,7 +205,9 @@ const editor = useEditor({
 });
 
 // a label's for= can't focus a contenteditable, so its page calls this
-defineExpose({ focus: () => editor.value?.commands.focus() });
+defineExpose({
+  focus: (at?: FocusPosition) => editor.value?.commands.focus(at),
+});
 
 const setLink = () => {
   if (typeof editor.value === "undefined") {
@@ -201,7 +215,7 @@ const setLink = () => {
   }
 
   const previousUrl = editor.value.getAttributes("link").href;
-  const url = window.prompt("URL", previousUrl);
+  const url = window.prompt("Link address", previousUrl);
 
   // cancelled
   if (url === null) {
@@ -230,7 +244,7 @@ const setImage = () => {
   }
 
   const previousUrl = editor.value.getAttributes("image").src;
-  const url = window.prompt("URL", previousUrl);
+  const url = window.prompt("Image address", previousUrl);
 
   // cancelled
   if (url === null || url === "") {
@@ -238,7 +252,7 @@ const setImage = () => {
   }
 
   if (!url.startsWith("https")) {
-    window.alert("Please enter a valid secure URL");
+    window.alert("The image address must start with https://");
     return;
   }
 

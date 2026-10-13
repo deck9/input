@@ -1,0 +1,33 @@
+/* The form editor's question card below lg: every field 44 px tall with
+   16 px text (iOS zooms into a focused field under 16 px), and a 44 px tap
+   area on switches and checkboxes. One rule here instead of a class on
+   every D9 field in the Configure* parts. */
+@media (max-width: 1023px) {
+    .touch-fields
+        :is(
+            input:not([type="checkbox"], [type="radio"]),
+            textarea,
+            button[aria-haspopup="listbox"]
+        ) {
+        min-height: 2.75rem;
+        font-size: 1rem;
+    }
+
+    .touch-fields [role="option"] {
+        padding-block: 0.625rem;
+    }
+
+    /* D9Switch is relative and 24 px tall */
+    .touch-fields [role="switch"]::before {
+        content: "";
+        position: absolute;
+        inset: -10px 0;
+    }
+
+    /* D9Checkbox: its label covers the whole 20 px row, stretched to 44 px */
+    .touch-fields input[type="checkbox"] + div > label::before {
+        content: "";
+        position: absolute;
+        inset: -12px 0;
+    }
+}
