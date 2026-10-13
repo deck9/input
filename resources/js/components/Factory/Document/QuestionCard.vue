@@ -44,6 +44,7 @@
 
       <div class="ml-auto flex items-center gap-1">
         <button
+          ref="settingsButton"
           type="button"
           class="flex h-11 items-center gap-1 rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           :aria-expanded="settingsOpen"
@@ -118,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, provide, ref, watch } from "vue";
+import { computed, nextTick, onMounted, provide, ref, watch } from "vue";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import { useMediaQuery } from "@vueuse/core";
 import { D9Icon, D9Select, D9Switch } from "@deck9/ui";
@@ -153,6 +154,15 @@ const required = ref(props.block.is_required ?? false);
 const settingsOpen = ref(false);
 // below Tailwind's sm, Settings opens as a bottom sheet
 const isPhone = useMediaQuery("(max-width: 639px)");
+const settingsButton = ref<HTMLButtonElement | null>(null);
+
+// the kept sheet doesn't give focus back when it closes
+watch(settingsOpen, async (open) => {
+  if (!open && isPhone.value) {
+    await nextTick();
+    settingsButton.value?.focus();
+  }
+});
 
 watch(message, (value) => workbench.updateBlock({ message: value }));
 watch(required, (value) => workbench.updateBlock({ is_required: value }));
