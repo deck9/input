@@ -10,11 +10,15 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
+import { nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { useForm, useLogic, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
 import type { PreviewMessage } from "@/forms/classic/usePreviewMessages";
+
+// the question the preview shows, and an open one it didn't go to
+const shown = defineModel<string | null>("shown", { default: null });
+const missed = defineModel<string | null>("missed", { default: null });
 
 const store = useForm();
 const workbench = useWorkbench();
@@ -40,6 +44,19 @@ let followed: string | null = null;
 
 const send = (message: PreviewMessage) =>
   frame.value?.contentWindow?.postMessage(message, origin);
+
+// a running preview moves at once; when it doesn't, a rule hides the question
+let waiting: ReturnType<typeof setTimeout> | undefined;
+const goto = (block: string) => {
+  send({ type: "input:preview:goto", block });
+  clearTimeout(waiting);
+  missed.value = null;
+
+  if (started && block !== shown.value) {
+    waiting = setTimeout(() => (missed.value = block), 500);
+  }
+};
+onBeforeUnmount(() => clearTimeout(waiting));
 
 // the questions as the preview loaded them: a save that changed nothing,
 // like the one when a card opens, keeps the preview and its answers;
@@ -67,6 +84,7 @@ const reload = () => {
   src.value = url();
   loads.value++;
   started = false;
+  clearTimeout(waiting);
 };
 // every save that works clears its error; rules save on their own
 useNotice().$onAction(({ name, after }) => {
@@ -80,7 +98,7 @@ watch(
   () => workbench.block?.uuid,
   (block) => {
     if (block && block !== followed) {
-      send({ type: "input:preview:goto", block });
+      goto(block);
     }
     followed = null;
   },
@@ -99,12 +117,16 @@ useEventListener(window, "message", async (event: MessageEvent) => {
     return;
   }
 
+  shown.value = data.block;
+  clearTimeout(waiting);
+  missed.value = null;
+
   // where it starts isn't a move: the open block may be a group or a hidden question,
   // or the preview loaded after the owner opened another one
   if (!started) {
     started = true;
     if (workbench.block && workbench.block.uuid !== data.block) {
-      send({ type: "input:preview:goto", block: workbench.block.uuid });
+      goto(workbench.block.uuid);
     }
     return;
   }

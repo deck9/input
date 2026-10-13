@@ -1,6 +1,6 @@
 import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { useForm } from "@/stores";
+import { useForm, useWorkbench } from "@/stores";
 import FormPreview from "./FormPreview.vue";
 import PreviewToggle from "./PreviewToggle.vue";
 
@@ -21,16 +21,23 @@ const screen = (wide: boolean) =>
         removeEventListener() {},
     }));
 
+const PreviewFrame = { props: ["shown", "missed"], template: "<iframe />" };
+
 const mountPreview = (open = true) =>
     mount(FormPreview, {
         props: { modelValue: open },
         attachTo: document.body,
-        global: { stubs: { PreviewFrame: { template: "<iframe />" } } },
+        global: { stubs: { PreviewFrame } },
     });
 
 enableAutoUnmount(afterEach);
 
 describe("the preview panel", () => {
+    afterEach(() => {
+        useForm().$reset();
+        useWorkbench().$reset();
+    });
+
     it("sits beside the document on a desktop", () => {
         screen(true);
         const wrapper = mountPreview();
@@ -88,6 +95,34 @@ describe("the preview panel", () => {
         await flushPromises();
         expect(document.body.textContent).not.toContain("Add a question");
         expect(document.querySelector("iframe")).not.toBeNull();
+    });
+
+    it("says which question it shows, and when a rule hides the open one", async () => {
+        screen(true);
+        const blocks = [
+            { uuid: "q1", type: "input-short" },
+            { uuid: "q2", type: "input-short" },
+        ] as FormBlockModel[];
+        useForm().blocks = blocks;
+        useWorkbench().block = blocks[1];
+        const wrapper = mountPreview();
+        const frame = wrapper.findComponent(PreviewFrame);
+
+        frame.vm.$emit("update:shown", "q1");
+        await flushPromises();
+        expect(wrapper.get("#preview-heading").text()).toBe("Preview · question 1");
+        expect(wrapper.text()).not.toContain("hidden by a rule");
+
+        frame.vm.$emit("update:missed", "q2");
+        await flushPromises();
+        expect(wrapper.get("aside").text()).toContain(
+            "Question 2 is hidden by a rule, so the preview can't jump to it.",
+        );
+
+        // once another question is open, the line goes
+        useWorkbench().block = blocks[0];
+        await flushPromises();
+        expect(wrapper.text()).not.toContain("hidden by a rule");
     });
 
     it.each([true, false])("shows nothing when closed (desktop: %s)", (wide) => {

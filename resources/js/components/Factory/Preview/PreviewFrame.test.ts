@@ -119,6 +119,38 @@ describe("the preview frame", () => {
         );
     });
 
+    it("tells which question the preview shows", () => {
+        const wrapper = mountFrame();
+
+        fromFrame(wrapper, { type: "input:preview:block", block: "q1uuid" });
+        fromFrame(wrapper, { type: "input:preview:block", block: "q2uuid" });
+
+        expect(wrapper.emitted("update:shown")).toEqual([["q1uuid"], ["q2uuid"]]);
+    });
+
+    it("tells when the preview doesn't go to the open question, as when a rule hides it", async () => {
+        vi.useFakeTimers();
+        const wrapper = mountFrame();
+        fromFrame(wrapper, { type: "input:preview:block", block: "q1uuid" });
+        const missed = () => wrapper.emitted("update:missed")?.at(-1)?.[0] ?? null;
+
+        // the preview moves: nothing missed
+        useWorkbench().block = second;
+        await nextTick();
+        fromFrame(wrapper, { type: "input:preview:block", block: "q2uuid" });
+        vi.advanceTimersByTime(500);
+        expect(missed()).toBeNull();
+
+        // it stays
+        useWorkbench().block = first;
+        await nextTick();
+        vi.advanceTimersByTime(499);
+        expect(missed()).toBeNull();
+        vi.advanceTimersByTime(1);
+        expect(missed()).toBe("q1uuid");
+        vi.useRealTimers();
+    });
+
     it.each([
         ["another origin", { origin: "https://evil.example" }, {}],
         ["another window", { source: window }, {}],
