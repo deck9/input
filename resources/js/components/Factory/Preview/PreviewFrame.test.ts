@@ -20,6 +20,9 @@ vi.mock("@/api/blocks", () => ({ callUpdateFormBlock: vi.fn() }));
 vi.mock("@/api/interactions", () => ({
     callUpdateFormBlockInteraction: vi.fn(),
 }));
+vi.mock("@/api/logics", () => ({
+    callUpdateFormBlockLogic: vi.fn(async () => ({ status: 200, data: true })),
+}));
 
 // the form page is /<uuid>
 window.route = ((name: string, params?: { uuid?: string }) =>
@@ -225,7 +228,13 @@ describe("the preview frame", () => {
 
     it.each([
         ["a new choice", () => useNotice().clearSaveError("createInteraction:2")],
-        ["saved rules", () => useLogic().saveBlockLogic()],
+        [
+            "a saved rule",
+            () => {
+                useLogic().block = second;
+                return useLogic().saveSingleRule({ uuid: "r1" } as FormBlockLogic);
+            },
+        ],
     ])("loads the form again at the open question after %s", async (_, save) => {
         const wrapper = mountFrame(first, realPinia());
         const before = wrapper.get("iframe").element;

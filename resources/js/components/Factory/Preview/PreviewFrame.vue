@@ -114,7 +114,7 @@ useNotice().$onAction(({ name, args, after }) => {
   }
 });
 useLogic().$onAction(({ name, after }) => {
-  if (name === "saveBlockLogic") after(() => nextTick(reload));
+  if (name === "saveSingleRule") after(() => nextTick(reload));
 });
 
 watch(
