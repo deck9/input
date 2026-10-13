@@ -7,6 +7,7 @@ use App\Models\FormBlock;
 use App\Models\FormBlockInteraction;
 use App\Models\FormBlockLogic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -40,7 +41,8 @@ test('duplicating a question copies it right after the original, without its rul
         ->assertJson([
             'form_id' => $this->form->id,
             'type' => 'radio',
-            'title' => 'Pick one',
+            // the Identifier names the answer in prefill links and webhooks, so the copy has none
+            'title' => null,
             'message' => 'Which color do you like?',
             'options' => ['randomize' => true],
             'is_required' => true,
@@ -52,6 +54,7 @@ test('duplicating a question copies it right after the original, without its rul
     $copy = FormBlock::where('uuid', $response->json('uuid'))->firstOrFail();
 
     expect($copy->id)->not->toBe($this->block->id)
+        ->and($this->block->fresh()->title)->toBe('Pick one')
         ->and(($this->order)())->toBe([$this->first->uuid, $this->block->uuid, $copy->uuid, $this->last->uuid])
         ->and($copy->formBlockLogics)->toHaveCount(0)
         ->and($this->block->fresh()->formBlockLogics)->toHaveCount(1);
@@ -130,4 +133,12 @@ test('a failed duplicate leaves the form unchanged', function () {
         FormBlockInteraction::count(),
         FormBlockLogic::count(),
     ])->toBe($before);
+});
+
+test('a duplicate writes to the form first, so duplicates at the same time keep one position each', function () {
+    DB::enableQueryLog();
+
+    $this->block->duplicate();
+
+    expect(DB::getQueryLog()[0]['query'])->toMatch('/^update [`"]forms[`"] set /');
 });

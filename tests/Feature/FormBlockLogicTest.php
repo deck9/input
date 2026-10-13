@@ -111,6 +111,26 @@ test('a block or rule id that is not a whole number is not found and changes not
     expect(FormBlockLogic::pluck('name', 'id')->all())->toBe([$logic->id => 'Old']);
 })->with(['xlf', '.0', 'e0']);
 
+test('a rule with empty fields gets errors in the editor\'s words', function () {
+    $block = FormBlock::factory()->create();
+
+    $this->actingAs($block->form->user)
+        ->json('post', route('api.logics.create', $block->id), ['conditions' => [[]]])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors([
+            'name' => 'Give the rule a name.',
+            'conditions.0.source' => 'Pick a question for condition 1.',
+            'conditions.0.value' => 'Add an answer for condition 1.',
+            'conditions.0.operator' => 'Pick how to compare in condition 1.',
+            'conditions.0.chainOperator' => 'Pick "and" or "or" for condition 1.',
+            'action' => 'Pick what the rule does: hide, show or go to.',
+            'evaluate' => 'Pick when the rule runs: before or after the question.',
+        ]);
+
+    $this->json('post', route('api.logics.create', $block->id), [])
+        ->assertJsonValidationErrors(['conditions' => 'Add at least one condition.']);
+});
+
 test('a rule that points to a deleted question or one of another form is refused and changes nothing', function (string $method, string $field) {
     $block = FormBlock::factory()->create();
     $question = FormBlock::factory()->for($block->form)->create();
@@ -135,7 +155,7 @@ test('a rule that points to a deleted question or one of another form is refused
 
         $this->json('post', $route, $payload)
             ->assertStatus(422)
-            ->assertJsonValidationErrors([$field => 'is not in this form'])
+            ->assertJsonValidationErrors([$field => $field === 'action_payload' ? 'The question to go to is not in this form.' : 'Pick a question from this form for condition 1.'])
             ->assertJsonMissingValidationErrors($field === 'action_payload' ? 'conditions.0.source' : 'action_payload');
     }
 

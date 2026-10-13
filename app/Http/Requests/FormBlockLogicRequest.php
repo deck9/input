@@ -45,7 +45,7 @@ class FormBlockLogicRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'conditions' => 'required|array',
-            'conditions.*.source' => ['required', 'string', $this->inThisForm('The question of your #:position condition is not in this form.')],
+            'conditions.*.source' => ['required', 'string', $this->inThisForm('Pick a question from this form for condition :position.')],
             'conditions.*.operator' => 'required|string|in:equals,equalsNot,contains,containsNot,isLowerThan,isGreaterThan',
             'conditions.*.value' => 'required|string',
             'conditions.*.chainOperator' => 'required|string|in:and,or',
@@ -79,14 +79,14 @@ class FormBlockLogicRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'The name is required.',
-            'conditions.required' => 'At least one condition is required.',
-            'conditions.*.source.required' => 'The source block for your #:position condition is required.',
-            'conditions.*.value.required' => 'The value for your #:position condition is required.',
-            'conditions.*.operator.required' => 'The operator for the #:position condition is required.',
-            'conditions.*.chainOperator.required' => 'The chain operator for the #:position condition is required.',
-            'action.required' => 'The action is required.',
-            'evaluate.required' => 'The evaluate is required.',
+            'name.required' => 'Give the rule a name.',
+            'conditions.required' => 'Add at least one condition.',
+            'conditions.*.source.required' => 'Pick a question for condition :position.',
+            'conditions.*.value.required' => 'Add an answer for condition :position.',
+            'conditions.*.operator.required' => 'Pick how to compare in condition :position.',
+            'conditions.*.chainOperator.required' => 'Pick "and" or "or" for condition :position.',
+            'action.required' => 'Pick what the rule does: hide, show or go to.',
+            'evaluate.required' => 'Pick when the rule runs: before or after the question.',
         ];
     }
 }

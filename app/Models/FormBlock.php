@@ -166,9 +166,14 @@ class FormBlock extends BaseModel
     public function duplicate(): FormBlock
     {
         return DB::transaction(function () {
+            // duplicates at the same time wait here, else they renumber over each other or deadlock.
+            // A write, not lockForUpdate: SQLite ignores that and fails a read that turns into a write
+            $this->form()->touch();
+
             $blocks = $this->form->formBlocks()->get();
 
-            $copy = $this->form->formBlocks()->create($this->only(self::TEMPLATE_ATTRIBUTES));
+            // the Identifier names the answer in prefill links and webhooks, so the copy has none
+            $copy = $this->form->formBlocks()->create([...$this->only(self::TEMPLATE_ATTRIBUTES), 'title' => null]);
 
             $this->formBlockInteractions->each(
                 fn ($interaction) => $copy->formBlockInteractions()->create($interaction->only(FormBlockInteraction::TEMPLATE_ATTRIBUTES))
