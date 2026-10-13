@@ -1,7 +1,8 @@
-import { mount, VueWrapper } from "@vue/test-utils";
+import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { router } from "@inertiajs/vue3";
 import Settings from "./Settings.vue";
+import { finishBeforeReload } from "@/utils/useFreshFormAfterBack";
 
 vi.mock("@inertiajs/vue3", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@inertiajs/vue3")>()),
@@ -43,12 +44,13 @@ describe("settings page from history", () => {
         wrapper = undefined;
     });
 
-    it("loads the form again when browser Back brings the page back", () => {
+    it("loads the form again when browser Back brings the page back", async () => {
         window.dispatchEvent(
             new PopStateEvent("popstate", { state: { component: "x" } }),
         );
 
         mountSettings();
+        await flushPromises();
 
         expect(router.visit).toHaveBeenCalledWith(window.location.href, {
             only: ["form"],
@@ -66,6 +68,21 @@ describe("settings page from history", () => {
         onVisit(new CustomEvent("inertia:before"));
 
         mountSettings();
+
+        expect(router.visit).not.toHaveBeenCalled();
+    });
+
+    it("skips the reload when you go elsewhere while a save on Back is on its way", async () => {
+        let landed = () => {};
+        finishBeforeReload(new Promise<void>((resolve) => (landed = resolve)));
+        window.dispatchEvent(
+            new PopStateEvent("popstate", { state: { component: "x" } }),
+        );
+
+        mountSettings();
+        onVisit(new CustomEvent("inertia:before"));
+        landed();
+        await flushPromises();
 
         expect(router.visit).not.toHaveBeenCalled();
     });

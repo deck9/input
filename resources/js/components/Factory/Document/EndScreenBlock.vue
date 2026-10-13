@@ -140,6 +140,7 @@ import debounce from "lodash/debounce";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
 import Editor from "@/components/Factory/Shared/Editor.vue";
+import { finishBeforeReload } from "@/utils/useFreshFormAfterBack";
 import { plainText } from "./questionSummary";
 
 const store = useForm();
@@ -209,8 +210,9 @@ const leave = (event: FocusEvent) => {
   }
 };
 
-// browser Back moves no focus; the old page stays until the next one has loaded
-useEventListener(window, "popstate", () => save.flush());
+// browser Back moves no focus; the old page stays until the next one has loaded,
+// and that page waits for this save before it loads the form again
+useEventListener(window, "popstate", () => finishBeforeReload(save.flush()));
 
 const open = async () => {
   workbench.clearWorkbench();
