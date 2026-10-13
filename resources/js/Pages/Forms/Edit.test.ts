@@ -3,12 +3,23 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AxiosResponse } from "axios";
 import { callGetForm } from "@/api/forms";
 import Edit from "./Edit.vue";
+import FormMenu from "@/components/Factory/TopBar/FormMenu.vue";
 import { useForm, useWorkbench } from "@/stores";
 
 vi.mock("@/api/forms", async (importOriginal) => ({
     ...(await importOriginal()),
     callGetForm: vi.fn(),
 }));
+
+// the headlessui dialog and menu need it, jsdom has none
+vi.stubGlobal(
+    "ResizeObserver",
+    class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    },
+);
 
 const form = { uuid: "form1", name: "Customer feedback" } as FormModel;
 const blocks = [
@@ -19,16 +30,23 @@ const blocks = [
 const stubs = {
     AppLayout: { props: ["title"], template: "<main><slot /></main>" },
     DocumentList: { template: "<ol><li>questions</li></ol>" },
+    FormPreview: {
+        props: ["modelValue"],
+        template: "<aside v-if='modelValue'>preview</aside>",
+    },
 };
 
 let wrapper: VueWrapper | undefined;
 
 // the test pinia stubs actions: getBlocks does what each test tells it to
-const mountEditor = async (load: () => Promise<void>) => {
+const mountEditor = async (
+    load: () => Promise<void>,
+    global: { stubs?: object; mocks?: object } = { stubs },
+) => {
     vi.mocked(useForm().getBlocks).mockImplementation(load);
     wrapper = mount(Edit, {
         props: { form },
-        global: { stubs },
+        global,
         attachTo: document.body,
     });
     await flushPromises();
@@ -122,6 +140,61 @@ describe("editor loading", () => {
         await flushPromises();
 
         expect(useWorkbench().putOnWorkbench).not.toHaveBeenCalled();
+    });
+
+    // the top bar has its Preview from lg
+    it("opens the preview from the document on a phone", async () => {
+        const editor = await mountEditor(loads(blocks));
+        expect(editor.find("aside").exists()).toBe(false);
+
+        const preview = editor
+            .findAll("button")
+            .find((button) => button.text() === "Preview");
+        await preview?.trigger("click");
+
+        expect(editor.find("aside").exists()).toBe(true);
+        // a click on the text would land on a span, which the closing dialog
+        // can't focus again: the button's inside lets clicks through to it
+        expect(preview?.classes()).toContain("[&_*]:pointer-events-none");
+        // a 44 px icon below sm, so Outline fits beside it; the label from sm
+        expect(preview?.classes()).toEqual(
+            expect.arrayContaining(["h-11", "w-11", "sm:w-auto"]),
+        );
+        expect(preview?.get("span").classes()).toEqual(["sr-only", "sm:not-sr-only"]);
+        expect(preview?.attributes("aria-haspopup")).toBe("dialog");
+    });
+
+    it("puts focus back on the form menu when a preview opened from it closes", async () => {
+        // the menu item is gone by then, so the dialog can't focus it again
+        const editor = await mountEditor(loads(blocks), {
+            stubs: {
+                ...stubs,
+                AppLayout: {
+                    components: { FormMenu },
+                    template: "<main><FormMenu /><slot /></main>",
+                },
+                FormPreview: false,
+                PreviewFrame: true,
+            },
+            mocks: { route: () => "/" },
+        });
+        const menu = editor.get('[aria-haspopup="menu"]').element as HTMLElement;
+        // a mouse hits the name inside the button
+        menu.querySelector("span")?.click();
+        await flushPromises();
+        [...document.querySelectorAll<HTMLElement>('[role="menuitem"]')]
+            .find((item) => item.textContent?.trim() === "Preview")
+            ?.click();
+        await new Promise((resolve) => setTimeout(resolve));
+        await flushPromises();
+        expect(document.activeElement?.closest("[role=dialog]")).not.toBeNull();
+
+        document.activeElement?.dispatchEvent(
+            new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+        );
+        await flushPromises();
+
+        expect(document.activeElement).toBe(menu);
     });
 });
 

@@ -15,11 +15,20 @@
         <D9Icon class="flex-none" name="chevron-down" />
       </span>
     </template>
-    <!-- from lg the bar has Preview -->
+    <!-- from lg the bar has Preview; the editor opens its preview at the open
+      question, other pages the form in preview mode: neither stores answers -->
     <D9MenuLink
-      v-if="!isLarge"
+      v-if="!isLarge && openPreview"
+      as="button"
+      type="button"
+      :class="menuItem"
+      label="Preview"
+      @click="openPreview"
+    />
+    <D9MenuLink
+      v-else-if="!isLarge"
       as="a"
-      :href="store.formUrl"
+      :href="`${store.formUrl}?preview=1`"
       target="_blank"
       :class="menuItem"
       label="Preview ↗"
@@ -104,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useMediaQuery } from "@vueuse/core";
 import { D9Button, D9Icon, D9Menu, D9MenuLink } from "@deck9/ui";
@@ -113,6 +122,8 @@ import FormNameDialog from "@/components/Dashboard/FormNameDialog.vue";
 import { useForm } from "@/stores";
 
 const store = useForm();
+// the editor page provides it
+const openPreview = inject<(() => void) | null>("openPreview", null);
 // Tailwind's lg
 const isLarge = useMediaQuery("(min-width: 1024px)");
 

@@ -55,10 +55,11 @@
     >
       <slot name="save-status" />
       <slot name="preview">
-        <!-- until the live preview lands: the form in a new tab;
-          on phones it's in the form menu, so the name keeps its room -->
+        <!-- pages without the live preview: the form in preview mode
+          (stores no answers) in a new tab; on phones it's in the form menu,
+          so the name keeps its room -->
         <a
-          :href="store.formUrl"
+          :href="`${store.formUrl}?preview=1`"
           target="_blank"
           rel="noopener"
           class="hidden h-9 w-9 flex-none items-center justify-center gap-1.5 rounded-md border border-grey-600 text-[13px] font-semibold text-white hover:bg-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:flex xl:w-auto xl:px-2.5"

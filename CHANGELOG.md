@@ -16,6 +16,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
 -   Add a question right where you need it: between questions or from a question's menu, and type "/" in an empty question to pick its answer type. A picker groups the answer types as Text, Choice, Rating, Other and Content, and the new question opens ready to type. The answer types have new names, like Single choice, Short text and Text only. (#276)
 -   The form editor shows the end screen as the last block of your form. You can edit its headline, text and button right there, and the Completion Page in Settings shows the same values. (#271)
+-   "Preview" in the editor shows your form beside the questions, on tablet and phone as a panel. It follows the question you edit, and the editor follows when you click Next in it. On the other form pages, "Preview" opens your form in a new tab in preview mode. Answers in either preview aren't saved. (#273)
 
 ### Changed
 

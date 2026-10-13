@@ -157,6 +157,24 @@ describe("the form document", () => {
         expect(document.activeElement).toBe(button.element);
     });
 
+    it("puts Outline and the page's actions side by side, as 44 px icons below sm", () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            slots: { actions: "<button type='button'>Preview</button>" },
+            global: { stubs },
+        });
+
+        const outline = wrapper
+            .findAll("button")
+            .find((button) => button.text() === "Outline");
+        expect(outline?.classes()).toEqual(
+            expect.arrayContaining(["h-11", "w-11", "sm:w-auto"]),
+        );
+        expect(outline?.get("span").classes()).toEqual(["sr-only", "sm:not-sr-only"]);
+        expect(outline?.element.nextElementSibling?.textContent).toBe("Preview");
+    });
+
     it("reads out where a moved question went", async () => {
         useForm().blocks = blocks;
         wrapper = mount(FormDocument, {
