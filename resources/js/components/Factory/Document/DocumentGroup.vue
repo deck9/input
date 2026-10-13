@@ -40,7 +40,7 @@
         @add-to-group="addQuestion"
       />
     </div>
-    <BlockRules :block="group" :numbers="numbers" class="pb-2 pl-9" />
+    <BlockRules :block="group" :numbers="numbers" class="pb-2 pl-8" />
 
     <div class="relative">
       <DocumentList

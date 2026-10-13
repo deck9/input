@@ -271,9 +271,8 @@ describe("editing a rule in place", () => {
 
     it("saves the picked answer and shows the sentence again", async () => {
         const logic = useLogic();
-        vi.mocked(logic.saveSingleRule).mockImplementation(
-            async (saved) => saved,
-        );
+        // an update answers only true
+        vi.mocked(logic.saveSingleRule).mockResolvedValue(true as never);
         const wrapper = await edit();
 
         await pick(wrapper, "-0-answer", "No, not this time");
@@ -295,6 +294,23 @@ describe("editing a rule in place", () => {
             }),
         );
         expect(text(wrapper)).toContain("If question 1 is “No, not this time”");
+    });
+
+    it("closes on Escape, but not when an open list takes it", async () => {
+        const wrapper = await edit();
+        const editor = wrapper.find("[role=group]");
+        const listEscape = new KeyboardEvent("keydown", {
+            key: "Escape",
+            bubbles: true,
+            cancelable: true,
+        });
+        listEscape.preventDefault();
+
+        editor.element.dispatchEvent(listEscape);
+        expect(editing.value).not.toBeNull();
+
+        await editor.trigger("keydown", { key: "Escape" });
+        expect(editing.value).toBeNull();
     });
 
     it("shows why the server refused a rule", async () => {

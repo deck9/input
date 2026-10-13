@@ -3,11 +3,11 @@
     role="group"
     :aria-label="`Rule ${index + 1} of ${owner}`"
     class="my-1 space-y-3 rounded-lg border border-grey-200 bg-white p-3 text-[13px] text-grey-700 shadow-sm"
-    @keydown.esc="cancel"
+    @keydown.esc="onEscape"
   >
     <div v-for="(condition, i) in draft.conditions" :key="i" class="space-y-1">
       <div class="flex flex-wrap items-center gap-2">
-        <span v-if="i === 0" class="w-12 shrink-0 font-medium">If</span>
+        <span v-if="i === 0" class="shrink-0 font-medium sm:w-20">If</span>
         <div v-else class="w-20 shrink-0">
           <span :id="`${id}-${i}-chain-label`" class="sr-only"
             >And or or, condition {{ i + 1 }}</span
@@ -24,7 +24,7 @@
         </div>
 
         <div
-          class="w-full min-w-0 rounded-md sm:w-60"
+          class="min-w-0 flex-1 basis-48 rounded-md sm:flex-none"
           :class="isDeleted(condition.source) && 'ring-2 ring-red-500'"
         >
           <span :id="`${id}-${i}-source-label`" class="sr-only"
@@ -46,7 +46,7 @@
           />
         </div>
 
-        <div class="w-36 shrink-0">
+        <div class="w-32 shrink-0">
           <span :id="`${id}-${i}-operator-label`" class="sr-only"
             >Comparison for condition {{ i + 1 }}</span
           >
@@ -66,7 +66,7 @@
           />
         </div>
 
-        <div class="min-w-0 flex-1 basis-40">
+        <div class="min-w-0 flex-1 basis-28">
           <template v-if="answerOptions(question(condition.source)).length">
             <span :id="`${id}-${i}-answer-label`" class="sr-only"
               >Answer for condition {{ i + 1 }}</span
@@ -107,7 +107,7 @@
           v-if="draft.conditions.length > 1"
           type="button"
           :aria-label="`Remove condition ${i + 1}`"
-          class="grid h-8 w-8 shrink-0 place-items-center rounded-md text-grey-600 hover:bg-grey-100 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          class="grid h-11 w-11 shrink-0 place-items-center rounded-md sm:h-8 sm:w-8 text-grey-600 hover:bg-grey-100 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           @click="draft.conditions.splice(i, 1)"
         >
           <D9Icon name="trash" aria-hidden="true" />
@@ -128,14 +128,14 @@
 
     <button
       type="button"
-      class="flex h-8 items-center rounded-md px-2 font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      class="flex h-11 items-center rounded-md px-2 font-semibold sm:h-8 text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       @click="addCondition"
     >
       Add condition
     </button>
 
     <div class="flex flex-wrap items-center gap-2">
-      <span class="w-12 shrink-0 font-medium">then</span>
+      <span class="shrink-0 font-medium sm:w-20">then</span>
       <div class="w-48 shrink-0">
         <span :id="`${id}-action-label`" class="sr-only">Action</span>
         <D9Select
@@ -184,7 +184,7 @@
       <button
         v-if="rule.id !== undefined"
         type="button"
-        class="flex h-8 items-center rounded-md px-2 font-semibold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        class="flex h-11 items-center rounded-md px-2 font-semibold sm:h-8 text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         @click="remove"
       >
         Remove rule
@@ -205,6 +205,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
+import truncate from "lodash/truncate";
 import { D9Button, D9Icon, D9Input, D9Select } from "@deck9/ui";
 import { useForm, useLogic } from "@/stores";
 import { findAllBlocksBeforeTarget } from "@/stores/helpers/queue";
@@ -255,10 +256,17 @@ const question = (uuid?: string | null) =>
 const isDeleted = (uuid?: string | null) => !!uuid && !question(uuid);
 const optionOf = <T extends { id: string }>(options: T[], id?: string | null) =>
   options.find((option) => option.id === id) ?? null;
-const toOption = (block: FormBlockModel): Option => ({
-  id: block.uuid,
-  label: `${props.numbers[block.uuid]} · ${plainText(block.message) || "No question text yet"}`,
-});
+const toOption = (block: FormBlockModel): Option => {
+  const text = truncate(plainText(block.message), {
+    length: 80,
+    separator: " ",
+  });
+
+  return {
+    id: block.uuid,
+    label: `${props.numbers[block.uuid]} · ${text || "No question text yet"}`,
+  };
+};
 
 // a jump can use the question's own answer; hide and show only earlier ones
 const sourceOptions = computed(() =>
@@ -331,6 +339,15 @@ const cancel = () => {
   close();
 };
 
+// Escape in an open list only closes the list
+const onEscape = (event: KeyboardEvent) => {
+  const target = event.target as HTMLElement;
+
+  if (!event.defaultPrevented && !target.closest("[aria-expanded=true]")) {
+    cancel();
+  }
+};
+
 const save = async () => {
   if (broken.value || saving.value) {
     return;
@@ -343,13 +360,15 @@ const save = async () => {
 
   try {
     const isGoto = draft.action === "goto";
-    keepSaved(
-      await logic.saveSingleRule({
-        ...draft,
-        evaluate: isGoto ? "after" : "before",
-        action_payload: isGoto ? draft.action_payload : null,
-      }),
-    );
+    const rule: FormBlockLogic = {
+      ...draft,
+      evaluate: isGoto ? "after" : "before",
+      action_payload: isGoto ? draft.action_payload : null,
+    };
+    const saved = await logic.saveSingleRule(rule);
+
+    // a new rule comes back with its id; an update answers only true
+    keepSaved(typeof saved === "object" ? saved : rule);
     close();
   } catch (error: any) {
     const data = error?.response?.status === 422 ? error.response.data : null;

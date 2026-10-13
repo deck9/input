@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-start gap-2 py-0.5">
-    <p class="min-w-0 flex-1 py-1 text-[13px] leading-6 text-grey-700">
+  <div class="flex flex-wrap items-center gap-x-1 py-0.5 pl-9">
+    <p class="min-w-0 py-1 text-[13px] leading-6 text-grey-700">
       <template v-for="(part, i) in parts" :key="i">
         <DeletedQuestion v-if="part.deleted" />
         <template v-else-if="part.number"
@@ -28,7 +28,7 @@
       :id="`${id}-edit`"
       type="button"
       :aria-label="`Edit rule ${index + 1} of ${owner}`"
-      class="flex h-8 shrink-0 items-center rounded-md px-2 text-[13px] font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      class="flex h-11 shrink-0 items-center rounded-md px-2 text-[13px] sm:h-8 font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       @click="emit('edit')"
     >
       Edit
