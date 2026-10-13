@@ -95,6 +95,7 @@
     </DialogPanel>
   </Dialog>
   <BlockLogicEditor />
+  <p class="sr-only" aria-live="polite">{{ moveNote }}</p>
 </template>
 
 <script setup lang="ts">
@@ -108,6 +109,7 @@ import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue"
 import DocumentList from "./DocumentList.vue";
 import DocumentOutline from "./DocumentOutline.vue";
 import { questionNumbers } from "./questionSummary";
+import { moveNote } from "./blockMove";
 import {
   cursorFor,
   focusBlock,

@@ -2,6 +2,7 @@ import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
 import FormDocument from "./FormDocument.vue";
+import { moveNote } from "./blockMove";
 
 const blocks = [
     { id: 1, uuid: "b1", type: "none", message: "<p>Welcome</p>" },
@@ -62,5 +63,21 @@ describe("the form document", () => {
 
         expect(useWorkbench().putOnWorkbench).toHaveBeenCalledWith(blocks[1]);
         expect(scrolled).toHaveBeenCalledWith("row-b2", "start");
+    });
+
+    it("reads out where a moved question went", async () => {
+        useForm().blocks = blocks;
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            global: { stubs },
+            attachTo: document.body,
+        });
+
+        moveNote.value = "Moved to position 2 of 2";
+        await wrapper.vm.$nextTick();
+
+        expect(
+            document.querySelector("[aria-live=polite]")?.textContent,
+        ).toBe("Moved to position 2 of 2");
     });
 });
