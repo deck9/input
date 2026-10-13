@@ -18,7 +18,7 @@
         v-if="target"
         type="button"
         :title="targetLabel"
-        class="inline-flex h-6 max-w-full items-center rounded-md bg-blue-50 px-2 align-middle font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:max-w-[22rem]"
+        class="relative inline-flex h-6 max-w-full items-center rounded-md bg-blue-50 px-2 align-middle font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:max-w-[22rem] max-lg:before:absolute max-lg:before:inset-x-0 max-lg:before:-inset-y-2.5"
         @click="goToTarget"
       >
         <span class="truncate">{{ targetLabel }}</span>
