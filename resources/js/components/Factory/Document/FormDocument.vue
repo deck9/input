@@ -11,9 +11,12 @@
 
       <template v-else>
         <h1 class="sr-only">Questions</h1>
-        <p class="mb-4 pl-12 text-sm tabular-nums text-grey-600">
-          {{ countLine }}
-        </p>
+        <div class="mb-4 flex items-center justify-between gap-2 pl-12">
+          <p class="text-sm tabular-nums text-grey-600">
+            {{ countLine }}
+          </p>
+          <slot name="actions" />
+        </div>
 
         <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
         <EmptyState

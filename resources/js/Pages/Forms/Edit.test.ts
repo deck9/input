@@ -13,6 +13,10 @@ const stubs = {
     AppLayout: { props: ["title"], template: "<main><slot /></main>" },
     DocumentList: { template: "<ol><li>questions</li></ol>" },
     BlockLogicEditor: true,
+    FormPreview: {
+        props: ["modelValue"],
+        template: "<aside v-if='modelValue'>preview</aside>",
+    },
 };
 
 let wrapper: VueWrapper | undefined;
@@ -116,5 +120,18 @@ describe("editor loading", () => {
         await flushPromises();
 
         expect(useWorkbench().putOnWorkbench).not.toHaveBeenCalled();
+    });
+
+    // the top bar has its Preview from lg
+    it("opens the preview from the document on a phone", async () => {
+        const editor = await mountEditor(loads(blocks));
+        expect(editor.find("aside").exists()).toBe(false);
+
+        const preview = editor
+            .findAll("button")
+            .find((button) => button.text() === "Preview");
+        await preview?.trigger("click");
+
+        expect(editor.find("aside").exists()).toBe(true);
     });
 });

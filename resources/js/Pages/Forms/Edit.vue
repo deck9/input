@@ -1,7 +1,19 @@
 <template>
   <app-layout title="Edit Form" limit-height>
     <template #preview><PreviewToggle v-model="isPreviewing" /></template>
-    <FormDocument :status="status" @retry="loadBlocks" />
+    <FormDocument :status="status" @retry="loadBlocks">
+      <!-- a phone's top bar has no room for Preview -->
+      <template #actions>
+        <D9Button
+          class="lg:hidden"
+          label="Preview"
+          color="light"
+          icon="eye"
+          icon-position="left"
+          @click="isPreviewing = true"
+        />
+      </template>
+    </FormDocument>
     <FormPreview v-model="isPreviewing" />
   </app-layout>
 </template>
@@ -14,6 +26,7 @@ import PreviewToggle from "@/components/Factory/Preview/PreviewToggle.vue";
 import { useForm, useWorkbench } from "@/stores";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useMediaQuery } from "@vueuse/core";
+import { D9Button } from "@deck9/ui";
 
 const props = defineProps<{
   form: FormModel;
