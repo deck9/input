@@ -7,7 +7,7 @@
     <div class="flex w-8 shrink-0 flex-col sm:w-12 items-end gap-1 pr-2 pt-3">
       <span
         aria-hidden="true"
-        class="flex h-6 items-center text-[13px] tabular-nums text-grey-600"
+        class="flex h-6 items-center text-sm font-semibold tabular-nums text-grey-700"
         ><span
           :class="
             isJumpTarget &&
