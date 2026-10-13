@@ -104,10 +104,12 @@ test('can import a form that has a group block with a child block', function () 
         'type' => FormBlockType::group,
     ]);
 
+    // its own position, else the database may list it before the group
     FormBlock::factory()->create([
         'form_id' => $form->id,
         'type' => FormBlockType::none,
         'parent_block' => $groupBlock->uuid,
+        'sequence' => 1,
     ]);
 
     $importTemplateString = $this->actingAs($form->user)
