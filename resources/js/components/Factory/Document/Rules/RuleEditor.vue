@@ -185,7 +185,7 @@
         v-if="rule.id !== undefined"
         type="button"
         class="flex h-11 items-center rounded-md px-2 font-semibold sm:h-8 text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        @click="remove"
+        @click="isAsking = true"
       >
         Remove rule
       </button>
@@ -200,6 +200,15 @@
         @click="save"
       />
     </div>
+
+    <DeleteDialog
+      :show="isAsking"
+      title="Remove this rule?"
+      text="This can't be undone."
+      confirm-label="Remove rule"
+      @close="isAsking = false"
+      @confirm="remove"
+    />
   </div>
 </template>
 
@@ -209,6 +218,7 @@ import truncate from "lodash/truncate";
 import { D9Button, D9Icon, D9Input, D9Select } from "@deck9/ui";
 import { useForm, useLogic } from "@/stores";
 import { findAllBlocksBeforeTarget } from "@/stores/helpers/queue";
+import DeleteDialog from "@/components/Factory/Shared/DeleteDialog.vue";
 import { plainText } from "../questionSummary";
 import { answerKind, answerOptions, operatorsFor } from "./ruleText";
 import { editing, keepSaved, stopEditing } from "./ruleEditing";
@@ -380,7 +390,10 @@ const save = async () => {
   }
 };
 
+const isAsking = ref(false);
+
 const remove = async () => {
+  isAsking.value = false;
   logic.block = props.block;
   const count = props.block.logics?.length ?? 0;
 

@@ -80,6 +80,7 @@ beforeEach(() => {
 const mountRules = (uuid: string) =>
     mount(BlockRules, {
         props: { block: find(uuid), numbers: questionNumbers(blocks) },
+        global: { stubs: { teleport: true } },
         attachTo: document.body,
     });
 
@@ -330,6 +331,24 @@ describe("editing a rule in place", () => {
             ),
         );
         expect(editing.value).not.toBeNull();
+    });
+
+    it("asks in the app's dialog before it removes a rule", async () => {
+        const logic = useLogic();
+        const wrapper = await edit();
+
+        await button(wrapper, "Remove rule").trigger("click");
+
+        expect(text(wrapper)).toContain("Remove this rule?");
+        expect(logic.removeRule).not.toHaveBeenCalled();
+
+        const confirm = wrapper
+            .findAll("button")
+            .filter((item) => item.text() === "Remove rule")
+            .at(-1)!;
+        await confirm.trigger("click");
+
+        expect(logic.removeRule).toHaveBeenCalledWith(0);
     });
 });
 
