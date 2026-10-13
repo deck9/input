@@ -8,6 +8,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import { useForm, useWorkbench } from "@/stores";
+import { useSaveOnLeave } from "@/components/Factory/Shared/useSaveOnLeave";
 import { useFreshForm } from "@/utils/useFreshForm";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
@@ -52,6 +53,8 @@ const loadBlocks = async () => {
 };
 
 let left = false;
+
+useSaveOnLeave();
 
 onBeforeUnmount(() => {
   left = true;

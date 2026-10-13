@@ -1,5 +1,5 @@
 /* eslint-disable no-async-promise-executor */
-import { AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import handler from "./handler";
 
 export function callGetFormBlocks(
@@ -45,13 +45,15 @@ export function callCreateFormBlock(
 }
 
 export function callUpdateFormBlock(
-    block: FormBlockModel
+    block: FormBlockModel,
+    config?: AxiosRequestConfig
 ): Promise<AxiosResponse<FormBlockModel>> {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await handler.post(
                 window.route("api.blocks.update", { block: block.id }),
-                block
+                block,
+                config
             );
 
             resolve(response as AxiosResponse<FormBlockModel>);
