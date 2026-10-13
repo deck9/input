@@ -31,18 +31,21 @@
       <span v-if="group.is_disabled" class="text-xs text-grey-600"
         >Always hidden</span
       >
-      <button
-        type="button"
-        class="flex h-11 items-center rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        @click="addRule(group)"
-      >
-        Add rule
-      </button>
-      <BlockMenu
-        :block="group"
-        :label="`Options for group ${group.title || 'Group'}`"
-        @add-to-group="addQuestion"
-      />
+      <!-- one unit, so on a phone both wrap below the name, on the right -->
+      <div class="ml-auto flex items-center gap-2">
+        <button
+          type="button"
+          class="flex h-11 items-center rounded-md px-2 text-sm font-semibold text-blue-700 lg:h-9 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          @click="addRule(group)"
+        >
+          Add rule
+        </button>
+        <BlockMenu
+          :block="group"
+          :label="`Options for group ${group.title || 'Group'}`"
+          @add-to-group="addQuestion"
+        />
+      </div>
     </div>
     <BlockRules :block="group" :numbers="numbers" class="pb-2 pl-8" />
 
