@@ -51,7 +51,7 @@ export function addRule(block: FormBlockModel) {
         ...logics,
         {
             form_block_id: block.id,
-            name: `Rule #${logics.length + 1}`,
+            name: `Rule ${logics.length + 1}`,
             action: isGroup ? "hide" : "goto",
             action_payload: null,
             evaluate: isGroup ? "before" : "after",
