@@ -23,6 +23,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, and the header keeps the logo and your team name. On every screen, keyboard focus in the editor bar and the account menu now shows a blue ring. (#257)
 -   A form's pages have one top bar instead of two: the form's name with its menu, a Draft or Live label, the pages, Preview, Publish and your account. Publish first checks for questions without text, rules that point to a deleted question and a missing privacy link. Once the form is live, Share has its link, Open form and Unpublish. On a phone the pages sit in a tab bar at the bottom. (#265)
 -   A logic rule with a missing field now tells you in plain words what to fill in, like "Pick a question for condition 1." (#278)
+-   Deleting a question, a group, an answer choice, a consent policy or a logic rule in the form editor now asks first in the app's own dialog. It names the question, how many answers will be deleted with it, and the questions whose rules will stop working. A choice nobody picked, or a policy nobody agreed to, is still deleted at once. (#269)
 
 ### Fixed
 
