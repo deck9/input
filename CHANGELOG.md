@@ -14,7 +14,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules. The copy goes right after the original. (#262)
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 -   Add `?preview=1` to your form's link to try it as a member of its team. Nothing is stored, files aren't uploaded and the form doesn't redirect at the end. (#270)
--   "Preview" in the editor shows your form beside the questions, on tablet and phone as a panel. It follows the question you edit, and the editor follows when you click Next in it. Answers in the preview aren't saved. (#273)
+-   "Preview" in the editor shows your form beside the questions, on tablet and phone as a panel. It follows the question you edit, and the editor follows when you click Next in it. On the other form pages, "Preview" opens your form in a new tab in preview mode. Answers in either preview aren't saved. (#273)
 
 ### Changed
 
