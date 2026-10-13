@@ -16,7 +16,6 @@ const stubs = {
         template: `<div>[list]<div id="row-b1" /><div id="row-b2" /></div>`,
     },
     RuleGutter: true,
-    EmptyState: { template: "<div>[empty]</div>" },
     EndScreenBlock: { template: "<div>[end]</div>" },
 };
 
@@ -193,7 +192,7 @@ describe("the form document", () => {
 
     it.each([
         ["the questions", "[list]", blocks],
-        ["no questions", "[empty]", []],
+        ["no questions", "Add your first question", []],
     ])("shows the end screen after %s", (_, first, list) => {
         useForm().blocks = list as FormBlockModel[];
         wrapper = mount(FormDocument, {
