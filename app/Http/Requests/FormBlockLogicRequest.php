@@ -68,7 +68,7 @@ class FormBlockLogicRequest extends FormRequest
             'name.required' => 'Give the rule a name.',
             'conditions.required' => 'Add at least one condition.',
             'conditions.*.source.required' => 'Pick a question for condition :position.',
-            'conditions.*.value.required' => 'Enter a value for condition :position.',
+            'conditions.*.value.required' => 'Add an answer for condition :position.',
             'conditions.*.operator.required' => 'Pick how to compare in condition :position.',
             'conditions.*.chainOperator.required' => 'Pick "and" or "or" for condition :position.',
             'action.required' => 'Pick what the rule does: hide, show or go to.',

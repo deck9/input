@@ -120,7 +120,7 @@ test('a rule with empty fields gets errors in the editor\'s words', function () 
         ->assertJsonValidationErrors([
             'name' => 'Give the rule a name.',
             'conditions.0.source' => 'Pick a question for condition 1.',
-            'conditions.0.value' => 'Enter a value for condition 1.',
+            'conditions.0.value' => 'Add an answer for condition 1.',
             'conditions.0.operator' => 'Pick how to compare in condition 1.',
             'conditions.0.chainOperator' => 'Pick "and" or "or" for condition 1.',
             'action' => 'Pick what the rule does: hide, show or go to.',
