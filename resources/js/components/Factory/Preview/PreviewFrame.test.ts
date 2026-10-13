@@ -179,10 +179,25 @@ describe("the preview frame", () => {
         useForm().blocks![1].message = "<p>Changed</p>";
         await save();
         await nextTick();
+        await nextTick();
 
         const iframe = wrapper.get("iframe");
         expect(iframe.element).not.toBe(before);
         expect(iframe.attributes("src")).toBe("/form1?preview=1&block=q2uuid");
+    });
+
+    it("loads the form again after a delete, which takes the question out after its save", async () => {
+        const pinia = createPinia();
+        setActivePinia(pinia);
+        const wrapper = mountFrame(first, pinia);
+        const before = wrapper.get("iframe").element;
+
+        useNotice().clearSaveError("deleteBlock:2");
+        useForm().blocks!.splice(1, 1);
+        await nextTick();
+        await nextTick();
+
+        expect(wrapper.get("iframe").element).not.toBe(before);
     });
 
     it("keeps running after a save that changed nothing", async () => {

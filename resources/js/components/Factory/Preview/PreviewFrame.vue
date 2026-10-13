@@ -86,12 +86,13 @@ const reload = () => {
   started = false;
   clearTimeout(waiting);
 };
-// every save that works clears its error; rules save on their own
+// every save that works clears its error; rules save on their own;
+// a delete splices after it, so wait a tick to see the new list
 useNotice().$onAction(({ name, after }) => {
-  if (name === "clearSaveError") after(reload);
+  if (name === "clearSaveError") after(() => nextTick(reload));
 });
 useLogic().$onAction(({ name, after }) => {
-  if (name === "saveBlockLogic") after(reload);
+  if (name === "saveBlockLogic") after(() => nextTick(reload));
 });
 
 watch(
