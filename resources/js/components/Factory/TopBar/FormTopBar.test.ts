@@ -396,7 +396,8 @@ describe("form top bar", () => {
         const item = await previewItem(false);
         expect(text(item!)).toBe("Preview ↗");
         expect(item?.getAttribute("aria-label")).toBe("Preview (opens in a new tab)");
-        expect(item?.getAttribute("href")).toBe(`${location.origin}/forms.show`);
+        // in preview mode: no answers are stored
+        expect(item?.getAttribute("href")).toBe(`${location.origin}/forms.show?preview=1`);
         expect(item?.getAttribute("target")).toBe("_blank");
         // from 1024 px it's in the bar
         expect(await previewItem(true)).toBeUndefined();

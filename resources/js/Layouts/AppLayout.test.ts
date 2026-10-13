@@ -64,7 +64,7 @@ describe("app header", () => {
         );
     });
 
-    it("links a draft's bar to its form in a new tab, until the live preview fills the slot", async () => {
+    it("links a draft's bar to its form's preview in a new tab, where no live preview fills the slot", async () => {
         window.route = ((name: string) => `/${name}`) as typeof window.route;
         // the real bar, without its menus
         const wrapper = mount(AppLayout, {
@@ -86,7 +86,8 @@ describe("app header", () => {
         await wrapper.vm.$nextTick();
 
         const preview = wrapper.get("header a[target='_blank']");
-        expect(preview.attributes("href")).toBe("/forms.show");
+        // in preview mode: no answers are stored
+        expect(preview.attributes("href")).toBe("/forms.show?preview=1");
         expect(preview.get("span").text()).toBe("Preview");
         expect(preview.text()).toContain("(opens in a new tab)");
         // on phones it's in the form menu: the name keeps its room

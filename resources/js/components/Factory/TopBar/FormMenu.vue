@@ -15,11 +15,11 @@
         <D9Icon class="flex-none" name="chevron-down" />
       </span>
     </template>
-    <!-- from lg the bar has Preview -->
+    <!-- from lg the bar has Preview; preview mode stores no answers -->
     <D9MenuLink
       v-if="!isLarge"
       as="a"
-      :href="store.formUrl"
+      :href="`${store.formUrl}?preview=1`"
       target="_blank"
       :class="menuItem"
       label="Preview ↗"
