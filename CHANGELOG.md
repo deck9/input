@@ -11,6 +11,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. A dashboard link with an unknown filter or sort now shows your forms. Before, it showed no forms at all. (#242)
 -   Search your forms by name, also without accents ("muller" finds "Müller"), and press "/" to jump to the search. The form list has status tabs with counts and sorts by latest submission, last edit, newest or name. Your choice stays in the address, so Back undoes it and a link shows the same list. Dashboard links with the old `?filter=` show all forms. (#248)
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
+-   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules or its Identifier, so links that fill in answers and webhooks can't mix the two up. The copy goes right after the original. (#262)
 -   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 
 ### Changed
@@ -20,6 +21,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Archiving a form now also unpublishes it, so Restore brings it back unpublished. This also goes for forms you archived before this update. (#247)
 -   The form list loads faster when a team has many forms. It now needs the same few database queries for one form or a hundred. Before, every form added 3 queries. (#256)
 -   On screens narrower than 1280 px, a form's editor bar now sits in two rows under the app header: the form with Dashboard and Preview, then Editor, Settings, Integrations and Submissions as tabs. Nothing in it scrolls sideways any more, and the header keeps the logo and your team name. On every screen, keyboard focus in the editor bar and the account menu now shows a blue ring. (#257)
+-   A form's pages have one top bar instead of two: the form's name with its menu, a Draft or Live label, the pages, Preview, Publish and your account. Publish first checks for questions without text, rules that point to a deleted question and a missing privacy link. Once the form is live, Share has its link, Open form and Unpublish. On a phone the pages sit in a tab bar at the bottom. (#265)
 
 ### Fixed
 
@@ -51,6 +53,8 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Form settings, questions and template imports now refuse a value that doesn't fit, with a message that names the field, and nothing is changed. This covers a completion text over 65,535 bytes (a letter like "ä" counts as 2), a question title over 1,024 characters, an answer label over 255, a redirect delay or retention period that isn't a whole number or is too big, a negative redirect delay, a yes/no setting with another value, and an unknown answer type in a template. Before, most of these failed with a server error on MySQL and MariaDB, or were saved anyway. (#259)
 -   On small phones, the form editor and submissions pages no longer scroll sideways. On phones, the submissions page's "Delete All" and "Download CSV" buttons now sit in their own row. (#260)
 -   Questions, answers and template imports now also refuse these values with a message that names the field, and nothing is changed: a question text over 65,535 bytes (a letter like "ä" counts as 2), a webhook address or answer name over 255 characters, a required, hidden or editable value that isn't yes or no, a question or answer position in a template that isn't a whole number, is below zero or is too big, and a template whose answers or logic rules aren't a list. Before, most of these failed with a server error on MySQL and MariaDB, or were saved anyway. A form setting in a template that is only spaces now counts as empty, like on the settings pages, instead of failing. (#261)
+-   While the form editor loads your questions, it now shows grey placeholder rows instead of the "Welcome to the Editor" text. When the questions can't load, it says so and offers Try again. Before, a spinner turned forever. (#263)
+-   A logic rule that uses or goes to a deleted question, or one of another form, is now refused with a message that names the field. Before, it saved and looked like it worked. The blocks API now lists, for each question, the rules that use it (`used_by`). (#264)
 
 ### Security
 

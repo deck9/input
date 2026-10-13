@@ -24,11 +24,8 @@
       </div>
     </div>
 
-    <div
-      v-if="!isLoaded"
-      class="flex w-full items-center justify-center px-4 py-12"
-    >
-      <D9Spinner class="text-blue-300 opacity-50" label="Loading blocks" />
+    <div v-if="status !== 'loaded'" class="p-4">
+      <QuestionsLoadState :status="status" @retry="emit('retry')" />
     </div>
 
     <div v-else-if="store.hasBlocks" class="relative flex-grow">
@@ -45,7 +42,7 @@
     </div>
 
     <div
-      v-if="isLoaded"
+      v-if="status === 'loaded'"
       class="flex items-center justify-center gap-x-2 border-t border-grey-200 bg-white px-4 py-3"
     >
       <D9Button
@@ -68,19 +65,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useForm, useWorkbench } from "@/stores";
-import { D9Spinner, D9Button } from "@deck9/ui";
+import { ref } from "vue";
+import { useForm } from "@/stores";
+import { D9Button } from "@deck9/ui";
 import { useStorage } from "@vueuse/core";
 import BlockContainer from "./BlockContainer.vue";
 import EmptyState from "@/components/EmptyState.vue";
 import ScrollShadow from "@/components/ScrollShadow.vue";
 import _throttle from "lodash/throttle";
 import BlockLogicEditor from "@/components/Factory/Sidebar/BlockLogicEditor.vue";
+import QuestionsLoadState from "@/components/Factory/Shared/QuestionsLoadState.vue";
 
-const isLoaded = ref(false);
+defineProps<{
+  status: "loading" | "failed" | "loaded";
+}>();
+const emit = defineEmits<{ retry: [] }>();
+
 const store = useForm();
-const workbench = useWorkbench();
 
 const isResizing = ref(false);
 const sidebarWidth = useStorage("sidebar-width", 380, localStorage);
@@ -117,22 +118,4 @@ const enableResize = (event) => {
   document.addEventListener("mousemove", resize);
   document.addEventListener("mouseup", disableResize);
 };
-
-onMounted(async () => {
-  await store.getBlocks();
-
-  if (!workbench.block && store.hasBlocks && store.blocks) {
-    const params = new URLSearchParams(window.location.search);
-    const values = Object.fromEntries(params.entries());
-    const found = store.blocks.find((i) => i.uuid === values["block"]);
-
-    if (found) {
-      workbench.putOnWorkbench(found);
-    } else {
-      workbench.putOnWorkbench(store.blocks[0]);
-    }
-  }
-
-  isLoaded.value = true;
-});
 </script>
