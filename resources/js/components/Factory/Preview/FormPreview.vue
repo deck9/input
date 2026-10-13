@@ -56,11 +56,13 @@
       <p v-if="isEmpty" class="w-80 max-w-full text-sm text-grey-600">
         Add a question to see it here.
       </p>
+      <!-- Esc after a click into the frame goes to the frame, not to the dialog -->
       <PreviewFrame
         v-else
         v-show="!redirect"
         v-model:shown="shown"
         v-model:missed="missed"
+        @escape="open = false"
       />
     </DialogPanel>
   </Dialog>

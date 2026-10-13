@@ -45,6 +45,13 @@ describe('usePreviewMessages', () => {
     expect(postMessage).toHaveBeenLastCalledWith({ type: 'input:preview:block', block: 'q2' }, window.location.origin);
   });
 
+  // the editor's panel around the frame doesn't get the key
+  it('tells the editor when Esc is pressed, only on its own origin', () => {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(postMessage).toHaveBeenLastCalledWith({ type: 'input:preview:escape' }, window.location.origin);
+  });
+
   it('goes to the question the editor asks for', () => {
     fromEditor({ type: 'input:preview:goto', block: 'q3' });
 
