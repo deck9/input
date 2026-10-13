@@ -110,3 +110,23 @@ test('a block or rule id that is not a whole number is not found and changes not
 
     expect(FormBlockLogic::pluck('name', 'id')->all())->toBe([$logic->id => 'Old']);
 })->with(['xlf', '.0', 'e0']);
+
+test('a rule with empty fields gets errors in the editor\'s words', function () {
+    $block = FormBlock::factory()->create();
+
+    $this->actingAs($block->form->user)
+        ->json('post', route('api.logics.create', $block->id), ['conditions' => [[]]])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors([
+            'name' => 'Give the rule a name.',
+            'conditions.0.source' => 'Pick a question for condition 1.',
+            'conditions.0.value' => 'Enter a value for condition 1.',
+            'conditions.0.operator' => 'Pick how to compare in condition 1.',
+            'conditions.0.chainOperator' => 'Pick "and" or "or" for condition 1.',
+            'action' => 'Pick what the rule does: hide, show or go to.',
+            'evaluate' => 'Pick when the rule runs: before or after the question.',
+        ]);
+
+    $this->json('post', route('api.logics.create', $block->id), [])
+        ->assertJsonValidationErrors(['conditions' => 'Add at least one condition.']);
+});
