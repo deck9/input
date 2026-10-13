@@ -24,12 +24,15 @@
 
         <template v-else>
           <h1 class="sr-only">Questions</h1>
-          <div
-            v-if="store.hasBlocks"
-            class="mb-4 flex items-center justify-between gap-2 pl-12"
-          >
-            <p class="text-sm tabular-nums text-grey-600">{{ countLine }}</p>
-            <div class="flex gap-2">
+          <div class="mb-4 flex items-center justify-between gap-2 pl-12">
+            <p
+              v-if="store.hasBlocks"
+              class="text-sm tabular-nums text-grey-600"
+            >
+              {{ countLine }}
+            </p>
+            <!-- an empty form keeps Preview here, on the right -->
+            <div class="ml-auto flex gap-2">
               <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view;
                 below sm an icon, so Preview fits beside it; clicks land on the button,
                 so focus can go back to it -->

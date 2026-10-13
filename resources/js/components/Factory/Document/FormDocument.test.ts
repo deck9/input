@@ -174,6 +174,20 @@ describe("the form document", () => {
         expect(outline?.element.nextElementSibling?.textContent).toBe("Preview");
     });
 
+    it("keeps the page's actions on an empty form, without Outline and the count", () => {
+        useForm().blocks = [];
+        wrapper = mount(FormDocument, {
+            props: { status: "loaded" },
+            slots: { actions: "<button type='button'>Preview</button>" },
+            global: { stubs },
+        });
+
+        const labels = wrapper.findAll("button").map((button) => button.text());
+        expect(labels).toContain("Preview");
+        expect(labels).not.toContain("Outline");
+        expect(wrapper.text()).not.toContain("0 questions");
+    });
+
     it("reads out where a moved question went", async () => {
         useForm().blocks = blocks;
         wrapper = mount(FormDocument, {
