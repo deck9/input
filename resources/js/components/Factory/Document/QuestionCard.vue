@@ -92,11 +92,7 @@
       <DialogPanel
         class="touch-fields fixed inset-x-0 bottom-0 flex h-[70%] flex-col rounded-t-2xl bg-white shadow-xl"
       >
-        <span
-          aria-hidden="true"
-          class="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-grey-300"
-        />
-        <div class="flex shrink-0 items-center justify-between pl-4 pr-1">
+        <div class="flex shrink-0 items-center justify-between pl-4 pr-1 pt-2">
           <DialogTitle class="text-base font-semibold text-grey-900">
             Question {{ number }} settings
           </DialogTitle>
