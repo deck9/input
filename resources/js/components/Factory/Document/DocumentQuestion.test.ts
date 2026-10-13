@@ -51,6 +51,24 @@ describe("a closed question in the document", () => {
         expect(text).not.toContain(question.uuid);
     });
 
+    it("marks its number while the open question jumps here", async () => {
+        const workbench = useWorkbench();
+        const wrapper = mountQuestion();
+        const number = () => wrapper.find("span[aria-hidden] > span");
+
+        expect(number().text()).toBe("3");
+        expect(number().classes()).not.toContain("bg-blue-50");
+
+        workbench.block = {
+            id: 1,
+            uuid: "q-1",
+            logics: [{ action: "goto", action_payload: question.uuid }],
+        } as unknown as FormBlockModel;
+        await wrapper.vm.$nextTick();
+
+        expect(number().classes()).toContain("bg-blue-50");
+    });
+
     it("opens as a card when clicked", async () => {
         const workbench = useWorkbench();
         const wrapper = mountQuestion();

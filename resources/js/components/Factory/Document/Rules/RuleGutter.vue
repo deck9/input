@@ -26,6 +26,7 @@
 import { computed, nextTick, ref, watch } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 import { useForm, useWorkbench } from "@/stores";
+import { jumpTargets } from "./ruleText";
 
 const store = useForm();
 const workbench = useWorkbench();
@@ -36,11 +37,7 @@ const lines = ref<{ target: string; top: number; height: number }[]>([]);
 const NUMBER_MIDDLE = 24;
 
 // where the open question's rules jump to
-const targets = computed(() =>
-  (workbench.block?.logics ?? [])
-    .filter((rule) => rule.action === "goto" && rule.action_payload)
-    .map((rule) => rule.action_payload as string),
-);
+const targets = computed(() => jumpTargets(workbench.block));
 
 const measure = () => {
   const origin = anchor.value?.getBoundingClientRect().top;

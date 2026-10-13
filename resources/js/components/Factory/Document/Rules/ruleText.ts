@@ -117,3 +117,10 @@ export function answerOptions(block?: FormBlockModel | null): string[] {
 
     return [];
 }
+
+// the questions a block's rules jump to
+export function jumpTargets(block?: FormBlockModel | null): string[] {
+    return (block?.logics ?? [])
+        .filter((rule) => rule.action === "goto" && rule.action_payload)
+        .map((rule) => rule.action_payload as string);
+}

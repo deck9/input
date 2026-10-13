@@ -4,7 +4,13 @@
       <span
         aria-hidden="true"
         class="flex h-6 items-center text-[13px] tabular-nums text-grey-600"
-        >{{ number }}</span
+        ><span
+          :class="
+            isJumpTarget &&
+            'relative z-10 flex h-5 items-center rounded-full border border-blue-200 bg-blue-50 px-1.5 text-xs font-semibold text-blue-700'
+          "
+          >{{ number }}</span
+        ></span
       >
       <span
         aria-hidden="true"
@@ -65,6 +71,7 @@ import { useBlockTypes } from "@/components/Factory/utils/useBlockTypes";
 import { plainText } from "./questionSummary";
 import QuestionCard from "./QuestionCard.vue";
 import { cursorFor } from "./blockFocus";
+import { jumpTargets } from "./Rules/ruleText";
 
 const props = defineProps<{
   block: FormBlockModel;
@@ -75,6 +82,10 @@ const workbench = useWorkbench();
 const { types } = useBlockTypes();
 
 const isOpen = computed(() => workbench.block?.id === props.block.id);
+// the open question's rules jump here
+const isJumpTarget = computed(() =>
+  jumpTargets(workbench.block).includes(props.block.uuid),
+);
 
 const text = computed(() => plainText(props.block.message));
 const blockType = computed(() =>
