@@ -130,5 +130,25 @@ describe("an open question", () => {
             document.querySelector<HTMLElement>("[role=dialog]")?.hidden,
         ).toBe(true);
         expect(document.getElementById("question-q4-settings")).not.toBeNull();
+        // the kept sheet doesn't give focus back by itself
+        expect(document.activeElement).toBe(settingsButton().element);
+    });
+
+    it("gives focus back to Settings when Esc closes the sheet", async () => {
+        mountCard(true);
+        await settingsButton().trigger("click");
+        await flushPromises();
+
+        document
+            .querySelector("[role=dialog]")!
+            .dispatchEvent(
+                new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+            );
+        await flushPromises();
+
+        expect(
+            document.querySelector<HTMLElement>("[role=dialog]")?.hidden,
+        ).toBe(true);
+        expect(document.activeElement).toBe(settingsButton().element);
     });
 });
