@@ -6,7 +6,7 @@ Form blocks are the fundamental building components of any form in Input. Each b
 
 Input offers a variety of block types to gather different kinds of information:
 
-### Information Blocks
+### Content Blocks
 
 -   [**Text only**](/input-types/no-interaction): Displays text without requiring user input, useful for instructions or explanations
 

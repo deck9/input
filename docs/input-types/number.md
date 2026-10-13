@@ -45,7 +45,7 @@ The Number input type is specifically designed for collecting numerical data wit
 - When you want proper numeric formatting (thousands separators)
 
 ::: warning Note
-Number inputs only accept numeric values. If users might need to add any text or explanations with their numbers, consider using a Short Text input instead.
+Number inputs only accept numeric values. If users might need to add any text or explanations with their numbers, consider using a Short text input instead.
 :::
 
 ## Technical Details:

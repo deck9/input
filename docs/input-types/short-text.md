@@ -1,10 +1,10 @@
-# Short Text 💬
+# Short text 💬
 
-The Short Text input type provides a single-line text field for collecting brief responses from users. It's perfect for names, titles, brief answers, and any situation where responses are concise and fit on one line.
+The Short text input type provides a single-line text field for collecting brief responses from users. It's perfect for names, titles, brief answers, and any situation where responses are concise and fit on one line.
 
 ## How to use:
 
-1. Choose **Short Text** as the input type
+1. Choose **Short text** as the input type
 2. Enter the question or prompt
 3. Configure the input options:
    - **Placeholder**: Hint text shown when the field is empty
@@ -29,10 +29,10 @@ The Short Text input type provides a single-line text field for collecting brief
 - **Simple Data**: "What city do you live in?"
 
 ::: tip Best Practice 
-🌟 Keep your questions specific to encourage brief responses. For any question where you expect answers might exceed a few words or require multiple sentences, use the Long Text input type instead.
+🌟 Keep your questions specific to encourage brief responses. For any question where you expect answers might exceed a few words or require multiple sentences, use the Long text input type instead.
 :::
 
-## When to use Short Text:
+## When to use Short text:
 
 - When you need a brief, concise response
 - For single-line information collection
@@ -42,7 +42,7 @@ The Short Text input type provides a single-line text field for collecting brief
 - When inputs should be quick and straightforward
 
 ::: warning Note
-Short Text fields have a hard limit of 100 characters. If users might need more space, consider using a Long Text input instead, which can accommodate more detailed responses.
+Short text fields have a hard limit of 100 characters. If users might need more space, consider using a Long text input instead, which can accommodate more detailed responses.
 :::
 
 ## Technical Details:
@@ -50,4 +50,4 @@ Short Text fields have a hard limit of 100 characters. If users might need more 
 - Maximum character limit is fixed at 100 characters
 - Input is single-line only (pressing Enter submits the form)
 - Character counter updates in real-time as users type
-- Unlike specialized inputs (email, phone, etc.), Short Text has no format validation
+- Unlike specialized inputs (email, phone, etc.), Short text has no format validation

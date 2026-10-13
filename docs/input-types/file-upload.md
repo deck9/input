@@ -1,10 +1,10 @@
-# File Upload 📁
+# File upload 📁
 
-The File Upload input type allows users to attach files to their form responses. It supports multiple file types and offers a user-friendly drag-and-drop interface.
+The File upload input type allows users to attach files to their form responses. It supports multiple file types and offers a user-friendly drag-and-drop interface.
 
 ## How to use:
 
-1. Choose **File Upload** as the input type
+1. Choose **File upload** as the input type
 2. Enter instructions for what files users should upload
 3. Configure the upload settings:
     - **Maximum Files**: Set how many files users can upload
@@ -40,7 +40,7 @@ The File Upload input type allows users to attach files to their form responses.
 -   **Document Collection**: ID verification or signed forms
 -   **Media Sharing**: Audio or video uploads for feedback
 
-## When to use File Upload:
+## When to use File upload:
 
 -   When you need users to submit existing files rather than typing information
 -   For collecting visual or media information that can't be entered as text
