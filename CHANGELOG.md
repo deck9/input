@@ -12,7 +12,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Search your forms by name, also without accents ("muller" finds "Müller"), and press "/" to jump to the search. The form list has status tabs with counts and sorts by latest submission, last edit, newest or name. Your choice stays in the address, so Back undoes it and a link shows the same list. Dashboard links with the old `?filter=` show all forms. (#248)
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules or its Identifier, so links that fill in answers and webhooks can't mix the two up. The copy goes right after the original. (#262)
--   The form's team can try a form in preview mode, also while it's a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
+-   The public form API has a preview mode for the form's team: start a session with `preview: true`, also for a draft. Answers in preview mode are never stored or counted and send no webhooks or emails. (#266)
 
 ### Changed
 
