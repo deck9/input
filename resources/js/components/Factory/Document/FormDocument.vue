@@ -18,54 +18,54 @@
       <div
         class="mx-auto w-full max-w-[720px] px-2 pb-40 pt-6 sm:px-6 sm:pt-10"
       >
-      <div v-if="status !== 'loaded'" class="pl-12">
-        <QuestionsLoadState :status="status" @retry="retry" />
-      </div>
-
-      <template v-else>
-        <h1 class="sr-only">Questions</h1>
-        <div class="mb-4 flex items-center justify-between gap-2 pl-12">
-          <p class="text-sm tabular-nums text-grey-600">{{ countLine }}</p>
-          <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view -->
-          <button
-            v-if="store.hasBlocks"
-            type="button"
-            class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:absolute lg:left-4 lg:top-3 lg:z-10 lg:h-8 xl:hidden"
-            aria-haspopup="dialog"
-            :aria-expanded="outlineOpen"
-            @click="outlineOpen = true"
-          >
-            <D9Icon name="list-ul" aria-hidden="true" />
-            Outline
-          </button>
+        <div v-if="status !== 'loaded'" class="pl-12">
+          <QuestionsLoadState :status="status" @retry="retry" />
         </div>
 
-        <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
-        <EmptyState
-          v-else
-          title="No questions yet"
-          description="Add your first question below."
-        />
+        <template v-else>
+          <h1 class="sr-only">Questions</h1>
+          <div class="mb-4 flex items-center justify-between gap-2 pl-12">
+            <p class="text-sm tabular-nums text-grey-600">{{ countLine }}</p>
+            <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view -->
+            <button
+              v-if="store.hasBlocks"
+              type="button"
+              class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:absolute lg:h-8 lg:left-4 lg:top-3 lg:z-10 xl:hidden"
+              aria-haspopup="dialog"
+              :aria-expanded="outlineOpen"
+              @click="outlineOpen = true"
+            >
+              <D9Icon name="list-ul" aria-hidden="true" />
+              Outline
+            </button>
+          </div>
 
-        <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
-          <D9Button
-            label="Add question"
-            class="min-h-11 lg:min-h-0"
-            color="dark"
-            icon="plus"
-            icon-position="left"
-            @click="addBlock()"
+          <DocumentList v-if="store.hasBlocks" :numbers="numbers" />
+          <EmptyState
+            v-else
+            title="No questions yet"
+            description="Add your first question below."
           />
-          <D9Button
-            label="Add group"
-            class="min-h-11 lg:min-h-0"
-            color="light"
-            icon="layer-group"
-            icon-position="left"
-            @click="addBlock(null, 'group')"
-          />
-        </div>
-      </template>
+
+          <div ref="addButtons" class="mt-4 flex flex-wrap gap-2 pl-12">
+            <D9Button
+              label="Add question"
+              class="min-h-11 lg:min-h-0"
+              color="dark"
+              icon="plus"
+              icon-position="left"
+              @click="addBlock()"
+            />
+            <D9Button
+              label="Add group"
+              class="min-h-11 lg:min-h-0"
+              color="light"
+              icon="layer-group"
+              icon-position="left"
+              @click="addBlock(null, 'group')"
+            />
+          </div>
+        </template>
       </div>
     </div>
   </div>
