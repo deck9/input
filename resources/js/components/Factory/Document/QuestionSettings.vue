@@ -11,7 +11,7 @@
       class="text-xs font-semibold text-grey-600"
       :class="sheet && 'sr-only'"
     >
-      Settings
+      {{ heading }}
     </h3>
 
     <ConfigureInput v-if="interactionType === 'input'" />
@@ -33,11 +33,10 @@
       <label
         :for="`${id}-identifier`"
         class="block text-sm font-medium text-grey-900"
-        >Identifier</label
+        >Short name</label
       >
       <p :id="`${id}-identifier-help`" class="mb-1 text-xs text-grey-600">
-        This name is used when submitting your form through webhooks and in the
-        export.
+        Used in prefill links, webhooks, emails and the submissions table.
       </p>
       <D9Input
         :id="`${id}-identifier`"
@@ -68,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { D9Input, D9Switch } from "@deck9/ui";
 import { useWorkbench } from "@/stores";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
@@ -90,6 +89,25 @@ const props = defineProps<{
 
 const workbench = useWorkbench();
 const { editableInteractions } = useActiveInteractions(props.block);
+
+// named by answer type; "Text only" has no answer settings
+const headings: Partial<Record<FormBlockInteractionType, string>> = {
+  button: "Choices",
+  input: "Answer field",
+  textarea: "Answer field",
+  date: "Date",
+  file: "File upload",
+  consent: "Consent",
+};
+const heading = computed(() => {
+  if (props.interactionType === "range") {
+    return props.block.type === "scale" ? "Scale" : "Rating";
+  }
+
+  return (
+    (props.interactionType && headings[props.interactionType]) ?? "Settings"
+  );
+});
 
 const title = ref(props.block.title ?? "");
 const hidden = ref(props.block.is_disabled ?? false);
