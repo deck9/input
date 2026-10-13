@@ -43,6 +43,9 @@ function questionName(block: FormBlockModel): string {
     return quoted ? `question ${number} (${quoted})` : `question ${number}`;
 }
 
+// saves without a block, by what they change
+const saveNames: Record<string, string> = { saveEndScreen: "the end screen" };
+
 export const useNotice = defineStore("notice", {
     state: (): NoticeStore => {
         return {
@@ -113,7 +116,9 @@ export const useNotice = defineStore("notice", {
             block?: FormBlockModel | null,
             action?: string,
         ) {
-            const name = block ? questionName(block) : "";
+            const name = block
+                ? questionName(block)
+                : (saveNames[save] ?? "");
             const failed = action
                 ? `${name.charAt(0).toUpperCase()}${name.slice(1)} couldn't be ${action}`
                 : `Your change${name ? ` to ${name}` : ""} wasn't saved`;
