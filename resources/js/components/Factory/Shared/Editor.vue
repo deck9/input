@@ -137,7 +137,7 @@ const {
   counter = false,
   bare = false,
   id,
-  placeholder = "Type your message here...",
+  placeholder = "Type your text…",
 } = defineProps<{
   modelValue?: string;
   counter?: boolean;
