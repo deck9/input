@@ -28,7 +28,7 @@ import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import FormPreview from "@/components/Factory/Preview/FormPreview.vue";
 import PreviewToggle from "@/components/Factory/Preview/PreviewToggle.vue";
 import { useForm, useWorkbench } from "@/stores";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, provide, ref } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import { D9Icon } from "@deck9/ui";
 
@@ -41,6 +41,8 @@ const workbench = useWorkbench();
 const status = ref<"loading" | "failed" | "loaded">("loading");
 // on a desktop the preview sits beside the document, so it shows at once
 const isPreviewing = ref(useMediaQuery("(min-width: 1280px)").value);
+// the form menu's Preview, for when the button above the questions scrolled away
+provide("openPreview", () => (isPreviewing.value = true));
 
 const loadBlocks = async () => {
   status.value = "loading";
