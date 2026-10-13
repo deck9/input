@@ -61,20 +61,6 @@
   </app-layout>
 </template>
 
-<script lang="ts">
-import { router } from "@inertiajs/vue3";
-
-// browser Back and Forward show a page with its old props from history; a tab
-// change in the address has no state and keeps the page
-let fromHistory = false;
-window.addEventListener("popstate", (event) => {
-  fromHistory = event.state !== null;
-});
-router.on("before", () => {
-  fromHistory = false;
-});
-</script>
-
 <script setup lang="ts">
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
@@ -87,6 +73,7 @@ import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
+import { useFreshFormAfterBack } from "@/utils/useFreshFormAfterBack";
 import { onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
@@ -135,15 +122,8 @@ if (foundIndex !== -1) {
   tabChanged(0);
 }
 
-// load the form again, so the tabs show changes made in the editor
-if (fromHistory) {
-  fromHistory = false;
-  router.visit(location.href, {
-    only: ["form"],
-    replace: true,
-    preserveScroll: true,
-  });
-}
+// after the hash, so the reload keeps the tab
+useFreshFormAfterBack();
 
 onBeforeUnmount(() => {
   store.clearForm();

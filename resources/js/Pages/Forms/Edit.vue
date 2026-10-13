@@ -8,6 +8,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import FormDocument from "@/components/Factory/Document/FormDocument.vue";
 import { useForm, useWorkbench } from "@/stores";
+import { useFreshFormAfterBack } from "@/utils/useFreshFormAfterBack";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const props = defineProps<{
@@ -62,6 +63,7 @@ onMounted(async () => {
   await store.getFormBlockMapping();
 });
 
+useFreshFormAfterBack();
 workbench.clearWorkbench();
 store.$patch({
   form: props.form,

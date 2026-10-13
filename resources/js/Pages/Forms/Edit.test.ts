@@ -1,5 +1,6 @@
 import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { router } from "@inertiajs/vue3";
 import Edit from "./Edit.vue";
 import { useForm, useWorkbench } from "@/stores";
 
@@ -116,5 +117,28 @@ describe("editor loading", () => {
         await flushPromises();
 
         expect(useWorkbench().putOnWorkbench).not.toHaveBeenCalled();
+    });
+});
+
+describe("editor from history", () => {
+    afterEach(() => {
+        wrapper?.unmount();
+        wrapper = undefined;
+        vi.restoreAllMocks();
+    });
+
+    it("loads the form again when browser Back brings the editor back", async () => {
+        const visit = vi.spyOn(router, "visit").mockImplementation(() => {});
+        window.dispatchEvent(
+            new PopStateEvent("popstate", { state: { component: "x" } }),
+        );
+
+        await mountEditor(loads(blocks));
+
+        expect(visit).toHaveBeenCalledWith(window.location.href, {
+            only: ["form"],
+            replace: true,
+            preserveScroll: true,
+        });
     });
 });
