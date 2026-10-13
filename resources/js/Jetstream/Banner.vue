@@ -67,7 +67,7 @@
             </button>
             <button
               type="button"
-              class="-mr-1 flex p-2 rounded-md focus:outline-none sm:-mr-2 transition"
+              class="-mr-1 flex h-11 w-11 items-center justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:-mr-2 sm:h-9 sm:w-9 transition"
               :class="{
                 'hover:bg-blue-600 focus:bg-blue-600': style == 'success',
                 'hover:bg-red-600 focus:bg-red-600': style == 'danger',
