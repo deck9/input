@@ -92,7 +92,12 @@ describe("the end screen in the document", () => {
         const headline = block.find<HTMLInputElement>("#end-screen-headline");
         expect(headline.element.value).toBe("See you on Thursday!");
         expect(document.activeElement).toBe(headline.element);
-        expect(block.find("#end-screen-text-label").text()).toBe("Text");
+        expect(block.find("label[for=end-screen-headline]").text()).toBe(
+            "End screen headline",
+        );
+        expect(block.find("#end-screen-text-label").text()).toBe(
+            "End screen text",
+        );
 
         workbench.block = { id: 5, uuid: "q5" } as FormBlockModel;
         await flushPromises();
@@ -164,8 +169,12 @@ describe("the end screen in the document", () => {
         }
     });
 
-    it("edits the button: off hides its label and link", async () => {
+    it("edits the button: off hides its text and link", async () => {
         const block = await open();
+
+        expect(block.find("#end-screen-button-label-label").text()).toBe(
+            "Button text",
+        );
 
         expect(
             block.find<HTMLInputElement>("#end-screen-button-label").element

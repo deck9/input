@@ -25,38 +25,29 @@
       class="min-w-0 flex-1 space-y-4 rounded-lg bg-white p-3 shadow-sm ring-1 ring-blue-500 sm:p-4"
       @focusout="leave"
     >
-      <div class="flex items-center justify-between gap-3">
-        <span class="rounded bg-grey-100 px-1.5 text-xs leading-5 text-grey-700"
-          >End screen</span
+      <div class="flex items-center gap-3">
+        <label for="end-screen-headline" class="sr-only"
+          >End screen headline</label
         >
-        <Link
-          :href="settingsLink"
-          class="text-xs text-grey-600 underline hover:text-grey-900"
-          >Also in Settings</Link
-        >
-      </div>
-
-      <div>
-        <D9Label id="end-screen-headline" label="Headline" />
-        <D9Input
+        <input
           id="end-screen-headline"
           v-model="draft.eoc_headline"
           type="text"
-          block
+          dir="auto"
+          class="-ml-2 min-w-0 flex-1 border-0 border-l-2 border-transparent bg-transparent p-0 pl-1.5 text-base font-medium text-grey-900 focus:border-blue-500 focus:ring-0"
         />
+        <span
+          class="shrink-0 rounded bg-grey-100 px-1.5 text-xs leading-5 text-grey-700"
+          >End screen</span
+        >
       </div>
 
-      <div>
-        <D9Label
-          id="end-screen-text"
-          label="Text"
-          @click="textEditor?.focus()"
-        />
-        <Editor
-          id="end-screen-text"
-          ref="textEditor"
-          v-model="draft.eoc_text"
-        />
+      <!-- the same focus sign as the headline -->
+      <div
+        class="-ml-2 border-l-2 border-transparent pl-1.5 focus-within:border-blue-500"
+      >
+        <span id="end-screen-text-label" class="sr-only">End screen text</span>
+        <Editor id="end-screen-text" v-model="draft.eoc_text" bare />
       </div>
 
       <div class="space-y-3 border-t border-grey-200 pt-3">
@@ -71,14 +62,20 @@
             onLabel="Yes"
             offLabel="No"
           />
+          <Link
+            :href="settingsLink"
+            class="ml-auto text-xs text-grey-600 underline hover:text-grey-900"
+            >Also in Settings</Link
+          >
         </div>
         <div v-if="draft.show_cta_link" class="grid gap-3 sm:grid-cols-2">
           <div>
-            <D9Label id="end-screen-button-label" label="Label" />
+            <D9Label id="end-screen-button-label" label="Button text" />
             <D9Input
               id="end-screen-button-label"
               v-model="draft.cta_label"
               type="text"
+              placeholder="Close"
               block
             />
           </div>
@@ -88,6 +85,7 @@
               id="end-screen-button-link"
               v-model="draft.cta_link"
               type="url"
+              placeholder="https://"
               block
             />
           </div>
@@ -148,7 +146,6 @@ const workbench = useWorkbench();
 const notice = useNotice();
 
 const isOpen = ref(false);
-const textEditor = ref<InstanceType<typeof Editor> | null>(null);
 
 const settingsLink = computed(
   () =>
