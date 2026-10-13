@@ -6,7 +6,7 @@ import { router } from "@inertiajs/vue3";
 import { callUpdateForm } from "@/api/forms";
 import { useForm, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
-import { useFreshFormAfterBack } from "@/utils/useFreshFormAfterBack";
+import { useFreshForm } from "@/utils/useFreshForm";
 import CompletionPage from "@/components/Factory/Settings/CompletionPage.vue";
 import EndScreenBlock from "./EndScreenBlock.vue";
 
@@ -178,7 +178,37 @@ describe("the end screen in the document", () => {
             new PopStateEvent("popstate", { state: { component: "x" } }),
         );
         // the page Back goes to
-        useFreshFormAfterBack();
+        useFreshForm();
+        await flushPromises();
+        expect(visit).not.toHaveBeenCalled();
+
+        answer();
+        await flushPromises();
+        expect(visit).toHaveBeenCalledTimes(1);
+        visit.mockRestore();
+    });
+
+    it("lets a page opened by a link while the save is on its way reload the form after it", async () => {
+        const visit = vi.spyOn(router, "visit").mockImplementation(() => {});
+        let answer = () => {};
+        vi.mocked(callUpdateForm).mockImplementation(
+            (_, values) =>
+                new Promise((resolve) => {
+                    answer = () =>
+                        resolve({
+                            data: { ...useForm().form, ...values },
+                        } as AxiosResponse);
+                }),
+        );
+        const block = await open();
+
+        await block.find("#end-screen-headline").setValue("Thanks!");
+        await block.find("#end-screen-headline").trigger("focusout");
+        // the link's visit starts, and its page loads
+        document.dispatchEvent(
+            new CustomEvent("inertia:before", { detail: { visit: {} } }),
+        );
+        useFreshForm();
         await flushPromises();
         expect(visit).not.toHaveBeenCalled();
 

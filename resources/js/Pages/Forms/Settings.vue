@@ -73,7 +73,7 @@ import Options from "@/components/Factory/Settings/Options.vue";
 import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
-import { useFreshFormAfterBack } from "@/utils/useFreshFormAfterBack";
+import { useFreshForm } from "@/utils/useFreshForm";
 import { onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
@@ -123,7 +123,7 @@ if (foundIndex !== -1) {
 }
 
 // after the hash, so the reload keeps the tab
-useFreshFormAfterBack();
+useFreshForm();
 
 onBeforeUnmount(() => {
   store.clearForm();

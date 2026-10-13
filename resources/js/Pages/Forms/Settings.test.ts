@@ -2,7 +2,7 @@ import { flushPromises, mount, VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { router } from "@inertiajs/vue3";
 import Settings from "./Settings.vue";
-import { finishBeforeReload } from "@/utils/useFreshFormAfterBack";
+import { trackFormSave } from "@/utils/useFreshForm";
 
 vi.mock("@inertiajs/vue3", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@inertiajs/vue3")>()),
@@ -59,7 +59,7 @@ describe("settings page from history", () => {
         });
     });
 
-    it("loads nothing more on a normal visit, also one after a Back", () => {
+    it("loads nothing more on a normal visit, also one after a Back", async () => {
         // a Back to another page, then a link to Settings
         window.dispatchEvent(
             new PopStateEvent("popstate", { state: { component: "x" } }),
@@ -68,29 +68,34 @@ describe("settings page from history", () => {
         onVisit(new CustomEvent("inertia:before"));
 
         mountSettings();
-
-        expect(router.visit).not.toHaveBeenCalled();
-    });
-
-    it("skips the reload when you go elsewhere while a save on Back is on its way", async () => {
-        let landed = () => {};
-        finishBeforeReload(new Promise<void>((resolve) => (landed = resolve)));
-        window.dispatchEvent(
-            new PopStateEvent("popstate", { state: { component: "x" } }),
-        );
-
-        mountSettings();
-        onVisit(new CustomEvent("inertia:before"));
-        landed();
         await flushPromises();
 
         expect(router.visit).not.toHaveBeenCalled();
     });
 
-    it("loads nothing more when only the tab in the address changes", () => {
+    it("lets a visit started while a save is on its way win, and its page loads the form after the save", async () => {
+        let landed = () => {};
+        trackFormSave(new Promise<void>((resolve) => (landed = resolve)));
+        window.dispatchEvent(
+            new PopStateEvent("popstate", { state: { component: "x" } }),
+        );
+        mountSettings();
+
+        // you go to another page before the save lands
+        onVisit(new CustomEvent("inertia:before"));
+        wrapper?.unmount();
+        mountSettings();
+        landed();
+        await flushPromises();
+
+        expect(router.visit).toHaveBeenCalledTimes(1);
+    });
+
+    it("loads nothing more when only the tab in the address changes", async () => {
         window.dispatchEvent(new PopStateEvent("popstate", { state: null }));
 
         mountSettings();
+        await flushPromises();
 
         expect(router.visit).not.toHaveBeenCalled();
     });
