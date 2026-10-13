@@ -30,20 +30,20 @@ export const useLogic = defineStore("logic", {
                 return;
             }
 
-            const save = `removeRule:${this.block.logics[index].id}`;
+            // a retry removes this rule, even after the logic editor closed
+            const block = this.block;
+            const logics = this.block.logics;
+            const logic = logics[index];
 
-            try {
-                const response = await callDeleteFormBlockLogic(
-                    this.block.logics[index],
-                );
-                useNotice().clearSaveError(save);
+            const request = async () => {
+                const response = await callDeleteFormBlockLogic(logic);
 
-                if (response.status === 200) {
-                    this.block.logics.splice(index, 1);
+                if (response.status === 200 && logics.includes(logic)) {
+                    logics.splice(logics.indexOf(logic), 1);
                 }
-            } catch (error) {
-                useNotice().showSaveError(error, save, this.block);
-            }
+            };
+
+            await useNotice().send(`removeRule:${logic.id}`, request, block);
         },
 
         async saveSingleRule(logic: FormBlockLogic) {
