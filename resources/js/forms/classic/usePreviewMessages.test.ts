@@ -3,7 +3,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 import { effectScope, nextTick } from 'vue';
 import { useConversation } from '@/stores/conversation';
+import { callSubmitForm } from '@/api/conversation';
 import { usePreviewMessages } from './usePreviewMessages';
+import { END_SCREEN } from './previewTarget';
+
+vi.mock('@/api/conversation', () => ({ callSubmitForm: vi.fn() }));
 
 const block = (id: string) => ({ id, type: 'input-short', parent_block: null, interactions: [] }) as unknown as PublicFormBlockModel;
 
@@ -45,6 +49,21 @@ describe('usePreviewMessages', () => {
     fromEditor({ type: 'input:preview:goto', block: 'q3' });
 
     expect(store.current).toBe('q3');
+  });
+
+  it('shows the end screen when the editor asks for it, sending nothing, and a question again after', async () => {
+    fromEditor({ type: 'input:preview:goto', block: END_SCREEN });
+    await nextTick();
+
+    expect(store.isSubmitted).toBe(true);
+    expect(callSubmitForm).not.toHaveBeenCalled();
+    expect(postMessage).toHaveBeenLastCalledWith({ type: 'input:preview:block', block: END_SCREEN }, window.location.origin);
+
+    fromEditor({ type: 'input:preview:goto', block: 'q1' });
+    await nextTick();
+
+    expect(store.isSubmitted).toBe(false);
+    expect(postMessage).toHaveBeenLastCalledWith({ type: 'input:preview:block', block: 'q1' }, window.location.origin);
   });
 
   it.each([

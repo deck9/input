@@ -127,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, reactive, watch } from "vue";
 import { Link } from "@inertiajs/vue3";
 import { D9Icon, D9Input, D9Label, D9Switch } from "@deck9/ui";
 import { useEventListener } from "@vueuse/core";
@@ -138,12 +138,14 @@ import { keepAlive } from "@/api/handler";
 import Editor from "@/components/Factory/Shared/Editor.vue";
 import { freshFormLoaded, trackFormSave } from "@/utils/useFreshForm";
 import { plainText } from "./questionSummary";
+import { endScreenOpen } from "./blockFocus";
 
 const store = useForm();
 const workbench = useWorkbench();
 const notice = useNotice();
 
-const isOpen = ref(false);
+// shared, so the preview shows the end screen while it's open
+const isOpen = endScreenOpen;
 
 const settingsLink = computed(
   () =>
@@ -263,5 +265,6 @@ watch(
 onBeforeUnmount(() => {
   save.cancel();
   delete notice.waitingSaves[SAVE];
+  isOpen.value = false;
 });
 </script>

@@ -1,6 +1,7 @@
 import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWorkbench } from "@/stores";
+import { END_SCREEN } from "@/forms/classic/previewTarget";
 import FormPreview from "./FormPreview.vue";
 import PreviewToggle from "./PreviewToggle.vue";
 
@@ -147,6 +148,41 @@ describe("the preview panel", () => {
         expect(document.querySelector("[role=dialog]")?.textContent).toContain(
             `Question 2 ${reason}, so the preview can't jump to it.`,
         );
+    });
+
+    it("says when it shows the end screen", async () => {
+        screen(true);
+        useForm().form = { use_cta_redirect: false } as FormModel;
+        const wrapper = mountPreview();
+
+        wrapper.findComponent(PreviewFrame).vm.$emit("update:shown", END_SCREEN);
+        await flushPromises();
+
+        expect(wrapper.get("#preview-heading").text()).toBe("Preview · end screen");
+        expect(wrapper.find("iframe").isVisible()).toBe(true);
+    });
+
+    // the preview doesn't follow the link, so its end screen is one nobody sees
+    it.each([true, false])("says where people go instead of the end screen when the form sends them to a link (desktop: %s)", async (wide) => {
+        screen(wide);
+        useForm().blocks = [{ uuid: "q1", type: "input-short" }] as FormBlockModel[];
+        useForm().form = { use_cta_redirect: true, cta_link: "https://example.com/thanks" } as FormModel;
+        const wrapper = mountPreview();
+        await flushPromises();
+
+        const frame = wrapper.findComponent(PreviewFrame);
+        frame.vm.$emit("update:shown", END_SCREEN);
+        await flushPromises();
+
+        const panel = document.querySelector(wide ? "aside" : "[role=dialog]");
+        expect(panel?.textContent).toContain("No end screen: people go to https://example.com/thanks.");
+        expect(frame.isVisible()).toBe(false);
+
+        // back at a question, the frame shows again
+        frame.vm.$emit("update:shown", "q1");
+        await flushPromises();
+        expect(document.body.textContent).not.toContain("No end screen");
+        expect(frame.isVisible()).toBe(true);
     });
 
     it.each([true, false])("shows nothing when closed (desktop: %s)", (wide) => {

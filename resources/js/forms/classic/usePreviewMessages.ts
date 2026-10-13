@@ -1,8 +1,10 @@
 import { watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { useConversation } from "@/stores/conversation";
+import { END_SCREEN } from "./previewTarget";
 
-// messages between the editor and the form in its preview frame, both on the same origin
+// messages between the editor and the form in its preview frame, both on the same origin;
+// a block is a question's uuid or END_SCREEN
 export type PreviewMessage =
     // the form shows this question
     | { type: "input:preview:block"; block: string }
@@ -14,7 +16,7 @@ export function usePreviewMessages() {
     const origin = window.location.origin;
 
     watch(
-        () => store.current,
+        () => (store.isSubmitted ? END_SCREEN : store.current),
         (block) => {
             if (block) {
                 const message: PreviewMessage = {

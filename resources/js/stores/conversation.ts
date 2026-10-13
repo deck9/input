@@ -10,6 +10,7 @@ import { evaluateGotoLogic, isBlockVisible } from "./helpers/logic";
 import { createFlatQueue } from "./helpers/queue";
 import { prefillPayload } from "./helpers/prefill";
 import { isAllowedLink } from "@/utils/sanitize";
+import { END_SCREEN } from "@/forms/classic/previewTarget";
 import { nextTick, Ref, ref } from "vue";
 
 type ConversationStore = {
@@ -367,8 +368,14 @@ export const useConversation = defineStore("form", {
             }
         },
 
-        // the preview starts at any shown question, as if the respondent had come along the way to it
+        // the preview starts at any shown question, as if the respondent had come along the way to it,
+        // or at the end screen, without sending anything
         startAt(blockId: string) {
+            if (blockId === END_SCREEN) {
+                this.isSubmitted = true;
+                return;
+            }
+
             const index = this.findBlockIndex(blockId);
 
             if (index === -1) {

@@ -14,6 +14,8 @@ import { useForm, useLogic, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
 import { callUpdateFormBlock } from "@/api/blocks";
 import { callUpdateFormBlockInteraction } from "@/api/interactions";
+import { endScreenOpen } from "@/components/Factory/Document/blockFocus";
+import { END_SCREEN } from "@/forms/classic/previewTarget";
 import PreviewFrame from "./PreviewFrame.vue";
 
 vi.mock("@/api/blocks", () => ({ callUpdateFormBlock: vi.fn() }));
@@ -97,6 +99,7 @@ describe("the preview frame", () => {
         setActivePinia(testing);
         vi.clearAllMocks();
         answers.length = 0;
+        endScreenOpen.value = false;
     });
 
     it("runs the public form in preview mode at the open question", () => {
@@ -140,6 +143,49 @@ describe("the preview frame", () => {
             { type: "input:preview:goto", block: "q2uuid" },
             window.location.origin,
         );
+    });
+
+    it("starts at the end screen while its card is open", () => {
+        endScreenOpen.value = true;
+        const iframe = mountFrame(null).get("iframe");
+
+        expect(iframe.attributes("src")).toBe(`/form1?preview=1&block=${END_SCREEN}`);
+    });
+
+    it("goes to the end screen when its card opens, and back to a question opened after", async () => {
+        const wrapper = mountFrame();
+        const post = vi.spyOn(frameWindow(wrapper), "postMessage");
+
+        // opening the card closes the open question first
+        useWorkbench().block = null;
+        endScreenOpen.value = true;
+        await nextTick();
+        expect(post).toHaveBeenLastCalledWith(
+            { type: "input:preview:goto", block: END_SCREEN },
+            window.location.origin,
+        );
+
+        useWorkbench().block = second;
+        await nextTick();
+        expect(post).toHaveBeenLastCalledWith(
+            { type: "input:preview:goto", block: "q2uuid" },
+            window.location.origin,
+        );
+    });
+
+    it("loads the form again at the end screen after its save", async () => {
+        const wrapper = mountFrame(null, realPinia());
+        endScreenOpen.value = true;
+        await nextTick();
+        const before = wrapper.get("iframe").element;
+
+        useNotice().clearSaveError("saveEndScreen");
+        await nextTick();
+        await nextTick();
+
+        const iframe = wrapper.get("iframe");
+        expect(iframe.element).not.toBe(before);
+        expect(iframe.attributes("src")).toBe(`/form1?preview=1&block=${END_SCREEN}`);
     });
 
     it("opens the question the preview moves on to", () => {

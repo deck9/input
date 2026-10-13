@@ -11,10 +11,18 @@
     <p v-if="hidden" class="w-80 max-w-full text-xs text-grey-600">
       {{ hidden }}, so the preview can't jump to it.
     </p>
+    <p v-if="redirect" class="w-80 max-w-full break-words text-sm text-grey-600">
+      No end screen: people go to {{ redirect }}.
+    </p>
     <p v-if="isEmpty" class="w-80 max-w-full text-sm text-grey-600">
       Add a question to see it here.
     </p>
-    <PreviewFrame v-else v-model:shown="shown" v-model:missed="missed" />
+    <PreviewFrame
+      v-else
+      v-show="!redirect"
+      v-model:shown="shown"
+      v-model:missed="missed"
+    />
   </aside>
 
   <!-- tablet and phone: over the document; closing it keeps it mounted, so focus goes back to Preview -->
@@ -39,10 +47,21 @@
       <p v-if="hidden" class="w-80 max-w-full text-xs text-grey-600">
         {{ hidden }}, so the preview can't jump to it.
       </p>
+      <p
+        v-if="redirect"
+        class="w-80 max-w-full break-words text-sm text-grey-600"
+      >
+        No end screen: people go to {{ redirect }}.
+      </p>
       <p v-if="isEmpty" class="w-80 max-w-full text-sm text-grey-600">
         Add a question to see it here.
       </p>
-      <PreviewFrame v-else v-model:shown="shown" v-model:missed="missed" />
+      <PreviewFrame
+        v-else
+        v-show="!redirect"
+        v-model:shown="shown"
+        v-model:missed="missed"
+      />
     </DialogPanel>
   </Dialog>
 </template>
@@ -54,6 +73,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
 import { useForm, useWorkbench } from "@/stores";
 import { questionNumbers } from "@/components/Factory/Document/questionSummary";
+import { END_SCREEN } from "@/forms/classic/previewTarget";
 import PreviewFrame from "./PreviewFrame.vue";
 
 const open = defineModel<boolean>({ required: true });
@@ -68,9 +88,19 @@ const numbers = computed(() => questionNumbers(store.blocks ?? []));
 const shown = ref<string | null>(null);
 const missed = ref<string | null>(null);
 const heading = computed(() => {
+  if (shown.value === END_SCREEN) {
+    return "Preview · end screen";
+  }
+
   const number = shown.value && numbers.value[shown.value];
   return number ? `Preview · question ${number}` : "Preview";
 });
+// the preview doesn't follow the link, so its end screen is one nobody sees
+const redirect = computed(() =>
+  shown.value === END_SCREEN && store.form?.use_cta_redirect
+    ? store.form.cta_link
+    : undefined,
+);
 // the open question, when the preview couldn't go to it (a group has no number);
 // the public form leaves out a hidden question and each one in a hidden group
 const hidden = computed(() => {

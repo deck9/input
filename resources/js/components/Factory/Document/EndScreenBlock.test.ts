@@ -8,6 +8,7 @@ import { useNotice } from "@/stores/notice";
 import { useFreshForm } from "@/utils/useFreshForm";
 import CompletionPage from "@/components/Factory/Settings/CompletionPage.vue";
 import EndScreenBlock from "./EndScreenBlock.vue";
+import { endScreenOpen } from "./blockFocus";
 
 vi.mock("@/api/forms", async (importOriginal) => ({
     ...(await importOriginal()),
@@ -30,6 +31,8 @@ let wrapper: VueWrapper | undefined;
 
 // real actions, not the stubs of the global testing pinia
 const mountBlock = () => {
+    // one at a time, as in the document: they share the open state
+    wrapper?.unmount();
     wrapper = mount(EndScreenBlock, {
         attachTo: document.body,
         global: { plugins: [pinia], directives: { tooltip: {} } },
@@ -117,6 +120,15 @@ describe("the end screen in the document", () => {
         await flushPromises();
 
         expect(block.find("#end-screen-headline").exists()).toBe(false);
+    });
+
+    it("tells the preview while it's open, and starts closed on the next page", async () => {
+        const block = await open();
+        expect(endScreenOpen.value).toBe(true);
+
+        block.unmount();
+        wrapper = undefined;
+        expect(endScreenOpen.value).toBe(false);
     });
 
     it("has the question card's phone sizes, number column and focus bar", async () => {

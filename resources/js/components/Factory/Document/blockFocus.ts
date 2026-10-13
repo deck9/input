@@ -4,6 +4,9 @@ import { useForm, useWorkbench } from "@/stores";
 // the question whose card takes the cursor once it shows: its text editor isn't there at once
 export const cursorFor = ref<string | null>(null);
 
+// the end screen's card is open: it's no block, so the workbench doesn't hold it
+export const endScreenOpen = ref(false);
+
 // puts the cursor in a question's text, or in a group's name
 export async function focusBlock(block: FormBlockModel | null): Promise<boolean> {
     if (!block) {

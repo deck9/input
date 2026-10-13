@@ -11,13 +11,15 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { useForm, useLogic, useWorkbench } from "@/stores";
 import { useNotice } from "@/stores/notice";
+import { endScreenOpen } from "@/components/Factory/Document/blockFocus";
 import type { PreviewMessage } from "@/forms/classic/usePreviewMessages";
+import { END_SCREEN } from "@/forms/classic/previewTarget";
 
-// the question the preview shows, and an open one it didn't go to
+// the question (or END_SCREEN) the preview shows, and an open one it didn't go to
 const shown = defineModel<string | null>("shown", { default: null });
 const missed = defineModel<string | null>("missed", { default: null });
 
@@ -26,11 +28,16 @@ const workbench = useWorkbench();
 const origin = window.location.origin;
 const frame = ref<HTMLIFrameElement | null>(null);
 
+// the open question, or the end screen while its card is open
+const target = computed(
+  () => workbench.block?.uuid ?? (endScreenOpen.value ? END_SCREEN : null),
+);
+
 const url = () => {
   const query = new URLSearchParams({ preview: "1" });
 
-  if (workbench.block) {
-    query.set("block", workbench.block.uuid);
+  if (target.value) {
+    query.set("block", target.value);
   }
 
   return `${window.route("forms.show", { uuid: store.form?.uuid }, false)}?${query}`;
@@ -39,12 +46,9 @@ const url = () => {
 // the questions load after the panel: start at the open one, not at the
 // first and then jump; a panel opened later with none open starts at once
 const src = ref(store.blocks ? url() : undefined);
-watch(
-  () => workbench.block,
-  (block) => {
-    if (block) src.value ??= url();
-  },
-);
+watch(target, (block) => {
+  if (block) src.value ??= url();
+});
 const loads = ref(0);
 // the preview tells where it starts, then each question it moves on to
 let started = false;
@@ -117,15 +121,12 @@ useLogic().$onAction(({ name, after }) => {
   if (name === "saveSingleRule") after(() => nextTick(reload));
 });
 
-watch(
-  () => workbench.block?.uuid,
-  (block) => {
-    if (block && block !== followed) {
-      goto(block);
-    }
-    followed = null;
-  },
-);
+watch(target, (block) => {
+  if (block && block !== followed) {
+    goto(block);
+  }
+  followed = null;
+});
 
 useEventListener(window, "message", async (event: MessageEvent) => {
   const data = event.data as PreviewMessage | undefined;
@@ -148,8 +149,8 @@ useEventListener(window, "message", async (event: MessageEvent) => {
   // or the preview loaded after the owner opened another one
   if (!started) {
     started = true;
-    if (workbench.block && workbench.block.uuid !== data.block) {
-      goto(workbench.block.uuid);
+    if (target.value && target.value !== data.block) {
+      goto(target.value);
     }
     return;
   }
