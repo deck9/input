@@ -5,9 +5,9 @@ import { useNotice } from "@/stores/notice";
 
 const retry = (wrapper: VueWrapper) =>
     wrapper.findAll("[role=alert] button").find((b) => b.text() === "Retry");
-const mountBanner = () =>
+const mountBanner = (flash = {}) =>
     mount(Banner, {
-        global: { mocks: { $page: { props: { jetstream: { flash: {} } } } } },
+        global: { mocks: { $page: { props: { jetstream: { flash } } } } },
     });
 
 describe("banner", () => {
@@ -33,6 +33,28 @@ describe("banner", () => {
         // "Not saved" with Retry and the leave prompt still need it
         expect(useNotice().saveStatus).toBe("failed");
         expect(useNotice().canRetry).toBe(true);
+    });
+
+    // below lg the bar is the only sign of a failed save
+    it("keeps the close button off phones while a save failed", async () => {
+        const wrapper = mountBanner();
+
+        useNotice().$patch({
+            failedSaves: { "saveBlock:1": "Your change wasn't saved." },
+        });
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.get("button[aria-label=Dismiss]").classes()).toContain(
+            "max-lg:hidden",
+        );
+    });
+
+    it("lets phones close any other banner", () => {
+        const wrapper = mountBanner({ banner: "Saved." });
+
+        expect(
+            wrapper.get("button[aria-label=Dismiss]").classes(),
+        ).not.toContain("max-lg:hidden");
     });
 
     it("offers Retry for a save that can be sent again", async () => {
