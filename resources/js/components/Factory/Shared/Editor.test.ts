@@ -100,3 +100,20 @@ describe("block text counter", () => {
     expect(counter(wrapper)).toBe("3 chars, 0 words");
   });
 });
+
+describe("a bare editor", () => {
+  it("draws no box around its toolbar and text", async () => {
+    const wrapper = mount(Editor, {
+      props: { modelValue: "<p>Hi</p>", bare: true },
+      global: { directives: { tooltip: {} } },
+    });
+    await nextTick();
+
+    expect(wrapper.find("[role=group]").classes()).not.toContain("border");
+    const editor = wrapper
+      .findComponent(EditorContent)
+      .props("editor") as TiptapEditor;
+    expect(editor.view.dom.classList).not.toContain("border");
+    expect(wrapper.text()).not.toContain("chars");
+  });
+});

@@ -5,7 +5,7 @@
     <span :id="`${id}-text-label`" class="sr-only"
       >Question {{ number }} text</span
     >
-    <Editor :id="`${id}-text`" ref="editor" v-model="message" counter />
+    <Editor :id="`${id}-text`" ref="editor" v-model="message" bare />
 
     <ConfigureClicks v-if="interactionType === 'button'" />
     <ConfigureConsents v-else-if="interactionType === 'consent'" />
@@ -23,7 +23,7 @@
         />
       </div>
 
-      <div class="flex items-center gap-2">
+      <div v-if="type?.value !== 'none'" class="flex items-center gap-2">
         <label :for="`${id}-required`" class="text-sm text-grey-700">
           Required
         </label>
