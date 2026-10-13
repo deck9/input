@@ -7,6 +7,7 @@ use App\Enums\FormBlockType;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\FormBlockInteraction;
+use App\Models\FormSession;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -30,6 +31,13 @@ class FormUploadController extends Controller
             'actionId' => 'required|string',
             'file' => 'required|file',
         ]);
+
+        // a preview stores no files, see CreateFormSessionController
+        if ($request->input('token') === FormSession::PREVIEW_TOKEN) {
+            $this->authorize('view', $form);
+
+            return response()->noContent();
+        }
 
         // only look at the interactions of this form
         $interaction = FormBlockInteraction::withUuid($request->input('actionId'))

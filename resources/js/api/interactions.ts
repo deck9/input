@@ -1,5 +1,5 @@
 /* eslint-disable no-async-promise-executor */
-import { AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import handler from "./handler";
 
 export function callCreateFormBlockInteraction(
@@ -25,7 +25,8 @@ export function callCreateFormBlockInteraction(
 }
 
 export function callUpdateFormBlockInteraction(
-    interaction: FormBlockInteractionModel
+    interaction: FormBlockInteractionModel,
+    config?: AxiosRequestConfig
 ): Promise<AxiosResponse<FormBlockInteractionModel>> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -33,7 +34,8 @@ export function callUpdateFormBlockInteraction(
                 window.route("api.interactions.update", {
                     interaction: interaction.id,
                 }),
-                interaction
+                interaction,
+                config
             );
 
             resolve(response as AxiosResponse<FormBlockInteractionModel>);

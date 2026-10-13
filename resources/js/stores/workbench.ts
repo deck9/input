@@ -1,5 +1,6 @@
 import { useForm } from "@/stores/form";
 import { callUpdateFormBlock } from "@/api/blocks";
+import { keepAlive } from "@/api/handler";
 import { defineStore } from "pinia";
 import { DebouncedFunc } from "lodash";
 import {
@@ -11,6 +12,9 @@ import {
 import { replaceRouteQuery } from "@/utils";
 import { useNotice } from "./notice";
 import useActiveInteractions from "@/components/Factory/Shared/useActiveInteractions";
+
+// true while flushSaves sends the waiting saves as the page closes
+let isLeaving = false;
 
 interface WorkbenchStore {
     block: FormBlockModel | null;
@@ -89,22 +93,30 @@ export const useWorkbench = defineStore("workbench", {
             });
 
             if (this.block) {
+                useNotice().waitForSave(`saveBlock:${this.block.id}`);
                 this.saveBlock({ ...this.block });
             }
         },
 
         async saveBlock(block: FormBlockModel) {
-            const save = `saveBlock:${block.id}`;
+            const config = isLeaving ? keepAlive(block) : undefined;
+
+            await useNotice().send(
+                `saveBlock:${block.id}`,
+                () => callUpdateFormBlock(block, config),
+                block,
+            );
+        },
+
+        // sends the saves that wait for their debounce now, as the page closes
+        flushSaves() {
+            isLeaving = true;
 
             try {
-                const response = await callUpdateFormBlock(block);
-                useNotice().clearSaveError(save);
-
-                if (response.status === 200) {
-                    console.info("saved block success");
-                }
-            } catch (error) {
-                useNotice().showSaveError(error, save, block);
+                (this.saveBlock as DebouncedFunc<any>).flush();
+                (this.saveInteraction as DebouncedFunc<any>).flush();
+            } finally {
+                isLeaving = false;
             }
         },
 
@@ -112,28 +124,30 @@ export const useWorkbench = defineStore("workbench", {
             type: FormBlockInteractionModel["type"],
             attributes?: Partial<FormBlockInteractionModel>,
         ): Promise<FormBlockInteractionModel | undefined> {
-            if (!this.block) {
+            // a retry adds the answer to this block, even after another opened
+            const block = this.block;
+
+            if (!block) {
                 return;
             }
 
-            const save = `createInteraction:${this.block.id}`;
+            return useNotice().send(
+                `createInteraction:${block.id}`,
+                async () => {
+                    const response = await callCreateFormBlockInteraction(
+                        block.id,
+                        type,
+                        attributes,
+                    );
 
-            try {
-                const response = await callCreateFormBlockInteraction(
-                    this.block?.id,
-                    type,
-                    attributes,
-                );
-                useNotice().clearSaveError(save);
+                    if (response.status === 201) {
+                        block.interactions?.push(response.data);
 
-                if (response.status === 201) {
-                    this.block.interactions?.push(response.data);
-
-                    return response.data;
-                }
-            } catch (error) {
-                useNotice().showSaveError(error, save, this.block);
-            }
+                        return response.data;
+                    }
+                },
+                block,
+            );
         },
 
         updateInteraction(
@@ -170,54 +184,50 @@ export const useWorkbench = defineStore("workbench", {
             }
 
             this.isSavingInteraction = pointer.id;
+            useNotice().waitForSave(`saveInteraction:${pointer.id}`);
             this.saveInteraction({ ...pointer });
         },
 
         async deleteInteraction(interaction: { id: number }) {
-            const index = this.block?.interactions?.findIndex((item) => {
-                return interaction.id === item.id;
-            });
+            // a retry removes the answer from this block, even after another opened
+            const block = this.block;
+            const interactions = block?.interactions;
 
-            if (
-                !this.block?.interactions ||
-                typeof index === "undefined" ||
-                index === -1
-            )
+            if (!interactions?.some((item) => item.id === interaction.id)) {
                 return;
-
-            const save = `deleteInteraction:${interaction.id}`;
-
-            try {
-                await callDeleteFormBlockInteraction(
-                    interaction as FormBlockInteractionModel,
-                );
-                useNotice().clearSaveError(save);
-
-                this.block.interactions.splice(index, 1);
-            } catch (error) {
-                useNotice().showSaveError(error, save, this.block);
             }
+
+            await useNotice().send(
+                `deleteInteraction:${interaction.id}`,
+                async () => {
+                    await callDeleteFormBlockInteraction(
+                        interaction as FormBlockInteractionModel,
+                    );
+
+                    const index = interactions.findIndex(
+                        (item) => item.id === interaction.id,
+                    );
+
+                    if (index !== -1) {
+                        interactions.splice(index, 1);
+                    }
+                },
+                block,
+            );
         },
 
         async saveInteraction(interaction: FormBlockInteractionModel) {
-            const save = `saveInteraction:${interaction.id}`;
+            // the debounced save can run after the owner opened another block
+            const block = useForm().blocks?.find(
+                (item) => item.id === interaction.form_block_id,
+            );
+            const config = isLeaving ? keepAlive(interaction) : undefined;
 
-            try {
-                const response =
-                    await callUpdateFormBlockInteraction(interaction);
-                useNotice().clearSaveError(save);
-
-                if (response.status === 200) {
-                    console.info("saving interaction success");
-                }
-            } catch (error) {
-                // the debounced save can run after the owner opened another block
-                const block = useForm().blocks?.find(
-                    (item) => item.id === interaction.form_block_id,
-                );
-
-                useNotice().showSaveError(error, save, block);
-            }
+            await useNotice().send(
+                `saveInteraction:${interaction.id}`,
+                () => callUpdateFormBlockInteraction(interaction, config),
+                block,
+            );
         },
 
         async changeInteractionSequence(from: number, to: number) {
@@ -252,17 +262,17 @@ export const useWorkbench = defineStore("workbench", {
                 }
             });
 
-            const save = `interactionSequence:${this.block.id}`;
+            const block = this.block;
 
-            try {
-                await callUpdateInteractionSequence(
-                    this.block.id,
-                    saveSequenceRequestData,
-                );
-                useNotice().clearSaveError(save);
-            } catch (error) {
-                useNotice().showSaveError(error, save, this.block);
-            }
+            await useNotice().send(
+                `interactionSequence:${block.id}`,
+                () =>
+                    callUpdateInteractionSequence(
+                        block.id,
+                        saveSequenceRequestData,
+                    ),
+                block,
+            );
         },
     },
 
