@@ -4,11 +4,11 @@
     :class="[index === 0 ? 'mt-4' : 'mt-8']"
   >
     <div class="flex items-center">
-      <h3 class="font-medium">Consent Policy</h3>
+      <h3 class="font-medium">Consent</h3>
       <IndexItem class="ml-2" type="button" v-bind="{ index }" />
       <ChoiceRowActions
         class="ml-auto"
-        :label="label ? `policy “${label}”` : `policy ${index + 1}`"
+        :label="label ? `consent “${label}”` : `consent ${index + 1}`"
         @onDelete="askDelete"
       />
     </div>
@@ -37,14 +37,12 @@
         </div>
         <div class="flex items-center">
           <D9Switch
-            onLabel="Yes"
-            offLabel="No"
-            label="Opt-In Required"
+            label="Must be ticked"
             :id="item.id + '_required'"
             v-model="isRequired"
           />
           <label :for="item.id + '_required'" class="ml-2 inline-block"
-            >Consent required</label
+            >Must be ticked</label
           >
         </div>
       </section>

@@ -4,7 +4,7 @@
   >
     <div :class="isLoading ? 'opacity-0' : ''">
       <h3 class="font-heading font-medium text-grey-900">{{ title }}</h3>
-      <small class="block font-sans text-sm">
+      <small v-if="description" class="block font-sans text-sm">
         {{ description }}
       </small>
     </div>
@@ -22,7 +22,7 @@ import { D9Spinner } from "@deck9/ui";
 
 defineProps<{
   title: string;
-  description: string;
+  description?: string;
   isLoading?: boolean;
 }>();
 </script>

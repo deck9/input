@@ -2,8 +2,7 @@
   <div>
     <EmptyState
       v-if="editableInteractions?.length === 0"
-      title="Nothing here yet."
-      description="Add your first choice with the button below."
+      title="No choices yet."
     />
 
     <Container

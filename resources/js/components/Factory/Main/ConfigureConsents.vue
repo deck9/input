@@ -2,8 +2,7 @@
   <div>
     <EmptyState
       v-if="workbench.currentInteractions?.length === 0"
-      title="Nothing here yet."
-      description="Add your first policy with the button below."
+      title="No consents yet."
     />
 
     <Container
@@ -34,7 +33,7 @@
         @click="createConsentPolicy"
       >
         <D9Icon name="plus" aria-hidden="true" />
-        Add policy
+        Add consent
       </button>
     </div>
   </div>

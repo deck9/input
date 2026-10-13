@@ -14,7 +14,7 @@
           type="text"
           v-model="label"
           block
-          placeholder="Label"
+          :placeholder="`Choice ${index + 1}`"
           @keyup.enter="keyboardCommands"
           @keyup.up.exact="keyboardCommands"
           @keyup.down.exact="keyboardCommands"

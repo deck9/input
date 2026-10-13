@@ -361,12 +361,12 @@ describe("asking before a delete", () => {
             await pressTrash();
 
             expect(wrapper.emitted("onDelete")).toBeUndefined();
-            expect(wrapper.text()).toContain("Delete policy “Privacy policy”?");
+            expect(wrapper.text()).toContain("Delete consent “Privacy policy”?");
             expect(wrapper.text()).toContain(
                 "3 people agreed to it. Their answers to it will be deleted.",
             );
             expect(wrapper.find("button.bg-red-600").text()).toBe(
-                "Delete policy",
+                "Delete consent",
             );
 
             await wrapper.find("button.bg-red-600").trigger("click");

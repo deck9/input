@@ -1,13 +1,11 @@
 <template>
   <div>
     <div class="flex justify-between">
-      <D9Label id="randomize-responses" label="Randomize Responses" />
+      <D9Label id="randomize-responses" label="Shuffle choices" />
       <D9Switch
         id="randomize-responses"
         label=""
         v-model="randomizeResponses"
-        onLabel="yes"
-        offLabel="no"
         @change="updateRandomizeResponsesSetting"
       />
     </div>

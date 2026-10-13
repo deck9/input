@@ -37,7 +37,7 @@ vi.mock("../utils/useInteractionsUtils", () => ({
     }),
 }));
 
-// types into one field and returns the options the settings would save
+// types into one field, found by id, and returns the options the settings would save
 const savedOptions = async (
     component: Component,
     field: string,
@@ -58,19 +58,19 @@ const savedOptions = async (
         },
     });
     await flushPromises();
-    await wrapper.find(`input[placeholder^="${field}"]`).setValue(typed);
+    await wrapper.find(`input#${field}`).setValue(typed);
     await flushPromises();
 
     return save.mock.lastCall?.[0].options;
 };
 
 const savedDecimalPlaces = async (typed: string) =>
-    (await savedOptions(ConfigureInput, "Number of decimal places", typed))
+    (await savedOptions(ConfigureInput, "input-decimal-places", typed))
         ?.decimalPlaces;
 
 describe("file limits in the file block settings", () => {
     it("clamps max files to 1 to 10 before saving", async () => {
-        const files = "The maximum number of allowed files";
+        const files = "file-max-files";
         expect(
             (await savedOptions(ConfigureFile, files, "50"))?.allowedFiles,
         ).toBe(10);
@@ -80,7 +80,7 @@ describe("file limits in the file block settings", () => {
     });
 
     it("clamps max size to 1 to 8 MB before saving", async () => {
-        const size = "The maximum file size";
+        const size = "file-max-size";
         expect(
             (await savedOptions(ConfigureFile, size, "99"))?.allowedFileSize,
         ).toBe(8);

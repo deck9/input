@@ -1,13 +1,11 @@
 <template>
   <div>
     <div class="flex justify-between">
-      <D9Label id="custom-response" label="Allow Custom Response" />
+      <D9Label id="custom-response" label="Add “Other” with a text field" />
       <D9Switch
         id="custom-response"
         label=""
         v-model="useCustomResponse"
-        onLabel="yes"
-        offLabel="no"
         @change="updateCustomResponseSetting"
       />
     </div>
@@ -15,7 +13,7 @@
       <D9Input
         v-model="customResponseLabel"
         block
-        placeholder="Label for Custom Response Option"
+        placeholder="Label for “Other”"
       />
     </div>
   </div>

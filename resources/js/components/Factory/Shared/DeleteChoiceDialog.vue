@@ -3,7 +3,7 @@
     :show="choice !== null"
     :title="title"
     :text="text"
-    :confirm-label="policy ? 'Delete policy' : 'Delete choice'"
+    :confirm-label="policy ? 'Delete consent' : 'Delete choice'"
     @close="emit('close')"
     @confirm="emit('confirm')"
   />
@@ -31,7 +31,7 @@ const title = computed(() => {
   const label = props.choice?.label;
 
   if (props.policy) {
-    return label ? `Delete policy “${label}”?` : "Delete this policy?";
+    return label ? `Delete consent “${label}”?` : "Delete this consent?";
   }
 
   return label ? `Delete “${label}”?` : "Delete this choice?";
