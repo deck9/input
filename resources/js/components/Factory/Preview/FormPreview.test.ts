@@ -1,5 +1,6 @@
-import { enableAutoUnmount, mount } from "@vue/test-utils";
+import { enableAutoUnmount, flushPromises, mount } from "@vue/test-utils";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { useForm } from "@/stores";
 import FormPreview from "./FormPreview.vue";
 import PreviewToggle from "./PreviewToggle.vue";
 
@@ -71,6 +72,22 @@ describe("the preview panel", () => {
         await wrapper.vm.$nextTick();
 
         expect(wrapper.emitted("update:modelValue")).toEqual([[false]]);
+    });
+
+    it.each([true, false])("says what to do for a form without questions, not a blank frame (desktop: %s)", async (wide) => {
+        screen(wide);
+        useForm().blocks = [];
+        mountPreview();
+        await flushPromises();
+
+        expect(document.body.textContent).toContain("Add a question to see it here.");
+        expect(document.querySelector("iframe")).toBeNull();
+
+        // while the questions load, the frame
+        useForm().blocks = null;
+        await flushPromises();
+        expect(document.body.textContent).not.toContain("Add a question");
+        expect(document.querySelector("iframe")).not.toBeNull();
     });
 
     it.each([true, false])("shows nothing when closed (desktop: %s)", (wide) => {

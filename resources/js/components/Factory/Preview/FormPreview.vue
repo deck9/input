@@ -8,7 +8,8 @@
     <h2 id="preview-heading" class="w-80 text-xs font-semibold text-grey-600">
       Preview
     </h2>
-    <PreviewFrame />
+    <p v-if="isEmpty" :class="emptyText">Add a question to see it here.</p>
+    <PreviewFrame v-else />
   </aside>
 
   <!-- tablet and phone: over the document; closing it keeps it mounted, so focus goes back to Preview -->
@@ -30,7 +31,8 @@
           <D9Icon name="close" aria-hidden="true" />
         </button>
       </div>
-      <PreviewFrame />
+      <p v-if="isEmpty" :class="emptyText">Add a question to see it here.</p>
+      <PreviewFrame v-else />
     </DialogPanel>
   </Dialog>
 </template>
@@ -39,10 +41,16 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import { D9Icon } from "@deck9/ui";
 import { useMediaQuery } from "@vueuse/core";
-import { watch } from "vue";
+import { computed, watch } from "vue";
+import { useForm } from "@/stores";
 import PreviewFrame from "./PreviewFrame.vue";
 
 const open = defineModel<boolean>({ required: true });
+
+const store = useForm();
+// loaded without questions (null while they load): a blank frame looks broken
+const isEmpty = computed(() => store.blocks?.length === 0);
+const emptyText = "w-80 max-w-full text-sm text-grey-600";
 
 const isWide = useMediaQuery("(min-width: 1280px)");
 // a narrower window or a turned tablet must not pop the panel over the document
