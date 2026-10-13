@@ -80,6 +80,7 @@ describe("the form document", () => {
         });
 
         expect(wrapper.text()).toContain("Add your first question");
+        expect(wrapper.text()).not.toContain("0 questions");
         await option("Short text").trigger("click");
 
         expect(useForm().createFormBlock).toHaveBeenCalledWith(

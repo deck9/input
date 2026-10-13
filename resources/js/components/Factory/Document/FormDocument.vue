@@ -24,11 +24,13 @@
 
         <template v-else>
           <h1 class="sr-only">Questions</h1>
-          <div class="mb-4 flex items-center justify-between gap-2 pl-12">
+          <div
+            v-if="store.hasBlocks"
+            class="mb-4 flex items-center justify-between gap-2 pl-12"
+          >
             <p class="text-sm tabular-nums text-grey-600">{{ countLine }}</p>
             <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view -->
             <button
-              v-if="store.hasBlocks"
               type="button"
               class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:absolute lg:h-8 lg:left-4 lg:top-3 lg:z-10 xl:hidden"
               aria-haspopup="dialog"
