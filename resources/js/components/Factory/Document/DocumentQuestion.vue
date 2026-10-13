@@ -103,8 +103,13 @@ const row = ref<HTMLButtonElement | null>(null);
 
 // Alt+Up/Down moves the question, open or not; Escape closes it
 const onKeydown = async (event: KeyboardEvent) => {
-  // a select or menu inside the card handled the key already
-  if (event.defaultPrevented) {
+  // a select or menu inside the card handled the key already; the question
+  // text cancels every key it takes, also an Escape it doesn't use
+  const inText = (event.target as HTMLElement).closest?.(
+    "[contenteditable=true]",
+  );
+
+  if (event.defaultPrevented && !inText) {
     return;
   }
 

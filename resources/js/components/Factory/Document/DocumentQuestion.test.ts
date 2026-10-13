@@ -25,7 +25,7 @@ const mountQuestion = (block = question) =>
         global: {
             stubs: {
                 QuestionCard: {
-                    template: `<div tabindex="-1" class="card">card</div>`,
+                    template: `<div tabindex="-1" class="card">card<div contenteditable="true" class="text" /></div>`,
                 },
             },
         },
@@ -131,6 +131,21 @@ describe("a closed question in the document", () => {
         expect(document.activeElement?.textContent).toContain(
             "Which days can you help?",
         );
+    });
+
+    it("closes with Escape from the question text, which cancels every Escape", async () => {
+        const workbench = useWorkbench();
+        workbench.block = question;
+        const wrapper = mountQuestion();
+        const text = wrapper.find(".text");
+        text.element.addEventListener("keydown", (event) =>
+            event.preventDefault(),
+        );
+
+        await text.trigger("keydown", { key: "Escape" });
+        await flushPromises();
+
+        expect(workbench.clearWorkbench).toHaveBeenCalled();
     });
 
     it("leaves Escape to a select or menu inside the card", async () => {
