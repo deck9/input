@@ -48,10 +48,7 @@
           </template></span
         >
         <span v-if="block.is_required" class="text-red-700">Required</span>
-        <span v-if="ruleCount" class="tabular-nums"
-          >{{ ruleCount }} {{ ruleCount === 1 ? "rule" : "rules" }}</span
-        >
-        <span v-if="block.is_disabled">Hidden</span>
+        <span v-if="block.is_disabled">Always hidden</span>
         <span v-if="block.title" class="break-all font-mono">{{
           block.title
         }}</span>
@@ -90,7 +87,6 @@ const choiceCount = computed(() =>
       ).length
     : null,
 );
-const ruleCount = computed(() => props.block.logics?.length ?? 0);
 
 const open = () => {
   cursorFor.value = props.block.uuid;

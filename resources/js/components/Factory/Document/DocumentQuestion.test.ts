@@ -35,8 +35,9 @@ describe("a closed question in the document", () => {
         expect(text).toContain("Which days can you help?");
         expect(text).toContain("Checkboxes · 2 choices");
         expect(text).toContain("Required");
-        expect(text).toContain("1 rule");
-        expect(text).toContain("Hidden");
+        // its rules show as sentences under it
+        expect(text).not.toContain("rule");
+        expect(text).toContain("Always hidden");
         expect(text).toContain("days");
         expect(text).not.toContain(question.uuid);
     });
