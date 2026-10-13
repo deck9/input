@@ -37,14 +37,13 @@ const url = () => {
 };
 
 // the questions load after the panel: start at the open one, not at the
-// first and then jump
-const src = ref<string>();
+// first and then jump; a panel opened later with none open starts at once
+const src = ref(store.blocks ? url() : undefined);
 watch(
   () => workbench.block,
   (block) => {
     if (block) src.value ??= url();
   },
-  { immediate: true },
 );
 const loads = ref(0);
 // the preview tells where it starts, then each question it moves on to

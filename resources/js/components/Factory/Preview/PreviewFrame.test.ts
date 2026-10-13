@@ -104,8 +104,13 @@ describe("the preview frame", () => {
     });
 
     it("waits for the questions to load, so it starts at the open one instead of jumping there", async () => {
-        const wrapper = mountFrame(null);
+        useForm().form = { uuid: "form1" } as FormModel;
+        useForm().blocks = null;
+        useWorkbench().block = null;
+        const wrapper = mount(PreviewFrame, { attachTo: document.body });
         expect(wrapper.find("iframe").exists()).toBe(false);
+
+        useForm().blocks = structuredClone([first, second, group]);
 
         useWorkbench().block = second;
         await nextTick();
@@ -113,6 +118,12 @@ describe("the preview frame", () => {
         expect(wrapper.get("iframe").attributes("src")).toBe(
             "/form1?preview=1&block=q2uuid",
         );
+    });
+
+    it("starts at once when it opens with no question open", () => {
+        const iframe = mountFrame(null).get("iframe");
+
+        expect(iframe.attributes("src")).toBe("/form1?preview=1");
     });
 
     it("goes to the question opened in the document", async () => {
