@@ -136,9 +136,11 @@ describe("editor loading", () => {
         // a click on the text would land on a span, which the closing dialog
         // can't focus again: the button's inside lets clicks through to it
         expect(preview?.classes()).toContain("[&_*]:pointer-events-none");
-        // 32 px high, the tap area reaches 6 px above and below
+        // a 44 px icon below sm, so Outline fits beside it; the label from sm
         expect(preview?.classes()).toEqual(
-            expect.arrayContaining(["before:absolute", "before:-inset-y-1.5"]),
+            expect.arrayContaining(["h-11", "w-11", "sm:w-auto"]),
         );
+        expect(preview?.get("span").classes()).toEqual(["sr-only", "sm:not-sr-only"]);
+        expect(preview?.attributes("aria-haspopup")).toBe("dialog");
     });
 });

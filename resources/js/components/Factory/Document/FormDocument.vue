@@ -27,17 +27,19 @@
           <div class="mb-4 flex items-center justify-between gap-2 pl-12">
             <p class="text-sm tabular-nums text-grey-600">{{ countLine }}</p>
             <div class="flex gap-2">
-              <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view -->
+              <!-- from lg it sits in the margin, out of the scrolling column, so it stays in view;
+                below sm an icon, so Preview fits beside it; clicks land on the button,
+                so focus can go back to it -->
               <button
                 v-if="store.hasBlocks"
                 type="button"
-                class="flex h-11 items-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:absolute lg:h-8 lg:left-4 lg:top-3 lg:z-10 xl:hidden"
+                class="flex h-11 w-11 items-center justify-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:w-auto lg:absolute lg:h-8 lg:left-4 lg:top-3 lg:z-10 xl:hidden [&_*]:pointer-events-none"
                 aria-haspopup="dialog"
                 :aria-expanded="outlineOpen"
                 @click="outlineOpen = true"
               >
                 <D9Icon name="list-ul" aria-hidden="true" />
-                Outline
+                <span class="sr-only sm:not-sr-only">Outline</span>
               </button>
               <slot name="actions" />
             </div>

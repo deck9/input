@@ -2,18 +2,20 @@
   <app-layout title="Edit Form" limit-height>
     <template #preview><PreviewToggle v-model="isPreviewing" /></template>
     <FormDocument :status="status" @retry="loadBlocks">
-      <!-- a phone's top bar has no room for Preview; a click inside lands on
-        the button, so closing the preview puts focus back on it;
-        an invisible edge makes the tap area 44 px high -->
+      <!-- a phone's top bar has no room for Preview; it looks like Outline beside it,
+        an icon below sm; a click inside lands on the button, so closing the
+        preview puts focus back on it -->
       <template #actions>
-        <D9Button
-          class="lg:hidden [&_*]:pointer-events-none before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-['']"
-          label="Preview"
-          color="light"
-          icon="eye"
-          icon-position="left"
+        <button
+          type="button"
+          class="flex h-11 w-11 items-center justify-center gap-1.5 rounded-md border border-grey-300 bg-white px-2.5 text-[13px] font-semibold text-grey-700 hover:bg-grey-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:w-auto lg:hidden [&_*]:pointer-events-none"
+          aria-haspopup="dialog"
+          :aria-expanded="isPreviewing"
           @click="isPreviewing = true"
-        />
+        >
+          <D9Icon name="eye" aria-hidden="true" />
+          <span class="sr-only sm:not-sr-only">Preview</span>
+        </button>
       </template>
     </FormDocument>
     <FormPreview v-model="isPreviewing" />
@@ -28,7 +30,7 @@ import PreviewToggle from "@/components/Factory/Preview/PreviewToggle.vue";
 import { useForm, useWorkbench } from "@/stores";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useMediaQuery } from "@vueuse/core";
-import { D9Button } from "@deck9/ui";
+import { D9Icon } from "@deck9/ui";
 
 const props = defineProps<{
   form: FormModel;
