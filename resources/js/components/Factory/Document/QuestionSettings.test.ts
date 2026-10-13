@@ -28,8 +28,8 @@ describe("the settings heading", () => {
         "names a %s question's settings %s → %s",
         (type, interaction, text) => {
             expect(heading(type, interaction).text()).toBe(text);
-            expect(heading(type, interaction).classes()).not.toContain(
-                "sr-only",
+            expect(heading(type, interaction).attributes("hidden")).toBe(
+                undefined,
             );
         },
     );
@@ -40,6 +40,6 @@ describe("the settings heading", () => {
         ["none", undefined],
     ] as const)("shows no heading for a %s question", (type, interaction) => {
         expect(heading(type, interaction).text()).toBe("Settings");
-        expect(heading(type, interaction).classes()).toContain("sr-only");
+        expect(heading(type, interaction).attributes("hidden")).toBe("");
     });
 });

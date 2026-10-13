@@ -9,7 +9,8 @@
     <h3
       :id="`${id}-title`"
       class="text-xs font-semibold text-grey-600"
-      :class="(sheet || !heading) && 'sr-only'"
+      :class="sheet && 'sr-only'"
+      :hidden="!heading"
     >
       {{ heading || "Settings" }}
     </h3>
@@ -89,7 +90,7 @@ const workbench = useWorkbench();
 const { editableInteractions } = useActiveInteractions(props.block);
 
 // named by answer type; Consent and Text only have no settings of their own,
-// so their panel shows no heading
+// so their heading is hidden: it still names the group, and space-y skips it
 const headings: Partial<Record<FormBlockInteractionType, string>> = {
   button: "Choices",
   input: "Answer field",
