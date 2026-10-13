@@ -155,7 +155,7 @@ test('a rule that points to a deleted question or one of another form is refused
 
         $this->json('post', $route, $payload)
             ->assertStatus(422)
-            ->assertJsonValidationErrors([$field => 'is not in this form'])
+            ->assertJsonValidationErrors([$field => $field === 'action_payload' ? 'The question to go to is not in this form.' : 'Pick a question from this form for condition 1.'])
             ->assertJsonMissingValidationErrors($field === 'action_payload' ? 'conditions.0.source' : 'action_payload');
     }
 

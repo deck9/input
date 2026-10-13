@@ -45,7 +45,7 @@ class FormBlockLogicRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'conditions' => 'required|array',
-            'conditions.*.source' => ['required', 'string', $this->inThisForm('The question of your #:position condition is not in this form.')],
+            'conditions.*.source' => ['required', 'string', $this->inThisForm('Pick a question from this form for condition :position.')],
             'conditions.*.operator' => 'required|string|in:equals,equalsNot,contains,containsNot,isLowerThan,isGreaterThan',
             'conditions.*.value' => 'required|string',
             'conditions.*.chainOperator' => 'required|string|in:and,or',
