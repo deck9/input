@@ -1,6 +1,6 @@
 <template>
   <nav :aria-labelledby="`${id}-title`" class="px-2 py-3">
-    <div class="flex h-8 items-center justify-between pl-2">
+    <div class="flex h-11 items-center justify-between pl-2 lg:h-8">
       <h2 :id="`${id}-title`" class="text-xs font-semibold text-grey-600">
         Outline
       </h2>
@@ -18,7 +18,7 @@
         <button
           v-else
           type="button"
-          class="flex h-8 w-full items-center gap-2 rounded-md pr-2 text-left text-[13px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          class="flex h-11 w-full items-center gap-2 rounded-md pr-2 lg:h-8 text-left text-[13px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           :class="[
             item.inGroup ? 'pl-5' : 'pl-2',
             isCurrent(item.block)

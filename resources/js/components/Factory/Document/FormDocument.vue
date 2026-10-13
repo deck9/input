@@ -106,7 +106,7 @@
           <button
             type="button"
             aria-label="Close outline"
-            class="grid h-11 w-11 place-items-center rounded-md text-grey-600 hover:bg-grey-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:h-8 sm:w-8"
+            class="grid h-11 w-11 place-items-center rounded-md text-grey-600 hover:bg-grey-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:h-8 lg:w-8"
             @click="outlineOpen = false"
           >
             <D9Icon name="xmark" />
