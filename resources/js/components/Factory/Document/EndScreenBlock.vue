@@ -60,8 +60,6 @@
             id="end-screen-button"
             v-model="draft.show_cta_link"
             label="Button"
-            onLabel="Yes"
-            offLabel="No"
           />
           <Link
             :href="settingsLink"

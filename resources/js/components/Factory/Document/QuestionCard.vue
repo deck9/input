@@ -50,8 +50,6 @@
           :id="`${id}-required`"
           v-model="required"
           label="Required"
-          onLabel="Yes"
-          offLabel="No"
         />
       </div>
 

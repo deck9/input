@@ -59,8 +59,6 @@
         :id="`${id}-hidden`"
         v-model="hidden"
         label="Hide this question"
-        onLabel="Yes"
-        offLabel="No"
       />
     </div>
   </div>
