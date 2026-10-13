@@ -393,8 +393,19 @@ describe("asking before a delete", () => {
         });
     });
 
-    describe("DeleteChoiceDialog for a policy", () => {
-        it("says the answers go when it can't count them", () => {
+    describe("DeleteChoiceDialog when it can't count the answers", () => {
+        it("says a choice's answers go if people picked it", () => {
+            const wrapper = mount(DeleteChoiceDialog, {
+                props: { choice: { id: 10, label: "No" } },
+                global: { plugins: [pinia], stubs },
+            });
+
+            expect(wrapper.text()).toContain(
+                "If people picked it, their answers to it will be deleted.",
+            );
+        });
+
+        it("says a policy's answers go if people agreed to it", () => {
             const wrapper = mount(DeleteChoiceDialog, {
                 props: {
                     choice: { id: 20, label: "Privacy policy" },
@@ -404,7 +415,7 @@ describe("asking before a delete", () => {
             });
 
             expect(wrapper.text()).toContain(
-                "The answers that agreed to it will be deleted.",
+                "If people agreed to it, their answers to it will be deleted.",
             );
         });
     });

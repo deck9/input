@@ -41,7 +41,7 @@ const text = computed(() => {
   const picked = props.policy ? "agreed to" : "picked";
 
   if (props.answers === undefined) {
-    return `The answers that ${picked} it will be deleted.`;
+    return `If people ${picked} it, their answers to it will be deleted.`;
   }
 
   const people = props.answers === 1 ? "1 person" : `${props.answers} people`;
