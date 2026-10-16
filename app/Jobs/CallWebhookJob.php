@@ -61,7 +61,8 @@ class CallWebhookJob implements ShouldQueue
             ]);
 
             $status = $response->getStatusCode();
-            $body = $response->getContent(false);
+            // the answer goes into a json column, which rejects bytes that are not valid UTF-8
+            $body = mb_scrub($response->getContent(false), 'UTF-8');
             $json = json_decode($body);
             $headers = $response->getHeaders(false);
         } catch (\Exception $e) {
