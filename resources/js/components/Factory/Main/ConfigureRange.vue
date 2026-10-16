@@ -74,8 +74,9 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Input, D9Select } from "@deck9/ui";
-import { watch, Ref, ref, onMounted } from "vue";
+import { Ref, ref, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
+import { useSettingsWatch } from "../utils/useSettingsWatch";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -124,6 +125,7 @@ onMounted(async () => {
       }) ?? iconOptions.value[0];
 
     isInitialized.value = true;
+    await settled();
   }
 });
 
@@ -133,7 +135,7 @@ const resetColor = () => {
   isInitialized.value = true;
 };
 
-watch(
+const settled = useSettingsWatch(
   [startValue, endValue, icon, color, labelLeft, labelRight],
   (newValues) => {
     const update: { id: number } & Partial<FormBlockInteractionModel> = {

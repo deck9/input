@@ -60,9 +60,10 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Checkbox, D9Input } from "@deck9/ui";
-import { watchEffect, Ref, ref, onMounted } from "vue";
+import { Ref, ref, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 import { clampInteger } from "@/utils";
+import { useSettingsWatch } from "../utils/useSettingsWatch";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -95,14 +96,21 @@ onMounted(async () => {
         : {};
     allowedFiles.value = interaction.value.options?.allowedFiles ?? 1;
     allowedFileSize.value = interaction.value.options?.allowedFileSize ?? 4;
+    await settled();
   }
 });
 
-watchEffect(() => {
-  if (!interaction.value) {
-    return;
-  }
-
+const settled = useSettingsWatch(
+  [
+    label,
+    () => allowedFileTypes.value.image,
+    () => allowedFileTypes.value.video,
+    () => allowedFileTypes.value.audio,
+    () => allowedFileTypes.value.text,
+    allowedFiles,
+    allowedFileSize,
+  ],
+  () => {
   workbench.updateInteraction({
     id: interaction.value.id,
     label: label.value,
@@ -117,5 +125,6 @@ watchEffect(() => {
       allowedFileSize: clampInteger(allowedFileSize.value, 1, maxFileSize),
     },
   });
-});
+  },
+);
 </script>

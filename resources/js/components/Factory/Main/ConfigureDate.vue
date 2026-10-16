@@ -18,9 +18,10 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Input, D9Switch } from "@deck9/ui";
-import { watch, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { onMounted } from "vue";
 import { useInteractionsUtils } from "@/components/Factory/utils/useInteractionsUtils";
+import { useSettingsWatch } from "@/components/Factory/utils/useSettingsWatch";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -37,10 +38,11 @@ onMounted(async () => {
     minDate.value = interaction.value.options?.minDate ?? null;
     maxDate.value = interaction.value.options?.maxDate ?? null;
     noPastDates.value = interaction.value.options?.noPastDates ?? false;
+    await settled();
   }
 });
 
-watch([minDate, maxDate, noPastDates], (newValues: any[]) => {
+const settled = useSettingsWatch([minDate, maxDate, noPastDates], (newValues) => {
   const update = {
     id: interaction.value.id,
     options: {

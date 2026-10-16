@@ -41,9 +41,10 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
-import { watch, Ref, ref, inject, onMounted } from "vue";
+import { Ref, ref, inject, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
 import { clampInteger } from "@/utils";
+import { useSettingsWatch } from "../utils/useSettingsWatch";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -63,10 +64,11 @@ onMounted(async () => {
     decimalPlaces.value =
       interaction.value.options?.decimalPlaces?.toString() ?? "";
     useSymbol.value = interaction.value.options?.useSymbol?.toString() ?? "";
+    await settled();
   }
 });
 
-watch([label, decimalPlaces, useSymbol], (newValues: any[]) => {
+const settled = useSettingsWatch([label, decimalPlaces, useSymbol], (newValues) => {
   const update = {
     id: interaction.value.id,
     label: newValues[0],
