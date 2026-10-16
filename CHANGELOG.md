@@ -36,6 +36,8 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Fixed
 
+-   Browser Back now leaves a form's Settings page. Before, every tab you opened added a history step, so Back only went through the tabs. A link to a Settings tab still opens that tab. (#287)
+-   A new long text question now shows in your form and in the editor preview, also before you set any options for it. Before, it failed to show. (#286)
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 -   A question or completion page text that holds only an image keeps the image when you save it. Before, it was saved as empty and the image was lost. (#229)
@@ -68,7 +70,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A logic rule that uses or goes to a deleted question, or one of another form, is now refused with a message that names the field. Before, it saved and looked like it worked. The blocks API now lists, for each question, the rules that use it (`used_by`). (#264)
 -   The form editor now shows "Saving…", "Saved" or "Not saved" with Retry. A failed save names the question by number and text, and the red bar offers Retry. Reloading or closing the page right after typing keeps the change, and the browser asks before you leave while a change isn't saved. Before, the editor showed nothing, and a reload within a second lost the change. (#267)
 -   A webhook answer that isn't valid UTF-8 text is now saved and shows on the submissions page, with each unreadable character as "?". Before, it wasn't saved and the webhook was called up to 5 times. With `QUEUE_CONNECTION=sync`, the submission itself failed with a server error. (#284)
--   Browser Back now leaves a form's Settings page. Before, every tab you opened added a history step, so Back only went through the tabs. A link to a Settings tab still opens that tab. (#287)
+-   Opening a question in the editor no longer saves its answer settings, so "Saving…" does not show up for nothing. They save only when you change a setting. (#288)
 
 ### Security
 

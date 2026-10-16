@@ -39,7 +39,7 @@
           size="xl"
           class="custom-range-theme"
           :class="[
-            action.options.color ? 'text-range' : 'text-content',
+            action.options?.color ? 'text-range' : 'text-content',
             hoverValue !== false && hoverValue >= index
               ? 'opacity-100'
               : hoverValue === false &&
@@ -53,14 +53,14 @@
       </button>
     </div>
     <div
-      v-if="action.options.labelLeft || action.options.labelRight"
+      v-if="action.options?.labelLeft || action.options?.labelRight"
       class="mt-1 flex justify-between text-xs text-content/30"
     >
-      <label :aria-label="action.options.labelLeft">{{
-        action.options.labelLeft
+      <label :aria-label="action.options?.labelLeft">{{
+        action.options?.labelLeft
       }}</label>
-      <label :aria-label="action.options.labelRight">{{
-        action.options.labelRight
+      <label :aria-label="action.options?.labelRight">{{
+        action.options?.labelRight
       }}</label>
     </div>
   </div>
@@ -167,7 +167,7 @@ onKeyStroke(
   },
 );
 
-const rangeColor = useThemableColor(props.action?.options.color ?? "#000000");
+const rangeColor = useThemableColor(props.action?.options?.color ?? "#000000");
 </script>
 
 <style>
