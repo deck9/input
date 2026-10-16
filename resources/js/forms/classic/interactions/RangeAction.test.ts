@@ -31,4 +31,23 @@ describe("RangeAction", () => {
 
         expect(wrapper.findAll("svg[data-icon='star']")).toHaveLength(3);
     });
+
+    it("shows 5 stars for a new question without options", () => {
+        const wrapper = mount(RangeAction, {
+            props: {
+                index: 0,
+                block: {
+                    id: "1",
+                    type: "rating",
+                } as Partial<PublicFormBlockModel>,
+                action: {
+                    id: "1",
+                    type: "range",
+                    options: null,
+                } as unknown as Partial<PublicFormBlockInteractionModel>,
+            },
+        });
+
+        expect(wrapper.findAll("svg[data-icon='star']")).toHaveLength(5);
+    });
 });
