@@ -15,13 +15,13 @@ test('a guest user can get the storyboard for a form', function () {
     FormBlock::factory()
         ->for($form)
         ->has(FormBlockInteraction::factory()->input())
-        ->create(['type' => FormBlockType::short]);
+        ->create(['type' => FormBlockType::short, 'sequence' => 0]);
 
     FormBlock::factory()->for($form)
         // assign that to block b, but should not be in output
         ->has(FormBlockInteraction::factory()->input())
         ->has(FormBlockInteraction::factory()->button()->count(4))
-        ->create(['type' => FormBlockType::radio]);
+        ->create(['type' => FormBlockType::radio, 'sequence' => 1]);
 
     $response = $this->json('GET', route('api.public.forms.storyboard', [
         'form' => $form->uuid,
@@ -191,10 +191,10 @@ test('can get a block with randomized responses and a custom option that is not 
 });
 
 test('a block contains logic definitions if they exist', function () {
-    $blockA = FormBlock::factory()->create();
+    $blockA = FormBlock::factory()->create(['sequence' => 0]);
     $logic = FormBlockLogic::factory()->for($blockA)->create();
 
-    $blockB = FormBlock::factory()->for($blockA->form)->create();
+    $blockB = FormBlock::factory()->for($blockA->form)->create(['sequence' => 1]);
 
     $response = $this->json('get', route('api.public.forms.storyboard', $blockA->form->uuid));
 
