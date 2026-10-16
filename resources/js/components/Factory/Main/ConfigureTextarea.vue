@@ -31,7 +31,7 @@
       <D9Label id="textarea-max-chars" label="Max characters" />
       <D9Input
         id="textarea-max-chars"
-        placeholder="e.g. 500"
+        placeholder="No limit"
         type="number"
         block
         v-model="maxChars"
@@ -52,7 +52,8 @@ const { findOrCreate } = useInteractionsUtils();
 
 const label = ref<FormBlockInteractionModel["label"]>("");
 const rows = ref<number>(5);
-const maxChars = ref<number>(500);
+// empty means no limit; a new question starts at 500
+const maxChars = ref<number | "">(500);
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
@@ -65,7 +66,7 @@ onMounted(async () => {
 
     label.value = interaction.value.label;
     rows.value = interaction.value.options?.rows ?? 5;
-    maxChars.value = interaction.value.options?.max_chars ?? 500;
+    maxChars.value = isNew ? 500 : (interaction.value.options?.max_chars ?? "");
     await settled(isNew);
   }
 });
@@ -76,7 +77,7 @@ const settled = useSettingsWatch([label, rows, maxChars], (newValues) => {
     label: newValues[0],
     options: {
       rows: Math.max(1, Math.min(10, parseInt(newValues[1]))),
-      max_chars: parseInt(newValues[2]),
+      max_chars: parseInt(newValues[2]) || null,
     },
   };
 

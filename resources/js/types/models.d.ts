@@ -167,7 +167,7 @@ type FormBlockInteractionType =
 
 type FormBlockInteractionSettings = {
     rows?: number;
-    max_chars?: number;
+    max_chars?: number | null;
     minDate?: string;
     maxDate?: string;
     noPastDates?: boolean;
