@@ -108,7 +108,10 @@ const navigation: Array<{
 
 const tabChanged = (index: any) => {
   const item = navigation[index];
-  location.hash = item.slug;
+  // replace the entry: a new one per tab would trap browser Back on Settings.
+  // Inertia reads history.state.url on a Back that reloads, so it follows the hash
+  const url = `${location.pathname}${location.search}#${item.slug}`;
+  history.replaceState({ ...history.state, url }, "", url);
   selectedTabIndex.value = index;
 };
 

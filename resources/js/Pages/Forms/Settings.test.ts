@@ -110,6 +110,36 @@ describe("settings page from history", () => {
         expect(callGetForm).not.toHaveBeenCalled();
     });
 
+    it("adds no history entry when you open Settings or switch tabs", async () => {
+        const length = history.length;
+        history.replaceState(
+            { component: "x", url: "/forms/1/settings" },
+            "",
+            "/forms/1/settings",
+        );
+
+        mountSettings();
+        await wrapper!.findAll("button[role=tab]")[1].trigger("click");
+        await wrapper!.findAll("button[role=tab]")[3].trigger("click");
+
+        expect(history.length).toBe(length);
+        expect(location.hash).toBe("#appearance");
+        expect(history.state).toEqual({
+            component: "x",
+            url: "/forms/1/settings#appearance",
+        });
+    });
+
+    it("opens the tab named in the address", async () => {
+        history.replaceState(null, "", "/forms/1/settings#completion-page");
+
+        mountSettings();
+
+        expect(
+            wrapper!.findAll("button[role=tab]")[2].attributes("aria-selected"),
+        ).toBe("true");
+    });
+
     it("keeps the tab you switch to while the form loads again", async () => {
         let landed = () => {};
         trackFormSave(new Promise<void>((resolve) => (landed = resolve)));
