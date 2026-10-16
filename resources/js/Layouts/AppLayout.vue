@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <!-- the banner and the page share one window-high column, so the banner takes
+    its space from the page instead of adding to its height -->
+  <div class="flex min-h-screen flex-col supports-[height:100dvh]:min-h-dvh">
     <Head :title="title" />
 
     <jet-banner />
 
-    <div
-      class="flex min-h-screen flex-col bg-grey-50 supports-[height:100dvh]:min-h-dvh"
-    >
+    <div class="flex flex-grow flex-col bg-grey-50">
       <FormTopBar v-if="form.formId">
         <template #save-status><slot name="save-status" /></template>
         <template #preview><slot name="preview" /></template>
