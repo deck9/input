@@ -247,3 +247,28 @@ it('keeps the submit working on the sync queue when a webhook fails', function (
 
     expect($session->webhooks()->first()->status)->toBe(503);
 });
+
+it('keeps the submit working and stores the answer when a webhook answers with invalid UTF-8', function () {
+    app()->instance(HttpClientInterface::class, new MockHttpClient(new MockResponse("Danke f\xFCr die Daten")));
+    [$session] = sessionWithWebhook();
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $session->form->uuid]), [
+        'token' => $session->token,
+        'payload' => [],
+    ])->assertStatus(200);
+
+    expect($session->webhooks()->first()->response)->toBe('Danke f?r die Daten');
+});
+
+it('returns a webhook answer with invalid UTF-8 as text to the submissions view', function () {
+    app()->instance(HttpClientInterface::class, new MockHttpClient(new MockResponse("Danke f\xFCr die Daten")));
+    $form = Form::factory()->has(FormWebhook::factory())->create();
+    $session = FormSession::factory()->for($form)->completed()->create();
+
+    CallWebhookJob::dispatch($session, $form->formWebhooks->first());
+
+    $this->actingAs($form->user)
+        ->json('get', route('api.forms.submissions', ['form' => $form->uuid]))
+        ->assertStatus(200)
+        ->assertJsonPath('data.0.webhooks.0.response', 'Danke f?r die Daten');
+});
