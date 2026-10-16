@@ -43,8 +43,9 @@
 <script setup lang="ts">
 import { useWorkbench } from "@/stores";
 import { D9Label, D9Input } from "@deck9/ui";
-import { watch, Ref, ref, onMounted } from "vue";
+import { Ref, ref, onMounted } from "vue";
 import { useInteractionsUtils } from "../utils/useInteractionsUtils";
+import { useSettingsWatch } from "../utils/useSettingsWatch";
 
 const workbench = useWorkbench();
 const { findOrCreate } = useInteractionsUtils();
@@ -57,15 +58,19 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 onMounted(async () => {
   // find or create interaction
   if (workbench.block?.interactions) {
+    const isNew = !workbench.block.interactions.some(
+      (item) => item.type === "textarea",
+    );
     interaction.value = await findOrCreate("textarea", workbench);
 
     label.value = interaction.value.label;
     rows.value = interaction.value.options?.rows ?? 5;
     maxChars.value = interaction.value.options?.max_chars ?? 500;
+    await settled(isNew);
   }
 });
 
-watch([label, rows, maxChars], (newValues: any[]) => {
+const settled = useSettingsWatch([label, rows, maxChars], (newValues) => {
   const update = {
     id: interaction.value.id,
     label: newValues[0],
