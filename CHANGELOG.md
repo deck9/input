@@ -36,6 +36,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Fixed
 
+-   On a phone, the text format buttons in an open question now wrap onto a second line, so all of them show. Before, half were hidden past the edge. (#PR)
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 -   A question or completion page text that holds only an image keeps the image when you save it. Before, it was saved as empty and the image was lost. (#229)
