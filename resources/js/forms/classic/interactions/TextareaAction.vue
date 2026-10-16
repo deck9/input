@@ -9,7 +9,7 @@
       :value="storeValue"
       ref="inputElement"
       autocomplete="off"
-      :rows="action?.options.rows ?? 5"
+      :rows="action.options?.rows ?? 5"
       @focus="store.enableInputMode"
       @blur="store.disableInputMode"
       @input="onInput"
