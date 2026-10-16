@@ -33,12 +33,15 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
   if (workbench.block?.interactions) {
+    const isNew = !workbench.block.interactions.some(
+      (item) => item.type === "date",
+    );
     interaction.value = await findOrCreate("date", workbench);
 
     minDate.value = interaction.value.options?.minDate ?? null;
     maxDate.value = interaction.value.options?.maxDate ?? null;
     noPastDates.value = interaction.value.options?.noPastDates ?? false;
-    await settled();
+    await settled(isNew);
   }
 });
 

@@ -86,6 +86,9 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
   if (workbench.block?.interactions) {
+    const isNew = !workbench.block.interactions.some(
+      (item) => item.type === "file",
+    );
     interaction.value = await findOrCreate("file", workbench);
 
     label.value = interaction.value.label;
@@ -96,7 +99,7 @@ onMounted(async () => {
         : {};
     allowedFiles.value = interaction.value.options?.allowedFiles ?? 1;
     allowedFileSize.value = interaction.value.options?.allowedFileSize ?? 4;
-    await settled();
+    await settled(isNew);
   }
 });
 

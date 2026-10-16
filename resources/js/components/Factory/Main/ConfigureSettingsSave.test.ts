@@ -20,11 +20,14 @@ vi.mock("@/components/Factory/utils/useInteractionsUtils", () => ({
     }),
 }));
 
-const open = async (component: object) => {
+// an answer that exists already, or none yet: the card creates it
+const open = async (component: object, type?: string) => {
     const pinia = createPinia();
     setActivePinia(pinia);
     const workbench = useWorkbench();
-    workbench.block = { interactions: [] } as unknown as FormBlockModel;
+    workbench.block = {
+        interactions: type ? [{ type }] : [],
+    } as unknown as FormBlockModel;
     const save = vi
         .spyOn(workbench, "updateInteraction")
         .mockImplementation(() => {});
@@ -39,19 +42,19 @@ const open = async (component: object) => {
 
 describe("answer settings save", () => {
     it.each([
-        ["short text", ConfigureInput],
-        ["long text", ConfigureTextarea],
-        ["date", ConfigureDate],
-        ["rating", ConfigureRange],
-        ["file", ConfigureFile],
-    ])("nothing when a %s card only opens", async (_, component) => {
-        const { save } = await open(component);
+        ["short text", ConfigureInput, "input"],
+        ["long text", ConfigureTextarea, "textarea"],
+        ["date", ConfigureDate, "date"],
+        ["rating", ConfigureRange, "range"],
+        ["file", ConfigureFile, "file"],
+    ])("nothing when a %s card only opens", async (_, component, type) => {
+        const { save } = await open(component, type);
 
         expect(save).not.toHaveBeenCalled();
     });
 
     it("once when a setting changes", async () => {
-        const { wrapper, save } = await open(ConfigureInput);
+        const { wrapper, save } = await open(ConfigureInput, "input");
 
         await wrapper.find("input").setValue("Your name");
         await flushPromises();
@@ -61,12 +64,32 @@ describe("answer settings save", () => {
     });
 
     it("once when a file setting changes", async () => {
-        const { wrapper, save } = await open(ConfigureFile);
+        const { wrapper, save } = await open(ConfigureFile, "file");
 
         await wrapper.find("input#file-max-files").setValue("3");
         await flushPromises();
 
         expect(save).toHaveBeenCalledTimes(1);
         expect(save.mock.lastCall?.[0].options.allowedFiles).toBe(3);
+    });
+
+    it("once with the defaults when the card creates a file answer", async () => {
+        const { save } = await open(ConfigureFile);
+
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(save.mock.lastCall?.[0].options).toMatchObject({
+            allowedFiles: 1,
+            allowedFileSize: 4,
+        });
+    });
+
+    it("once with the defaults when the card creates a long text answer", async () => {
+        const { save } = await open(ConfigureTextarea);
+
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(save.mock.lastCall?.[0].options).toEqual({
+            rows: 5,
+            max_chars: 500,
+        });
     });
 });

@@ -110,6 +110,9 @@ const icon = ref<{
 onMounted(async () => {
   // find or create interaction
   if (workbench.block?.interactions) {
+    const isNew = !workbench.block.interactions.some(
+      (item) => item.type === "range",
+    );
     interaction.value = await findOrCreate("range", workbench);
 
     // init settings
@@ -125,7 +128,7 @@ onMounted(async () => {
       }) ?? iconOptions.value[0];
 
     isInitialized.value = true;
-    await settled();
+    await settled(isNew);
   }
 });
 

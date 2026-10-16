@@ -58,13 +58,16 @@ const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
   if (workbench.block?.interactions) {
+    const isNew = !workbench.block.interactions.some(
+      (item) => item.type === "input",
+    );
     interaction.value = await findOrCreate("input", workbench);
 
     label.value = interaction.value.label;
     decimalPlaces.value =
       interaction.value.options?.decimalPlaces?.toString() ?? "";
     useSymbol.value = interaction.value.options?.useSymbol?.toString() ?? "";
-    await settled();
+    await settled(isNew);
   }
 });
 
