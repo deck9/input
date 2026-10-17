@@ -29,6 +29,7 @@
   "type": "Gib deine Antwort ein",
   "submit": "Absenden",
   "submit_failed": "Deine Antworten konnten nicht gesendet werden. Bitte versuche es erneut.",
+  "submit_too_long": "Diese Antwort ist zu lang. Bitte kürze sie und sende sie erneut.",
   "privacy_policy": "Datenschutzerklärung",
   "other": "Andere",
   "next": "Weiter",

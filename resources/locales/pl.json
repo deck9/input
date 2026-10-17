@@ -29,6 +29,7 @@
   "type": "Wprowadź swoją odpowiedź",
   "submit": "Wyślij",
   "submit_failed": "Nie udało się wysłać odpowiedzi. Spróbuj ponownie.",
+  "submit_too_long": "Ta odpowiedź jest za długa. Skróć ją i wyślij ponownie.",
   "privacy_policy": "Polityka Prywatności",
   "other": "Inne",
   "next": "Następny",

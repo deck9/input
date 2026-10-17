@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import type { AxiosError } from "axios";
 import {
     callCreateFormSession,
     callGetFormStoryboard,
@@ -25,6 +26,8 @@ type ConversationStore = {
     isProcessing: boolean;
     isSubmitted: boolean;
     submitFailed: boolean;
+    // the question whose answer the server refused as too long
+    tooLongBlock: PublicFormBlockModel["id"] | null;
     isInputMode: boolean;
     // the editor's preview: the server stores nothing, so skip uploads and the redirect
     isPreview: boolean;
@@ -45,6 +48,7 @@ export const useConversation = defineStore("form", {
             isProcessing: false,
             isSubmitted: false,
             submitFailed: false,
+            tooLongBlock: null,
             isInputMode: false,
             isPreview: false,
             uploads: {},
@@ -84,7 +88,8 @@ export const useConversation = defineStore("form", {
             for (const block of state.queue) {
                 // a question in a hidden group is hidden too
                 if (
-                    (block.parent_block && hidden.includes(block.parent_block)) ||
+                    (block.parent_block &&
+                        hidden.includes(block.parent_block)) ||
                     !isBlockVisible(block, answers)
                 ) {
                     hidden.push(block.id);
@@ -516,6 +521,7 @@ export const useConversation = defineStore("form", {
                 this.uploads = {};
                 this.isProcessing = true;
                 this.submitFailed = false;
+                this.tooLongBlock = null;
 
                 if (this.form?.uuid && this.session?.token) {
                     try {
@@ -561,6 +567,32 @@ export const useConversation = defineStore("form", {
                     } catch (error) {
                         console.warn("could not submit the form", error);
                         this.submitFailed = true;
+                        // the server refuses a too long answer with a 422 on the answer's own field, "payload.<block>"
+                        const { response } = error as AxiosError<{
+                            errors?: object;
+                        }>;
+                        const field =
+                            response?.status === 422
+                                ? Object.keys(response.data?.errors ?? {}).find(
+                                      (key) => key.startsWith("payload."),
+                                  )
+                                : undefined;
+                        const tooLong = field?.slice("payload.".length);
+
+                        // show the message on that question's page: it is on the path, or the current one
+                        const onPath = this.path.lastIndexOf(tooLong ?? "");
+                        if (
+                            tooLong &&
+                            onPath !== -1 &&
+                            this.findBlockIndex(tooLong) !== -1
+                        ) {
+                            this.current = tooLong;
+                            this.path = this.path.slice(0, onPath);
+                            this.tooLongBlock = tooLong;
+                        } else {
+                            // a hidden or unknown question: say it where the visitor is
+                            this.tooLongBlock = tooLong ? this.current : null;
+                        }
 
                         return Promise.resolve(false);
                     } finally {

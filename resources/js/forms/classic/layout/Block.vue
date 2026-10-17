@@ -24,8 +24,8 @@
       {{ t(validator.message ?? "Something went wrong validating your input") }}
     </div>
 
-    <div v-if="store.submitFailed" class="text-sm text-red-500">
-      {{ t("submit_failed") }}
+    <div v-if="showSubmitMessage" class="text-sm text-red-500">
+      {{ t(store.tooLongBlock ? "submit_too_long" : "submit_failed") }}
     </div>
 
     <FormButton
@@ -82,6 +82,13 @@ onMounted(() => {
 });
 
 const showValidationMessage = ref(false);
+
+// a too long answer's message belongs to its own question
+const showSubmitMessage = computed(
+  () =>
+    store.submitFailed &&
+    (!store.tooLongBlock || store.tooLongBlock === props.block.id),
+);
 
 const submitButtonLabel = computed(() => {
   if (store.currentBlock?.type === "consent") {
