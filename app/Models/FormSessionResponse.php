@@ -14,6 +14,9 @@ class FormSessionResponse extends Model
 {
     use HasFactory;
 
+    // the `value` column is a TEXT
+    public const VALUE_MAX_BYTES = 65535;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -50,7 +53,12 @@ class FormSessionResponse extends Model
 
     public function setValueAttribute($new)
     {
-        $this->attributes['value'] = config('app.debug') ? json_encode($new) : encrypt($new);
+        $this->attributes['value'] = self::toStored($new);
+    }
+
+    public static function toStored($value): string
+    {
+        return config('app.debug') ? json_encode($value) : encrypt($value);
     }
 
     public function getValueAttribute()

@@ -6,7 +6,7 @@ use App\Events\FormSessionCompletedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Form;
 use App\Models\FormSession;
-use App\Rules\MaxSize;
+use App\Rules\AnswerFitsColumn;
 use Illuminate\Http\Request;
 use Knuckles\Scribe\Attributes\BodyParam;
 use Knuckles\Scribe\Attributes\Group;
@@ -41,8 +41,7 @@ class FormSubmitController extends Controller
             'token' => 'required|string',
             'is_uploading' => 'boolean',
             'payload' => 'array|nullable|max:'.$form->formBlocks()->count(),
-            // an answer is stored encrypted in a TEXT column (64 KB), encryption almost doubles it
-            'payload.*' => [new MaxSize(30000)],
+            'payload.*' => [new AnswerFitsColumn],
         ]);
 
         // a preview stores and sends nothing, see CreateFormSessionController

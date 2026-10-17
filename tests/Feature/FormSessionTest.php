@@ -338,23 +338,58 @@ test('session parameters up to the size cap are accepted', function (array $para
     'many short parameters' => [collect(range(1, 600))->mapWithKeys(fn ($i) => ["p$i" => 'x'])->all()],
 ]);
 
-test('an answer over the size cap is rejected and not stored', function ($template) {
+test('an answer at the size cap is stored, one character over is rejected with a clear message', function ($template, $char) {
     $form = Form::factory()->create();
     $form->applyTemplate($template);
     $session = FormSession::factory()->create(['form_id' => $form->id]);
     $block = $form->formBlocks[0];
 
+    // the longest answer of this character that still fits the TEXT column once stored
+    $fits = fn (int $count) => strlen(FormSessionResponse::toStored(str_repeat($char, $count))) <= 65535;
+    [$low, $high] = [1, 65535];
+    while ($low < $high) {
+        $middle = intdiv($low + $high + 1, 2);
+        $fits($middle) ? $low = $middle : $high = $middle - 1;
+    }
+    $atCap = str_repeat($char, $low);
+
+    expect($fits($low + 1))->toBeFalse();
+
     $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
         'token' => $session->token,
-        'payload' => $block->getSubmitPayload(str_repeat('a', 30000)),
-    ])->assertStatus(422)->assertJsonValidationErrors('payload.'.$block->uuid);
+        'payload' => $block->getSubmitPayload($atCap.$char),
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('payload.'.$block->uuid)
+        ->assertJsonPath('message', 'This answer is too long. Please shorten it and send it again.');
 
     expect(FormSessionResponse::count())->toBe(0);
 
     $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
         'token' => $session->token,
-        'payload' => $block->getSubmitPayload(str_repeat('a', 29000)),
+        'payload' => $block->getSubmitPayload($atCap),
     ])->assertOk();
+
+    expect(FormSessionResponse::count())->toBe(1);
+})->with('templates')->with(['one byte per character' => 'a', 'two bytes per character' => 'ä', 'four bytes per character' => '😀']);
+
+test('one answer over the size cap saves none of the other answers', function ($template) {
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+    [$first, , , $last] = $form->formBlocks;
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => [
+            ...$first->getSubmitPayload('froggy@mailfrog.com'),
+            ...$last->getSubmitPayload(str_repeat('a', 65535)),
+        ],
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('message', 'This answer is too long. Please shorten it and send it again.');
+
+    expect(FormSessionResponse::count())->toBe(0);
 })->with('templates');
 
 test('more answers than the form has blocks are rejected', function ($template) {
