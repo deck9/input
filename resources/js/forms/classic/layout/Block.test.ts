@@ -102,4 +102,50 @@ describe("Block submit errors", () => {
         expect(text).toContain(localeDE.submit_failed);
         expect(text).not.toContain(localeDE.submit_too_long);
     });
+
+    it("goes back to the question whose answer is too long and says it there", async () => {
+        const pinia = createPinia();
+        setActivePinia(pinia);
+
+        const blocks = ["block1", "block2"].map(
+            (id) =>
+                ({
+                    id,
+                    type: "none",
+                    interactions: [],
+                }) as unknown as PublicFormBlockModel,
+        );
+
+        const store = useConversation();
+        store.form = { uuid: "form" } as PublicFormModel;
+        store.session = { token: "session" } as FormSessionModel;
+        store.queue = blocks;
+        store.path = ["block1"];
+        store.current = "block2";
+
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        vi.mocked(callSubmitForm).mockRejectedValueOnce({
+            response: {
+                status: 422,
+                data: { errors: { "payload.block1": ["Too long."] } },
+            },
+        });
+
+        const last = mount(Block, {
+            props: { block: blocks[1] },
+            global: { plugins: [pinia], provide: { disableFocus: true } },
+        });
+        await last.find("form").trigger("submit");
+        await flushPromises();
+
+        expect(store.current).toBe("block1");
+        expect(store.path).toEqual([]);
+        expect(last.text()).not.toContain(localeDE.submit_too_long);
+
+        const first = mount(Block, {
+            props: { block: blocks[0] },
+            global: { plugins: [pinia], provide: { disableFocus: true } },
+        });
+        expect(first.text()).toContain(localeDE.submit_too_long);
+    });
 });

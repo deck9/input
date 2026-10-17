@@ -26,7 +26,8 @@ type ConversationStore = {
     isProcessing: boolean;
     isSubmitted: boolean;
     submitFailed: boolean;
-    submitTooLong: boolean;
+    // the question whose answer the server refused as too long
+    tooLongBlock: PublicFormBlockModel["id"] | null;
     isInputMode: boolean;
     // the editor's preview: the server stores nothing, so skip uploads and the redirect
     isPreview: boolean;
@@ -47,7 +48,7 @@ export const useConversation = defineStore("form", {
             isProcessing: false,
             isSubmitted: false,
             submitFailed: false,
-            submitTooLong: false,
+            tooLongBlock: null,
             isInputMode: false,
             isPreview: false,
             uploads: {},
@@ -520,7 +521,7 @@ export const useConversation = defineStore("form", {
                 this.uploads = {};
                 this.isProcessing = true;
                 this.submitFailed = false;
-                this.submitTooLong = false;
+                this.tooLongBlock = null;
 
                 if (this.form?.uuid && this.session?.token) {
                     try {
@@ -570,11 +571,27 @@ export const useConversation = defineStore("form", {
                         const { response } = error as AxiosError<{
                             errors?: object;
                         }>;
-                        this.submitTooLong =
-                            response?.status === 422 &&
-                            Object.keys(response.data?.errors ?? {}).some(
-                                (field) => field.startsWith("payload."),
-                            );
+                        const field =
+                            response?.status === 422
+                                ? Object.keys(response.data?.errors ?? {}).find(
+                                      (key) => key.startsWith("payload."),
+                                  )
+                                : undefined;
+                        this.tooLongBlock =
+                            field?.slice("payload.".length) ?? null;
+
+                        // show the message on that question's page: it is on the path, or the current one
+                        const onPath = this.path.lastIndexOf(
+                            this.tooLongBlock ?? "",
+                        );
+                        if (
+                            onPath !== -1 &&
+                            this.tooLongBlock &&
+                            this.findBlockIndex(this.tooLongBlock) !== -1
+                        ) {
+                            this.current = this.tooLongBlock;
+                            this.path = this.path.slice(0, onPath);
+                        }
 
                         return Promise.resolve(false);
                     } finally {
