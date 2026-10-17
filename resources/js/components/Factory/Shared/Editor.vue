@@ -3,7 +3,7 @@
     <div
       role="group"
       aria-label="Text format"
-      class="mb-1 flex items-center overflow-x-auto [&>div]:shrink-0 lg:flex-wrap lg:gap-y-2"
+      class="mb-1 flex flex-wrap items-center gap-y-2"
       :class="!bare && 'py-1 bg-white border border-grey-300 rounded-lg'"
     >
       <div class="px-1">
