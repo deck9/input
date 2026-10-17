@@ -36,7 +36,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Fixed
 
--   A long text question with a limit of 100 characters now accepts exactly 100 characters and warns from 101. "Max characters" and "Height in lines" refuse 0, negative and fractional numbers and say why; leave them empty for no limit or the default height. An empty height stays empty when you open the question again. (#PR)
+-   A long text question with a limit of 100 characters now accepts exactly 100 characters and warns from 101. "Max characters" and "Height in lines" refuse 0, negative and fractional numbers and say why; leave them empty for no limit or the default height. An empty height stays empty when you open the question again. (#292)
 -   Browser Back now leaves a form's Settings page. Before, every tab you opened added a history step, so Back only went through the tabs. A link to a Settings tab still opens that tab. (#287)
 -   A new long text question now shows in your form and in the editor preview, also before you set any options for it. Before, it failed to show. (#286)
 -   A long text question with an empty "Max characters" now has no limit, also when you open it again. Before, the editor showed 500 and saved it back. New long text questions still start at 500. (#291)
