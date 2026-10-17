@@ -75,6 +75,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A webhook answer that isn't valid UTF-8 text is now saved and shows on the submissions page, with each unreadable character as "?". Before, it wasn't saved and the webhook was called up to 5 times. With `QUEUE_CONNECTION=sync`, the submission itself failed with a server error. (#284)
 -   Opening a question in the editor no longer saves its answer settings, so "Saving…" does not show up for nothing. They save only when you change a setting. (#288)
 -   When a save fails, the red bar with Retry no longer makes the editor taller than your window. The page stays as tall as the window, so your last question and the end screen stay in reach. (#290)
+-   Long answers are now accepted up to what the database can hold (about 36,000 plain letters, fewer with accents, emoji or non-Latin script), and a longer one is refused with a clear message and nothing is saved. Before, the limit was lower (about 30,000 plain letters) and the refusal was a technical message. (#293)
 
 ### Security
 
