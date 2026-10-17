@@ -114,6 +114,13 @@ onMounted(async () => {
 const settled = useSettingsWatch(
   [label, rows, maxChars, rowsBad, maxCharsBad],
   (newValues) => {
+    // a wrong number is never saved, nor the number typed on the way to it
+    if (!rowsValid.value) {
+      workbench.keepSentOption(interaction.value.id, "rows");
+    }
+    if (!maxCharsValid.value) {
+      workbench.keepSentOption(interaction.value.id, "max_chars");
+    }
     if (!rowsValid.value || !maxCharsValid.value) return;
 
     const update = {
