@@ -39,7 +39,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Browser Back now leaves a form's Settings page. Before, every tab you opened added a history step, so Back only went through the tabs. A link to a Settings tab still opens that tab. (#287)
 -   A new long text question now shows in your form and in the editor preview, also before you set any options for it. Before, it failed to show. (#286)
 -   A long text question with an empty "Max characters" now has no limit, also when you open it again. Before, the editor showed 500 and saved it back. New long text questions still start at 500. (#291)
--   A very long answer is now measured the way the form stores it, so it is refused with a clear message and nothing is saved. Before, a long answer with umlauts or emoji could end in a server error. (#PR)
+-   A very long answer is now measured the way the form stores it, so it is refused with a clear message and nothing is saved. Before, a long answer with umlauts or emoji could end in a server error. (#293)
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 -   A question or completion page text that holds only an image keeps the image when you save it. Before, it was saved as empty and the image was lost. (#229)
