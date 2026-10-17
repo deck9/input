@@ -39,7 +39,6 @@ Lines marked **Upgrade step** need you to act after updating.
 -   Browser Back now leaves a form's Settings page. Before, every tab you opened added a history step, so Back only went through the tabs. A link to a Settings tab still opens that tab. (#287)
 -   A new long text question now shows in your form and in the editor preview, also before you set any options for it. Before, it failed to show. (#286)
 -   A long text question with an empty "Max characters" now has no limit, also when you open it again. Before, the editor showed 500 and saved it back. New long text questions still start at 500. (#291)
--   Long answers are now accepted up to what the database can hold (about 36,000 characters), and a longer one is refused with a clear message and nothing is saved. Before, answers over 30,000 characters were refused with a technical message. (#293)
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)
 -   A question or completion page text that holds only an image keeps the image when you save it. Before, it was saved as empty and the image was lost. (#229)
@@ -75,6 +74,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   A webhook answer that isn't valid UTF-8 text is now saved and shows on the submissions page, with each unreadable character as "?". Before, it wasn't saved and the webhook was called up to 5 times. With `QUEUE_CONNECTION=sync`, the submission itself failed with a server error. (#284)
 -   Opening a question in the editor no longer saves its answer settings, so "Saving…" does not show up for nothing. They save only when you change a setting. (#288)
 -   When a save fails, the red bar with Retry no longer makes the editor taller than your window. The page stays as tall as the window, so your last question and the end screen stay in reach. (#290)
+-   Long answers are now accepted up to what the database can hold (about 36,000 plain letters, fewer with accents, emoji or non-Latin script), and a longer one is refused with a clear message and nothing is saved. Before, the limit was lower (about 30,000 plain letters) and the refusal was a technical message. (#293)
 
 ### Security
 
