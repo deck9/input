@@ -577,20 +577,21 @@ export const useConversation = defineStore("form", {
                                       (key) => key.startsWith("payload."),
                                   )
                                 : undefined;
-                        this.tooLongBlock =
-                            field?.slice("payload.".length) ?? null;
+                        const tooLong = field?.slice("payload.".length);
 
                         // show the message on that question's page: it is on the path, or the current one
-                        const onPath = this.path.lastIndexOf(
-                            this.tooLongBlock ?? "",
-                        );
+                        const onPath = this.path.lastIndexOf(tooLong ?? "");
                         if (
+                            tooLong &&
                             onPath !== -1 &&
-                            this.tooLongBlock &&
-                            this.findBlockIndex(this.tooLongBlock) !== -1
+                            this.findBlockIndex(tooLong) !== -1
                         ) {
-                            this.current = this.tooLongBlock;
+                            this.current = tooLong;
                             this.path = this.path.slice(0, onPath);
+                            this.tooLongBlock = tooLong;
+                        } else {
+                            // a hidden or unknown question: say it where the visitor is
+                            this.tooLongBlock = tooLong ? this.current : null;
                         }
 
                         return Promise.resolve(false);

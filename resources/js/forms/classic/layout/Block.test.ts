@@ -148,4 +148,15 @@ describe("Block submit errors", () => {
         });
         expect(first.text()).toContain(localeDE.submit_too_long);
     });
+
+    it("says it on the current question when the refused question is not on the path", async () => {
+        const text = await submitWith({
+            response: {
+                status: 422,
+                data: { errors: { "payload.hidden": ["Too long."] } },
+            },
+        });
+
+        expect(text).toContain(localeDE.submit_too_long);
+    });
 });
