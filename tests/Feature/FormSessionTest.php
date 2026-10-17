@@ -392,6 +392,21 @@ test('one answer over the size cap saves none of the other answers', function ($
     expect(FormSessionResponse::count())->toBe(0);
 })->with('templates');
 
+test('a too-long answer inside nested lists is rejected and not stored', function ($template) {
+    $form = Form::factory()->create();
+    $form->applyTemplate($template);
+    $session = FormSession::factory()->create(['form_id' => $form->id]);
+    $block = $form->formBlocks[0];
+    $answer = $block->getSubmitPayload(str_repeat('a', 70000))[$block->uuid];
+
+    $this->json('POST', route('api.public.forms.submit', ['form' => $form->uuid]), [
+        'token' => $session->token,
+        'payload' => [$block->uuid => [[$answer]]],
+    ])->assertStatus(422)->assertJsonValidationErrors('payload.'.$block->uuid);
+
+    expect(FormSessionResponse::count())->toBe(0);
+})->with('templates');
+
 test('more answers than the form has blocks are rejected', function ($template) {
     $form = Form::factory()->create();
     $form->applyTemplate($template);

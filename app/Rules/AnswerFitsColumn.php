@@ -10,16 +10,23 @@ class AnswerFitsColumn implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // a block sends one answer, or a list of answers (checkbox, consent)
-        $answers = is_array($value) && ! has_string_keys($value) ? $value : [$value];
-
-        foreach ($answers as $answer) {
-            // measured the way it is stored: encrypted, or as JSON in debug mode
-            if (is_array($answer) && strlen(FormSessionResponse::toStored($answer['payload'] ?? null)) > FormSessionResponse::VALUE_MAX_BYTES) {
-                $fail('This answer is too long. Please shorten it and send it again.');
-
-                return;
-            }
+        if ($this->tooLong($value)) {
+            $fail('This answer is too long. Please shorten it and send it again.');
         }
+    }
+
+    // walks lists at any depth, the way FormBlock::submit does
+    private function tooLong(mixed $value): bool
+    {
+        if (! is_array($value)) {
+            return false;
+        }
+
+        if (has_string_keys($value)) {
+            // measured the way it is stored: encrypted, or as JSON in debug mode
+            return strlen(FormSessionResponse::toStored($value['payload'] ?? null)) > FormSessionResponse::VALUE_MAX_BYTES;
+        }
+
+        return collect($value)->contains(fn ($answer) => $this->tooLong($answer));
     }
 }
