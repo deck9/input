@@ -19,7 +19,7 @@ import { computed, ref } from "vue";
 
 const props = defineProps<{
   text?: string;
-  maxChars?: number;
+  maxChars?: number | null;
 }>();
 
 const charCount = ref<number>(props.text?.length ?? 0);
