@@ -74,6 +74,7 @@ import Privacy from "@/components/Factory/Settings/Privacy.vue";
 import TemplateExport from "@/components/Factory/Settings/TemplateExport.vue";
 import { useForm } from "@/stores";
 import { useFreshForm } from "@/utils/useFreshForm";
+import { router } from "@inertiajs/vue3";
 import { onBeforeUnmount, ref } from "vue";
 
 const props = defineProps<{
@@ -107,20 +108,21 @@ const navigation: Array<{
 ];
 
 const tabChanged = (index: any) => {
-  const item = navigation[index];
-  location.hash = item.slug;
+  // replace the entry: a new one per tab would trap browser Back on Settings.
+  // Inertia saves router.page.url and history.state.url when you leave and on a
+  // Back that reloads, so both follow the hash
+  const url = `${location.pathname}${location.search}#${navigation[index].slug}`;
+  // shortcut: page is protected in Inertia 1.x's types, no public way to set its url
+  (router as unknown as { page: { url: string } }).page.url = url;
+  history.replaceState({ ...history.state, url }, "", url);
   selectedTabIndex.value = index;
 };
 
+// don't write the address here: before Inertia saves its first page, that would add a 2nd entry
 const foundIndex = navigation.findIndex(
   (item) => item.slug === location.hash.replace("#", ""),
 );
-
-if (foundIndex !== -1) {
-  tabChanged(foundIndex);
-} else {
-  tabChanged(0);
-}
+selectedTabIndex.value = Math.max(foundIndex, 0);
 
 // the panels copy the form when they load
 const freshForms = ref(0);

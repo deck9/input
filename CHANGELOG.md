@@ -36,6 +36,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Fixed
 
+-   Browser Back now leaves a form's Settings page. Before, every tab you opened added a history step, so Back only went through the tabs. A link to a Settings tab still opens that tab. (#287)
 -   A new long text question now shows in your form and in the editor preview, also before you set any options for it. Before, it failed to show. (#286)
 -   Ticking "Remember me" on the login page now keeps you logged in after your browser session ends. Before, it was ignored. (#227)
 -   The counter under the text editor shows the length of your text as soon as a text opens. Before, it showed a larger number until your first edit. (#228)

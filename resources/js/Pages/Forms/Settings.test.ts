@@ -9,7 +9,7 @@ import { trackFormSave } from "@/utils/useFreshForm";
 
 vi.mock("@inertiajs/vue3", async (importOriginal) => ({
     ...(await importOriginal<typeof import("@inertiajs/vue3")>()),
-    router: { on: vi.fn() },
+    router: { on: vi.fn(), page: { url: "" } },
 }));
 vi.mock("@/api/forms", async (importOriginal) => ({
     ...(await importOriginal()),
@@ -108,6 +108,57 @@ describe("settings page from history", () => {
         await flushPromises();
 
         expect(callGetForm).not.toHaveBeenCalled();
+    });
+
+    it("adds no history entry when you open Settings or switch tabs", async () => {
+        const length = history.length;
+        history.replaceState(
+            { component: "x", url: "/forms/1/settings" },
+            "",
+            "/forms/1/settings",
+        );
+
+        mountSettings();
+        await wrapper!.findAll("button[role=tab]")[1].trigger("click");
+        await wrapper!.findAll("button[role=tab]")[3].trigger("click");
+
+        expect(history.length).toBe(length);
+        expect(location.hash).toBe("#appearance");
+        expect(history.state).toEqual({
+            component: "x",
+            url: "/forms/1/settings#appearance",
+        });
+    });
+
+    it("leaves the address alone when Settings opens, so Inertia saves its page once", async () => {
+        const state = { component: "x", url: "/forms/1/settings" };
+        history.replaceState(state, "", "/forms/1/settings");
+
+        mountSettings();
+
+        expect(location.href).toBe("http://localhost:3000/forms/1/settings");
+        expect(history.state).toEqual(state);
+    });
+
+    it("tells Inertia the tab, so a Back to this page opens the same tab", async () => {
+        history.replaceState(null, "", "/forms/1/settings");
+
+        mountSettings();
+        await wrapper!.findAll("button[role=tab]")[3].trigger("click");
+
+        expect((router as unknown as { page: { url: string } }).page.url).toBe(
+            "/forms/1/settings#appearance",
+        );
+    });
+
+    it("opens the tab named in the address", async () => {
+        history.replaceState(null, "", "/forms/1/settings#completion-page");
+
+        mountSettings();
+
+        expect(
+            wrapper!.findAll("button[role=tab]")[2].attributes("aria-selected"),
+        ).toBe("true");
     });
 
     it("keeps the tab you switch to while the form loads again", async () => {
