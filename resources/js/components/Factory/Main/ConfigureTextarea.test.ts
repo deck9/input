@@ -120,13 +120,63 @@ describe("long text height", () => {
         expect(reopened.save).not.toHaveBeenCalled();
     });
 
-    it.each(["0", "-1", "2.5", "11"])("never saves a height of %s", async (value) => {
-        const { wrapper, save } = await reopen({ rows: 5, max_chars: 500 });
+    it.each(["0", "-1", "2.5", "11"])(
+        "never saves a height of %s",
+        async (value) => {
+            const { wrapper, save } = await reopen({ rows: 5, max_chars: 500 });
 
-        await rowsInput(wrapper).setValue(value);
+            await rowsInput(wrapper).setValue(value);
+            await flushPromises();
+
+            expect(save).not.toHaveBeenCalled();
+            expect(wrapper.find("#textarea-rows-error").exists()).toBe(true);
+        },
+    );
+});
+
+describe("half-typed numbers", () => {
+    // the browser reads a half-typed "-" or "2." as an empty value and flags it
+    const typeHalf = async (selector: string, wrapper: any) => {
+        const input = wrapper.find(selector);
+        Object.defineProperty(input.element, "validity", {
+            value: { badInput: true },
+            configurable: true,
+        });
+        await input.setValue("");
+        await flushPromises();
+    };
+
+    it.each([
+        [
+            "max characters",
+            "input#textarea-max-chars",
+            "#textarea-max-chars-error",
+        ],
+        ["height", "input#textarea-rows", "#textarea-rows-error"],
+    ])(
+        "does not save %s as empty while it holds a bad number",
+        async (_, input, error) => {
+            const { wrapper, save } = await reopen({ rows: 5, max_chars: 500 });
+
+            await typeHalf(input, wrapper);
+
+            expect(save).not.toHaveBeenCalled();
+            expect(wrapper.find(error).exists()).toBe(true);
+        },
+    );
+
+    it("saves no limit once the owner deletes the half-typed sign", async () => {
+        const { wrapper, save } = await reopen({ rows: 5, max_chars: 500 });
+        await typeHalf("input#textarea-max-chars", wrapper);
+
+        const input = wrapper.find("input#textarea-max-chars");
+        Object.defineProperty(input.element, "validity", {
+            value: { badInput: false },
+            configurable: true,
+        });
+        await input.setValue("");
         await flushPromises();
 
-        expect(save).not.toHaveBeenCalled();
-        expect(wrapper.find("#textarea-rows-error").exists()).toBe(true);
+        expect(save.mock.lastCall?.[0].options.max_chars).toBeNull();
     });
 });

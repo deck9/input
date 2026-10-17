@@ -23,6 +23,7 @@
         step="1"
         block
         v-model="rows"
+        @input="rowsBad = isBadInput($event)"
         :aria-invalid="!rowsValid"
         aria-describedby="textarea-rows-error"
       />
@@ -43,6 +44,7 @@
         type="number"
         block
         v-model="maxChars"
+        @input="maxCharsBad = isBadInput($event)"
         :aria-invalid="!maxCharsValid"
         aria-describedby="textarea-max-chars-error"
       />
@@ -78,10 +80,17 @@ const isWhole = (value: number | string | null | undefined) =>
   value === "" ||
   value == null ||
   (Number.isInteger(Number(value)) && Number(value) >= 1);
+// a half-typed "-" or "2." reads as an empty value, the browser flags it
+const rowsBad = ref(false);
+const maxCharsBad = ref(false);
+const isBadInput = (event: Event) =>
+  (event.target as HTMLInputElement).validity.badInput;
 const rowsValid = computed(
-  () => isWhole(rows.value) && Number(rows.value) <= 10,
+  () => !rowsBad.value && isWhole(rows.value) && Number(rows.value) <= 10,
 );
-const maxCharsValid = computed(() => isWhole(maxChars.value));
+const maxCharsValid = computed(
+  () => !maxCharsBad.value && isWhole(maxChars.value),
+);
 const interaction = ref(null) as unknown as Ref<FormBlockInteractionModel>;
 
 onMounted(async () => {
@@ -102,18 +111,21 @@ onMounted(async () => {
   }
 });
 
-const settled = useSettingsWatch([label, rows, maxChars], (newValues) => {
-  if (!rowsValid.value || !maxCharsValid.value) return;
+const settled = useSettingsWatch(
+  [label, rows, maxChars, rowsBad, maxCharsBad],
+  (newValues) => {
+    if (!rowsValid.value || !maxCharsValid.value) return;
 
-  const update = {
-    id: interaction.value.id,
-    label: newValues[0],
-    options: {
-      rows: newValues[1] === "" ? null : Number(newValues[1]),
-      max_chars: newValues[2] === "" ? null : Number(newValues[2]),
-    },
-  };
+    const update = {
+      id: interaction.value.id,
+      label: newValues[0],
+      options: {
+        rows: newValues[1] === "" ? null : Number(newValues[1]),
+        max_chars: newValues[2] === "" ? null : Number(newValues[2]),
+      },
+    };
 
-  workbench.updateInteraction(update);
-});
+    workbench.updateInteraction(update);
+  },
+);
 </script>
