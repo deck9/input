@@ -72,6 +72,7 @@ Lines marked **Upgrade step** need you to act after updating.
 -   On a phone, the text format buttons above a question or end screen text now wrap onto more lines, so all of them show. Before, half were hidden past the edge. (#289)
 -   A webhook answer that isn't valid UTF-8 text is now saved and shows on the submissions page, with each unreadable character as "?". Before, it wasn't saved and the webhook was called up to 5 times. With `QUEUE_CONNECTION=sync`, the submission itself failed with a server error. (#284)
 -   Opening a question in the editor no longer saves its answer settings, so "Saving…" does not show up for nothing. They save only when you change a setting. (#288)
+-   When a save fails, the red bar with Retry no longer makes the editor taller than your window. The page stays as tall as the window, so your last question and the end screen stay in reach. (#290)
 
 ### Security
 
