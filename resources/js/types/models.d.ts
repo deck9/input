@@ -166,7 +166,7 @@ type FormBlockInteractionType =
     | "date";
 
 type FormBlockInteractionSettings = {
-    rows?: number;
+    rows?: number | null;
     max_chars?: number | null;
     minDate?: string;
     maxDate?: string;
