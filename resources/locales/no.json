@@ -29,6 +29,7 @@
   "type": "Skriv svaret ditt",
   "submit": "Send inn",
   "submit_failed": "Svarene dine kunne ikke sendes. Vennligst prøv igjen.",
+  "submit_too_long": "Dette svaret er for langt. Vennligst korte det ned og send det på nytt.",
   "privacy_policy": "Personvern",
   "other": "Annet",
   "next": "Neste",

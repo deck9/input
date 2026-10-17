@@ -29,6 +29,7 @@
   "type": "Tapez votre réponse",
   "submit": "Soumettre",
   "submit_failed": "Vos réponses n'ont pas pu être envoyées. Veuillez réessayer.",
+  "submit_too_long": "Cette réponse est trop longue. Veuillez la raccourcir et l'envoyer à nouveau.",
   "privacy_policy": "Politique de confidentialité",
   "other": "Autre",
   "next": "Suivant",

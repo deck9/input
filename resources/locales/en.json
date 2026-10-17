@@ -29,6 +29,7 @@
     "type": "Type your answer",
     "submit": "Submit",
     "submit_failed": "Your answers could not be sent. Please try again.",
+    "submit_too_long": "This answer is too long. Please shorten it and send it again.",
     "privacy_policy": "Privacy Policy",
     "other": "Other",
     "next": "Next",

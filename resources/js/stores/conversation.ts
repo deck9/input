@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import type { AxiosError } from "axios";
 import {
     callCreateFormSession,
     callGetFormStoryboard,
@@ -25,6 +26,7 @@ type ConversationStore = {
     isProcessing: boolean;
     isSubmitted: boolean;
     submitFailed: boolean;
+    submitTooLong: boolean;
     isInputMode: boolean;
     // the editor's preview: the server stores nothing, so skip uploads and the redirect
     isPreview: boolean;
@@ -45,6 +47,7 @@ export const useConversation = defineStore("form", {
             isProcessing: false,
             isSubmitted: false,
             submitFailed: false,
+            submitTooLong: false,
             isInputMode: false,
             isPreview: false,
             uploads: {},
@@ -84,7 +87,8 @@ export const useConversation = defineStore("form", {
             for (const block of state.queue) {
                 // a question in a hidden group is hidden too
                 if (
-                    (block.parent_block && hidden.includes(block.parent_block)) ||
+                    (block.parent_block &&
+                        hidden.includes(block.parent_block)) ||
                     !isBlockVisible(block, answers)
                 ) {
                     hidden.push(block.id);
@@ -516,6 +520,7 @@ export const useConversation = defineStore("form", {
                 this.uploads = {};
                 this.isProcessing = true;
                 this.submitFailed = false;
+                this.submitTooLong = false;
 
                 if (this.form?.uuid && this.session?.token) {
                     try {
@@ -561,6 +566,15 @@ export const useConversation = defineStore("form", {
                     } catch (error) {
                         console.warn("could not submit the form", error);
                         this.submitFailed = true;
+                        // the server refuses a too long answer with a 422 on the answer's own field, "payload.<block>"
+                        const { response } = error as AxiosError<{
+                            errors?: object;
+                        }>;
+                        this.submitTooLong =
+                            response?.status === 422 &&
+                            Object.keys(response.data?.errors ?? {}).some(
+                                (field) => field.startsWith("payload."),
+                            );
 
                         return Promise.resolve(false);
                     } finally {

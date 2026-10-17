@@ -25,7 +25,7 @@
     </div>
 
     <div v-if="store.submitFailed" class="text-sm text-red-500">
-      {{ t("submit_failed") }}
+      {{ t(store.submitTooLong ? "submit_too_long" : "submit_failed") }}
     </div>
 
     <FormButton
