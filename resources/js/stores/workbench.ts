@@ -15,6 +15,8 @@ import useActiveInteractions from "@/components/Factory/Shared/useActiveInteract
 
 // true while flushSaves sends the waiting saves as the page closes
 let isLeaving = false;
+// the answer as sent, before the changes that wait for their debounce
+let sentInteraction: FormBlockInteractionModel | undefined;
 
 interface WorkbenchStore {
     block: FormBlockModel | null;
@@ -174,6 +176,10 @@ export const useWorkbench = defineStore("workbench", {
 
             const pointer = this.block?.interactions[index];
 
+            if (!useNotice().waitingSaves[`saveInteraction:${pointer.id}`]) {
+                sentInteraction = { ...pointer };
+            }
+
             Object.entries(interaction).forEach((value) => {
                 const key = value[0];
                 const setting = value[1];
@@ -194,6 +200,30 @@ export const useWorkbench = defineStore("workbench", {
             this.isSavingInteraction = pointer.id;
             useNotice().waitForSave(`saveInteraction:${pointer.id}`);
             this.saveInteraction({ ...pointer });
+        },
+
+        // a number on the way to a wrong one, e.g. "2" before "2.5", is no
+        // change: the waiting save sends the option as it was sent before
+        keepSentOption(id: number, option: keyof FormBlockInteractionSettings) {
+            const pointer = this.block?.interactions?.find(
+                (item) => item.id === id,
+            );
+
+            if (
+                !pointer ||
+                sentInteraction?.id !== id ||
+                !useNotice().waitingSaves[`saveInteraction:${id}`]
+            ) {
+                return;
+            }
+
+            this.updateInteraction({
+                id,
+                options: {
+                    ...pointer.options,
+                    [option]: sentInteraction.options?.[option],
+                },
+            });
         },
 
         async deleteInteraction(interaction: { id: number }) {
