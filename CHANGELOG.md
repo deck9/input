@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Fixed
+
+-   No more PHP 8.5 deprecation warning for the MySQL SSL option on container start. (#298)
+
 ## [2.3.0] - 2026-10-22
 
 All Docker installs should update: the image moves to PHP 8.5.12 for the October 2026 PHP security fixes. This release also rebuilds the form editor as one document. It has 2 upgrade steps, marked **Upgrade step** below.
