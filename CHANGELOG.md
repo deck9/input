@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Changed
+
+-   In the form editor, the Preview button is white while the side preview is open, so you can see the preview is on. (#301)
+
 ### Fixed
 
 -   Clicking "Log in" on the two-factor code screen now sends the code. Before, only Enter worked. (#299)
