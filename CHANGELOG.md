@@ -81,6 +81,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Security
 
+-   The Docker image moves to PHP 8.5.12 for the October 2026 PHP security fixes (CVE-2026-109618, CVE-2026-109619). (#296)
 -   The text editor for questions and the completion page now uses tiptap 3, which fixes a moderate advisory in tiptap 2. Texts you wrote before stay as they are. (#226)
 -   Input's UI library, @deck9/ui, no longer pulls in a uuid version with a moderate advisory (GHSA-w5hq-g745-h8pq). Input never used the affected functions. (#231)
 -   The page and `GET /api/user` no longer send a user's internal `salt` to the browser. Nothing in Input used it. The column stays in the database. (#283)

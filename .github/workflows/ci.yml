@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: "8.5"
           extensions: bcmath,gd
 
       - uses: actions/checkout@v4
@@ -97,7 +97,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: "8.5"
           extensions: bcmath,gd
 
       - uses: actions/checkout@v4
