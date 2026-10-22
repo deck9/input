@@ -93,4 +93,33 @@ describe("app header", () => {
         // on phones it's in the form menu: the name keeps its room
         expect(preview.classes()).toEqual(expect.arrayContaining(["hidden", "lg:flex"]));
     });
+
+    it("gives the dashboard bar and a form's bar one height", async () => {
+        window.route = ((name: string) => `/${name}`) as typeof window.route;
+        // the store is shared, so check the dashboard bar before a form is set
+        const dashboard = mountLayout();
+        useForm().$patch({ form: null });
+        await dashboard.vm.$nextTick();
+        expect(dashboard.get("nav.bg-grey-800 > div > div").classes()).toContain("h-bar");
+
+        const wrapper = mount(AppLayout, {
+            props: { title: "Form Settings" },
+            global: {
+                mocks: { $page, route: () => "/" },
+                stubs: {
+                    Head: true,
+                    Link: true,
+                    JetBanner: true,
+                    FormMenu: true,
+                    FormPageTabs: true,
+                    PublishControl: true,
+                    AccountMenu: true,
+                },
+            },
+        });
+        useForm().$patch({ form: { uuid: "form1", is_published: false } as FormModel });
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.get("header").classes()).toContain("h-bar");
+    });
 });

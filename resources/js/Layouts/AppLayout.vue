@@ -14,12 +14,12 @@
 
       <nav v-else class="bg-grey-800">
         <!-- Primary Navigation Menu -->
-        <div class="mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex h-16 items-center justify-between">
+        <div class="mx-auto px-4 lg:pl-4 lg:pr-3">
+          <div class="flex h-bar items-center justify-between">
             <!-- Logo; a long team name shortens, so the menus fit -->
             <div class="mr-3 flex min-w-0 items-center sm:mr-6">
               <Link
-                class="flex h-11 min-w-0 items-center"
+                class="flex h-11 min-w-0 items-center lg:px-1"
                 :href="route('dashboard')"
               >
                 <jet-application-logo

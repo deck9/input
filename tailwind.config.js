@@ -27,6 +27,10 @@ module.exports = {
 
     theme: {
         extend: {
+            height: {
+                // the top bar of the dashboard and of a form share one height
+                bar: "3.5rem",
+            },
             fontSize: {
                 xxs: "0.625rem",
             },

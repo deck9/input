@@ -2,7 +2,7 @@
   <!-- One bar for a form's pages: breadcrumb, pages, then status and actions.
     Under lg the pages move to FormPageTabs at the bottom. -->
   <header
-    class="relative flex h-14 flex-none items-center gap-1 bg-grey-800 px-1 text-grey-300 lg:gap-4 lg:pl-4 lg:pr-3"
+    class="relative flex h-bar flex-none items-center gap-1 bg-grey-800 px-1 text-grey-300 lg:gap-4 lg:pl-4 lg:pr-3"
   >
     <Link
       :href="route('dashboard')"
