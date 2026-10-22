@@ -68,6 +68,7 @@
         </button>
 
         <d9-button
+          type="submit"
           class="ml-4"
           :isLoading="form.processing"
           :disabled="form.processing"
