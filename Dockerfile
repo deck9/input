@@ -7,7 +7,7 @@ RUN composer install --no-scripts --no-autoloader --no-interaction --no-progress
 
 # ---
 
-FROM mirror.gcr.io/trafex/php-nginx:3.6.0 AS php_base
+FROM mirror.gcr.io/trafex/php-nginx:3.12.0 AS php_base
 
 LABEL Maintainer="Philipp Reinking <philipp@deck9.co>" Description="Input is a no-code application to create simple & clean forms."
 LABEL org.opencontainers.image.licenses="GNU Affero General Public License v3.0"
@@ -24,24 +24,24 @@ ENV LOG_CHANNEL=stderr
 ENV MAIL_MAILER=log
 
 RUN apk add --no-cache \
-    php83-exif \
-    php83-fileinfo \
-    php83-iconv \
-    php83-simplexml \
-    php83-tokenizer \
-    php83-xmlwriter \
-    php83-redis \
-    php83-pdo \
-    php83-pdo_mysql \
-    php83-pdo_sqlite \
-    php83-bcmath \
-    php83-zip \
+    php85-exif \
+    php85-fileinfo \
+    php85-iconv \
+    php85-simplexml \
+    php85-tokenizer \
+    php85-xmlwriter \
+    php85-pecl-redis \
+    php85-pdo \
+    php85-pdo_mysql \
+    php85-pdo_sqlite \
+    php85-bcmath \
+    php85-zip \
     sqlite
 
 COPY ./scripts/nginx/fastcgi_params /etc/nginx/fastcgi_params
 COPY ./scripts/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./scripts/nginx/nginx.default.conf /etc/nginx/conf.d/default.conf
-COPY ./scripts/php.conf.ini /etc/php83/conf.d/99-input.ini
+COPY ./scripts/php.conf.ini /etc/php85/conf.d/99-input.ini
 
 USER nobody
 WORKDIR /var/www/html
