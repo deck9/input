@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-10-22
+
+A small fix release: the two-factor login button works on click again, and the form editor's top bar and Preview button are easier to read. No upgrade steps.
+
 ### Changed
 
 -   In the form editor, the Preview button is white while the side preview is open, so you can see the preview is on. (#301)
@@ -176,7 +180,8 @@ All installs should update: this release moves Input to Laravel 13, limits the p
 
 See [GitHub Releases](https://github.com/deck9/input/releases).
 
-[Unreleased]: https://github.com/deck9/input/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/deck9/input/compare/v2.3.1...HEAD
+[2.3.1]: https://github.com/deck9/input/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/deck9/input/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/deck9/input/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/deck9/input/compare/v2.0.1...v2.1.0
