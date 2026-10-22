@@ -6,6 +6,10 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [Unreleased]
 
+### Changed
+
+-   In the form editor, the Preview button is white while the side preview is open, so you can see the preview is on. (#301)
+
 ### Fixed
 
 -   The top bar has the same height on the dashboard and in the form editor, so it no longer jumps between them. (#300)
