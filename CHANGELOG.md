@@ -8,7 +8,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [2.3.1] - 2026-10-22
 
-A small fix release: the two-factor login button works on click again, and the form editor's top bar and Preview button are easier to read. No upgrade steps.
+A small fix release: the two-factor Log in button works on click, the top bar keeps one height, the Preview button shows when it's on, and the container starts without a PHP warning. No upgrade steps.
 
 ### Changed
 
