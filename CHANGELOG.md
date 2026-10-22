@@ -8,11 +8,11 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ## [2.3.0] - 2026-10-22
 
-All Docker installs should update: the image moves to PHP 8.5.12 for the October 2026 PHP security fixes. This release also rebuilds the form editor as one document. It has 1 upgrade step, marked **Upgrade step** below.
+All Docker installs should update: the image moves to PHP 8.5.12 for the October 2026 PHP security fixes. This release also rebuilds the form editor as one document. It has 2 upgrade steps, marked **Upgrade step** below.
 
 ### Added
 
--   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. (#242)
+-   The forms API (`GET /api/forms`) returns when each form last got a submission (`latest_submission_at`) and can sort by it, newest first. Sorting now works only by `name`, `created_at`, `updated_at` or `latest_submission_at`. Other sort values that worked before, like `published_at`, `id` or `uuid`, now give the default order. **Upgrade step:** if your API scripts sort `/api/forms` by `published_at`, `id` or `uuid`, switch them to `name`, `created_at`, `updated_at` or `latest_submission_at`. (#242)
 -   Search your forms by name, also without accents ("muller" finds "Müller"), and press "/" to jump to the search. The form list has status tabs with counts and sorts by latest submission, last edit, newest or name. Your choice stays in the address, so Back undoes it and a link shows the same list. A dashboard link with the old `?filter=` or an unknown filter or sort shows all your forms. Before, it showed no forms at all. (#242, #248)
 -   The form list shows when each form last got a submission, with a blue dot for the last 24 hours, and now opens sorted by latest submission. Its date column shows the date the list is sorted by. (#250)
 -   The API can copy a question (`POST /api/blocks/{block}/duplicate`) with its text, settings, answers and Required, but not its rules or its Identifier, so links that fill in answers and webhooks can't mix the two up. The copy goes right after the original. (#262)
