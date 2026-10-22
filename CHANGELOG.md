@@ -8,6 +8,7 @@ Lines marked **Upgrade step** need you to act after updating.
 
 ### Fixed
 
+-   The top bar has the same height on the dashboard and in the form editor, so it no longer jumps between them. (#300)
 -   Clicking "Log in" on the two-factor code screen now sends the code. Before, only Enter worked. (#299)
 -   No more PHP 8.5 deprecation warning for the MySQL SSL option on container start. (#298)
 
